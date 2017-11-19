@@ -1,6 +1,6 @@
-# OS Folder Icons
+# OS Folder Icons 📂
 
-A collection of custom folder icons for MacOS, Linux and Windows.
+A collection of custom folder 📂 icons for MacOS, Linux and Windows.
 
 ## Folder suggestions
 
