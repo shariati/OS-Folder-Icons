@@ -10,8 +10,9 @@ Hey, guess what? I am open to suggestions 😉 so you can just let me know what 
 
 Simple😎
 
-- Follow me on Instagram [SlashUi](https://www.instagram.com/slashui/).
-- Drop me a message 💬 there.
+- Follow us on Instagram [SlashUi](https://www.instagram.com/slashui/) or Twitter [@ShariatiAmin](https://twitter.com/ShariatiAmin), [@sarahghzh](https://twitter.com/sarahghzh)
+
+- Drop us a message 💬 there.
 
 ## How to use
 
