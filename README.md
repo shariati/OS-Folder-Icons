@@ -102,6 +102,12 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 - 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
 - 👩🏻‍💻 [Sarah Ghanbarzadeh](https://github.com/sarah8131)
 
+## Similar Projects on Github
+
+After starting this project I found that there is a similar project by [Vigo Krumins](https://github.com/VigoKrumins) called [folder-icons](https://github.com/VigoKrumins/folder-icons) which contains icons for Mac 💻.
+
+Make sure to have a look at this project too 👍.
+
 ## License
 
 ### Icon and Image License
