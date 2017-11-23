@@ -77,6 +77,12 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
 
+#### React
+
+> [React](https://reactjs.org/) is a JavaScript library for building user interfaces. It is maintained by Facebook, Instagram and a community of individual developers and corporations.
+
+![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
+
 #### Vue.js
 
 > [Vue.js](https://vuejs.org/) is an open-source progressive JavaScript framework for building user interfaces. Integration into projects that use other JavaScript libraries is made easy with Vue because it is designed to be incrementally adoptable. - Wikipedia
