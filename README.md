@@ -1,5 +1,8 @@
 # OS Folder Icons 📂
 
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
+[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Get%20free%20Collection%20of%20custom%20folder%20icons&url=https://github.com/shariati/OS-Folder-Icons&via=ShariatiAmin&hashtags=icons,mac,windows,linux,slashui)
+
 Collection of custom folder 📂 icons for MacOS, Linux, and Windows.
 
 ## Folder suggestions
