@@ -46,20 +46,71 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ### Development
 
-#### Angular
+#### JavaScript
 
-> [Angular](https://angular.io/) is a TypeScript-based open-source front-end web application platform led by the Angular Team at Google - Wikipedia
+> JavaScript, often abbreviated as JS, is a high-level, dynamic, weakly typed, prototype-based, multi-paradigm, and interpreted programming language. - Wikipedia
 
-![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
+![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
+![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
+![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
 
-#### CSS
+#### CSS3
 
 > Cascading Style Sheets is a style sheet language used for describing the presentation of a document written in a markup language. - Wikipedia
 
 ![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
 ![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
 
+#### HTMl5
+
+> Hypertext Markup Language is the standard markup language for creating web pages and web applications. - Wikipedia
+
+![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
+![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
+
+#### Angular
+
+> [Angular](https://angular.io/) is a TypeScript-based open-source front-end web application platform led by the Angular Team at Google - Wikipedia
+
+![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
+
+#### Vue.js
+
+> [Vue.js](https://vuejs.org/) is an open-source progressive JavaScript framework for building user interfaces. Integration into projects that use other JavaScript libraries is made easy with Vue because it is designed to be incrementally adoptable. - Wikipedia
+
+![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
+
+#### Git
+
+> [Git](https://git-scm.com/) is a version control system for tracking changes in computer files and coordinating work on those files among multiple people. - Wikipedia
+
+![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
+
+### Brands
+
+#### Github
+
+> [GitHub](https://github.com/) is a Web-based Git version control repository hosting service. It is mostly used for computer code. It offers all of the distributed version control and source code management functionality of Git as well as adding its own features. - Wikipedia
+
+![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
+
 ## Collaborators
 
-- Me ([Amin Shariati](https://github.com/shariati))
-- [Sarah Ghanbarzadeh](https://github.com/sarah8131)
+- 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
+- 👩🏻‍💻 [Sarah Ghanbarzadeh](https://github.com/sarah8131)
+
+## License
+
+### Icon and Image License
+
+- Applies to all `.png`, `.icns` and `.ico` files in the following directory: `icons`
+- License: [MIT License](./LICENSE)
+
+### Brand Images
+
+- All brand icons are trademarks of their respective owners.
+- The use of these trademarks does not indicate endorsement of the trademark holder by OS Folder Icons (Amin Shariati and Sarah Ghanbarzadeh), nor vice versa.
+
+- Brand icons should only be used to represent the company or product to which they refer.
+
+- Please do not use brand logos for any purpose except to represent that particular brand or service.
