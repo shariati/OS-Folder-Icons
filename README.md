@@ -95,6 +95,26 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
 
+### Operating System
+
+#### Linux
+
+> Linux is a name which broadly denotes a family of free and open-source software operating systems built around the Linux kernel. - Wikipedia
+
+![Linux](./icons/Linux/linux/Linux_Solid%20(PNG)/128x128.png)
+
+#### Android
+
+> Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. - Wikipedia
+
+![Android](./icons/Android/linux/Android_Solid%20(PNG)/128x128.png)
+
+#### Windows
+
+> Microsoft Windows, or simply Windows, is a metafamily of graphical operating systems developed, marketed, and sold by Microsoft. - Wikipedia
+
+![Windows](./icons/Windows/linux/Windows_Solid%20(PNG)/128x128.png)
+
 ### Project Management
 
 #### Agile
