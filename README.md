@@ -95,6 +95,14 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
 
+### Project Management
+
+#### Agile
+
+> Agile software development describes a set of values and principles for software development under which requirements and solutions evolve through the collaborative effort of self-organizing cross-functional teams. - Wikipedia
+
+![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
+
 ### Brands
 
 #### Github
