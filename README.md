@@ -131,6 +131,66 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
 
+#### Amazon
+
+> Amazon, is an American electronic commerce and cloud computing company based in Seattle, Washington. - Wikipedia
+
+![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
+
+#### Apple
+
+> Apple Inc. is an American multinational technology company headquartered in Cupertino, California that designs, develops, and sells consumer electronics, computer software, and online services. - Wikipedia
+
+![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
+
+#### Behance
+
+> Behance is a network of sites and services specializing in self-promotion, including consulting and online portfolio sites. It is owned by Adobe. - Wikipedia
+
+![Behance](./icons/Behance/linux/Behance_Solid%20(PNG)/128x128.png)
+
+#### PayPal
+
+> PayPal Holdings, Inc. is an American company operating a worldwide online payments system that supports online money transfers and serves as an electronic alternative to traditional paper methods like checks and money orders. - Wikipedia
+
+![PayPal](./icons/PayPal/linux/PayPal_Solid%20(PNG)/128x128.png)
+
+#### Slack
+
+> Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield. Slack began as an internal tool used by their company, Tiny Speck, in the development of Glitch, a now defunct online game. - Wikipedia
+
+![Slack](./icons/Slack/linux/Slack_Solid%20(PNG)/128x128.png)
+
+#### Soundcloud
+
+> SoundCloud is an online audio distribution platform based in Berlin, Germany, that enables its users to upload, record, promote, and share their originally-created sounds. - Wikipedia
+
+![Soundcloud](./icons/Soundcloud/linux/Soundcloud_Solid%20(PNG)/128x128.png)
+
+#### Trello
+
+> Trello is a web-based project management application originally made by Fog Creek Software in 2011, that was spun out to form the basis of a separate company in 2014 and later sold to Atlassian in January 2017. The company is based in New York City. - Wikipedia
+
+![Trello](./icons/Trello/linux/Trello_Solid%20(PNG)/128x128.png)
+
+#### Tripadvisor
+
+> TripAdvisor, Inc., is an American travel and restaurant website company providing hotel and restaurant reviews, accommodation bookings and other travel-related content. - Wikipedia
+
+![Tripadvisor](./icons/Tripadvisor/linux/Tripadvisor_Solid%20(PNG)/128x128.png)
+
+#### Visa
+
+> Visa Inc. is an American multinational financial services corporation headquartered in Foster City, California, United States. - Wikipedia
+
+![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
+
+#### Youtube
+
+> YouTube is an American video-sharing website headquartered in San Bruno, California. The service was created by three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—in February 2005. - Wikipedia
+
+![Youtube](./icons/Youtube/linux/Youtube_Solid%20(PNG)/128x128.png)
+
 ## Collaborators
 
 - 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
