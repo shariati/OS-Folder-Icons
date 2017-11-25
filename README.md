@@ -196,6 +196,12 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 - 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
 - 👩🏻‍💻 [Sarah Ghanbarzadeh](https://github.com/sarah8131)
 
+## Materials
+
+We try our best to design and draw the svg images but some are taken from exisiting projects (Why reinvent the wheel?).
+
+- Special thanks to the Awesome "[FontAwesome](http://fontawesome.io/)" project. (Some Brands Icons are taken from there)
+
 ## Similar Projects on Github
 
 After starting this project I found that there is a similar project by [Vigo Krumins](https://github.com/VigoKrumins) called [folder-icons](https://github.com/VigoKrumins/folder-icons) which contains icons for Mac 💻.
