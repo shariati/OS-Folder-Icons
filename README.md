@@ -47,6 +47,14 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ## Collection
 
+### Finance
+
+#### Bitcoin
+
+> Bitcoin is a worldwide cryptocurrency and digital payment system called the first decentralized digital currency, as the system works without a central repository or single administrator. - Wikipedia
+
+![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
+
 ### Development
 
 #### JavaScript
@@ -189,7 +197,22 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 > YouTube is an American video-sharing website headquartered in San Bruno, California. The service was created by three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—in February 2005. - Wikipedia
 
-![Youtube](./icons/Youtube/linux/Youtube_Solid%20(PNG)/128x128.png)
+![Youtube](./icons/Youtube/linux/Youtube_Solid_1%20(PNG)/128x128.png)
+![Youtube](./icons/Youtube/linux/Youtube_Solid_2%20(PNG)/128x128.png)
+![Youtube](./icons/Youtube/linux/Youtube_Solid_3%20(PNG)/128x128.png)
+
+#### Steam
+
+> Steam is a digital distribution platform developed by Valve Corporation, which offers digital rights management, multiplayer gaming, video streaming and social networking services. - Wikipedia
+
+![Steam](./icons/Steam/linux/Steam_Solid_1%20(PNG)/128x128.png)
+![Steam](./icons/Steam/linux/Steam_Solid_2%20(PNG)/128x128.png)
+
+#### Vimeo
+
+> Vimeo is a video-sharing website in which users can upload, share and view videos. - Wikipedia
+
+![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
 
 ## Collaborators
 
