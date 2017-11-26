@@ -46,6 +46,8 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 - Drag and drop an icon from the mac folder (.icns) on the icon preview located on Top left of the Get info dialogue.
 
+![how-to-use-on-mac](https://user-images.githubusercontent.com/2625497/33240487-738316b8-d2f1-11e7-8c65-6d9c2de56c39.gif)
+
 ## Collection
 
 The collections are sorted Alphabatically 🔤.
