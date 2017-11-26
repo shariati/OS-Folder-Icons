@@ -57,6 +57,7 @@ The collections are sorted Alphabatically 🔤.
 ![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
 ![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
 ![Behance](./icons/Behance/linux/Behance_Solid%20(PNG)/128x128.png)
+![Fontawesome](./icons/Fontawesome/linux/Fontawesome_Solid%20(PNG)/128x128.png)
 ![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
 ![PayPal](./icons/PayPal/linux/PayPal_Solid%20(PNG)/128x128.png)
 ![Slack](./icons/Slack/linux/Slack_Solid%20(PNG)/128x128.png)
