@@ -108,6 +108,16 @@ The collections are sorted Alphabatically 🔤.
 - 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
 - 👩🏻‍💻 [Sarah Ghanbarzadeh](https://github.com/sarah8131)
 
+## Agile Development
+
+### Our Kanban board
+
+Wee what our we currently working on by visiting our [online kanban board](https://waffle.io/shariati/OS-Folder-Icons).
+
+### Throughput Graph
+
+[![Throughput Graph](https://graphs.waffle.io/shariati/OS-Folder-Icons/throughput.svg)](https://waffle.io/shariati/OS-Folder-Icons/metrics/throughput)
+
 ## Materials
 
 We try our best to design and draw the svg images but some are taken from exisiting projects (Why reinvent the wheel?).
