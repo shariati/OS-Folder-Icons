@@ -93,6 +93,12 @@ The collections are sorted Alphabatically 🔤.
 ![Linux](./icons/Linux/linux/Linux_Solid%20(PNG)/128x128.png)
 ![Windows](./icons/Windows/linux/Windows_Solid%20(PNG)/128x128.png)
 
+### Virtualization
+
+![Docker](./icons/Docker/linux/Docker_Solid%20(PNG)/128x128.png)
+![Vagrant](./icons/Vagrant/linux/Vagrant_Solid%20(PNG)/128x128.png)
+![VMware](./icons/VMware/linux/VMware_Solid%20(PNG)/128x128.png)
+
 ### Project Management
 
 ![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
