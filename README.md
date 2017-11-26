@@ -47,172 +47,54 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 ## Collection
 
-### Finance
-
-#### Bitcoin
-
-> Bitcoin is a worldwide cryptocurrency and digital payment system called the first decentralized digital currency, as the system works without a central repository or single administrator. - Wikipedia
-
-![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
-
-### Development
-
-#### JavaScript
-
-> JavaScript, often abbreviated as JS, is a high-level, dynamic, weakly typed, prototype-based, multi-paradigm, and interpreted programming language. - Wikipedia
-
-![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
-![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
-![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
-
-#### CSS3
-
-> Cascading Style Sheets is a style sheet language used for describing the presentation of a document written in a markup language. - Wikipedia
-
-![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
-![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
-
-#### HTML5
-
-> Hypertext Markup Language is the standard markup language for creating web pages and web applications. - Wikipedia
-
-![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
-![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
-
-#### Angular
-
-> [Angular](https://angular.io/) is a TypeScript-based open-source front-end web application platform led by the Angular Team at Google - Wikipedia
-
-![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
-
-#### React
-
-> [React](https://reactjs.org/) is a JavaScript library for building user interfaces. It is maintained by Facebook, Instagram and a community of individual developers and corporations.
-
-![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
-
-#### Vue.js
-
-> [Vue.js](https://vuejs.org/) is an open-source progressive JavaScript framework for building user interfaces. Integration into projects that use other JavaScript libraries is made easy with Vue because it is designed to be incrementally adoptable. - Wikipedia
-
-![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
-
-#### Git
-
-> [Git](https://git-scm.com/) is a version control system for tracking changes in computer files and coordinating work on those files among multiple people. - Wikipedia
-
-![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
-
-### Operating System
-
-#### Linux
-
-> Linux is a name which broadly denotes a family of free and open-source software operating systems built around the Linux kernel. - Wikipedia
-
-![Linux](./icons/Linux/linux/Linux_Solid%20(PNG)/128x128.png)
-
-#### Android
-
-> Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. - Wikipedia
-
-![Android](./icons/Android/linux/Android_Solid%20(PNG)/128x128.png)
-
-#### Windows
-
-> Microsoft Windows, or simply Windows, is a metafamily of graphical operating systems developed, marketed, and sold by Microsoft. - Wikipedia
-
-![Windows](./icons/Windows/linux/Windows_Solid%20(PNG)/128x128.png)
-
-### Project Management
-
-#### Agile
-
-> Agile software development describes a set of values and principles for software development under which requirements and solutions evolve through the collaborative effort of self-organizing cross-functional teams. - Wikipedia
-
-![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
+The collections are sorted Alphabatically 🔤.
 
 ### Brands
 
-#### Github
-
-> [GitHub](https://github.com/) is a Web-based Git version control repository hosting service. It is mostly used for computer code. It offers all of the distributed version control and source code management functionality of Git as well as adding its own features. - Wikipedia
-
-![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
-
-#### Amazon
-
-> Amazon, is an American electronic commerce and cloud computing company based in Seattle, Washington. - Wikipedia
-
 ![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
-
-#### Apple
-
-> Apple Inc. is an American multinational technology company headquartered in Cupertino, California that designs, develops, and sells consumer electronics, computer software, and online services. - Wikipedia
-
 ![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
-
-#### Behance
-
-> Behance is a network of sites and services specializing in self-promotion, including consulting and online portfolio sites. It is owned by Adobe. - Wikipedia
-
 ![Behance](./icons/Behance/linux/Behance_Solid%20(PNG)/128x128.png)
-
-#### PayPal
-
-> PayPal Holdings, Inc. is an American company operating a worldwide online payments system that supports online money transfers and serves as an electronic alternative to traditional paper methods like checks and money orders. - Wikipedia
-
+![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
 ![PayPal](./icons/PayPal/linux/PayPal_Solid%20(PNG)/128x128.png)
-
-#### Slack
-
-> Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield. Slack began as an internal tool used by their company, Tiny Speck, in the development of Glitch, a now defunct online game. - Wikipedia
-
 ![Slack](./icons/Slack/linux/Slack_Solid%20(PNG)/128x128.png)
-
-#### Soundcloud
-
-> SoundCloud is an online audio distribution platform based in Berlin, Germany, that enables its users to upload, record, promote, and share their originally-created sounds. - Wikipedia
-
 ![Soundcloud](./icons/Soundcloud/linux/Soundcloud_Solid%20(PNG)/128x128.png)
-
-#### Trello
-
-> Trello is a web-based project management application originally made by Fog Creek Software in 2011, that was spun out to form the basis of a separate company in 2014 and later sold to Atlassian in January 2017. The company is based in New York City. - Wikipedia
-
+![Steam](./icons/Steam/linux/Steam_Solid_1%20(PNG)/128x128.png)
+![Steam](./icons/Steam/linux/Steam_Solid_2%20(PNG)/128x128.png)
 ![Trello](./icons/Trello/linux/Trello_Solid%20(PNG)/128x128.png)
-
-#### Tripadvisor
-
-> TripAdvisor, Inc., is an American travel and restaurant website company providing hotel and restaurant reviews, accommodation bookings and other travel-related content. - Wikipedia
-
 ![Tripadvisor](./icons/Tripadvisor/linux/Tripadvisor_Solid%20(PNG)/128x128.png)
-
-#### Visa
-
-> Visa Inc. is an American multinational financial services corporation headquartered in Foster City, California, United States. - Wikipedia
-
+![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
 ![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
-
-#### Youtube
-
-> YouTube is an American video-sharing website headquartered in San Bruno, California. The service was created by three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—in February 2005. - Wikipedia
-
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_1%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_2%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_3%20(PNG)/128x128.png)
 
-#### Steam
+### Development
 
-> Steam is a digital distribution platform developed by Valve Corporation, which offers digital rights management, multiplayer gaming, video streaming and social networking services. - Wikipedia
+![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
+![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
+![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
+![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
+![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
+![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
+![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
+![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
+![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
+![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
+![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
 
-![Steam](./icons/Steam/linux/Steam_Solid_1%20(PNG)/128x128.png)
-![Steam](./icons/Steam/linux/Steam_Solid_2%20(PNG)/128x128.png)
+### Finance
 
-#### Vimeo
+![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
 
-> Vimeo is a video-sharing website in which users can upload, share and view videos. - Wikipedia
+### Operating System
 
-![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
+![Android](./icons/Android/linux/Android_Solid%20(PNG)/128x128.png)
+![Linux](./icons/Linux/linux/Linux_Solid%20(PNG)/128x128.png)
+![Windows](./icons/Windows/linux/Windows_Solid%20(PNG)/128x128.png)
+
+### Project Management
+
+![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
 
 ## Collaborators
 
