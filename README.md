@@ -72,7 +72,7 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 ![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
 ![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
 
-#### HTMl5
+#### HTML5
 
 > Hypertext Markup Language is the standard markup language for creating web pages and web applications. - Wikipedia
 
