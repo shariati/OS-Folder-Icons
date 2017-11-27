@@ -52,7 +52,7 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 The collections are sorted Alphabatically 🔤.
 
-### Brands
+### Brandsj
 
 ![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
 ![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
@@ -105,6 +105,11 @@ The collections are sorted Alphabatically 🔤.
 ### Project Management
 
 ![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
+![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_1%20(PNG)/128x128.png)
+![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_2%20(PNG)/128x128.png)
+![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_3%20(PNG)/128x128.png)
+![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_4%20(PNG)/128x128.png)
+
 
 ## Collaborators
 
