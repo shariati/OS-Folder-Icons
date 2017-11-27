@@ -109,6 +109,9 @@ The collections are sorted Alphabatically 🔤.
 ![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_2%20(PNG)/128x128.png)
 ![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_3%20(PNG)/128x128.png)
 ![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_4%20(PNG)/128x128.png)
+![Reports](./icons/Reports/linux/Reports_Solid_1%20(PNG)/128x128.png)
+![Reports](./icons/Reports/linux/Reports_Solid_2%20(PNG)/128x128.png)
+![Reports](./icons/Reports/linux/Reports_Solid_3%20(PNG)/128x128.png)
 
 
 ## Collaborators
