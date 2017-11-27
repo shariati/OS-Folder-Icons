@@ -52,7 +52,7 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 The collections are sorted Alphabatically 🔤.
 
-### Brandsj
+### Brands
 
 ![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
 ![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
