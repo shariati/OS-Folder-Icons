@@ -6,7 +6,7 @@
 
 Collection of custom folder 📂 icons for MacOS, Linux, and Windows.
 
-## Folder suggestions
+## What folder icons would you want
 
 Hey, guess what? I am open to suggestions 😉 so you can just let me know what icons you would like?
 
@@ -14,9 +14,8 @@ Hey, guess what? I am open to suggestions 😉 so you can just let me know what 
 
 Simple😎
 
+- Drop us a message 💬 [here](https://github.com/shariati/OS-Folder-Icons/issues/new).
 - Follow us on Instagram [SlashUi](https://www.instagram.com/slashui/) or Twitter [@ShariatiAmin](https://twitter.com/ShariatiAmin), [@sarahghzh](https://twitter.com/sarahghzh)
-
-- Drop us a message 💬 there.
 
 ## How to use
 
