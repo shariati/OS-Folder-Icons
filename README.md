@@ -40,6 +40,8 @@ Inside each category you will find three folders, `linux`, `windows` and `mac`.
 
 - Pick an icon from this collection located in windows folder
 
+![how-to-change-icon-on-windows](https://user-images.githubusercontent.com/19328465/33271833-9a32a2ae-d39d-11e7-9318-56ec1e054ef8.gif)
+
 ### How to change folder icon on Mac
 
 - Right-click on a folder and select "Get Info"
