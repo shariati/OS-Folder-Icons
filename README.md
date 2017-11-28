@@ -69,6 +69,7 @@ The collections are sorted Alphabatically 🔤.
 ![Trello](./icons/Trello/linux/Trello_Solid%20(PNG)/128x128.png)
 ![Tripadvisor](./icons/Tripadvisor/linux/Tripadvisor_Solid%20(PNG)/128x128.png)
 ![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
+![Vine](./icons/Vine/linux/Vine_Solid%20(PNG)/128x128.png)
 ![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_1%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_2%20(PNG)/128x128.png)
@@ -131,7 +132,6 @@ The collections are sorted Alphabatically 🔤.
 ![Reports](./icons/Reports/linux/Reports_Solid_1%20(PNG)/128x128.png)
 ![Reports](./icons/Reports/linux/Reports_Solid_2%20(PNG)/128x128.png)
 ![Reports](./icons/Reports/linux/Reports_Solid_3%20(PNG)/128x128.png)
-
 
 ## Collaborators
 
