@@ -86,7 +86,12 @@ The collections are sorted Alphabatically 🔤.
 ![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
 ![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
 ![Jenkins](./icons/Jenkins/linux/Jenkins_Solid%20(PNG)/128x128.png)
+![Laravel](./icons/Laravel/linux/Laravel_Solid%20(PNG)/128x128.png)
+![Less](./icons/Less/linux/Less_Solid%20(PNG)/128x128.png)
+![Npm](./icons/Npm/linux/Npm_Solid%20(PNG)/128x128.png)
+![Python](./icons/Python/linux/Python_Solid%20(PNG)/128x128.png)
 ![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
+![Sass](./icons/Sass/linux/Sass_Solid%20(PNG)/128x128.png)
 ![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
 
 ### Finance
