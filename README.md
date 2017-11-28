@@ -91,6 +91,11 @@ The collections are sorted Alphabatically 🔤.
 
 ![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
 
+### Games
+
+![Playstation](./icons/Playstation/linux/Playstation_Solid%20(PNG)/128x128.png)
+![Xbox](./icons/Xbox/linux/Xbox_Solid%20(PNG)/128x128.png)
+
 ### Operating System
 
 ![Android](./icons/Android/linux/Android_Solid%20(PNG)/128x128.png)
