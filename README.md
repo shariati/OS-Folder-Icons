@@ -102,7 +102,7 @@ The collections are sorted Alphabatically 🔤.
 
 ### Games
 
-![Playstation](./icons/Playstation/linux/Playstation_Solid%20(PNG)/128x128.png)
+![Playstation](./icons/Playstation/linux/PlayStation_Solid%(PNG)/128x128.png)
 ![Xbox](./icons/Xbox/linux/Xbox_Solid%20(PNG)/128x128.png)
 
 ### Operating System
