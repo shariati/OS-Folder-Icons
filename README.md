@@ -89,6 +89,8 @@ The collections are sorted Alphabatically 🔤.
 
 ### Finance
 
+![Amex](./icons/Amex/linux/Amex_Solid%20(PNG)/128x128.png)
+![ApplePay](./icons/ApplePay/linux/ApplePay_Solid%20(PNG)/128x128.png)
 ![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
 
 ### Games
