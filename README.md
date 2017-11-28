@@ -71,6 +71,7 @@ The collections are sorted Alphabatically 🔤.
 ![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
 ![Vine](./icons/Vine/linux/Vine_Solid%20(PNG)/128x128.png)
 ![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
+![Wordpress](./icons/Wordpress/linux/Wordpress_Solid%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_1%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_2%20(PNG)/128x128.png)
 ![Youtube](./icons/Youtube/linux/Youtube_Solid_3%20(PNG)/128x128.png)
@@ -103,7 +104,7 @@ The collections are sorted Alphabatically 🔤.
 
 ### Games
 
-![Playstation](./icons/Playstation/linux/PlayStation_Solid%(PNG)/128x128.png)
+![Playstation](./icons/Playstation/linux/PlayStation_Solid%20(PNG)/128x128.png)
 ![Xbox](./icons/Xbox/linux/Xbox_Solid%20(PNG)/128x128.png)
 
 ### Operating System
