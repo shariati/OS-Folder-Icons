@@ -61,6 +61,7 @@ The collections are sorted Alphabatically 🔤.
 ![Behance](./icons/Behance/linux/Behance_Solid%20(PNG)/128x128.png)
 ![Dropbox](./icons/Dropbox/linux/Dropbox_Solid%20(PNG)/128x128.png)
 ![Facebook](./icons/Facebook/linux/Facebook_Solid%20(PNG)/128x128.png)
+![Flinto](./icons/Flinto/linux/Flinto_Solid%20(PNG)/128x128.png)
 ![Fontawesome](./icons/Fontawesome/linux/Fontawesome_Solid%20(PNG)/128x128.png)
 ![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
 ![Googledrive](./icons/Googledrive/linux/Googledrive_Solid%20(PNG)/128x128.png)
