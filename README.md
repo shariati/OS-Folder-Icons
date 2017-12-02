@@ -88,6 +88,7 @@ The collections are sorted Alphabatically 🔤.
 ![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
 ![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
 ![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
+![Java](./icons/Java/linux/Java_Solid%20(PNG)/128x128.png)
 ![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
 ![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
 ![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
