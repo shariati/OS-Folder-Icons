@@ -86,19 +86,21 @@ The collections are sorted Alphabatically 🔤.
 ![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
 ![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
 ![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
+![CSharp](./icons/CSharp/linux/CSharp_Solid_2%20(PNG)/128x128.png)
 ![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
 ![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
 ![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
-![Java](./icons/Java/linux/Java_Solid%20(PNG)/128x128.png)
 ![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
 ![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
 ![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
+![Java](./icons/Java/linux/Java_Solid%20(PNG)/128x128.png)
 ![Jenkins](./icons/Jenkins/linux/Jenkins_Solid%20(PNG)/128x128.png)
 ![Laravel](./icons/Laravel/linux/Laravel_Solid%20(PNG)/128x128.png)
 ![Less](./icons/Less/linux/Less_Solid%20(PNG)/128x128.png)
 ![Npm](./icons/Npm/linux/Npm_Solid%20(PNG)/128x128.png)
 ![Python](./icons/Python/linux/Python_Solid%20(PNG)/128x128.png)
 ![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
+![Ruby](./icons/Ruby/linux/Ruby_Solid_2%20(PNG)/128x128.png)
 ![Sass](./icons/Sass/linux/Sass_Solid%20(PNG)/128x128.png)
 ![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
 
@@ -107,6 +109,8 @@ The collections are sorted Alphabatically 🔤.
 ![Amex](./icons/Amex/linux/Amex_Solid%20(PNG)/128x128.png)
 ![ApplePay](./icons/ApplePay/linux/ApplePay_Solid%20(PNG)/128x128.png)
 ![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
+![Etherium](./icons/Etherium/linux/Etherium_Solid%20(PNG)/128x128.png)
+![Litecoin](./icons/Litecoin/linux/Litecoin_Solid%20(PNG)/128x128.png)
 
 ### Games
 
