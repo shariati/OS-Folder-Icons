@@ -83,6 +83,8 @@ The collections are sorted Alphabatically 🔤.
 ![Steam](./icons/Steam/linux/Steam_Solid_2%20(PNG)/128x128.png)
 ![Trello](./icons/Trello/linux/Trello_Solid%20(PNG)/128x128.png)
 ![Tripadvisor](./icons/Tripadvisor/linux/Tripadvisor_Solid%20(PNG)/128x128.png)
+![Uxpin](./icons/Uxpin/linux/Uxpin_Solid_1%20(PNG)/128x128.png)
+![Uxpin](./icons/Uxpin/linux/Uxpin_Solid_2%20(PNG)/128x128.png)
 ![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
 ![Vine](./icons/Vine/linux/Vine_Solid%20(PNG)/128x128.png)
 ![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
@@ -94,6 +96,7 @@ The collections are sorted Alphabatically 🔤.
 ### Development
 
 ![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
+![Brew](./icons/Brew/linux/Brew_Solid%20(PNG)/128x128.png)
 ![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
 ![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
 ![CSharp](./icons/CSharp/linux/CSharp_Solid%20(PNG)/128x128.png)
@@ -120,6 +123,7 @@ The collections are sorted Alphabatically 🔤.
 
 ![Amex](./icons/Amex/linux/Amex_Solid%20(PNG)/128x128.png)
 ![ApplePay](./icons/ApplePay/linux/ApplePay_Solid%20(PNG)/128x128.png)
+![Bills](./icons/Bills/linux/Bills_Solid%20(PNG)/128x128.png)
 ![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
 ![Etherium](./icons/Etherium/linux/Etherium_Solid%20(PNG)/128x128.png)
 ![Litecoin](./icons/Litecoin/linux/Litecoin_Solid%20(PNG)/128x128.png)
@@ -155,6 +159,13 @@ The collections are sorted Alphabatically 🔤.
 ![Reports](./icons/Reports/linux/Reports_Solid_1%20(PNG)/128x128.png)
 ![Reports](./icons/Reports/linux/Reports_Solid_2%20(PNG)/128x128.png)
 ![Reports](./icons/Reports/linux/Reports_Solid_3%20(PNG)/128x128.png)
+
+### Others
+
+![Recipes](./icons/Recipes/linux/Recipes_Solid%20(PNG)/128x128.png)
+![Screenshots](./icons/Screenshots/linux/Screenshots_Solid%20(PNG)/128x128.png)
+![Travel](./icons/Travel/linux/Travel_Solid%20(PNG)/128x128.png)
+
 
 ## Collaborators
 
