@@ -1,8 +1,6 @@
 # OS Folder Icons 📂
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
-[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Get%20free%20Collection%20of%20custom%20folder%20icons&url=https://github.com/shariati/OS-Folder-Icons&via=ShariatiAmin&hashtags=icons,mac,windows,linux,slashui)
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/shariati/OS-Folder-Icons.svg?columns=all)](https://waffle.io/shariati/OS-Folder-Icons)
 
 Collection of custom folder 📂 icons for MacOS, Linux, and Windows.
 
@@ -15,7 +13,6 @@ Hey, guess what? I am open to suggestions 😉 so you can just let me know what 
 Simple😎
 
 - Drop us a message 💬 [here](https://github.com/shariati/OS-Folder-Icons/issues/new).
-- Follow us on Instagram [SlashUi](https://www.instagram.com/slashui/) or Twitter [@ShariatiAmin](https://twitter.com/ShariatiAmin), [@sarahghzh](https://twitter.com/sarahghzh)
 
 ## How to use
 
