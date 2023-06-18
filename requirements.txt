@@ -165,7 +165,7 @@ tomli==2.0.1
 torch==2.0.0
 torchvision==0.15.1
 tqdm==4.65.0
-transformers==4.28.1
+transformers==4.30.0
 trio==0.22.0
 trio-websocket==0.10.2
 tweepy==4.13.0
