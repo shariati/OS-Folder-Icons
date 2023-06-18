@@ -16,42 +16,45 @@ image_file_extension = os.getenv('IMAGE_FILE_EXTENSION', '.png')
 
 def get_category_names(base_folder_path=mask_folder_path):
     """
-    Get the names of all operating systems (first-level directories) in the base folder.
+    Returns a list of names of all first-level directories in the base folder.
+    These directory names are treated as category names.
     """
     return [name for name in os.listdir(base_folder_path) if os.path.isdir(os.path.join(base_folder_path, name))]
 
 
 def get_os_names(base_folder_path=base_folder_path):
     """
-    Get the names of all operating systems (first-level directories) in the base folder.
+    Returns a list of names of all first-level directories in the base folder.
+    These directory names are treated as operating system names.
     """
     return [name for name in os.listdir(base_folder_path) if os.path.isdir(os.path.join(base_folder_path, name))]
 
 
 def get_mask_name(mask_folder_path=mask_folder_path):
     """
-    Get the names of all mask files in the mask folder.
+    Returns a list of filenames of all files in the mask folder.
     """
     return get_file_names(mask_folder_path)
 
 
 def load_os_images(base_folder_path=base_folder_path):
     """
-    Load all available images for each operating system.
+    Loads all available images for each operating system, returns them in a list.
     """
     return load_image_files(base_folder_path, image_file_extension)
 
 
 def load_mask_images(mask_folder_path=mask_folder_path):
     """
-    Load all available mask images.
+    Loads all available mask images, returns them in a list.
     """
     return load_image_files(mask_folder_path, image_file_extension)
 
 
 def get_center_coordinate(image, top_padding_percent=0):
     """
-    Calculate and return the center coordinates of an image, adjusted for optional top padding.
+    Calculates and returns the center coordinates (x, y) of an image.
+    The y-coordinate is adjusted for optional top padding.
     """
     width, height = image.size
     center_y = height // 2
@@ -62,8 +65,11 @@ def get_center_coordinate(image, top_padding_percent=0):
 
 def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, alpha=0.9):
     """
-    Apply the mask image at the center of the base image.
-    Resize the mask if it's larger than 'proportion' of the base image size.
+    Applies a mask image to the center of a base image. 
+    If the mask is larger than a certain proportion of the base image size, it is resized.
+    The opacity of the mask can be adjusted using the 'alpha' parameter.
+    If the mask requires calibration (e.g. to adjust the top padding), a config file can be passed.
+    Returns the image with the mask applied.
     """
     base_image = Image.open(base_image_path).convert("RGBA")
     mask_image = Image.open(mask_image_path).convert("RGBA")
@@ -108,7 +114,9 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
 
 def save_image_variants(image, output_folder_path, category, filename, maskfilename, sizes):
     """
-    Save the image in different sizes as specified by the sizes list.
+    Saves the image in different sizes as specified by the sizes list. 
+    The filenames of the resized images include the original filename and the mask filename.
+    The images are saved in the output folder, inside subfolders named after their sizes.
     """
     mask_names = get_file_names(
         f"{mask_folder_path}/{category}", image_file_extension)
