@@ -1,8 +1,36 @@
+import configparser
 import os
 import shutil
 from pathlib import Path
 
 from PIL import Image
+
+
+def get_inf_file_path(png_file_path: str) -> str:
+    """
+    Get the path of the 'base_info.inf' file from a given .png file path.
+    """
+    # Create a Path object from the .png file path
+    png_path = Path(png_file_path)
+    # Replace the filename with 'base_info.inf'
+    base_info_path = png_path.parent / 'base_info.inf'
+    # Check if the 'base_info.inf' file exists
+    if not base_info_path.exists():
+        return None
+
+    return str(base_info_path)
+
+def read_padding_info(file_path):
+    """
+    Read the padding information from a .inf file.
+    """
+    filename, extension = get_file_info(file_path)
+    if extension != '.inf':
+        return None
+    config = configparser.ConfigParser()
+    config.read(file_path)
+
+    return int(config.get('image_calibration', 'padding_top', fallback=0))
 
 
 def get_subfolder(file_path: str, search_term: str, folder_depth: int) -> str:
@@ -36,6 +64,7 @@ def get_filename(file_path: str) -> str:
     file_name_without_extension = os.path.splitext(base_name)[0]
     return file_name_without_extension
 
+
 def ensure_folder_exists(folder_path: str):
     """
     Ensure a directory exists. If not, it creates it.
@@ -53,7 +82,8 @@ def reset_folder(folder_path: str):
         shutil.rmtree(folder_path)
     os.makedirs(folder_path)
 
-def get_file_names(folder_path:str, file_extension:str):
+
+def get_file_names(folder_path: str, file_extension: str):
     """
     Get the names of all files with the specified extension in a given folder.
     """

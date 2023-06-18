@@ -3,9 +3,9 @@ import os
 from dotenv import load_dotenv
 from PIL import Image
 
-from icon_generator.utils import (get_file_info, get_file_names,
+from icon_generator.utils import (get_file_names,
                                   load_image_files,
-                                  save_image)
+                                  save_image, read_padding_info)
 
 load_dotenv()
 
@@ -28,11 +28,13 @@ def get_os_names(base_folder_path=base_folder_path):
     """
     return [name for name in os.listdir(base_folder_path) if os.path.isdir(os.path.join(base_folder_path, name))]
 
+
 def get_mask_name(mask_folder_path=mask_folder_path):
     """
     Get the names of all mask files in the mask folder.
     """
     return get_file_names(mask_folder_path)
+
 
 def load_os_images(base_folder_path=base_folder_path):
     """
@@ -48,15 +50,18 @@ def load_mask_images(mask_folder_path=mask_folder_path):
     return load_image_files(mask_folder_path, image_file_extension)
 
 
-def get_center_coordinate(image):
+def get_center_coordinate(image, top_padding_percent=0):
     """
-    Calculate and return the center coordinates of an image.
+    Calculate and return the center coordinates of an image, adjusted for optional top padding.
     """
     width, height = image.size
-    return width // 2, height // 2
+    center_y = height // 2
+    center_y -= int(center_y * top_padding_percent / 100)
+
+    return width // 2, center_y
 
 
-def apply_mask(base_image_path, mask_image_path, proportion=0.6):
+def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6):
     """
     Apply the mask image at the center of the base image.
     Resize the mask if it's larger than 'proportion' of the base image size.
@@ -74,7 +79,12 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
         mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
 
     # Calculate the position to center the mask
-    center_x, center_y = get_center_coordinate(base_image)
+    if config is not None:
+        top_padding = read_padding_info(config)
+        center_x, center_y = get_center_coordinate(base_image, top_padding)
+    else:
+        center_x, center_y = get_center_coordinate(base_image)
+    
     mask_x, mask_y = get_center_coordinate(mask_image)
 
     top_left_x = center_x - mask_x
@@ -91,14 +101,15 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
     return combined
 
 
-def save_image_variants(image, output_folder_path, category,filename, sizes):
+def save_image_variants(image, output_folder_path, category, filename, maskfilename, sizes):
     """
     Save the image in different sizes as specified by the sizes list.
     """
-    mask_names = get_file_names(f"{mask_folder_path}/{category}", image_file_extension)
+    mask_names = get_file_names(
+        f"{mask_folder_path}/{category}", image_file_extension)
 
     for size in sizes:
-        for mask_name in mask_names:
-            resized_image = image.resize(size, Image.ANTIALIAS)
-            new_filename = f"{filename}-{mask_name}"
-            save_image(resized_image, f"{output_folder_path}/{size[0]}x{size[1]}", new_filename)
+        resized_image = image.resize(size, Image.ANTIALIAS)
+        new_filename = f"{filename}-{maskfilename}.{image_file_extension}"
+        save_image(resized_image,
+                   f"{output_folder_path}/{size[0]}x{size[1]}", new_filename)
