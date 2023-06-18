@@ -5,6 +5,37 @@ from pathlib import Path
 from PIL import Image
 
 
+def get_subfolder(file_path: str, search_term: str, folder_depth: int) -> str:
+    """
+    Return the subfolder names at a specified depth if the path contains the search term.
+    """
+
+    # Split the path into a list of folders
+    folders = os.path.normpath(file_path).split(os.path.sep)
+
+    # Check if the search term exists in the path
+    if search_term not in folders:
+        return None
+
+    # Find the position of the search term
+    search_term_position = folders.index(search_term)
+
+    # Check if the desired depth is available
+    if search_term_position + folder_depth >= len(folders):
+        return None
+
+    # Return the combined name of the subfolders at the desired depth
+    return os.path.sep.join(folders[search_term_position + 1:search_term_position + folder_depth + 1])
+
+
+def get_filename(file_path: str) -> str:
+    """
+    Return the base name of a file without its extension.
+    """
+    base_name = os.path.basename(file_path)
+    file_name_without_extension = os.path.splitext(base_name)[0]
+    return file_name_without_extension
+
 def ensure_folder_exists(folder_path: str):
     """
     Ensure a directory exists. If not, it creates it.
@@ -22,12 +53,17 @@ def reset_folder(folder_path: str):
         shutil.rmtree(folder_path)
     os.makedirs(folder_path)
 
+def get_file_names(folder_path:str, file_extension:str):
+    """
+    Get the names of all files with the specified extension in a given folder.
+    """
+    return [file for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith(file_extension)]
+
 
 def get_file_info(file_path: str) -> tuple:
     """
     Get the filename and extension of a file from its path.
     """
-    print(file_path)
     file_path = Path(file_path)
     return file_path.stem, file_path.suffix
 

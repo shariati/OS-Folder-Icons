@@ -2,7 +2,10 @@ import os
 
 from dotenv import load_dotenv
 from PIL import Image
-from icon_generator.utils import ensure_folder_exists, load_image_files, save_image, get_file_info
+
+from icon_generator.utils import (get_file_info, get_file_names,
+                                  load_image_files,
+                                  save_image)
 
 load_dotenv()
 
@@ -12,7 +15,24 @@ base_folder_path = os.getenv('BASE_FOLDER_PATH')
 image_file_extension = os.getenv('IMAGE_FILE_EXTENSION', '.png')
 
 
+def get_category_names(base_folder_path=mask_folder_path):
+    """
+    Get the names of all operating systems (first-level directories) in the base folder.
+    """
+    return [name for name in os.listdir(base_folder_path) if os.path.isdir(os.path.join(base_folder_path, name))]
 
+
+def get_os_names(base_folder_path=base_folder_path):
+    """
+    Get the names of all operating systems (first-level directories) in the base folder.
+    """
+    return [name for name in os.listdir(base_folder_path) if os.path.isdir(os.path.join(base_folder_path, name))]
+
+def get_mask_name(mask_folder_path=mask_folder_path):
+    """
+    Get the names of all mask files in the mask folder.
+    """
+    return get_file_names(mask_folder_path)
 
 def load_os_images(base_folder_path=base_folder_path):
     """
@@ -49,7 +69,8 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
 
     # Resize mask image if it is larger than 'proportion' of the base image size
     if mask_width > base_width * proportion or mask_height > base_height * proportion:
-        new_size = (int(base_width * proportion), int(base_height * proportion))
+        new_size = (int(base_width * proportion),
+                    int(base_height * proportion))
         mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
 
     # Calculate the position to center the mask
@@ -67,20 +88,17 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
 
     # Composite the images
     combined = Image.alpha_composite(base_image, temp_img)
-    print(f"Combined image size: {combined}")
     return combined
 
 
-
-def save_image_variants(image, output_folder_path, base_image_path, sizes):
+def save_image_variants(image, output_folder_path, category,filename, sizes):
     """
     Save the image in different sizes as specified by the sizes list.
     """
-    base, extension = get_file_info(base_image_path)
+    mask_names = get_file_names(f"{mask_folder_path}/{category}", image_file_extension)
+
     for size in sizes:
-        resized_image = image.resize(size, Image.ANTIALIAS)
-        new_filename = f"{base}_{size[0]}x{size[1]}{extension}"
-        save_image(resized_image, output_folder_path, new_filename)
-
-
-
+        for mask_name in mask_names:
+            resized_image = image.resize(size, Image.ANTIALIAS)
+            new_filename = f"{filename}-{mask_name}"
+            save_image(resized_image, f"{output_folder_path}/{size[0]}x{size[1]}", new_filename)
