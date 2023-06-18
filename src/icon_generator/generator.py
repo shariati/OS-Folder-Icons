@@ -56,7 +56,7 @@ def get_center_coordinate(image, top_padding_percent=0):
     """
     width, height = image.size
     center_y = height // 2
-    center_y -= int(center_y * top_padding_percent / 100)
+    center_y += int(center_y * top_padding_percent / 100)
 
     return width // 2, center_y
 
@@ -81,6 +81,7 @@ def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6):
     # Calculate the position to center the mask
     if config is not None:
         top_padding = read_padding_info(config)
+        print(f"top_padding: {top_padding}")
         center_x, center_y = get_center_coordinate(base_image, top_padding)
     else:
         center_x, center_y = get_center_coordinate(base_image)
@@ -110,6 +111,6 @@ def save_image_variants(image, output_folder_path, category, filename, maskfilen
 
     for size in sizes:
         resized_image = image.resize(size, Image.ANTIALIAS)
-        new_filename = f"{filename}-{maskfilename}.{image_file_extension}"
+        new_filename = f"{filename}-{maskfilename}{image_file_extension}"
         save_image(resized_image,
                    f"{output_folder_path}/{size[0]}x{size[1]}", new_filename)
