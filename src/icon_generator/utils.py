@@ -20,6 +20,7 @@ def get_inf_file_path(png_file_path: str) -> str:
 
     return str(base_info_path)
 
+
 def read_padding_info(file_path):
     """
     Read the padding information from a .inf file.

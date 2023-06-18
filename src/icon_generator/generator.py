@@ -3,9 +3,8 @@ import os
 from dotenv import load_dotenv
 from PIL import Image, ImageFilter
 
-from icon_generator.utils import (get_file_names,
-                                  load_image_files,
-                                  save_image, read_padding_info)
+from icon_generator.utils import (get_file_names, load_image_files,
+                                  read_padding_info, save_image)
 
 load_dotenv()
 
@@ -13,6 +12,7 @@ load_dotenv()
 mask_folder_path = os.getenv('MASK_FOLDER_PATH')
 base_folder_path = os.getenv('BASE_FOLDER_PATH')
 image_file_extension = os.getenv('IMAGE_FILE_EXTENSION', '.png')
+
 
 def get_category_names(base_folder_path=mask_folder_path):
     """
@@ -59,7 +59,8 @@ def get_center_coordinate(image, top_padding_percent=0):
 
     return width // 2, center_y
 
-def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6, alpha=0.9):
+
+def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, alpha=0.9):
     """
     Apply the mask image at the center of the base image.
     Resize the mask if it's larger than 'proportion' of the base image size.
@@ -127,7 +128,7 @@ def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6, a
 #         center_x, center_y = get_center_coordinate(base_image, top_padding)
 #     else:
 #         center_x, center_y = get_center_coordinate(base_image)
-    
+
 #     mask_x, mask_y = get_center_coordinate(mask_image)
 
 #     top_left_x = center_x - mask_x

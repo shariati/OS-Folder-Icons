@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 from icon_generator.generator import (apply_mask, get_category_names,
                                       get_os_names, load_mask_images,
                                       load_os_images, save_image_variants)
-from icon_generator.utils import (get_subfolder, get_filename, reset_folder,get_inf_file_path)
+from icon_generator.utils import (get_filename, get_inf_file_path,
+                                  get_subfolder, reset_folder)
+
 load_dotenv()
 
 output_folder_path = os.getenv('OUTPUT_FOLDER', './output')
@@ -32,7 +34,7 @@ for base_image_path in base_images:
     for mask_image_path in mask_images:
         maskfilename = get_filename(mask_image_path)
         category_name = get_subfolder(mask_image_path, "masks", 1)
-        combined_image = apply_mask(base_image_path, mask_image_path, os_folder_config, proportion=0.4, alpha=0.25)
+        combined_image = apply_mask(
+            base_image_path, mask_image_path, os_folder_config, proportion=0.4, alpha=0.25)
         save_image_variants(
-                     combined_image, f"{output_folder_path}/{os_folder}/",category_name, filename, maskfilename, sizes)
-   
+            combined_image, f"{output_folder_path}/{os_folder}/", category_name, filename, maskfilename, sizes)
