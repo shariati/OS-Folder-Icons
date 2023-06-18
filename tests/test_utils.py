@@ -3,7 +3,7 @@ import os
 import configparser
 from pathlib import Path
 from icon_generator.utils import (get_inf_file_path,
-                                  read_padding_info, get_subfolder, get_filename, ensure_folder_exists, save_image, reset_folder, get_file_names, get_file_info, load_image_files)
+                                  read_padding_info, get_subfolder, get_filename, ensure_folder_exists, reset_folder, get_file_names, get_file_info, load_image_files)
 
 
 def test_get_inf_file_path(tmp_path: Path):
@@ -31,7 +31,7 @@ def test_read_padding_info(tmp_path: Path):
 
     # Remove the .inf file
     os.remove(inf_file)
-    assert read_padding_info(str(inf_file)) is 0
+    assert read_padding_info(str(inf_file)) == 0
 
     # Check with a non .inf file
     non_inf_file = tmp_path / 'test.txt'
@@ -97,4 +97,3 @@ def test_load_image_files(tmp_path: Path):
         [str(tmp_path / 'test1.png'), str(tmp_path / 'test2.png')])
     assert load_image_files(str(tmp_path), '.txt') == [
         str(tmp_path / 'test3.txt')]
-
