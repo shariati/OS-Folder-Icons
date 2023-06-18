@@ -90,14 +90,12 @@ oauthlib==3.2.2
 openai==0.27.2
 openapi-python-client==0.13.4
 orjson==3.8.10
--e git+https://github.com/shariati/OS-Folder-Icons.git@c8d741f36dc822195a263b1f22097458aac05b3e#egg=OS_Folder_Icon_Generator
 outcome==1.2.0
 packaging==23.1
 pandas==2.0.0
 pathspec==0.11.1
 pathy==0.10.1
 Pillow==9.5.0
-pillow-svg==0.1.0
 pinecone-client==2.2.1
 platformdirs==3.2.0
 playsound==1.2.2
@@ -156,8 +154,6 @@ spacy-legacy==3.0.12
 spacy-loggers==1.0.4
 srsly==2.4.6
 starlette==0.26.1
-svglib==1.5.1
-svgutils==0.3.4
 sympy==1.11.1
 thinc==8.1.9
 threadpoolctl==3.1.0
