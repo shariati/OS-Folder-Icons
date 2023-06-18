@@ -15,5 +15,6 @@ mask_images = load_mask_images()
 
 for base_image_path in base_images:
     for mask_image_path in mask_images:
-        combined_image = apply_mask(base_image_path, mask_image_path, proportion=0.6)
-        save_image_variants(combined_image, output_folder_path, sizes)
+        combined_image = apply_mask(base_image_path, mask_image_path, proportion=0.4)
+        save_image_variants(combined_image, output_folder_path, base_image_path, sizes)
+

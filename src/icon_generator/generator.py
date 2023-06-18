@@ -49,8 +49,7 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
 
     # Resize mask image if it is larger than 'proportion' of the base image size
     if mask_width > base_width * proportion or mask_height > base_height * proportion:
-        new_size = (int(base_width * proportion),
-                    int(base_height * proportion))
+        new_size = (int(base_width * proportion), int(base_height * proportion))
         mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
 
     # Calculate the position to center the mask
@@ -60,19 +59,24 @@ def apply_mask(base_image_path, mask_image_path, proportion=0.6):
     top_left_x = center_x - mask_x
     top_left_y = center_y - mask_y
 
-    # Composite the images
-    combined = Image.alpha_composite(base_image, mask_image)
+    # Create a new blank (transparent) image with the same size as the base image
+    temp_img = Image.new('RGBA', base_image.size)
 
+    # Paste the mask image into the center of the new image
+    temp_img.paste(mask_image, (top_left_x, top_left_y))
+
+    # Composite the images
+    combined = Image.alpha_composite(base_image, temp_img)
+    print(f"Combined image size: {combined}")
     return combined
 
 
-def save_image_variants(image, output_folder_path, sizes):
+
+def save_image_variants(image, output_folder_path, base_image_path, sizes):
     """
     Save the image in different sizes as specified by the sizes list.
     """
-    # Make sure output folder exists
-    ensure_folder_exists(output_folder_path)
-    base, extension = get_file_info(image.filename)
+    base, extension = get_file_info(base_image_path)
     for size in sizes:
         resized_image = image.resize(size, Image.ANTIALIAS)
         new_filename = f"{base}_{size[0]}x{size[1]}{extension}"

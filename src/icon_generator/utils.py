@@ -27,6 +27,7 @@ def get_file_info(file_path: str) -> tuple:
     """
     Get the filename and extension of a file from its path.
     """
+    print(file_path)
     file_path = Path(file_path)
     return file_path.stem, file_path.suffix
 
