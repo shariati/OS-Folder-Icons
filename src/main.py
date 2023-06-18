@@ -9,7 +9,6 @@ from icon_generator.utils import (get_subfolder, get_filename, reset_folder,get_
 load_dotenv()
 
 output_folder_path = os.getenv('OUTPUT_FOLDER', './output')
-base_folder_path = os.getenv('BASE_FOLDER_PATH')
 
 # Define the sizes
 sizes = [(16, 16), (32, 32), (48, 48), (64, 64),
