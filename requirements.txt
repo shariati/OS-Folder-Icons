@@ -89,6 +89,7 @@ oauthlib==3.2.2
 openai==0.27.2
 openapi-python-client==0.13.4
 orjson==3.8.10
+-e git+https://github.com/shariati/OS-Folder-Icons.git@c8d741f36dc822195a263b1f22097458aac05b3e#egg=OS_Folder_Icon_Generator
 outcome==1.2.0
 packaging==23.1
 pandas==2.0.0
