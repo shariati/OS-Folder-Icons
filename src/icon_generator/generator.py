@@ -112,15 +112,14 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
     return combined
 
 
-def save_image_variants(image, output_folder_path, category, filename, maskfilename, sizes):
+def save_image_variants(image, output_folder_path, os_names, filename, maskfilename, sizes):
     """
     Saves the image in different sizes as specified by the sizes list. 
     The filenames of the resized images include the original filename and the mask filename.
     The images are saved in the output folder, inside subfolders named after their sizes.
     """
-    mask_names = get_file_names(
-        f"{mask_folder_path}/{category}", image_file_extension)
 
+    os_names = get_file_names(f"{base_folder_path}/{os_names}",image_file_extension)
     for size in sizes:
         resized_image = image.resize(size, Image.ANTIALIAS)
         new_filename = f"{filename}-{maskfilename}{image_file_extension}"
