@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from PIL import Image, ImageFilter
+from PIL import Image
 
 from icon_generator.utils import (get_file_names, load_image_files,
                                   read_padding_info, save_image)
@@ -65,7 +65,7 @@ def get_center_coordinate(image, top_padding_percent=0):
 
 def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, alpha=0.9):
     """
-    Applies a mask image to the center of a base image. 
+    Applies a mask image to the center of a base image.
     If the mask is larger than a certain proportion of the base image size, it is resized.
     The opacity of the mask can be adjusted using the 'alpha' parameter.
     If the mask requires calibration (e.g. to adjust the top padding), a config file can be passed.
@@ -82,7 +82,6 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
         new_size = (int(base_width * proportion),
                     int(base_height * proportion))
         mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
-        edges = mask_image.filter(ImageFilter.FIND_EDGES)
 
     # Adjust alpha (opacity) of the mask image
     r, g, b, a = mask_image.split()
@@ -114,12 +113,12 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
 
 def save_image_variants(image, output_folder_path, os_names, filename, maskfilename, sizes):
     """
-    Saves the image in different sizes as specified by the sizes list. 
+    Saves the image in different sizes as specified by the sizes list.
     The filenames of the resized images include the original filename and the mask filename.
     The images are saved in the output folder, inside subfolders named after their sizes.
     """
-    
-    os_names = get_file_names(f"{base_folder_path}/{os_names}",image_file_extension)
+
+    os_names = get_file_names(f"{base_folder_path}/{os_names}", image_file_extension)
     for size in sizes:
         resized_image = image.resize(size, Image.ANTIALIAS)
         new_filename = f"{filename}-{maskfilename}{image_file_extension}"
