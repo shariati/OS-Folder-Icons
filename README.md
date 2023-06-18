@@ -4,205 +4,188 @@
 
 Collection of custom folder 📂 icons for MacOS, Linux, and Windows.
 
-## What folder icons would you want
+## Overview
 
-Hey, guess what? I am open to suggestions 😉 so you can just let me know what icons you would like?
+This repository contains a collection of custom folder icons for different operating systems. You can choose from a variety of icons to customize your folder appearance on MacOS, Linux, and Windows.
 
-### How to ask for a Folder Icon
+## Requesting Folder Icons
 
-Simple😎
+We welcome suggestions for new folder icons! If you have specific icons you'd like to see added to the collection, please drop us a message by [creating a new issue](https://github.com/shariati/OS-Folder-Icons/issues/new).
 
-- Drop us a message 💬 [here](https://github.com/shariati/OS-Folder-Icons/issues/new).
+## Usage
 
-## How to use
+To use the folder icons, simply download the repository. Inside the `icons` folder, you will find the icons categorized into different folders based on their respective brands, development languages, finance, games, operating systems, social media, virtualization, project management, and others.
 
-Just download the repository, and you can find all the images in `icons` folder.
+### Changing Folder Icon on Linux
 
-Inside each category you will find three folders, `linux`, `windows` and `mac`.
+1. Right-click on a folder and select "Properties."
+2. In the properties window, click on the framed icon located at the top left corner.
+3. Choose a new image by browsing through the icons available in the respective Linux folder.
 
-### How to change folder icon on Linux
+### Changing Folder Icon on Windows
 
-- Right-click on a folder and select "properties".
+1. Right-click on a folder and select "Properties."
+2. Go to the "Customize" tab and click on "Change Icon" in the "Folder icons" section.
+3. Choose a new image by browsing through the icons available in the respective Windows folder.
 
-- On properties window click on the framed icon located on the top left, Now you should see the dialog to choose a new image.
+![How to Change Folder Icon on Windows](https://user-images.githubusercontent.com/19328465/33271833-9a32a2ae-d39d-11e7-9318-56ec1e054ef8.gif)
 
-- Pick an icon from this collection located under linux folder
+### Changing Folder Icon on Mac
 
-### How to change folder icon on Windows
+1. Right-click on a folder and select "Get Info."
+2. Drag and drop an icon from the `.icns` files available in the respective Mac folder onto the icon preview located at the top left corner of the Get Info dialogue.
 
-- Right-click on a folder and select "properties."
+![How to Use on Mac](https://user-images.githubusercontent.com/2625497/33240487-738316b8-d2f1-11e7-8c65-6d9c2de56c39.gif)
 
-- Choose the "Customize" tab, on the "Folder icons" section click on "Change Icon".
+## Folder Icon Collection
 
-- Pick an icon from this collection located in windows folder
+The icons are organized into the following folders:
 
-![how-to-change-icon-on-windows](https://user-images.githubusercontent.com/19328465/33271833-9a32a2ae-d39d-11e7-9318-56ec1e054ef8.gif)
+- Brands
+- Development
+- Finance
+- Games
+- Operating Systems
+- Social Media
+- Virtualization
+- Project Management
+- Others
 
-### How to change folder icon on Mac
+You can find the respective icons for each category in their corresponding folders.
 
-- Right-click on a folder and select "Get Info"
+## Repository Folder Structure
 
-- Drag and drop an icon from the mac folder (.icns) on the icon preview located on Top left of the Get info dialogue.
-
-![how-to-use-on-mac](https://user-images.githubusercontent.com/2625497/33240487-738316b8-d2f1-11e7-8c65-6d9c2de56c39.gif)
-
-## Collection
-
-The collections are sorted Alphabatically 🔤.
-
-### Brands
-
-![Amazon](./icons/Amazon/linux/Amazon_Solid%20(PNG)/128x128.png)
-![Apple](./icons/Apple/linux/Apple_Solid%20(PNG)/128x128.png)
-![Audible](./icons/Audible/linux/Audible_Solid%20(PNG)/128x128.png)
-![Autocad](./icons/Autocad/linux/Autocad_Solid_1%20(PNG)/128x128.png)
-![Autocad](./icons/Autocad/linux/Autocad_Solid_2%20(PNG)/128x128.png)
-![Behance](./icons/Behance/linux/Behance_Solid%20(PNG)/128x128.png)
-![Deezer](./icons/Deezer/linux/Deezer_Solid%20(PNG)/128x128.png)
-![Dropbox](./icons/Dropbox/linux/Dropbox_Solid%20(PNG)/128x128.png)
-![Facebook](./icons/Facebook/linux/Facebook_Solid%20(PNG)/128x128.png)
-![Flinto](./icons/Flinto/linux/Flinto_Solid%20(PNG)/128x128.png)
-![Fontawesome](./icons/Fontawesome/linux/Fontawesome_Solid%20(PNG)/128x128.png)
-![Github](./icons/Github/linux/Github_Solid%20(PNG)/128x128.png)
-![Googledrive](./icons/Googledrive/linux/Googledrive_Solid%20(PNG)/128x128.png)
-![Illustrator](./icons/Illustrator/linux/Illustrator_Solid%20(PNG)/128x128.png)
-![Invision](./icons/Invision/linux/Invision_Solid%20(PNG)/128x128.png)
-![Netflix](./icons/Netflix/linux/Netflix_Solid_1%20(PNG)/128x128.png)
-![Netflix](./icons/Netflix/linux/Netflix_Solid_2%20(PNG)/128x128.png)
-![Netflix](./icons/Netflix/linux/Netflix_Solid_3%20(PNG)/128x128.png)
-![PayPal](./icons/PayPal/linux/PayPal_Solid%20(PNG)/128x128.png)
-![Photoshop](./icons/Photoshop/linux/Photoshop_Solid%20(PNG)/128x128.png)
-![Principle](./icons/Principle/linux/Principle_Solid%20(PNG)/128x128.png)
-![Slack](./icons/Slack/linux/Slack_Solid%20(PNG)/128x128.png)
-![Soundcloud](./icons/Soundcloud/linux/Soundcloud_Solid%20(PNG)/128x128.png)
-![Spotify](./icons/Spotify/linux/Spotify_Solid%20(PNG)/128x128.png)
-![Steam](./icons/Steam/linux/Steam_Solid_1%20(PNG)/128x128.png)
-![Steam](./icons/Steam/linux/Steam_Solid_2%20(PNG)/128x128.png)
-![Trello](./icons/Trello/linux/Trello_Solid%20(PNG)/128x128.png)
-![Tripadvisor](./icons/Tripadvisor/linux/Tripadvisor_Solid%20(PNG)/128x128.png)
-![Uxpin](./icons/Uxpin/linux/Uxpin_Solid_1%20(PNG)/128x128.png)
-![Uxpin](./icons/Uxpin/linux/Uxpin_Solid_2%20(PNG)/128x128.png)
-![Vimeo](./icons/Vimeo/linux/Vimeo_Solid%20(PNG)/128x128.png)
-![Vine](./icons/Vine/linux/Vine_Solid%20(PNG)/128x128.png)
-![Visa](./icons/Visa/linux/Visa_Solid%20(PNG)/128x128.png)
-![Wordpress](./icons/Wordpress/linux/Wordpress_Solid%20(PNG)/128x128.png)
-![Youtube](./icons/Youtube/linux/Youtube_Solid_1%20(PNG)/128x128.png)
-![Youtube](./icons/Youtube/linux/Youtube_Solid_2%20(PNG)/128x128.png)
-![Youtube](./icons/Youtube/linux/Youtube_Solid_3%20(PNG)/128x128.png)
-
-### Development
-
-![Angular](./icons/Angular/linux/Angular_Solid%20(PNG)/128x128.png)
-![Brew](./icons/Brew/linux/Brew_Solid%20(PNG)/128x128.png)
-![CSS Solid 1](./icons/CSS/linux/CSS_Solid_1%20(PNG)/128x128.png)
-![CSS Solid 2](./icons/CSS/linux/CSS_Solid_2%20(PNG)/128x128.png)
-![CSharp](./icons/CSharp/linux/CSharp_Solid%20(PNG)/128x128.png)
-![Git](./icons/Git/linux/Git_Solid%20(PNG)/128x128.png)
-![HTML Solid 1](./icons/Html5/linux/Html5_Solid_1%20(PNG)/128x128.png)
-![HTML Solid 2](./icons/Html5/linux/Html5_Solid_2%20(PNG)/128x128.png)
-![JavaScript Solid 1](./icons/JavaScript/linux/JavaScript_Solid_1%20(PNG)/128x128.png)
-![JavaScript Solid 2](./icons/JavaScript/linux/JavaScript_Solid_2%20(PNG)/128x128.png)
-![JavaScript Solid 3](./icons/JavaScript/linux/JavaScript_Solid_3%20(PNG)/128x128.png)
-![Java](./icons/Java/linux/Java_Solid%20(PNG)/128x128.png)
-![Jenkins](./icons/Jenkins/linux/Jenkins_Solid%20(PNG)/128x128.png)
-![Laravel](./icons/Laravel/linux/Laravel_Solid%20(PNG)/128x128.png)
-![Less](./icons/Less/linux/Less_Solid%20(PNG)/128x128.png)
-![Mongodb](./icons/Mongodb/linux/Mongodb_Solid_1%20(PNG)/128x128.png)
-![Mongodb](./icons/Mongodb/linux/Mongodb_Solid_2%20(PNG)/128x128.png)
-![Npm](./icons/Npm/linux/Npm_Solid%20(PNG)/128x128.png)
-![Python](./icons/Python/linux/Python_Solid%20(PNG)/128x128.png)
-![React](./icons/React/linux/React_Solid%20(PNG)/128x128.png)
-![Ruby](./icons/Ruby/linux/Ruby_Solid%20(PNG)/128x128.png)
-![Sass](./icons/Sass/linux/Sass_Solid%20(PNG)/128x128.png)
-![Vue.js](./icons/Vue/linux/Vue_Solid%20(PNG)/128x128.png)
-
-### Finance
-
-![Amex](./icons/Amex/linux/Amex_Solid%20(PNG)/128x128.png)
-![ApplePay](./icons/ApplePay/linux/ApplePay_Solid%20(PNG)/128x128.png)
-![Bills](./icons/Bills/linux/Bills_Solid%20(PNG)/128x128.png)
-![Bitcoin](./icons/Bitcoin/linux/Bitcoin_Solid%20(PNG)/128x128.png)
-![Etherium](./icons/Etherium/linux/Etherium_Solid%20(PNG)/128x128.png)
-![Litecoin](./icons/Litecoin/linux/Litecoin_Solid%20(PNG)/128x128.png)
-
-### Games
-
-![Playstation](./icons/Playstation/linux/PlayStation_Solid%20(PNG)/128x128.png)
-![Xbox](./icons/Xbox/linux/Xbox_Solid%20(PNG)/128x128.png)
-
-### Operating System
-
-![Android](./icons/Android/linux/Android_Solid%20(PNG)/128x128.png)
-![Linux](./icons/Linux/linux/Linux_Solid%20(PNG)/128x128.png)
-![Windows](./icons/Windows/linux/Windows_Solid%20(PNG)/128x128.png)
-
-### Social Media
-
-![Telegram](./icons/Telegram/linux/Telegram_Solid%20(PNG)/128x128.png)
-
-### Virtualization
-
-![Docker](./icons/Docker/linux/Docker_Solid%20(PNG)/128x128.png)
-![Vagrant](./icons/Vagrant/linux/Vagrant_Solid%20(PNG)/128x128.png)
-![VMware](./icons/VMware/linux/VMware_Solid%20(PNG)/128x128.png)
-
-### Project Management
-
-![Agile](./icons/Agile/linux/Agile_Solid%20(PNG)/128x128.png)
-![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_1%20(PNG)/128x128.png)
-![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_2%20(PNG)/128x128.png)
-![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_3%20(PNG)/128x128.png)
-![Project Planning](./icons/Projectplanning/linux/Projectplanning_Solid_4%20(PNG)/128x128.png)
-![Reports](./icons/Reports/linux/Reports_Solid_1%20(PNG)/128x128.png)
-![Reports](./icons/Reports/linux/Reports_Solid_2%20(PNG)/128x128.png)
-![Reports](./icons/Reports/linux/Reports_Solid_3%20(PNG)/128x128.png)
-
-### Others
-
-![Recipes](./icons/Recipes/linux/Recipes_Solid%20(PNG)/128x128.png)
-![Screenshots](./icons/Screenshots/linux/Screenshots_Solid%20(PNG)/128x128.png)
-![Travel](./icons/Travel/linux/Travel_Solid%20(PNG)/128x128.png)
+Here is the folder structure of this repository:
 
 
-## Collaborators
 
-- 👨🏻‍💻 Me ([Amin Shariati](https://github.com/shariati))
-- 👩🏻‍💻 [Sarah Ghanbarzadeh](https://github.com/sarah8131)
+## Folder Structure
 
-## Agile Development
+Here is the folder structure of the repository:
+```bash
+├── LICENSE
+├── README.md
+├── docs
+│ ├── images
+│ └── index.md
+├── images
+│ ├── masks
+│ └── os_folders
+│ ├── linux
+│ ├── macos
+│ └── windows
+├── pytest.ini
+├── requirements.txt
+├── setup.py
+├── src
+│ ├── generate_readme.py
+│ ├── icon_generator
+│ │ ├── init.py
+│ │ ├── generator.py
+│ │ └── utils.py
+│ └── main.py
+└── tests
+├── test_generator.py
+└── test_utils.py
+```
 
-### Our Kanban board
+Explanation of each folder:
 
-Wee what our we currently working on by visiting our [online kanban board](https://waffle.io/shariati/OS-Folder-Icons).
+- `docs`: Contains the documentation files, including the generated `index.md` file.
+- `images`: Contains the mask images and base folder images.
+  - `masks`: Contains the mask images used to apply on the base folder images.
+  - `os_folders`: Contains the base folder images categorized by operating systems.
+    - `linux`: Contains base folder images for Linux operating system.
+    - `macos`: Contains base folder images for macOS operating system.
+    - `windows`: Contains base folder images for Windows operating system.
+- `pytest.ini`: Configuration file for pytest.
+- `requirements.txt`: Lists the project dependencies.
+- `setup.py`: Setup script for the project.
+- `src`: Contains the source code files for the project.
+  - `generate_readme.py`: Script to generate the `index.md` file for documentation.
+  - `icon_generator`: Package containing the icon generation logic.
+    - `generator.py`: Contains the functions to generate folder icons.
+    - `utils.py`: Contains utility functions used in the generation process.
+  - `main.py`: Main script to run the icon generation process.
+- `tests`: Contains the test files for the project.
+  - `test_generator.py`: Tests for the icon
 
-### Throughput Graph
 
-[![Throughput Graph](https://graphs.waffle.io/shariati/OS-Folder-Icons/throughput.svg)](https://waffle.io/shariati/OS-Folder-Icons/metrics/throughput)
+## Prerequisites
 
-## Materials
+Before running the project, make sure you have the following prerequisites installed on your system:
 
-We try our best to design and draw the svg images but some are taken from exisiting projects (Why reinvent the wheel?).
+- Python: Visit the [Python website](https://www.python.org/) and download the appropriate version of Python for your operating system. Follow the installation instructions provided.
 
-- Special thanks to the Awesome "[FontAwesome](http://fontawesome.io/)" project. (Some Brands Icons are taken from there)
+## Installing Dependencies
 
-## Similar Projects on Github
+To install the project dependencies, follow these steps:
 
-After starting this project I found that there is a similar project by [Vigo Krumins](https://github.com/VigoKrumins) called [folder-icons](https://github.com/VigoKrumins/folder-icons) which contains icons for Mac 💻.
+1. Open a terminal or command prompt.
+2. Navigate to the root directory of the project.
+3. Run the following command to install the dependencies:
 
-Make sure to have a look at this project too 👍.
+```python
+pip install -r requirements.txt
+```
+
+This command will install all the necessary packages specified in the `requirements.txt` file.
+
+## Running the Project
+
+To run the project, follow these steps:
+
+1. Open a terminal or command prompt.
+2. Navigate to the root directory of the project.
+3. Run the following command to execute the `main.py` script:
+
+```python
+python src/main.py
+```
+This command will generate the folder icons based on the specified configuration.
+
+## Running Tests
+
+To run the project tests, follow these steps:
+
+1. Open a terminal or command prompt.
+2. Navigate to the root directory of the project.
+3. Run the following command to execute the tests:
+
+```python
+pytest
+```
+
+This command will run all the tests located in the `tests` directory.
+
+## Generating Documentation
+
+To generate the documentation, follow these steps:
+
+1. Open a terminal or command prompt.
+2. Navigate to the root directory of the project.
+3. Run the following command to execute the `generate_readme.py` script:
+
+```python
+python src/generate_readme.py
+```
+
+This command will generate the `index.md` file in the `docs` directory.
 
 ## License
 
+### Mask Images Attribution
+Please refer to `docs/ATTRIBUTION.md` for full list
+
 ### Icon and Image License
 
-- Applies to all `.png`, `.icns` and `.ico` files in the following directory: `icons`
+- Applies to all `.png`, `.icns`, and `.ico` files in the `icons` directory.
 - License: [MIT License](./LICENSE)
 
 ### Brand Images
 
 - All brand icons are trademarks of their respective owners.
 - The use of these trademarks does not indicate endorsement of the trademark holder by OS Folder Icons (Amin Shariati and Sarah Ghanbarzadeh), nor vice versa.
-
 - Brand icons should only be used to represent the company or product to which they refer.
-
 - Please do not use brand logos for any purpose except to represent that particular brand or service.
+

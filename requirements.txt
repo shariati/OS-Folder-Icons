@@ -152,9 +152,7 @@ spacy==3.5.3
 spacy-legacy==3.0.12
 spacy-loggers==1.0.4
 srsly==2.4.6
-starlette==0.27.0
-svglib==1.5.1
-svgutils==0.3.4
+starlette==0.26.1
 sympy==1.11.1
 thinc==8.1.9
 threadpoolctl==3.1.0

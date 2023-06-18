@@ -52,4 +52,4 @@ for base_image_path in base_images:
 
         # Save the combined image in different sizes
         save_image_variants(
-            combined_image, f"{output_folder_path}/{os_folder}/", category_name, filename, maskfilename, sizes)
+            combined_image, f"{output_folder_path}/{category_name}/{os_folder}", os_folder, filename, maskfilename, sizes)
