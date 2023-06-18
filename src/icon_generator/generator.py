@@ -118,7 +118,7 @@ def save_image_variants(image, output_folder_path, os_names, filename, maskfilen
     The filenames of the resized images include the original filename and the mask filename.
     The images are saved in the output folder, inside subfolders named after their sizes.
     """
-
+    
     os_names = get_file_names(f"{base_folder_path}/{os_names}",image_file_extension)
     for size in sizes:
         resized_image = image.resize(size, Image.ANTIALIAS)
