@@ -8,8 +8,8 @@ from PIL import Image
 
 def get_inf_file_path(image_file_path: str) -> str:
     """
-    Takes an image file path as input and returns the path of the corresponding 'base_info.inf' file 
-    in the same directory. If the 'base_info.inf' file doesn't exist, returns None.
+    Takes an image file path as input and returns the path of the corresponding 'base_info.inf' file in the same directory. If the 'base_info.inf'
+    file doesn't exist, returns None.
     """
     # Create a Path object from the .png file path
     png_path = Path(image_file_path)
@@ -24,7 +24,7 @@ def get_inf_file_path(image_file_path: str) -> str:
 
 def read_padding_info(file_path):
     """
-    Reads the padding information from a given .inf file. Returns an integer representing 
+    Reads the padding information from a given .inf file. Returns an integer representing
     the padding value, or 0 if the provided file is not a .inf file.
     """
     filename, extension = get_file_info(file_path)
@@ -38,8 +38,8 @@ def read_padding_info(file_path):
 
 def get_subfolder(file_path: str, search_term: str, folder_depth: int) -> str:
     """
-    Returns the names of the subfolders at a specified depth if the path contains the 
-    given search term. Returns None if the search term is not present in the path or 
+    Returns the names of the subfolders at a specified depth if the path contains the
+    given search term. Returns None if the search term is not present in the path or
     if the desired depth is not available.
     """
 
@@ -80,7 +80,7 @@ def ensure_folder_exists(folder_path: str):
 
 def reset_folder(folder_path: str):
     """
-    If the directory exists at the given path, deletes it along with all its contents. 
+    If the directory exists at the given path, deletes it along with all its contents.
     Then, creates an empty directory with the same name.
     """
     if os.path.exists(folder_path):
@@ -121,7 +121,7 @@ def load_image_files(image_folder_path: str, image_file_extension: str = '.png')
 
 def save_image(image: Image.Image, folder_path: str, file_name: str):
     """
-    Saves an image file in a specified directory with a given filename. If the directory 
+    Saves an image file in a specified directory with a given filename. If the directory
     does not exist, it creates the directory before saving the image.
     """
     # Ensure the output directory exists
