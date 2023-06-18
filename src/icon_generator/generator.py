@@ -105,45 +105,6 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
     combined = Image.alpha_composite(base_image, temp_img)
     return combined
 
-# def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6):
-#     """
-#     Apply the mask image at the center of the base image.
-#     Resize the mask if it's larger than 'proportion' of the base image size.
-#     """
-#     base_image = Image.open(base_image_path).convert("RGBA")
-#     mask_image = Image.open(mask_image_path).convert("RGBA")
-
-#     base_width, base_height = base_image.size
-#     mask_width, mask_height = mask_image.size
-
-#     # Resize mask image if it is larger than 'proportion' of the base image size
-#     if mask_width > base_width * proportion or mask_height > base_height * proportion:
-#         new_size = (int(base_width * proportion),
-#                     int(base_height * proportion))
-#         mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
-
-#     # Calculate the position to center the mask
-#     if config is not None:
-#         top_padding = read_padding_info(config)
-#         center_x, center_y = get_center_coordinate(base_image, top_padding)
-#     else:
-#         center_x, center_y = get_center_coordinate(base_image)
-
-#     mask_x, mask_y = get_center_coordinate(mask_image)
-
-#     top_left_x = center_x - mask_x
-#     top_left_y = center_y - mask_y
-
-#     # Create a new blank (transparent) image with the same size as the base image
-#     temp_img = Image.new('RGBA', base_image.size)
-
-#     # Paste the mask image into the center of the new image
-#     temp_img.paste(mask_image, (top_left_x, top_left_y))
-
-#     # Composite the images
-#     combined = Image.alpha_composite(base_image, temp_img)
-#     return combined
-
 
 def save_image_variants(image, output_folder_path, category, filename, maskfilename, sizes):
     """
