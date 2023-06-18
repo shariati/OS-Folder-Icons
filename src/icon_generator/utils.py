@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from PIL import Image
 
 load_dotenv()
 
@@ -96,3 +97,41 @@ if __name__ == "__main__":
 
     file_list = load_base_files(base_folder_path)
     print_files(file_list)
+
+
+
+def apply_mask_to_images(mask_file, folder_image, output_folder, sizes):
+    print("Mask:", mask_file)
+    # Load the mask image
+    mask_img = Image.open(mask_file)
+    
+    # Ensure the output directory exists
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    
+    # Iterate over all the images in the input folder
+    if folder_image.endswith('.png'):
+        # Open the image
+        img = Image.open(folder_image)
+            
+        # Calculate the coordinates to center the mask
+        left = (img.width - mask_img.width)/2
+        top = (img.height - mask_img.height)/2
+        right = (img.width + mask_img.width)/2
+        bottom = (img.height + mask_img.height)/2
+            
+        # Apply the mask to the image
+        img.paste(mask_img, (int(left), int(top), int(right), int(bottom)), mask_img)
+            
+         # Resize the resulting image and save it
+        for size in sizes:
+            resized_img = img.resize(size, Image.ANTIALIAS)
+                
+            # Create a filename that includes the size
+            base, ext1 = os.path.splitext(folder_image)
+            mask, ext2 = os.path.splitext(mask_file)
+
+            new_filename = f"{base}_{mask}_{size[0]}x{size[1]}{ext1}"
+                
+            # Save the resized image to the output folder
+            resized_img.save(os.path.join(output_folder, new_filename))
