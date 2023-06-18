@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+# Python artifacts
 *.pyc
+*.pyo
+*.pyd
 
 # C extensions
 *.so
