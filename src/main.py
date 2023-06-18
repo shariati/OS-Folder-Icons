@@ -1,29 +1,19 @@
-from .generator import generate_folder_icons
-from .utils import clean_output_directory
+import os
+from dotenv import load_dotenv
+from icon_generator.generator import load_os_images, load_mask_images, apply_mask, save_image_variants
 
-# Specify the base folder images for each OS
-base_images = {
-    'windows': 'windows_base.png',
-    'macos': 'macos_base.png',
-    'linux': 'linux_base.png'
-}
+load_dotenv()
 
-# Specify the font file and size for the icons
-font_file = 'fontawesome.ttf'
-icon_size = 48
+output_folder_path = os.getenv('OUTPUT_FOLDER', './output')
 
-# Specify the output folder
-output_folder = 'output'
+# Define the sizes
+sizes = [(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256), (512, 512)]
 
-# Specify the icon names and their corresponding Unicode codes
-icons = {
-    'windows': '\uf07c',  # Windows icon
-    'macos': '\uf179',  # macOS icon
-    'linux': '\uf17c'  # Linux icon
-}
+# Load base images and mask images
+base_images = load_os_images()
+mask_images = load_mask_images()
 
-# Clean the output directory
-clean_output_directory(output_folder)
-
-# Generate the folder icons
-generate_folder_icons(base_images, icons, font_file, icon_size, output_folder)
+for base_image_path in base_images:
+    for mask_image_path in mask_images:
+        combined_image = apply_mask(base_image_path, mask_image_path, proportion=0.6)
+        save_image_variants(combined_image, output_folder_path, sizes)
