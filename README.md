@@ -173,6 +173,7 @@ python src/generate_readme.py
 This command will generate the `index.md` file in the `docs` directory.
 
 ## License
+
 ### Mask Images Attribution
 Please refer to `docs/ATTRIBUTION.md` for full list
 
