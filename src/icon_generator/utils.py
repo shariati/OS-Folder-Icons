@@ -6,12 +6,13 @@ from pathlib import Path
 from PIL import Image
 
 
-def get_inf_file_path(png_file_path: str) -> str:
+def get_inf_file_path(image_file_path: str) -> str:
     """
-    Get the path of the 'base_info.inf' file from a given .png file path.
+    Takes an image file path as input and returns the path of the corresponding 'base_info.inf' file 
+    in the same directory. If the 'base_info.inf' file doesn't exist, returns None.
     """
     # Create a Path object from the .png file path
-    png_path = Path(png_file_path)
+    png_path = Path(image_file_path)
     # Replace the filename with 'base_info.inf'
     base_info_path = png_path.parent / 'base_info.inf'
     # Check if the 'base_info.inf' file exists
@@ -23,7 +24,8 @@ def get_inf_file_path(png_file_path: str) -> str:
 
 def read_padding_info(file_path):
     """
-    Read the padding information from a .inf file.
+    Reads the padding information from a given .inf file. Returns an integer representing 
+    the padding value, or 0 if the provided file is not a .inf file.
     """
     filename, extension = get_file_info(file_path)
     if extension != '.inf':
@@ -36,7 +38,9 @@ def read_padding_info(file_path):
 
 def get_subfolder(file_path: str, search_term: str, folder_depth: int) -> str:
     """
-    Return the subfolder names at a specified depth if the path contains the search term.
+    Returns the names of the subfolders at a specified depth if the path contains the 
+    given search term. Returns None if the search term is not present in the path or 
+    if the desired depth is not available.
     """
 
     # Split the path into a list of folders
@@ -59,7 +63,7 @@ def get_subfolder(file_path: str, search_term: str, folder_depth: int) -> str:
 
 def get_filename(file_path: str) -> str:
     """
-    Return the base name of a file without its extension.
+    Returns the base name of a given file without its extension.
     """
     base_name = os.path.basename(file_path)
     file_name_without_extension = os.path.splitext(base_name)[0]
@@ -68,7 +72,7 @@ def get_filename(file_path: str) -> str:
 
 def ensure_folder_exists(folder_path: str):
     """
-    Ensure a directory exists. If not, it creates it.
+    Checks if a directory exists at the given path, and if not, creates it.
     """
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -76,24 +80,24 @@ def ensure_folder_exists(folder_path: str):
 
 def reset_folder(folder_path: str):
     """
-    If the directory exists, delete it along with all its contents.
-    Then create an empty directory with the same name.
+    If the directory exists at the given path, deletes it along with all its contents. 
+    Then, creates an empty directory with the same name.
     """
     if os.path.exists(folder_path):
         shutil.rmtree(folder_path)
     os.makedirs(folder_path)
 
 
-def get_file_names(folder_path: str, file_extension: str):
+def get_file_names(folder_path: str, file_extension: str) -> list:
     """
-    Get the names of all files with the specified extension in a given folder.
+    Returns the names of all files with the specified extension in a given directory.
     """
     return [file for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith(file_extension)]
 
 
 def get_file_info(file_path: str) -> tuple:
     """
-    Get the filename and extension of a file from its path.
+    Returns a tuple containing the filename and extension of a given file, derived from its path.
     """
     file_path = Path(file_path)
     return file_path.stem, file_path.suffix
@@ -101,7 +105,7 @@ def get_file_info(file_path: str) -> tuple:
 
 def load_image_files(image_folder_path: str, image_file_extension: str = '.png') -> list:
     """
-    Load image files with a specific extension from a directory into a list.
+    Loads all image files with a specific extension from a directory, and returns them in a list.
     """
     folder_path = Path(image_folder_path)
     file_paths = []
@@ -117,7 +121,8 @@ def load_image_files(image_folder_path: str, image_file_extension: str = '.png')
 
 def save_image(image: Image.Image, folder_path: str, file_name: str):
     """
-    Save an image file in a specified directory with a given file name.
+    Saves an image file in a specified directory with a given filename. If the directory 
+    does not exist, it creates the directory before saving the image.
     """
     # Ensure the output directory exists
     ensure_folder_exists(folder_path)
