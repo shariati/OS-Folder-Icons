@@ -81,7 +81,6 @@ def apply_mask(base_image_path, mask_image_path, config= None, proportion=0.6):
     # Calculate the position to center the mask
     if config is not None:
         top_padding = read_padding_info(config)
-        print(f"top_padding: {top_padding}")
         center_x, center_y = get_center_coordinate(base_image, top_padding)
     else:
         center_x, center_y = get_center_coordinate(base_image)
