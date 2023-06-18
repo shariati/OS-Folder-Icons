@@ -32,7 +32,7 @@ for base_image_path in base_images:
     for mask_image_path in mask_images:
         maskfilename = get_filename(mask_image_path)
         category_name = get_subfolder(mask_image_path, "masks", 1)
-        combined_image = apply_mask(base_image_path, mask_image_path, os_folder_config, proportion=0.4)
+        combined_image = apply_mask(base_image_path, mask_image_path, os_folder_config, proportion=0.4, alpha=0.25)
         save_image_variants(
                      combined_image, f"{output_folder_path}/{os_folder}/",category_name, filename, maskfilename, sizes)
    
