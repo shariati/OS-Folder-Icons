@@ -50,7 +50,7 @@ jobs:
         git config --global user.email 'github-actions@github.com'
         git add docs/index.md
         git commit -m 'docs: Update index.md' || exit 0
-        git push
+        git push origin "https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git"
 
     - name: Upload images
       uses: actions/upload-artifact@v2
