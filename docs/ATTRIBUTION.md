@@ -17,6 +17,9 @@ The following attribution requirements for the mask images obtained from Font-Aw
 - [Linux](https://www.flaticon.com/free-icons/linux) icons created by Dave Gandy - Flaticon
 - [CSS](https://www.flaticon.com/free-icons/css) icons created by Dave Gandy - Flaticon
 - [Disk](https://www.flaticon.com/free-icons/disk) icons created by Dave Gandy - Flaticon
-  
+
+The following attribution requirements for the mask images obtained from iconduck Project: 
+- [Hugo](https://iconduck.com/icons/919/hugo) icons created by Aasaam
+   
 Make sure to adhere to the licensing terms of The Noun Project [https://thenounproject.com/legal/terms-of-use/#icon-licenses](https://thenounproject.com/legal/terms-of-use/#icon-licenses) and Flaticon [https://support.flaticon.com/s/article/Attribution-How-when-and-where-FI](https://support.flaticon.com/s/article/Attribution-How-when-and-where-FI) and provide appropriate attribution for each mask image you use. If you have any questions about licensing or attribution, please refer to The Noun Project's website or contact their support team.
 
