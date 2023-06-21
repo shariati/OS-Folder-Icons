@@ -48,9 +48,10 @@ jobs:
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
+        git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
         git add docs/index.md
-        git commit -m 'docs: Update index.md' || exit 0
-        git push origin "https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git"
+        git commit -m 'Update index.md' || exit 0
+        git push origin main
 
     - name: Upload images
       uses: actions/upload-artifact@v2
