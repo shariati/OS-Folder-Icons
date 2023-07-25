@@ -4,4 +4,4 @@ build-backend = "hatchling.build"
 
 [project]
 name = "OS-Folder-Icon-Generator"
-version = "2.0.1"
+version = "2.0.9"
