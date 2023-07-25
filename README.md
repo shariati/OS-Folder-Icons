@@ -1,6 +1,7 @@
 # OS Folder Icons 📂
 
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) 
+[![CodeQL](https://github.com/shariati/OS-Folder-Icons/actions/workflows/codeql.yml/badge.svg)](https://github.com/shariati/OS-Folder-Icons/actions/workflows/codeql.yml) 
 
 Collection of custom folder 📂 icons for MacOS, Linux, and Windows.
 
