@@ -53,7 +53,7 @@ jobs:
         git checkout -b docs/generate_readme
         git add docs/index.md
         git commit -m 'docs: update index.md' || exit 0
-        git push
+        git push --set-upstream origin docs/generate_readme
 
     - name: Upload images
       uses: actions/upload-artifact@v2
