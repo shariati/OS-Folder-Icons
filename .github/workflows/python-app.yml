@@ -49,9 +49,11 @@ jobs:
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
         git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
+        git checkout main
+        git checkout -b docs/generate_readme
         git add docs/index.md
-        git commit -m 'Update index.md' || exit 0
-        git push origin main
+        git commit -m 'docs: update index.md' || exit 0
+        git push
 
     - name: Upload images
       uses: actions/upload-artifact@v2
