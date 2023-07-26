@@ -3,6 +3,9 @@ import os
 # Specify the path to the output directory and the docs directory
 output_folder_path = os.getenv('OUTPUT_FOLDER', './output')
 docs_folder_path = './docs'
+github_username = os.getenv('GITHUB_USERNAME', 'shariati')
+github_repo_name = os.getenv('GITHUB_REPOSITORY_NAME', 'OS-Folder-Icons')
+
 
 # Make sure the docs directory exists
 os.makedirs(docs_folder_path, exist_ok=True)
@@ -44,7 +47,8 @@ with open(os.path.join(docs_folder_path, 'index.md'), 'w') as f:
                                 rel_path = os.path.relpath(os.path.join(root, file), docs_folder_path)
 
                                 # Write the image path with Markdown syntax to the file
-                                f.write(f"![{file}]({rel_path})")
+                                f.write(f"![{file}](https://{github_username}.github.io/{github_repo_name}/{file})")
+
     f.write(f"\n\n## License\n\n")
     f.write(f"This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details")  
     f.write(f"\n\n### Brand Images")
