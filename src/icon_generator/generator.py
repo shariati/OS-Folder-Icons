@@ -81,7 +81,7 @@ def apply_mask(base_image_path, mask_image_path, config=None, proportion=0.6, al
     if mask_width > base_width * proportion or mask_height > base_height * proportion:
         new_size = (int(base_width * proportion),
                     int(base_height * proportion))
-        mask_image = mask_image.resize(new_size, Image.ANTIALIAS)
+        mask_image = mask_image.resize(new_size, Image.Resampling.LANCZOS)
 
     # Adjust alpha (opacity) of the mask image
     r, g, b, a = mask_image.split()
@@ -120,7 +120,7 @@ def save_image_variants(image, output_folder_path, os_names, filename, maskfilen
 
     os_names = get_file_names(f"{base_folder_path}/{os_names}", image_file_extension)
     for size in sizes:
-        resized_image = image.resize(size, Image.ANTIALIAS)
+        resized_image = image.resize(size, Image.Resampling.LANCZOS)
         new_filename = f"{filename}-{maskfilename}{image_file_extension}"
         save_image(resized_image,
                    f"{output_folder_path}/{size[0]}x{size[1]}", new_filename)
