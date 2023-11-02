@@ -34,12 +34,14 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Test with pytest
       run: |
         pytest
   generate:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Generate icons
@@ -48,6 +50,7 @@ jobs:
     - name: Generate README
       run: python src/generate_readme.py
   deploy:
+    needs: [test, build]
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to GitHub Pages
@@ -56,6 +59,7 @@ jobs:
         github_token: ${{ secrets.GH_TOKEN }}
         publish_dir: ./output
   documentation:
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
     - name: Commit and push changes
