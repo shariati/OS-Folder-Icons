@@ -33,22 +33,31 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  test:
+    runs-on: ubuntu-latest
+    steps:
     - name: Test with pytest
       run: |
         pytest
-    
+  generate:
+    runs-on: ubuntu-latest
+    steps:
     - name: Generate icons
       run: python src/main.py
 
     - name: Generate README
       run: python src/generate_readme.py
-  
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GH_TOKEN }}
         publish_dir: ./output
-
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
     - name: Commit and push changes
       run: |
         git config --global user.name 'GitHub Actions'
