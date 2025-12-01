@@ -1,0 +1,193 @@
+{
+  "operatingSystems": [
+    {
+      "id": "cf1a613e-135a-477e-aba1-5fbcf7b4ec69",
+      "name": "Ventura",
+      "image": "/uploads/d3527f42-a43b-4351-ace8-ac1631cfccc0-foldermain.png",
+      "versions": [
+        {
+          "id": "7dd176f4-9588-45f0-972a-65516198eed6",
+          "name": "Default",
+          "folderIcons": [
+            {
+              "id": "65dd3489-629a-4a9c-a89c-85346f32662b",
+              "name": "folder_main",
+              "imageUrl": "/uploads/a852e18f-1464-4f59-871d-5294001b502c-foldermain.png",
+              "offsetX": -1,
+              "offsetY": 23
+            }
+          ]
+        }
+      ],
+      "format": "icns",
+      "brandIcon": "fa-brands fa-apple"
+    },
+    {
+      "id": "4de572d3-fc48-4899-871c-60f312788636",
+      "name": "Windows",
+      "image": "/uploads/eae7b1f3-8897-40fe-a234-e29d8e8d7558-foldermain.png",
+      "versions": [
+        {
+          "id": "53abb7ec-7bc3-468f-aa97-828169abe061",
+          "name": "Default",
+          "folderIcons": [
+            {
+              "id": "461b11eb-2deb-449b-b5e8-f0cd2738f044",
+              "name": "folder_main",
+              "imageUrl": "/uploads/7a9763c3-a9c2-4386-8335-5bab0b0b9465-foldermain.png",
+              "offsetX": 0,
+              "offsetY": 20
+            }
+          ]
+        },
+        {
+          "id": "e56acc4a-7c53-4d77-87fd-9e9e2290620e",
+          "name": "Grey",
+          "folderIcons": [
+            {
+              "id": "1a4512c7-a386-41ee-ab78-cd2b1c3692de",
+              "name": "folder_grey",
+              "imageUrl": "/uploads/da82efb2-0a36-4758-a2a6-c5f6c94cdc2d-foldergrey.png",
+              "offsetY": 19
+            }
+          ]
+        },
+        {
+          "id": "2db52a32-e46d-473c-a1a0-c9a6906fbe90",
+          "name": "Green",
+          "folderIcons": [
+            {
+              "id": "564912ba-4c2b-4e5d-8386-b9a8bbc430c0",
+              "name": "folder_green",
+              "imageUrl": "/uploads/81b1e955-be6a-4820-9a89-7b92f8a4213e-foldergreen.png",
+              "offsetY": 20
+            }
+          ]
+        },
+        {
+          "id": "b77dd3f5-200e-44f8-a299-f16e284b36e2",
+          "name": "Blue",
+          "folderIcons": [
+            {
+              "id": "3cfce7bd-c6cd-4ea6-b837-04134efec5fb",
+              "name": "folder_blue",
+              "imageUrl": "/uploads/7f6ac635-8b5e-47eb-9e4f-71a0a341e83a-folderblue.png",
+              "offsetY": 20
+            }
+          ]
+        }
+      ],
+      "format": "ico",
+      "brandIcon": ""
+    },
+    {
+      "id": "ea3fbe79-be59-43d7-8c36-cd6d327ca88d",
+      "name": "Ubuntu",
+      "image": "/uploads/d61bcf54-2997-46db-bbf2-12e2ed387bee-foldermain.png",
+      "versions": [
+        {
+          "id": "073dc406-c01b-4d7b-8a05-575fe80ccf7e",
+          "name": "Main",
+          "folderIcons": [
+            {
+              "id": "021d0e33-0f00-46ae-adb9-fa016579c7de",
+              "name": "folder_main",
+              "imageUrl": "/uploads/53260301-c91a-4ca0-9388-cadfd3b392c5-foldermain.png",
+              "offsetY": 80
+            }
+          ]
+        },
+        {
+          "id": "83c639b1-4503-4a91-9252-d5cb71aa7a11",
+          "name": "Grey",
+          "folderIcons": [
+            {
+              "id": "113ebe62-dc9a-46ce-aef6-8e2685fa14bd",
+              "name": "folder_grey",
+              "imageUrl": "/uploads/3751e82b-ef23-4070-b137-f8fc13c8aa43-foldergrey.png",
+              "offsetY": 80
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bundles": [
+    {
+      "id": "477b31f9-d620-457e-9667-f03e885d8a17",
+      "name": "Finance Bundle",
+      "description": "A bundle to cover your Finance Apps and Files",
+      "tags": [
+        "finance",
+        "icon"
+      ],
+      "previewImage": "/uploads/57199ee0-3427-4948-b406-cb73067b98ab-Screenshot2025-12-01at10.28.43AM.png",
+      "targetOS": [
+        "cf1a613e-135a-477e-aba1-5fbcf7b4ec69",
+        "4de572d3-fc48-4899-871c-60f312788636"
+      ],
+      "icons": [
+        {
+          "name": "Banknote",
+          "type": "lucide"
+        },
+        {
+          "name": "BanknoteArrowDown",
+          "type": "lucide"
+        },
+        {
+          "name": "LucideBanknote",
+          "type": "lucide"
+        },
+        {
+          "name": "PiggyBank",
+          "type": "lucide"
+        },
+        {
+          "name": "AreaChartIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "AreaChart",
+          "type": "lucide"
+        },
+        {
+          "name": "CandlestickChart",
+          "type": "lucide"
+        },
+        {
+          "name": "CandlestickChartIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "ChartColumnIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "ChartColumn",
+          "type": "lucide"
+        },
+        {
+          "name": "ChartLineIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "LucideSheet",
+          "type": "lucide"
+        },
+        {
+          "name": "FileSpreadsheetIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "FileSpreadsheet",
+          "type": "lucide"
+        },
+        {
+          "name": "Calculator",
+          "type": "lucide"
+        }
+      ]
+    }
+  ]
+}

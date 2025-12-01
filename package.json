@@ -1,0 +1,40 @@
+{
+  "name": "os-folder-icons",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.24",
+    "html-to-image": "^1.11.13",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.555.0",
+    "next": "16.0.6",
+    "react": "19.2.0",
+    "react-colorful": "^5.6.1",
+    "react-dom": "19.2.0",
+    "tailwind-merge": "^3.4.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/jszip": "^3.4.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
