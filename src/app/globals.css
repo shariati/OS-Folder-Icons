@@ -25,6 +25,23 @@
   --color-neu-bg: var(--neu-bg);
   --color-neu-shadow-light: var(--neu-shadow-light);
   --color-neu-shadow-dark: var(--neu-shadow-dark);
+
+  /* TailAdmin Colors */
+  --color-boxdark: #24303F;
+  --color-boxdark-2: #1A222C;
+  --color-bodydark: #AEB7C0;
+  --color-bodydark1: #DEE4EE;
+  --color-bodydark2: #8A99AF;
+  --color-primary: #3C50E0;
+  --color-stroke: #E2E8F0;
+  --color-strokedark: #2E3A47;
+  --color-graydark: #333A48;
+  --color-whiten: #F1F5F9;
+  --color-meta-4: #313D4A;
+
+  /* TailAdmin Shadows */
+  --drop-shadow-1: 0px 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0px 8px 24px rgba(149, 157, 165, 0.2);
 }
 
 @media (prefers-color-scheme: dark) {
