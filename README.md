@@ -45,7 +45,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Licensing
 
-This project is open-source and available under the [MIT License](LICENSE). You are free to use, modify, and distribute this software.
+This project is open-source, but **not all elements are free for unrestricted distribution**.
+
+### Code License
+The source code is available for use, modification, and distribution, provided that you:
+1.  **Give Credit**: You must credit **Amin Shariati** as the original author and link back to the [original repository](https://github.com/shariati/OS-Folder-Icons).
+2.  **Contribute Back**: Improvements and bug fixes are encouraged via pull requests.
+
+### Asset Exclusions
+**Important**: Certain assets, such as video backgrounds in `public/backgrounds/video/`, are **EXCLUDED** from the open-source license. These assets are licensed exclusively for this repository and **cannot be redistributed** without purchasing a separate license.
+
+Please read the full [LICENSE.md](LICENSE.md) file for detailed terms and conditions before using or forking this project.
 
 ## Connect
 
