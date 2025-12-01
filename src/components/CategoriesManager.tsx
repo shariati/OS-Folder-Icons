@@ -133,14 +133,28 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color Class (Tailwind)</label>
-                  <input
-                    type="text"
-                    value={editingCategory.color}
-                    onChange={e => setEditingCategory({ ...editingCategory, color: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="e.g. bg-blue-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
+                  <div className="grid grid-cols-5 gap-3">
+                    {[
+                      'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-yellow-500', 'bg-lime-500',
+                      'bg-green-500', 'bg-emerald-500', 'bg-teal-500', 'bg-cyan-500', 'bg-sky-500',
+                      'bg-blue-500', 'bg-indigo-500', 'bg-violet-500', 'bg-purple-500', 'bg-fuchsia-500',
+                      'bg-pink-500', 'bg-rose-500', 'bg-slate-500', 'bg-gray-500', 'bg-zinc-500'
+                    ].map(colorClass => (
+                      <button
+                        key={colorClass}
+                        onClick={() => setEditingCategory({ ...editingCategory, color: colorClass })}
+                        className={clsx(
+                          "w-full aspect-square rounded-xl transition-all shadow-sm",
+                          colorClass,
+                          editingCategory.color === colorClass 
+                            ? "ring-4 ring-blue-500/50 scale-110 z-10" 
+                            : "hover:scale-105 hover:shadow-md"
+                        )}
+                        title={colorClass}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
 
