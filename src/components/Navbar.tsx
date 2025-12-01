@@ -1,7 +1,16 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FolderOpen } from 'lucide-react';
 
 export function Navbar() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <nav className="fixed top-4 left-4 right-4 z-50 rounded-2xl border border-white/20 bg-white/70 dark:bg-black/70 backdrop-blur-3xl shadow-xl transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

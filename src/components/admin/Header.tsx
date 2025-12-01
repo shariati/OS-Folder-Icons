@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, User } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import clsx from 'clsx';
 
 interface HeaderProps {
@@ -32,21 +32,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
           </Link>
         </div>
 
-        <div className="hidden sm:block">
-          <form action="https://formbold.com/s/unique_form_id" method="POST">
-            <div className="relative">
-              <button className="absolute left-0 top-1/2 -translate-y-1/2">
-                <Search className="h-5 w-5 text-gray-400" />
-              </button>
-
-              <input
-                type="text"
-                placeholder="Type to search..."
-                className="w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125"
-              />
-            </div>
-          </form>
-        </div>
+        <div className="hidden sm:block"></div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
