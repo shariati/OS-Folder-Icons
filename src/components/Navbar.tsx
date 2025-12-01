@@ -3,7 +3,7 @@ import { FolderOpen } from 'lucide-react';
 
 export function Navbar() {
   return (
-    <nav className="fixed top-4 left-4 right-4 z-50 rounded-2xl glass-panel border border-white/20">
+    <nav className="fixed top-4 left-4 right-4 z-50 rounded-2xl border border-white/20 bg-white/70 dark:bg-black/70 backdrop-blur-3xl shadow-xl transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -26,7 +26,7 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center">
-             <Link href="/" className="inline-flex items-center justify-center px-6 py-2 text-sm font-medium rounded-xl text-white bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
+             <Link href="/create" className="inline-flex items-center justify-center px-6 py-2 text-sm font-medium rounded-xl text-white bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
                 Get Started
              </Link>
           </div>
