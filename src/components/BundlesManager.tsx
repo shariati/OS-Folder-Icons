@@ -191,13 +191,38 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Tags (comma separated)</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Tags</label>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {initialData.tags.map(tag => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => {
+                          const currentTags = tags.split(',').map(t => t.trim()).filter(Boolean);
+                          if (currentTags.includes(tag.slug)) {
+                            setTags(currentTags.filter(t => t !== tag.slug).join(', '));
+                          } else {
+                            setTags([...currentTags, tag.slug].join(', '));
+                          }
+                        }}
+                        className={clsx(
+                          "px-3 py-1 rounded-lg text-xs font-bold transition-all border",
+                          tags.split(',').map(t => t.trim()).includes(tag.slug)
+                            ? "bg-blue-500 text-white border-blue-500 shadow-md shadow-blue-500/20"
+                            : "bg-transparent border-gray-300 dark:border-gray-600 text-gray-500 hover:border-gray-400"
+                        )}
+                      >
+                        {tag.name}
+                      </button>
+                    ))}
+                  </div>
                   <input 
                     value={tags} 
                     onChange={e => setTags(e.target.value)} 
                     className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent" 
-                    placeholder="productivity, dev, minimal" 
+                    placeholder="finance, productivity (comma separated)" 
                   />
+                  <p className="text-xs text-gray-400 mt-2">Select from existing tags or type new ones.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Preview Image</label>

@@ -7,53 +7,47 @@ import { clsx } from 'clsx';
 
 export default async function Home() {
   const db = await getDB();
-  const featuredBundles = db.bundles.slice(0, 3); // Just taking first 3 as featured for now
+  const featuredBundles = db.bundles.slice(0, 6); // Taking first 6 for carousel
   const latestBundles = db.bundles.slice(0, 8); // Taking first 8 as latest
 
-  const categories = [
-    { name: 'Gaming', icon: Gamepad2, color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/30' },
-    { name: 'Finance', icon: Coins, color: 'text-green-500', bg: 'bg-green-100 dark:bg-green-900/30' },
-    { name: 'Office', icon: Briefcase, color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30' },
-    { name: 'School', icon: GraduationCap, color: 'text-yellow-500', bg: 'bg-yellow-100 dark:bg-yellow-900/30' },
-    { name: 'Coding', icon: Code2, color: 'text-cyan-500', bg: 'bg-cyan-100 dark:bg-cyan-900/30' },
-    { name: 'Art', icon: Paintbrush, color: 'text-pink-500', bg: 'bg-pink-100 dark:bg-pink-900/30' },
-  ];
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 overflow-hidden">
+
+      <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
+        <div className="absolute inset-0 w-full h-full z-0">
           <video 
             autoPlay 
             loop 
             muted 
             playsInline 
-            className="absolute min-w-full min-h-full object-cover opacity-30 dark:opacity-20"
+            className="absolute top-0 left-0 w-full h-full object-cover opacity-30 dark:opacity-20"
           >
             <source src="/backgrounds/video/home-video-background-1.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-[#e0e5ec]/80 via-[#e0e5ec]/50 to-[#e0e5ec] dark:from-gray-900/80 dark:via-gray-900/50 dark:to-gray-900"></div>
         </div>
 
-        <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neu-pressed mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+        <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center h-full pb-20">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neu-pressed mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white/50 dark:bg-black/20 backdrop-blur-sm animate-fade-in-up">
             <Sparkles size={16} />
             <span>Premium Folder Icons for Everyone</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-800 dark:text-white mb-8 leading-tight drop-shadow-sm">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-800 dark:text-white mb-8 leading-tight drop-shadow-sm animate-fade-in-up animation-delay-200">
             Transform Your <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               Digital Workspace
             </span>
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-300 mb-12 font-medium">
+          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-300 mb-12 font-medium animate-fade-in-up animation-delay-400">
             Elevate your folder icons with our premium, handcrafted collections. 
             Designed for macOS, Windows, and Linux.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in-up animation-delay-600">
             <Link href="/bundles" className="px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-lg shadow-blue-500/30 hover:-translate-y-1 transition-all">
               Explore Bundles
             </Link>
@@ -65,37 +59,54 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Featured Bundles (Hero Extension) */}
-      <section className="py-16">
+      {/* Featured Bundles Carousel (Overlapping Hero) */}
+      <section className="relative z-20 -mt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-800 dark:text-white">Featured Collections</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {featuredBundles.map((bundle) => (
-              <Link key={bundle.id} href={`/bundles/${bundle.id}`} className="group block">
-                <div className="neu-flat p-4 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-inner">
-                    {bundle.previewImage ? (
-                      <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                        <Palette className="w-12 h-12 text-gray-400" />
+          <div className="flex overflow-x-auto pb-8 gap-6 snap-x snap-mandatory hide-scrollbar">
+            {featuredBundles.map((bundle, index) => {
+              // Define gradients based on index to mimic the "colorful blocks"
+              const gradients = [
+                'bg-gradient-to-br from-pink-400 to-rose-500 shadow-rose-500/30',
+                'bg-gradient-to-br from-blue-400 to-indigo-500 shadow-indigo-500/30',
+                'bg-gradient-to-br from-purple-400 to-violet-500 shadow-violet-500/30',
+              ];
+              const gradient = gradients[index % gradients.length];
+
+              return (
+                <Link key={bundle.id} href={`/bundles/${bundle.id}`} className="snap-center shrink-0 w-[300px] md:w-[350px] group">
+                  <div className={`h-full p-1 rounded-[2.5rem] ${gradient} shadow-xl transition-transform duration-300 hover:-translate-y-2`}>
+                    <div className="bg-white/10 backdrop-blur-sm h-full rounded-[2.3rem] p-6 flex flex-col text-white border border-white/20">
+                      {/* Image Container */}
+                      <div className="relative aspect-square w-32 mx-auto mb-6 rounded-full bg-white/20 shadow-inner flex items-center justify-center overflow-hidden border-4 border-white/30">
+                        {bundle.previewImage ? (
+                          <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
+                        ) : (
+                          <Palette className="w-12 h-12 text-white" />
+                        )}
                       </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                      <span className="text-white font-bold flex items-center gap-2">
-                        View Collection <ArrowRight className="w-4 h-4" />
-                      </span>
+
+                      {/* Content */}
+                      <div className="text-center mb-6 flex-grow">
+                        <h3 className="text-2xl font-bold mb-2">{bundle.name}</h3>
+                        <p className="text-white/80 text-sm line-clamp-3 font-medium">
+                          {bundle.description}
+                        </p>
+                      </div>
+
+                      {/* CTA */}
+                      <div className="mt-auto">
+                        <div className="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-gray-800 font-bold shadow-lg group-hover:scale-110 transition-transform">
+                          <ArrowRight size={20} />
+                        </div>
+                        <p className="text-center mt-3 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          View Bundle
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="px-2 pb-2">
-                    <h3 className="text-xl font-bold text-gray-800 dark:text-white group-hover:text-blue-600 transition-colors">{bundle.name}</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1 font-medium">{bundle.icons.length} Icons</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -103,17 +114,32 @@ export default async function Home() {
       {/* Categories Section */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-24">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Browse by Category</h2>
             <p className="text-lg text-gray-500 dark:text-gray-400">Find the perfect style for your specific needs.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((cat) => (
-              <Link href={`/bundles?category=${cat.name.toLowerCase()}`} key={cat.name} className="group flex flex-col items-center p-6 rounded-3xl neu-flat hover:neu-pressed transition-all duration-200">
-                <div className={`w-16 h-16 rounded-2xl ${cat.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
-                  <cat.icon className={`w-8 h-8 ${cat.color}`} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 gap-y-20">
+            {db.categories.map((cat) => (
+              <Link href={`/bundles?category=${cat.name.toLowerCase()}`} key={cat.id} className="group relative block">
+                <div className={`h-64 rounded-[2.5rem] ${cat.color} shadow-xl transition-transform duration-300 group-hover:-translate-y-2 relative overflow-visible`}>
+                   {/* 3D Pop-out Image */}
+                   <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-4 z-10 drop-shadow-2xl">
+                      {cat.imageUrl ? (
+                        <Image src={cat.imageUrl} alt={cat.name} fill className="object-contain" />
+                      ) : (
+                        // Fallback if no image
+                        <div className="w-full h-full flex items-center justify-center">
+                           <span className="text-6xl">📁</span>
+                        </div>
+                      )}
+                   </div>
+
+                   {/* Content */}
+                   <div className="absolute bottom-0 left-0 w-full p-8 text-white">
+                      <h3 className="text-2xl font-bold mb-2">{cat.name}</h3>
+                      <p className="text-white/90 font-medium text-sm line-clamp-2">{cat.description}</p>
+                   </div>
                 </div>
-                <span className="font-bold text-gray-700 dark:text-white">{cat.name}</span>
               </Link>
             ))}
           </div>

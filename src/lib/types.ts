@@ -34,7 +34,26 @@ export interface Bundle {
   }[];
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string; // PNG with transparent background
+  color: string; // Background color for the card (e.g., "bg-red-500")
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface DB {
   operatingSystems: OperatingSystem[];
   bundles: Bundle[];
+  categories: Category[];
+  tags: Tag[];
 }

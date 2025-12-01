@@ -112,5 +112,186 @@
       ]
     }
   ],
-  "bundles": []
+  "bundles": [
+    {
+      "id": "654a6d02-e547-4930-b562-ca976edbad94",
+      "name": "Finance",
+      "description": "We know keeping track of finances can be a chore. Let this handy icon set make it a little smoother and much prettier, turning folder chaos into financial confidence!",
+      "tags": [
+        "finance",
+        "folder",
+        "mac",
+        "windows"
+      ],
+      "previewImage": "/uploads/5b1e30ab-397b-4669-aa23-60de5947a4b4-finance-image.png",
+      "targetOS": [
+        "4de572d3-fc48-4899-871c-60f312788636",
+        "cf1a613e-135a-477e-aba1-5fbcf7b4ec69"
+      ],
+      "icons": [
+        {
+          "name": "ActivitySquare",
+          "type": "lucide"
+        },
+        {
+          "name": "AirVent",
+          "type": "lucide"
+        },
+        {
+          "name": "AlarmClockCheckIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "AlarmClockPlusIcon",
+          "type": "lucide"
+        },
+        {
+          "name": "AlarmCheck",
+          "type": "lucide"
+        },
+        {
+          "name": "Airplay",
+          "type": "lucide"
+        },
+        {
+          "name": "AlarmClockMinus",
+          "type": "lucide"
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-gaming",
+      "name": "Gaming",
+      "description": "Level up your desktop with gaming-inspired icons.",
+      "imageUrl": "/categories/gaming.png",
+      "color": "bg-purple-500",
+      "seoTitle": "Gaming Folder Icons - Custom Desktop Icons for Gamers",
+      "seoDescription": "Download premium gaming folder icons for macOS and Windows. Customize your game library folders with style.",
+      "seoKeywords": [
+        "gaming icons",
+        "folder icons",
+        "desktop customization",
+        "gamer aesthetic"
+      ]
+    },
+    {
+      "id": "cat-finance",
+      "name": "Finance",
+      "description": "Organize your financial documents with professional icons.",
+      "imageUrl": "/categories/finance.png",
+      "color": "bg-green-500",
+      "seoTitle": "Finance Folder Icons - Professional Desktop Organization",
+      "seoDescription": "Keep your financial documents organized with our finance-themed folder icons. Perfect for accountants and personal finance.",
+      "seoKeywords": [
+        "finance icons",
+        "money folders",
+        "office organization",
+        "professional icons"
+      ]
+    },
+    {
+      "id": "cat-office",
+      "name": "Office",
+      "description": "Boost productivity with clean office-themed icons.",
+      "imageUrl": "/categories/office.png",
+      "color": "bg-blue-500",
+      "seoTitle": "Office Folder Icons - Productivity & Work Icons",
+      "seoDescription": "Enhance your workflow with our office folder icons. Clean, professional designs for work documents.",
+      "seoKeywords": [
+        "office icons",
+        "work folders",
+        "productivity",
+        "business icons"
+      ]
+    },
+    {
+      "id": "cat-school",
+      "name": "School",
+      "description": "Perfect for students and teachers to organize coursework.",
+      "imageUrl": "/categories/school.png",
+      "color": "bg-yellow-500",
+      "seoTitle": "School Folder Icons - Student & Teacher Desktop Icons",
+      "seoDescription": "Organize your school work with our education-themed folder icons. Great for students and teachers.",
+      "seoKeywords": [
+        "school icons",
+        "education folders",
+        "student organization",
+        "study icons"
+      ]
+    },
+    {
+      "id": "cat-coding",
+      "name": "Coding",
+      "description": "Developer-focused icons for your projects and repos.",
+      "imageUrl": "/categories/coding.png",
+      "color": "bg-cyan-500",
+      "seoTitle": "Coding Folder Icons - Developer & Programmer Icons",
+      "seoDescription": "Custom folder icons for developers. Organize your projects, repositories, and codebases with style.",
+      "seoKeywords": [
+        "coding icons",
+        "developer folders",
+        "programming icons",
+        "git icons"
+      ]
+    },
+    {
+      "id": "cat-art",
+      "name": "Art",
+      "description": "Creative icons for artists and designers.",
+      "imageUrl": "/categories/art.png",
+      "color": "bg-pink-500",
+      "seoTitle": "Art Folder Icons - Creative & Design Icons",
+      "seoDescription": "Inspire your creativity with our art-themed folder icons. Perfect for designers, artists, and illustrators.",
+      "seoKeywords": [
+        "art icons",
+        "design folders",
+        "creative icons",
+        "artist desktop"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "id": "tag-finance",
+      "name": "Finance",
+      "slug": "finance"
+    },
+    {
+      "id": "tag-folder",
+      "name": "Folder",
+      "slug": "folder"
+    },
+    {
+      "id": "tag-mac",
+      "name": "Mac",
+      "slug": "mac"
+    },
+    {
+      "id": "tag-windows",
+      "name": "Windows",
+      "slug": "windows"
+    },
+    {
+      "id": "tag-gaming",
+      "name": "Gaming",
+      "slug": "gaming"
+    },
+    {
+      "id": "tag-minimal",
+      "name": "Minimal",
+      "slug": "minimal"
+    },
+    {
+      "id": "tag-colorful",
+      "name": "Colorful",
+      "slug": "colorful"
+    },
+    {
+      "id": "tag-dark",
+      "name": "Dark Mode",
+      "slug": "dark-mode"
+    }
+  ]
 }

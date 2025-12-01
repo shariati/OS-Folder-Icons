@@ -6,11 +6,13 @@ import { OSManager } from '@/components/OSManager';
 import { BundlesManager } from '@/components/BundlesManager';
 import { ToastProvider } from '@/components/Toast';
 import { clsx } from 'clsx';
-import { LayoutDashboard, Package, Settings, LogOut, FolderOpen } from 'lucide-react';
+import { CategoriesManager } from '@/components/CategoriesManager';
+import { TagsManager } from '@/components/TagsManager';
+import { LayoutDashboard, Package, Settings, LogOut, FolderOpen, Tags, Grid } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags'>('os');
 
   return (
     <ToastProvider>
@@ -52,6 +54,30 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 <Package className="w-5 h-5 mr-3" />
                 Bundles
               </button>
+              <button
+                onClick={() => setActiveTab('categories')}
+                className={clsx(
+                  "w-full flex items-center px-4 py-4 text-sm font-bold rounded-2xl transition-all duration-200",
+                  activeTab === 'categories'
+                    ? "neu-pressed text-blue-600"
+                    : "neu-flat hover:neu-pressed text-gray-600 dark:text-gray-300"
+                )}
+              >
+                <Grid className="w-5 h-5 mr-3" />
+                Categories
+              </button>
+              <button
+                onClick={() => setActiveTab('tags')}
+                className={clsx(
+                  "w-full flex items-center px-4 py-4 text-sm font-bold rounded-2xl transition-all duration-200",
+                  activeTab === 'tags'
+                    ? "neu-pressed text-blue-600"
+                    : "neu-flat hover:neu-pressed text-gray-600 dark:text-gray-300"
+                )}
+              >
+                <Tags className="w-5 h-5 mr-3" />
+                Tags
+              </button>
             </nav>
           </div>
 
@@ -76,6 +102,12 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                <button onClick={() => setActiveTab('bundles')} className={clsx("p-2 rounded-xl transition-all", activeTab === 'bundles' ? 'neu-pressed text-blue-600' : 'neu-flat text-gray-500')}>
                   <Package className="w-5 h-5" />
                </button>
+               <button onClick={() => setActiveTab('categories')} className={clsx("p-2 rounded-xl transition-all", activeTab === 'categories' ? 'neu-pressed text-blue-600' : 'neu-flat text-gray-500')}>
+                  <Grid className="w-5 h-5" />
+               </button>
+               <button onClick={() => setActiveTab('tags')} className={clsx("p-2 rounded-xl transition-all", activeTab === 'tags' ? 'neu-pressed text-blue-600' : 'neu-flat text-gray-500')}>
+                  <Tags className="w-5 h-5" />
+               </button>
             </div>
         </div>
 
@@ -84,21 +116,24 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           <div className="max-w-6xl mx-auto">
             <div className="mb-10">
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-                {activeTab === 'os' ? 'Operating Systems' : 'Bundle Management'}
+                {activeTab === 'os' && 'Operating Systems'}
+                {activeTab === 'bundles' && 'Bundle Management'}
+                {activeTab === 'categories' && 'Categories'}
+                {activeTab === 'tags' && 'Tags'}
               </h1>
               <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
-                {activeTab === 'os' 
-                  ? 'Manage OS versions, folder assets, and configurations.' 
-                  : 'Create and manage icon bundles for the marketplace.'}
+                {activeTab === 'os' && 'Manage OS versions, folder assets, and configurations.'}
+                {activeTab === 'bundles' && 'Create and manage icon bundles for the marketplace.'}
+                {activeTab === 'categories' && 'Manage product categories and SEO settings.'}
+                {activeTab === 'tags' && 'Manage tags for bundles and search.'}
               </p>
             </div>
 
             <div className="neu-flat rounded-3xl min-h-[600px] p-8">
-              {activeTab === 'os' ? (
-                <OSManager initialData={initialData} />
-              ) : (
-                <BundlesManager initialData={initialData} />
-              )}
+              {activeTab === 'os' && <OSManager initialData={initialData} />}
+              {activeTab === 'bundles' && <BundlesManager initialData={initialData} />}
+              {activeTab === 'categories' && <CategoriesManager initialData={initialData} />}
+              {activeTab === 'tags' && <TagsManager initialData={initialData} />}
             </div>
           </div>
         </main>
