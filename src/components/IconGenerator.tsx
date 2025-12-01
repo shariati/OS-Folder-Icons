@@ -7,7 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { CanvasPreview } from './CanvasPreview';
 import { IconPicker } from './IconPicker';
-import { Download } from 'lucide-react';
+import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 
 interface IconGeneratorProps {
   initialData: DB;
@@ -65,11 +65,6 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
       setCustomOffsetX(0);
       setCustomOffsetY(0);
       setFolderHue(0);
-      // Icon Size, Color, and Selection are preserved
-    } else {
-      // When switching to Advanced, we can keep current settings or reset.
-      // Keeping current settings is usually better UX.
-      // If coming from Simple, transparency is 0.75 and effect is carved, which is fine.
     }
   };
 
@@ -84,59 +79,55 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
       <div className="lg:col-span-4 space-y-8">
         
         {/* Mode Toggle */}
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Customization Mode</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {mode === 'simple' ? 'Quick & Easy' : 'Full Control'}
-            </p>
-          </div>
-          <div className="bg-gray-100 dark:bg-gray-700 p-1 rounded-lg flex text-sm font-medium">
-            <button
-              onClick={() => handleModeChange('simple')}
-              className={clsx(
-                "px-3 py-1.5 rounded-md transition-all",
-                mode === 'simple'
-                  ? "bg-white dark:bg-gray-600 text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              Simple
-            </button>
-            <button
-              onClick={() => handleModeChange('advanced')}
-              className={clsx(
-                "px-3 py-1.5 rounded-md transition-all",
-                mode === 'advanced'
-                  ? "bg-white dark:bg-gray-600 text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              Advanced
-            </button>
-          </div>
+        <div className="neu-flat p-2 flex items-center justify-between rounded-2xl">
+          <button
+            onClick={() => handleModeChange('simple')}
+            className={clsx(
+              "flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2",
+              mode === 'simple'
+                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+            )}
+          >
+            <Layout size={16} />
+            Simple
+          </button>
+          <button
+            onClick={() => handleModeChange('advanced')}
+            className={clsx(
+              "flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2",
+              mode === 'advanced'
+                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+            )}
+          >
+            <Sliders size={16} />
+            Advanced
+          </button>
         </div>
 
         {/* OS Selection */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Operating System</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Choose where you'll use this icon</p>
+        <div className="neu-flat p-6 rounded-3xl">
+          <div className="mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+              <Monitor size={16} />
+            </div>
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white">Operating System</h3>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {initialData.operatingSystems.map(os => (
               <button
                 key={os.id}
                 onClick={() => setSelectedOSId(os.id)}
                 className={clsx(
-                  "flex items-center gap-2 p-3 rounded-lg border transition-all",
+                  "flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
                   selectedOSId === os.id
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500"
-                    : "border-gray-200 dark:border-gray-700 hover:border-blue-300"
+                    ? "neu-pressed bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800"
+                    : "neu-flat hover:-translate-y-1"
                 )}
               >
-                {os.image && <Image src={os.image} alt={os.name} width={24} height={24} className="rounded-full" />}
-                <span className="font-medium text-sm text-gray-900 dark:text-white">{os.name}</span>
+                {os.image && <Image src={os.image} alt={os.name} width={32} height={32} className="rounded-full shadow-sm" />}
+                <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">{os.name}</span>
               </button>
             ))}
           </div>
@@ -144,36 +135,43 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
         {/* Version & Folder Style */}
         {selectedOS && (
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="neu-flat p-6 rounded-3xl">
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version</label>
-                <select
-                  value={selectedVersionId}
-                  onChange={(e) => setSelectedVersionId(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-gray-900 dark:text-white"
-                >
-                  {selectedOS.versions.map(v => (
-                    <option key={v.id} value={v.id}>{v.name}</option>
-                  ))}
-                </select>
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Version</label>
+                <div className="relative">
+                  <select
+                    value={selectedVersionId}
+                    onChange={(e) => setSelectedVersionId(e.target.value)}
+                    className="w-full px-4 py-3 neu-pressed rounded-xl text-gray-700 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  >
+                    {selectedOS.versions.map(v => (
+                      <option key={v.id} value={v.id}>{v.name}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
               </div>
 
               <div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Folder Style</label>
-                  <p className="text-xs text-gray-500">Select the base folder design</p>
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+                    <Folder size={16} />
+                  </div>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">Folder Style</label>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-3">
                   {selectedVersion?.folderIcons.map(folder => (
                     <button
                       key={folder.id}
                       onClick={() => setSelectedFolderId(folder.id)}
                       className={clsx(
-                        "relative aspect-square rounded-lg border overflow-hidden transition-all",
+                        "relative aspect-square rounded-xl overflow-hidden transition-all duration-200 p-2",
                         selectedFolderId === folder.id
-                          ? "border-blue-500 ring-2 ring-blue-500 ring-offset-2"
-                          : "border-gray-200 dark:border-gray-700 hover:border-blue-300"
+                          ? "neu-pressed ring-2 ring-blue-500 ring-offset-2 ring-offset-transparent"
+                          : "neu-flat hover:-translate-y-1"
                       )}
                     >
                       <Image 
@@ -193,8 +191,8 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
         {/* Simple Mode Style Presets */}
         {mode === 'simple' && (
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Icon Style</h3>
+          <div className="neu-flat p-6 rounded-3xl">
+            <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Style</h3>
             <p className="text-sm text-gray-500 mb-4">Choose a preset style</p>
             <div className="grid grid-cols-3 gap-3">
               {(['carved', 'glassy', 'none'] as const).map(effect => (
@@ -202,10 +200,10 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
                   key={effect}
                   onClick={() => setIconEffect(effect)}
                   className={clsx(
-                    "py-3 px-2 rounded-lg text-sm font-medium transition-all border",
+                    "py-3 px-2 rounded-xl text-sm font-bold transition-all",
                     iconEffect === effect
-                      ? "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-300"
-                      : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300"
+                      ? "neu-pressed text-blue-600"
+                      : "neu-flat text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
                   )}
                 >
                   {effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
@@ -230,39 +228,37 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
         {/* Advanced Controls */}
         {mode === 'advanced' && (
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 space-y-6">
+          <div className="neu-flat p-6 rounded-3xl space-y-6">
             
             {/* Folder Color */}
             <div>
-              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Folder Color</h3>
-              <p className="text-sm text-gray-500 mb-4">Adjust folder hue</p>
-              <div className="flex items-center gap-4">
+              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
+              <div className="flex items-center gap-4 mt-4">
                 <input
                   type="range"
                   min="0"
                   max="360"
                   value={folderHue}
                   onChange={(e) => setFolderHue(parseInt(e.target.value))}
-                  className="w-full h-2 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-4 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-full appearance-none cursor-pointer shadow-inner"
                 />
-                <span className="text-xs font-mono w-12 text-right">{folderHue}°</span>
+                <span className="text-xs font-mono w-12 text-right text-gray-500">{folderHue}°</span>
               </div>
             </div>
 
             {/* Icon Effect */}
             <div>
-              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Icon Effect</h3>
-              <p className="text-sm text-gray-500 mb-4">Add depth to your icon</p>
-              <div className="flex gap-2">
+              <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Icon Effect</h3>
+              <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
                 {(['none', 'carved', 'emboss', 'glassy'] as const).map(effect => (
                   <button
                     key={effect}
                     onClick={() => setIconEffect(effect)}
                     className={clsx(
-                      "flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors capitalize",
+                      "flex-1 py-2 px-2 rounded-lg text-xs font-bold transition-all capitalize",
                       iconEffect === effect
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-700/70"
+                        ? "bg-white dark:bg-gray-700 text-blue-600 shadow-sm"
+                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
                     )}
                   >
                     {effect}
@@ -273,30 +269,28 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
             {/* Transparency */}
             <div>
-              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Icon Transparency</h3>
-              <p className="text-sm text-gray-500 mb-4">Adjust icon opacity</p>
-              <div className="flex items-center gap-4">
+              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Transparency</h3>
+              <div className="flex items-center gap-4 mt-4">
                 <input
                   type="range"
                   min="0"
                   max="100"
                   value={iconTransparency * 100}
                   onChange={(e) => setIconTransparency(parseInt(e.target.value) / 100)}
-                  className="w-full"
+                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
-                <span className="text-xs font-mono w-12 text-right">{Math.round(iconTransparency * 100)}%</span>
+                <span className="text-xs font-mono w-12 text-right text-gray-500">{Math.round(iconTransparency * 100)}%</span>
               </div>
             </div>
 
             {/* Position Adjustment */}
             <div>
-              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Position Adjustment</h3>
-              <p className="text-sm text-gray-500 mb-4">Fine-tune the icon location</p>
-              <div className="space-y-4">
+              <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Position</h3>
+              <div className="space-y-4 p-4 neu-pressed rounded-xl">
                 <div>
                   <div className="flex justify-between mb-1">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Horizontal (X)</label>
-                    <span className="text-xs text-gray-500">{customOffsetX}px</span>
+                    <label className="text-xs font-bold text-gray-500">Horizontal (X)</label>
+                    <span className="text-xs text-gray-400">{customOffsetX}px</span>
                   </div>
                   <input
                     type="range"
@@ -304,13 +298,13 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
                     max="100"
                     value={customOffsetX}
                     onChange={(e) => setCustomOffsetX(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full h-1 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
                   />
                 </div>
                 <div>
                    <div className="flex justify-between mb-1">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Vertical (Y)</label>
-                    <span className="text-xs text-gray-500">{customOffsetY}px</span>
+                    <label className="text-xs font-bold text-gray-500">Vertical (Y)</label>
+                    <span className="text-xs text-gray-400">{customOffsetY}px</span>
                   </div>
                   <input
                     type="range"
@@ -318,12 +312,12 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
                     max="100"
                     value={customOffsetY}
                     onChange={(e) => setCustomOffsetY(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full h-1 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
                   />
                 </div>
                 <button 
                   onClick={() => { setCustomOffsetX(0); setCustomOffsetY(0); }}
-                  className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-xs text-blue-500 hover:text-blue-600 font-bold w-full text-center mt-2"
                 >
                   Reset Position
                 </button>
@@ -336,10 +330,20 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
       {/* Right Column: Preview */}
       <div className="lg:col-span-8">
-        <div className="sticky top-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Preview</h2>
-            <div className="flex justify-center mb-8 bg-gray-100 dark:bg-gray-900/50 rounded-xl p-8 checkerboard">
+        <div className="sticky top-24">
+          <div className="glass-panel p-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+            
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Preview</h2>
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                <div className="w-3 h-3 rounded-full bg-green-400"></div>
+              </div>
+            </div>
+
+            <div className="flex justify-center mb-10 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl p-12 neu-pressed checkerboard min-h-[400px] flex items-center">
               <CanvasPreview
                 folderImage={selectedFolder?.imageUrl}
                 iconName={selectedIcon}
@@ -355,16 +359,16 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
               />
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-md mx-auto">
               <button
                 id="download-btn"
                 onClick={handleDownload}
-                className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 text-lg"
               >
                 <Download size={24} />
                 Download Icon
               </button>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 font-medium">
                 Downloaded as {selectedOS?.format?.toUpperCase() || 'PNG'} for {selectedOS?.name}
               </p>
             </div>

@@ -2,8 +2,18 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #e0e5ec;
+  --foreground: #4a5568;
+  
+  /* Neumorphism Colors */
+  --neu-bg: #e0e5ec;
+  --neu-shadow-light: #ffffff;
+  --neu-shadow-dark: #a3b1c6;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 @theme inline {
@@ -11,12 +21,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  --color-neu-bg: var(--neu-bg);
+  --color-neu-shadow-light: var(--neu-shadow-light);
+  --color-neu-shadow-dark: var(--neu-shadow-dark);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #2d3748;
+    --foreground: #e2e8f0;
+    
+    --neu-bg: #2d3748;
+    --neu-shadow-light: #3a475c;
+    --neu-shadow-dark: #202733;
+    
+    --glass-bg: rgba(0, 0, 0, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -24,6 +45,51 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Neumorphic Utilities */
+.neu-flat {
+  background: var(--neu-bg);
+  box-shadow: 9px 9px 16px var(--neu-shadow-dark), 
+              -9px -9px 16px var(--neu-shadow-light);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.neu-pressed {
+  background: var(--neu-bg);
+  box-shadow: inset 6px 6px 10px var(--neu-shadow-dark), 
+              inset -6px -6px 10px var(--neu-shadow-light);
+  border-radius: 15px;
+}
+
+.neu-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--neu-bg);
+  box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
+              -5px -5px 10px var(--neu-shadow-light);
+  transition: all 0.2s ease;
+  color: var(--foreground);
+}
+
+.neu-icon-btn:active, .neu-icon-btn.active {
+  box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), 
+              inset -3px -3px 6px var(--neu-shadow-light);
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
 }
 
 @keyframes blob {

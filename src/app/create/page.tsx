@@ -1,0 +1,24 @@
+import { getDB } from '@/lib/db';
+import { IconGenerator } from '@/components/IconGenerator';
+import { Footer } from '@/components/Footer';
+
+export default async function CreatePage() {
+  const db = await getDB();
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Icon Generator</h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+            Create custom folder icons for macOS, Windows, and Linux. 
+            Choose your style, color, and icon to match your aesthetic.
+          </p>
+        </div>
+        
+        <IconGenerator initialData={db} />
+      </main>
+      <Footer />
+    </div>
+  );
+}
