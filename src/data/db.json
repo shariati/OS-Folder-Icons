@@ -2,18 +2,17 @@
   "operatingSystems": [
     {
       "id": "cf1a613e-135a-477e-aba1-5fbcf7b4ec69",
-      "name": "Ventura",
+      "name": "macOS",
       "image": "/uploads/d3527f42-a43b-4351-ace8-ac1631cfccc0-foldermain.png",
       "versions": [
         {
-          "id": "7dd176f4-9588-45f0-972a-65516198eed6",
-          "name": "Default",
+          "id": "97bf3406-b6dc-481f-a48f-8ad4c3358954",
+          "name": "Tahoe",
           "folderIcons": [
             {
-              "id": "65dd3489-629a-4a9c-a89c-85346f32662b",
-              "name": "folder_main",
-              "imageUrl": "/uploads/a852e18f-1464-4f59-871d-5294001b502c-foldermain.png",
-              "offsetX": -1,
+              "id": "5b491422-648a-4633-a499-7c6353d29f7d",
+              "name": "Folder",
+              "imageUrl": "/uploads/e38bbe6b-12e8-4cee-9e45-18021eb779c7-Folder.png",
               "offsetY": 23
             }
           ]
@@ -78,7 +77,7 @@
         }
       ],
       "format": "ico",
-      "brandIcon": ""
+      "brandIcon": "fa-brands fa-windows"
     },
     {
       "id": "ea3fbe79-be59-43d7-8c36-cd6d327ca88d",
@@ -109,7 +108,9 @@
             }
           ]
         }
-      ]
+      ],
+      "format": "png",
+      "brandIcon": "fa-brands fa-linux"
     }
   ],
   "bundles": [

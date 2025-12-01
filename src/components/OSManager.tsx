@@ -162,14 +162,29 @@ export function OSManager({ initialData }: { initialData: DB }) {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Brand Icon (FA Class)</label>
-                <input
-                  type="text"
-                  value={newOSBrandIcon}
-                  onChange={(e) => setNewOSBrandIcon(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-                  placeholder="e.g. fa-brands fa-apple"
-                />
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Brand Icon</label>
+                <div className="flex gap-3">
+                  {[
+                    { name: 'Apple', class: 'fa-brands fa-apple' },
+                    { name: 'Windows', class: 'fa-brands fa-windows' },
+                    { name: 'Linux', class: 'fa-brands fa-linux' }
+                  ].map((icon) => (
+                    <button
+                      key={icon.name}
+                      type="button"
+                      onClick={() => setNewOSBrandIcon(icon.class)}
+                      className={clsx(
+                        "flex-1 py-3 px-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2",
+                        newOSBrandIcon === icon.class
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500"
+                      )}
+                    >
+                      <i className={clsx(icon.class, "text-2xl")} />
+                      <span className="text-xs font-bold">{icon.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Icon (Optional)</label>
@@ -329,12 +344,28 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Brand Icon</label>
-            <input 
-              value={editBrandIcon} 
-              onChange={(e) => setEditBrandIcon(e.target.value)} 
-              className="w-full px-3 py-2 rounded-lg neu-pressed outline-none bg-transparent"
-              placeholder="fa-brands fa-apple"
-            />
+            <div className="flex gap-2">
+              {[
+                { name: 'Apple', class: 'fa-brands fa-apple' },
+                { name: 'Windows', class: 'fa-brands fa-windows' },
+                { name: 'Linux', class: 'fa-brands fa-linux' }
+              ].map((icon) => (
+                <button
+                  key={icon.name}
+                  type="button"
+                  onClick={() => setEditBrandIcon(icon.class)}
+                  className={clsx(
+                    "flex-1 py-2 px-2 rounded-lg border-2 transition-all flex items-center justify-center gap-2",
+                    editBrandIcon === icon.class
+                      ? "border-blue-500 bg-blue-50 text-blue-600"
+                      : "border-gray-200 hover:border-gray-300 text-gray-500"
+                  )}
+                  title={icon.name}
+                >
+                  <i className={clsx(icon.class, "text-lg")} />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="flex justify-end gap-3">

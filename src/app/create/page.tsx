@@ -2,6 +2,13 @@ import { getDB } from '@/lib/db';
 import { IconGenerator } from '@/components/IconGenerator';
 import { Footer } from '@/components/Footer';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Icon Generator - OS Folder Icons",
+  description: "Create custom folder icons for macOS, Windows, and Linux. Choose your style, color, and icon to match your aesthetic.",
+};
+
 export default async function CreatePage() {
   const db = await getDB();
 

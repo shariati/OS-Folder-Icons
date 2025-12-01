@@ -4,6 +4,13 @@ import Image from 'next/image';
 import { Download, Search, Filter } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Icon Bundles - OS Folder Icons",
+  description: "Browse and download curated collections of folder icons for macOS, Windows, and Linux. Find the perfect style for your desktop.",
+};
+
 export default async function BundlesPage({
   searchParams,
 }: {
