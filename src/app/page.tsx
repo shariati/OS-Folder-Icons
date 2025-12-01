@@ -1,114 +1,69 @@
 import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Download, Palette, Gamepad2, Briefcase, GraduationCap, Code2, Paintbrush, Coins, Sparkles } from 'lucide-react';
+import { ArrowRight, Palette, Layers } from 'lucide-react';
 import { Footer } from '@/components/Footer';
-import { clsx } from 'clsx';
+import { HeroSlider } from '@/components/HeroSlider';
 
 export default async function Home() {
   const db = await getDB();
-  const featuredBundles = db.bundles.slice(0, 6); // Taking first 6 for carousel
   const latestBundles = db.bundles.slice(0, 8); // Taking first 8 as latest
-
-
 
   return (
     <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
-      {/* Hero Section */}
-
+      {/* Main Hero Section */}
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full z-0">
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="absolute top-0 left-0 w-full h-full object-cover opacity-30 dark:opacity-20"
+          <div className="absolute inset-0 bg-black/40 z-10" /> {/* Overlay */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
           >
             <source src="/backgrounds/video/home-video-background-1.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#e0e5ec]/80 via-[#e0e5ec]/50 to-[#e0e5ec] dark:from-gray-900/80 dark:via-gray-900/50 dark:to-gray-900"></div>
         </div>
 
-        <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center h-full pb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neu-pressed mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white/50 dark:bg-black/20 backdrop-blur-sm animate-fade-in-up">
-            <Sparkles size={16} />
-            <span>Premium Folder Icons for Everyone</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-800 dark:text-white mb-8 leading-tight drop-shadow-sm animate-fade-in-up animation-delay-200">
-            Transform Your <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-              Digital Workspace
-            </span>
+        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
+           <div className="animate-fade-in-up animation-delay-200">
+              <span className="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium mb-6">
+                ✨ v2.0 is now live
+              </span>
+           </div>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 drop-shadow-lg animate-fade-in-up animation-delay-400">
+            Custom OS Folder Icons
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-300 mb-12 font-medium animate-fade-in-up animation-delay-400">
-            Elevate your folder icons with our premium, handcrafted collections. 
-            Designed for macOS, Windows, and Linux.
+          <p className="mt-6 text-xl text-gray-200 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up animation-delay-600">
+            Customize your folder icons for macOS, Windows, and Linux. Choose from our premium bundles or generate your own.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in-up animation-delay-600">
-            <Link href="/bundles" className="px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-lg shadow-blue-500/30 hover:-translate-y-1 transition-all">
-              Explore Bundles
-            </Link>
-            <Link href="/create" className="px-8 py-4 text-lg font-bold rounded-2xl text-gray-700 dark:text-gray-200 neu-flat hover:neu-pressed transition-all flex items-center justify-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
+            <Link
+              href="/create"
+              className="px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition-all hover:scale-105 shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
+            >
               <Palette size={20} />
-              Create Custom
+              Create Icons
+            </Link>
+            <Link
+              href="/bundles"
+              className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition-all hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <Layers size={20} />
+              Browse Bundles
             </Link>
           </div>
         </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#e0e5ec] dark:from-gray-900 to-transparent z-20" />
       </section>
 
-      {/* Featured Bundles Carousel (Overlapping Hero) */}
-      <section className="relative z-20 -mt-32 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto pb-8 gap-6 snap-x snap-mandatory hide-scrollbar">
-            {featuredBundles.map((bundle, index) => {
-              // Define gradients based on index to mimic the "colorful blocks"
-              const gradients = [
-                'bg-gradient-to-br from-pink-400 to-rose-500 shadow-rose-500/30',
-                'bg-gradient-to-br from-blue-400 to-indigo-500 shadow-indigo-500/30',
-                'bg-gradient-to-br from-purple-400 to-violet-500 shadow-violet-500/30',
-              ];
-              const gradient = gradients[index % gradients.length];
-
-              return (
-                <Link key={bundle.id} href={`/bundles/${bundle.id}`} className="snap-center shrink-0 w-[300px] md:w-[350px] group">
-                  <div className={`h-full p-1 rounded-[2.5rem] ${gradient} shadow-xl transition-transform duration-300 hover:-translate-y-2`}>
-                    <div className="bg-white/10 backdrop-blur-sm h-full rounded-[2.3rem] p-6 flex flex-col text-white border border-white/20">
-                      {/* Image Container */}
-                      <div className="relative aspect-square w-32 mx-auto mb-6 rounded-full bg-white/20 shadow-inner flex items-center justify-center overflow-hidden border-4 border-white/30">
-                        {bundle.previewImage ? (
-                          <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
-                        ) : (
-                          <Palette className="w-12 h-12 text-white" />
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="text-center mb-6 flex-grow">
-                        <h3 className="text-2xl font-bold mb-2">{bundle.name}</h3>
-                        <p className="text-white/80 text-sm line-clamp-3 font-medium">
-                          {bundle.description}
-                        </p>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="mt-auto">
-                        <div className="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-gray-800 font-bold shadow-lg group-hover:scale-110 transition-transform">
-                          <ArrowRight size={20} />
-                        </div>
-                        <p className="text-center mt-3 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                          View Bundle
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+      {/* Featured Section (Hero Slider) */}
+      <section className="relative z-30">
+        <HeroSlider slides={db.heroSlides || []} />
       </section>
 
       {/* Categories Section */}

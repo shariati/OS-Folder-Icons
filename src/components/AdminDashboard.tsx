@@ -8,11 +8,12 @@ import { ToastProvider } from '@/components/Toast';
 import { clsx } from 'clsx';
 import { CategoriesManager } from '@/components/CategoriesManager';
 import { TagsManager } from '@/components/TagsManager';
-import { LayoutDashboard, Package, Settings, LogOut, FolderOpen, Tags, Grid } from 'lucide-react';
+import { HeroManager } from '@/components/HeroManager';
+import { LayoutDashboard, Package, Settings, LogOut, FolderOpen, Tags, Grid, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero'>('os');
 
   return (
     <ToastProvider>
@@ -78,6 +79,18 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 <Tags className="w-5 h-5 mr-3" />
                 Tags
               </button>
+              <button
+                onClick={() => setActiveTab('hero')}
+                className={clsx(
+                  "w-full flex items-center px-4 py-4 text-sm font-bold rounded-2xl transition-all duration-200",
+                  activeTab === 'hero'
+                    ? "neu-pressed text-blue-600"
+                    : "neu-flat hover:neu-pressed text-gray-600 dark:text-gray-300"
+                )}
+              >
+                <ImageIcon className="w-5 h-5 mr-3" />
+                Hero Slider
+              </button>
             </nav>
           </div>
 
@@ -108,6 +121,9 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                <button onClick={() => setActiveTab('tags')} className={clsx("p-2 rounded-xl transition-all", activeTab === 'tags' ? 'neu-pressed text-blue-600' : 'neu-flat text-gray-500')}>
                   <Tags className="w-5 h-5" />
                </button>
+               <button onClick={() => setActiveTab('hero')} className={clsx("p-2 rounded-xl transition-all", activeTab === 'hero' ? 'neu-pressed text-blue-600' : 'neu-flat text-gray-500')}>
+                  <ImageIcon className="w-5 h-5" />
+               </button>
             </div>
         </div>
 
@@ -120,12 +136,14 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'bundles' && 'Bundle Management'}
                 {activeTab === 'categories' && 'Categories'}
                 {activeTab === 'tags' && 'Tags'}
+                {activeTab === 'hero' && 'Hero Slider'}
               </h1>
               <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
                 {activeTab === 'os' && 'Manage OS versions, folder assets, and configurations.'}
                 {activeTab === 'bundles' && 'Create and manage icon bundles for the marketplace.'}
                 {activeTab === 'categories' && 'Manage product categories and SEO settings.'}
                 {activeTab === 'tags' && 'Manage tags for bundles and search.'}
+                {activeTab === 'hero' && 'Manage the main hero slider on the home page.'}
               </p>
             </div>
 
@@ -134,6 +152,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
               {activeTab === 'bundles' && <BundlesManager initialData={initialData} />}
               {activeTab === 'categories' && <CategoriesManager initialData={initialData} />}
               {activeTab === 'tags' && <TagsManager initialData={initialData} />}
+              {activeTab === 'hero' && <HeroManager initialData={initialData} />}
             </div>
           </div>
         </main>

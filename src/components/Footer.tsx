@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FolderOpen, Twitter, Github, Linkedin } from 'lucide-react';
+import { FolderOpen, Twitter, Github, Linkedin, Palette, BookOpen } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -17,17 +17,21 @@ export function Footer() {
               Beautiful, customizable folder icons for your digital workspace. Designed with love and pixel-perfect precision.
             </p>
             <div className="mt-6 flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-500 shadow-sm hover:shadow-md transition-all duration-200">
-                <span className="sr-only">Twitter</span>
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
+              <a href="https://github.com/shariati/OS-Folder-Icons" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">GitHub</span>
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-600 shadow-sm hover:shadow-md transition-all duration-200">
+              <a href="https://www.linkedin.com/in/aminshariati" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-600 shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">LinkedIn</span>
                 <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="https://www.behance.net/aminshariati?" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-500 shadow-sm hover:shadow-md transition-all duration-200">
+                <span className="sr-only">Behance</span>
+                <Palette className="h-5 w-5" />
+              </a>
+              <a href="https://medium.com/@shariati" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-black dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
+                <span className="sr-only">Medium</span>
+                <BookOpen className="h-5 w-5" />
               </a>
             </div>
           </div>

@@ -293,5 +293,34 @@
       "name": "Dark Mode",
       "slug": "dark-mode"
     }
+  ],
+  "heroSlides": [
+    {
+      "id": "slide-1",
+      "title": "ULTIMATE GAMING SETUP",
+      "subtitle": "Level Up Your Desktop",
+      "description": "Transform your gaming experience with our exclusive neon-styled folder icons. Perfect for dark mode enthusiasts.",
+      "imageUrl": "/uploads/ba836e01-c698-47d5-9417-85a6fc8bc2e1-GeminiGeneratedImageocs6cuocs6cuocs6.png",
+      "link": "/bundles/gaming",
+      "order": 1
+    },
+    {
+      "id": "slide-2",
+      "title": "MINIMALIST WORKSPACE",
+      "subtitle": "Boost Productivity",
+      "description": "Clean, crisp, and distraction-free icons designed to help you focus on what matters most.",
+      "imageUrl": "/uploads/eae7b1f3-8897-40fe-a234-e29d8e8d7558-foldermain.png",
+      "link": "/bundles/minimal",
+      "order": 2
+    },
+    {
+      "id": "slide-3",
+      "title": "CREATIVE STUDIO",
+      "subtitle": "For Designers & Artists",
+      "description": "Express your creativity with our vibrant and artistic folder icon collection.",
+      "imageUrl": "/uploads/d61bcf54-2997-46db-bbf2-12e2ed387bee-foldermain.png",
+      "link": "/bundles/art",
+      "order": 3
+    }
   ]
 }

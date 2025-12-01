@@ -51,9 +51,20 @@ export interface Tag {
   slug: string;
 }
 
+export interface HeroSlide {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  imageUrl: string;
+  link?: string;
+  order: number;
+}
+
 export interface DB {
   operatingSystems: OperatingSystem[];
   bundles: Bundle[];
   categories: Category[];
   tags: Tag[];
+  heroSlides: HeroSlide[];
 }
