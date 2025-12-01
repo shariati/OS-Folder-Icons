@@ -23,19 +23,33 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
       {/* Hero Section */}
       <section className="relative pt-32 pb-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neu-pressed mb-8 text-sm font-medium text-blue-600 dark:text-blue-400">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="absolute min-w-full min-h-full object-cover opacity-30 dark:opacity-20"
+          >
+            <source src="/backgrounds/video/home-video-background-1.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#e0e5ec]/80 via-[#e0e5ec]/50 to-[#e0e5ec] dark:from-gray-900/80 dark:via-gray-900/50 dark:to-gray-900"></div>
+        </div>
+
+        <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neu-pressed mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
             <Sparkles size={16} />
             <span>Premium Folder Icons for Everyone</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-800 dark:text-white mb-8 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-800 dark:text-white mb-8 leading-tight drop-shadow-sm">
             Transform Your <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               Digital Workspace
             </span>
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400 mb-12">
+          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-300 mb-12 font-medium">
             Elevate your folder icons with our premium, handcrafted collections. 
             Designed for macOS, Windows, and Linux.
           </p>
@@ -43,17 +57,11 @@ export default async function Home() {
             <Link href="/bundles" className="px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-lg shadow-blue-500/30 hover:-translate-y-1 transition-all">
               Explore Bundles
             </Link>
-            <Link href="/create" className="px-8 py-4 text-lg font-bold rounded-2xl text-gray-700 dark:text-gray-200 neu-flat hover:neu-pressed transition-all flex items-center justify-center gap-2">
+            <Link href="/create" className="px-8 py-4 text-lg font-bold rounded-2xl text-gray-700 dark:text-gray-200 neu-flat hover:neu-pressed transition-all flex items-center justify-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <Palette size={20} />
               Create Custom
             </Link>
           </div>
-        </div>
-        
-        {/* Abstract Background Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-3xl opacity-50 animate-blob"></div>
-          <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-400/20 blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
         </div>
       </section>
 
