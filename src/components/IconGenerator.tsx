@@ -22,7 +22,7 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
   const [selectedVersionId, setSelectedVersionId] = useState<string>('');
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
   const [selectedIcon, setSelectedIcon] = useState<string | null>('Star');
-  const [iconType, setIconType] = useState<'lucide' | 'fontawesome' | 'heroicons'>('lucide');
+  const [iconType, setIconType] = useState<'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons'>('lucide');
   const [iconColor, setIconColor] = useState('#000000');
   const [iconSize, setIconSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [iconEffect, setIconEffect] = useState<'none' | 'carved' | 'emboss' | 'glassy'>('carved');

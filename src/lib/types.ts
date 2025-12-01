@@ -30,7 +30,7 @@ export interface Bundle {
   targetOS: string[]; // List of OS IDs this bundle supports
   icons: {
     name: string; // Icon name
-    type: 'lucide' | 'fontawesome' | 'heroicons';
+    type: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
   }[];
 }
 

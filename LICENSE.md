@@ -22,5 +22,7 @@ This project incorporates icons from the following open-source libraries. Each l
 *   **Lucide Icons**: ISC License.
 *   **Font Awesome Free**: CC BY 4.0 (Icons), SIL OFL 1.1 (Fonts), MIT (Code).
 *   **Heroicons**: MIT License.
+*   **Unicons**: Apache 2.0 License.
+*   **Grommet Icons**: Apache 2.0 License.
 
 Please refer to the respective project repositories for full license details.

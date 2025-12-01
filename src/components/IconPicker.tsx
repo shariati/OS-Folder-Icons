@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import * as LucideIcons from 'lucide-react';
 import * as HeroIcons from '@heroicons/react/24/solid';
+import * as Unicons from '@iconscout/react-unicons';
+import * as GrommetIcons from 'grommet-icons';
 import { HexColorPicker } from 'react-colorful';
 import { Search, Grid, Type, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -10,8 +12,8 @@ import { clsx } from 'clsx';
 interface IconPickerProps {
   selectedIcon: string | null;
   onSelectIcon: (icon: string) => void;
-  iconType: 'lucide' | 'fontawesome' | 'heroicons';
-  onTypeChange: (type: 'lucide' | 'fontawesome' | 'heroicons') => void;
+  iconType: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
+  onTypeChange: (type: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons') => void;
   color: string;
   onColorChange: (color: string) => void;
   size: 'small' | 'medium' | 'large';
@@ -48,6 +50,16 @@ export function IconPicker({
     return Object.keys(HeroIcons).filter(key => isNaN(Number(key)));
   }, []);
 
+  // Get all Unicons names
+  const uniconsIconNames = useMemo(() => {
+    return Object.keys(Unicons).filter(key => isNaN(Number(key)));
+  }, []);
+
+  // Get all Grommet Icons names
+  const grommetIconNames = useMemo(() => {
+    return Object.keys(GrommetIcons).filter(key => isNaN(Number(key)) && key !== 'default' && key !== 'ThemeContext');
+  }, []);
+
   const filteredIcons = useMemo(() => {
     let source: string[] = [];
     switch (iconType) {
@@ -60,11 +72,17 @@ export function IconPicker({
       case 'heroicons':
         source = heroIconNames;
         break;
+      case 'unicons':
+        source = uniconsIconNames;
+        break;
+      case 'grommet-icons':
+        source = grommetIconNames;
+        break;
     }
 
     if (!search) return source.slice(0, 100); // Limit initial display
     return source.filter(name => name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
-  }, [lucideIconNames, heroIconNames, search, iconType]);
+  }, [lucideIconNames, heroIconNames, uniconsIconNames, grommetIconNames, search, iconType]);
 
   return (
     <div className="neu-flat p-6 rounded-3xl space-y-6">
@@ -115,6 +133,28 @@ export function IconPicker({
               <Shield size={14} />
               Heroicons
             </button>
+            <button
+              onClick={() => onTypeChange('unicons')}
+              className={clsx(
+                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
+                iconType === 'unicons' 
+                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              )}
+            >
+              <span className="text-xs">Unicons</span>
+            </button>
+            <button
+              onClick={() => onTypeChange('grommet-icons')}
+              className={clsx(
+                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
+                iconType === 'grommet-icons' 
+                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              )}
+            >
+              <span className="text-xs">Grommet</span>
+            </button>
           </div>
 
           <div className="relative">
@@ -135,7 +175,7 @@ export function IconPicker({
          <div className="space-y-4">
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                {/* Simple mode tabs for libraries */}
-               {(['lucide', 'fontawesome', 'heroicons'] as const).map(type => (
+               {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(type => (
                  <button
                    key={type}
                    onClick={() => onTypeChange(type)}
@@ -146,7 +186,7 @@ export function IconPicker({
                        : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200"
                    )}
                  >
-                   {type.charAt(0).toUpperCase() + type.slice(1)}
+                   {type === 'grommet-icons' ? 'Grommet' : type.charAt(0).toUpperCase() + type.slice(1)}
                  </button>
                ))}
             </div>
@@ -202,6 +242,42 @@ export function IconPicker({
             );
           } else if (iconType === 'heroicons') {
             const Icon = (HeroIcons as any)[name];
+            if (!Icon) return null;
+            return (
+              <button
+                key={name}
+                onClick={() => onSelectIcon(name)}
+                className={clsx(
+                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
+                  selectedIcon === name 
+                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
+                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                )}
+                title={name}
+              >
+                <Icon className="w-6 h-6" />
+              </button>
+            );
+          } else if (iconType === 'unicons') {
+            const Icon = (Unicons as any)[name];
+            if (!Icon) return null;
+            return (
+              <button
+                key={name}
+                onClick={() => onSelectIcon(name)}
+                className={clsx(
+                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
+                  selectedIcon === name 
+                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
+                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                )}
+                title={name}
+              >
+                <Icon className="w-6 h-6" />
+              </button>
+            );
+          } else if (iconType === 'grommet-icons') {
+            const Icon = (GrommetIcons as any)[name];
             if (!Icon) return null;
             return (
               <button

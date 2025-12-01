@@ -4,12 +4,14 @@ import { useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import * as LucideIcons from 'lucide-react';
 import * as HeroIcons from '@heroicons/react/24/solid';
+import * as Unicons from '@iconscout/react-unicons';
+import * as GrommetIcons from 'grommet-icons';
 import { clsx } from 'clsx';
 
 interface CanvasPreviewProps {
   folderImage?: string;
   iconName?: string | null;
-  iconType: 'lucide' | 'fontawesome' | 'heroicons';
+  iconType: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
   iconColor: string;
   iconSize: 'small' | 'medium' | 'large';
   offsetX?: number;
@@ -78,6 +80,12 @@ export function CanvasPreview({
     }
     if (iconType === 'heroicons') {
       return (HeroIcons as any)[iconName];
+    }
+    if (iconType === 'unicons') {
+      return (Unicons as any)[iconName];
+    }
+    if (iconType === 'grommet-icons') {
+      return (GrommetIcons as any)[iconName];
     }
     return null;
   };
@@ -148,7 +156,7 @@ export function CanvasPreview({
         />
       )}
 
-      {/* Overlay Icon (React Components: Lucide, Heroicons) */}
+      {/* Overlay Icon (React Components: Lucide, Heroicons, Unicons, Grommet) */}
       {IconComponent && (
         <div 
           className={clsx("absolute z-10 flex items-center justify-center", sizeClass)} 
@@ -158,7 +166,11 @@ export function CanvasPreview({
             ...effectStyle
           }}
         >
-          <IconComponent size={400} className="w-full h-full" />
+          {iconType === 'grommet-icons' ? (
+             <IconComponent size="100%" className="w-full h-full" color={iconColor} />
+          ) : (
+             <IconComponent size={400} className="w-full h-full" color={iconColor} />
+          )}
         </div>
       )}
       
