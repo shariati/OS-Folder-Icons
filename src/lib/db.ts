@@ -10,7 +10,7 @@ export async function getDB(): Promise<DB> {
         return JSON.parse(data);
     } catch (error) {
         // If file doesn't exist, return empty DB
-        return { operatingSystems: [], bundles: [] };
+        return { operatingSystems: [], bundles: [], categories: [], tags: [], heroSlides: [] };
     }
 }
 

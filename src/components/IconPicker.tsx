@@ -2,15 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import * as LucideIcons from 'lucide-react';
+import * as HeroIcons from '@heroicons/react/24/solid';
 import { HexColorPicker } from 'react-colorful';
-import { Search, Grid, Type } from 'lucide-react';
+import { Search, Grid, Type, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface IconPickerProps {
   selectedIcon: string | null;
   onSelectIcon: (icon: string) => void;
-  iconType: 'lucide' | 'fontawesome';
-  onTypeChange: (type: 'lucide' | 'fontawesome') => void;
+  iconType: 'lucide' | 'fontawesome' | 'heroicons';
+  onTypeChange: (type: 'lucide' | 'fontawesome' | 'heroicons') => void;
   color: string;
   onColorChange: (color: string) => void;
   size: 'small' | 'medium' | 'large';
@@ -42,11 +43,28 @@ export function IconPicker({
     return Object.keys(LucideIcons).filter(key => key !== 'icons' && key !== 'createLucideIcon' && isNaN(Number(key)));
   }, []);
 
+  // Get all Heroicons names
+  const heroIconNames = useMemo(() => {
+    return Object.keys(HeroIcons).filter(key => isNaN(Number(key)));
+  }, []);
+
   const filteredIcons = useMemo(() => {
-    const source = iconType === 'lucide' ? lucideIconNames : fontAwesomeIcons;
+    let source: string[] = [];
+    switch (iconType) {
+      case 'lucide':
+        source = lucideIconNames;
+        break;
+      case 'fontawesome':
+        source = fontAwesomeIcons;
+        break;
+      case 'heroicons':
+        source = heroIconNames;
+        break;
+    }
+
     if (!search) return source.slice(0, 100); // Limit initial display
     return source.filter(name => name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
-  }, [lucideIconNames, search, iconType]);
+  }, [lucideIconNames, heroIconNames, search, iconType]);
 
   return (
     <div className="neu-flat p-6 rounded-3xl space-y-6">
@@ -60,11 +78,11 @@ export function IconPicker({
       {/* Icon Source & Search - Only in Advanced Mode */}
       {mode === 'advanced' && (
         <div className="space-y-4">
-          <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-full">
+          <div className="flex flex-wrap gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-full">
             <button
               onClick={() => onTypeChange('lucide')}
               className={clsx(
-                "flex-1 px-3 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
                 iconType === 'lucide' 
                   ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
@@ -76,7 +94,7 @@ export function IconPicker({
             <button
               onClick={() => onTypeChange('fontawesome')}
               className={clsx(
-                "flex-1 px-3 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
                 iconType === 'fontawesome' 
                   ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
@@ -84,6 +102,18 @@ export function IconPicker({
             >
               <Type size={14} />
               FontAwesome
+            </button>
+            <button
+              onClick={() => onTypeChange('heroicons')}
+              className={clsx(
+                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
+                iconType === 'heroicons' 
+                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              )}
+            >
+              <Shield size={14} />
+              Heroicons
             </button>
           </div>
 
@@ -102,15 +132,34 @@ export function IconPicker({
 
       {/* Simple Mode Search (Just the input) */}
       {mode === 'simple' && (
-         <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search icons..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-            />
+         <div className="space-y-4">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+               {/* Simple mode tabs for libraries */}
+               {(['lucide', 'fontawesome', 'heroicons'] as const).map(type => (
+                 <button
+                   key={type}
+                   onClick={() => onTypeChange(type)}
+                   className={clsx(
+                     "px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all",
+                     iconType === type
+                       ? "bg-blue-600 text-white shadow-md"
+                       : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200"
+                   )}
+                 >
+                   {type.charAt(0).toUpperCase() + type.slice(1)}
+                 </button>
+               ))}
+            </div>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search icons..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
+              />
+            </div>
           </div>
       )}
 
@@ -135,7 +184,7 @@ export function IconPicker({
                 <Icon className="w-6 h-6" />
               </button>
             );
-          } else {
+          } else if (iconType === 'fontawesome') {
             return (
               <button
                 key={name}
@@ -151,7 +200,26 @@ export function IconPicker({
                 <i className={clsx(name, "text-xl")} />
               </button>
             );
+          } else if (iconType === 'heroicons') {
+            const Icon = (HeroIcons as any)[name];
+            if (!Icon) return null;
+            return (
+              <button
+                key={name}
+                onClick={() => onSelectIcon(name)}
+                className={clsx(
+                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
+                  selectedIcon === name 
+                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
+                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                )}
+                title={name}
+              >
+                <Icon className="w-6 h-6" />
+              </button>
+            );
           }
+          return null;
         })}
       </div>
 

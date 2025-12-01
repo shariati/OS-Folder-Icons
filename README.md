@@ -5,6 +5,7 @@ Custom OS Folder Icons is a web application designed to help users customize the
 ## Features
 
 - **Icon Generator**: Create custom folder icons with various colors and styles.
+- **Multi-Library Support**: Choose icons from Lucide, Font Awesome, and Heroicons.
 - **Bundles**: Browse and download curated collections of folder icons (Gaming, Finance, Office, etc.).
 - **Admin Panel**: Manage categories, tags, bundles, and the hero slider.
 - **Responsive Design**: Modern, glassmorphic UI that works on all devices.

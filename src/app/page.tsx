@@ -15,7 +15,7 @@ export default async function Home() {
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full z-0">
-          <div className="absolute inset-0 bg-black/40 z-10" /> {/* Overlay */}
+          <div className="absolute inset-0 bg-white/60 z-10" /> {/* Overlay */}
           <video
             autoPlay
             loop
@@ -29,14 +29,14 @@ export default async function Home() {
 
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
            <div className="animate-fade-in-up animation-delay-200">
-              <span className="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium mb-6">
+              <span className="inline-block py-1 px-3 rounded-full bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 text-sm font-medium mb-6">
                 ✨ v2.0 is now live
               </span>
            </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 drop-shadow-lg animate-fade-in-up animation-delay-400">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 drop-shadow-sm animate-fade-in-up animation-delay-400">
             Custom OS Folder Icons
           </h1>
-          <p className="mt-6 text-xl text-gray-200 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up animation-delay-600">
+          <p className="mt-6 text-xl text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up animation-delay-600">
             Customize your folder icons for macOS, Windows, and Linux. Choose from our premium bundles or generate your own.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
@@ -49,7 +49,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/bundles"
-              className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition-all hover:scale-105 flex items-center justify-center gap-2"
+              className="px-8 py-4 rounded-xl bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 font-bold text-lg hover:bg-black/10 transition-all hover:scale-105 flex items-center justify-center gap-2"
             >
               <Layers size={20} />
               Browse Bundles

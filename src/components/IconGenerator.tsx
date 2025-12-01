@@ -22,7 +22,7 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
   const [selectedVersionId, setSelectedVersionId] = useState<string>('');
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
   const [selectedIcon, setSelectedIcon] = useState<string | null>('Star');
-  const [iconType, setIconType] = useState<'lucide' | 'fontawesome'>('lucide');
+  const [iconType, setIconType] = useState<'lucide' | 'fontawesome' | 'heroicons'>('lucide');
   const [iconColor, setIconColor] = useState('#000000');
   const [iconSize, setIconSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [iconEffect, setIconEffect] = useState<'none' | 'carved' | 'emboss' | 'glassy'>('carved');
@@ -179,7 +179,7 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
                         alt={folder.name} 
                         fill 
                         className="object-contain p-2" 
-                        style={{ filter: mode === 'advanced' && folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' }}
+                        style={{ filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' }}
                       />
                     </button>
                   ))}
@@ -191,26 +191,53 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
 
         {/* Simple Mode Style Presets */}
         {mode === 'simple' && (
-          <div className="neu-flat p-6 rounded-3xl">
-            <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Style</h3>
-            <p className="text-sm text-gray-500 mb-4">Choose a preset style</p>
-            <div className="grid grid-cols-3 gap-3">
-              {(['carved', 'glassy', 'none'] as const).map(effect => (
-                <button
-                  key={effect}
-                  onClick={() => setIconEffect(effect)}
-                  className={clsx(
-                    "py-3 px-2 rounded-xl text-sm font-bold transition-all",
-                    iconEffect === effect
-                      ? "neu-pressed text-blue-600"
-                      : "neu-flat text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
-                  )}
-                >
-                  {effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
-                </button>
-              ))}
+          <>
+            <div className="neu-flat p-6 rounded-3xl">
+              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Style</h3>
+              <p className="text-sm text-gray-500 mb-4">Choose a preset style</p>
+              <div className="grid grid-cols-3 gap-3">
+                {(['carved', 'glassy', 'none'] as const).map(effect => (
+                  <button
+                    key={effect}
+                    onClick={() => setIconEffect(effect)}
+                    className={clsx(
+                      "py-3 px-2 rounded-xl text-sm font-bold transition-all",
+                      iconEffect === effect
+                        ? "neu-pressed text-blue-600"
+                        : "neu-flat text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
+                    )}
+                  >
+                    {effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+
+            {/* Simple Mode Folder Color */}
+            <div className="neu-flat p-6 rounded-3xl">
+               <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
+               <p className="text-sm text-gray-500 mb-4">Select a color theme</p>
+               <div className="flex flex-wrap gap-3">
+                 {[0, 140, 180, 240, 300].map(hue => (
+                   <button
+                     key={hue}
+                     onClick={() => setFolderHue(hue)}
+                     className={clsx(
+                       "w-12 h-12 rounded-xl transition-all shadow-sm border-2",
+                       folderHue === hue 
+                         ? "border-blue-500 scale-110 shadow-md" 
+                         : "border-transparent hover:scale-105"
+                     )}
+                     style={{ 
+                       backgroundColor: '#3b82f6', // Base blue color
+                       filter: `hue-rotate(${hue}deg)` 
+                     }}
+                     title={`Hue: ${hue}°`}
+                   />
+                 ))}
+               </div>
+            </div>
+          </>
         )}
 
         {/* Icon Picker */}

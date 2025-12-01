@@ -14,3 +14,13 @@ These assets are exclusively licensed for the "OS-Folder-Icons" GitHub repositor
 The license for these specific assets can be found in: `licenses/license_certificate_RZV4XD6YQ2.txt`.
 
 By using this repository, you agree to respect these licensing terms.
+
+## Third-Party Icon Licenses
+
+This project incorporates icons from the following open-source libraries. Each library is subject to its own license:
+
+*   **Lucide Icons**: ISC License.
+*   **Font Awesome Free**: CC BY 4.0 (Icons), SIL OFL 1.1 (Fonts), MIT (Code).
+*   **Heroicons**: MIT License.
+
+Please refer to the respective project repositories for full license details.

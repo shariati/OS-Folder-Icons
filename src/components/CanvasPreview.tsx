@@ -3,12 +3,13 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import * as LucideIcons from 'lucide-react';
+import * as HeroIcons from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 
 interface CanvasPreviewProps {
   folderImage?: string;
   iconName?: string | null;
-  iconType: 'lucide' | 'fontawesome';
+  iconType: 'lucide' | 'fontawesome' | 'heroicons';
   iconColor: string;
   iconSize: 'small' | 'medium' | 'large';
   offsetX?: number;
@@ -69,9 +70,19 @@ export function CanvasPreview({
     return () => window.removeEventListener('trigger-download', handleDownloadTrigger);
   }, [download]);
 
-  const IconComponent = iconType === 'lucide' 
-    ? (LucideIcons as any)[iconName || ''] 
-    : null; // FontAwesome not fully implemented in this view yet for dynamic rendering if not using library
+  const getIconComponent = () => {
+    if (!iconName) return null;
+    
+    if (iconType === 'lucide') {
+      return (LucideIcons as any)[iconName];
+    }
+    if (iconType === 'heroicons') {
+      return (HeroIcons as any)[iconName];
+    }
+    return null;
+  };
+
+  const IconComponent = getIconComponent();
 
   const sizeClass = {
     small: 'w-1/3 h-1/3',
@@ -137,7 +148,7 @@ export function CanvasPreview({
         />
       )}
 
-      {/* Overlay Icon (Lucide) */}
+      {/* Overlay Icon (React Components: Lucide, Heroicons) */}
       {IconComponent && (
         <div 
           className={clsx("absolute z-10 flex items-center justify-center", sizeClass)} 
@@ -151,8 +162,8 @@ export function CanvasPreview({
         </div>
       )}
       
-      {/* FontAwesome Support */}
-      {iconType === 'fontawesome' && iconName && (
+      {/* Font Icon Support (FontAwesome) */}
+      {(iconType === 'fontawesome') && iconName && (
          <div 
          className={clsx("absolute z-10 flex items-center justify-center", sizeClass)} 
          style={{ 
