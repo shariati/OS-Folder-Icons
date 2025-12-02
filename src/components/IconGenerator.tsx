@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { CanvasPreview } from './CanvasPreview';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { AdModal } from './AdModal';
 
 interface IconGeneratorProps {
   initialData: DB;
@@ -28,6 +30,9 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
   const [iconEffect, setIconEffect] = useState<'none' | 'carved' | 'emboss' | 'glassy'>('carved');
   const [iconTransparency, setIconTransparency] = useState(0.75); // 0 to 1
   const [folderHue, setFolderHue] = useState(0); // 0 to 360
+
+  const { userProfile, loading } = useAuth();
+  const [showAd, setShowAd] = useState(false);
 
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
@@ -68,9 +73,23 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownloadClick = () => {
+    if (loading) return;
+
+    // Check if user is free or not logged in (assuming site visitor is free)
+    const isFreeUser = !userProfile || userProfile.role === 'free';
+
+    if (isFreeUser) {
+      setShowAd(true);
+    } else {
+      triggerDownload();
+    }
+  };
+
+  const triggerDownload = () => {
     const event = new CustomEvent('trigger-download');
     window.dispatchEvent(event);
+    setShowAd(false);
   };
 
   return (
@@ -389,7 +408,7 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
             <div className="space-y-4 max-w-md mx-auto">
               <button
                 id="download-btn"
-                onClick={handleDownload}
+                onClick={handleDownloadClick}
                 className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 text-lg"
               >
                 <Download size={24} />
@@ -402,6 +421,11 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
           </div>
         </div>
       </div>
+      <AdModal 
+        isOpen={showAd} 
+        onClose={() => setShowAd(false)} 
+        onComplete={triggerDownload} 
+      />
     </div>
   );
 }
