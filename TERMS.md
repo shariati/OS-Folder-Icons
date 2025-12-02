@@ -55,4 +55,4 @@ We reserve the right to modify these Terms at any time. We will notify users of 
 
 ## 10. Contact Us
 
-If you have any questions about these Terms, please contact us at [amin@shariati.me](mailto:amin@shariati.me).
+If you have questions about this Privacy Policy, please contact us at [GitHub Discussions](https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a).

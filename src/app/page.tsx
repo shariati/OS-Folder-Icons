@@ -1,3 +1,21 @@
+/*
+ * OS-Folder-Icons
+ * Copyright (C) 2025 Amin Shariati
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -30,7 +48,7 @@ export default async function Home() {
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
            <div className="animate-fade-in-up animation-delay-200">
               <span className="inline-block py-1 px-3 rounded-full bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 text-sm font-medium mb-6">
-                ✨ v2.0 is now live
+                v3.0 is now live
               </span>
            </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 drop-shadow-sm animate-fade-in-up animation-delay-400">

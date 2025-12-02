@@ -62,4 +62,5 @@ Please read the full [LICENSE.md](LICENSE.md) file for detailed terms and condit
 
 - **LinkedIn**: [Amin Shariati](https://www.linkedin.com/in/aminshariati)
 - **GitHub**: [OS-Folder-Icons](https://github.com/shariati/OS-Folder-Icons)
+- **Discussions**: [GitHub Discussions](https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a)
 - **Medium**: [@shariati](https://medium.com/@shariati)
