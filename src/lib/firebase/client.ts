@@ -23,3 +23,5 @@ try {
 }
 
 export { app, auth, db };
+export const getFirebaseAuth = () => auth;
+export const getFirebaseDB = () => db;
