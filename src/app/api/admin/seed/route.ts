@@ -17,6 +17,10 @@ export async function POST(request: Request) {
         const data = await fs.readFile(dbPath, 'utf-8');
         const jsonData: DatabaseSchema = JSON.parse(data);
 
+        if (!db) {
+            return NextResponse.json({ error: 'Firebase Admin not initialized' }, { status: 500 });
+        }
+
         const batch = db.batch();
 
         // Seed Operating Systems
