@@ -16,7 +16,7 @@ let db: Firestore = undefined as unknown as Firestore;
 let auth: Auth = undefined as unknown as Auth;
 
 try {
-    if (firebaseAdminConfig.projectId) {
+    if (firebaseAdminConfig.projectId && serviceAccount) {
         app = !getApps().length ? initializeApp(firebaseAdminConfig) : getApp();
         db = getFirestore(app);
         auth = getAuth(app);
