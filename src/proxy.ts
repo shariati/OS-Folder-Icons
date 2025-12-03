@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
     const hostname = req.nextUrl.hostname;
     const isStaging = hostname === 'test.hdpick.com';
 
