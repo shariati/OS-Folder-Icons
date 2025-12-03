@@ -25,6 +25,8 @@
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@heroicons/react": "^2.2.0",
     "@iconscout/react-unicons": "^2.2.5",
+    "@microsoft/clarity": "^1.0.2",
+    "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
     "firebase": "^11.0.2",
     "firebase-admin": "^12.7.0",
