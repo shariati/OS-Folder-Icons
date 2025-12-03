@@ -1,8 +1,17 @@
-import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide } from '../types';
+import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
 import { UserProfile } from '../../types/user';
 
-export interface DatabaseSchema extends DB {
+export interface DatabaseSchema {
+    operatingSystems: OperatingSystem[];
+    bundles: Bundle[];
+    categories: Category[];
+    tags: Tag[];
+    heroSlides: HeroSlide[];
     users?: UserProfile[];
+    auditLogs?: AuditLog[];
+    blogPosts?: BlogPost[];
+    pages?: Page[];
+    settings?: Settings;
 }
 
 export interface DatabaseAdapter {
@@ -14,6 +23,18 @@ export interface DatabaseAdapter {
     getUser(uid: string): Promise<UserProfile | null>;
     createUser(user: UserProfile): Promise<void>;
     updateUser(uid: string, data: Partial<UserProfile>): Promise<void>;
+    getUsers(): Promise<UserProfile[]>;
+    deleteUser(uid: string): Promise<void>;
+    getAuditLogs(): Promise<AuditLog[]>;
+    logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void>;
+    getBlogPosts(): Promise<BlogPost[]>;
+    saveBlogPost(post: BlogPost): Promise<void>;
+    deleteBlogPost(id: string): Promise<void>;
+    getPages(): Promise<Page[]>;
+    savePage(page: Page): Promise<void>;
+    deletePage(id: string): Promise<void>;
+    getSettings(): Promise<Settings>;
+    saveSettings(settings: Settings): Promise<void>;
     getLifetimeUserCount(): Promise<number>;
     getDB(): Promise<DB>; // For backward compatibility
     saveDB(db: DB): Promise<void>; // For backward compatibility

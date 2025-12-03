@@ -85,12 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(_auth, provider);
-    } catch (error) {
-      console.error('Error signing in with Google:', error);
-      throw error;
-    }
+    await signInWithPopup(_auth, provider);
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -99,12 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Firebase Auth not initialized');
       return;
     }
-    try {
-      await signInWithEmailAndPassword(_auth, email, password);
-    } catch (error) {
-      console.error('Error signing in with email:', error);
-      throw error;
-    }
+    await signInWithEmailAndPassword(_auth, email, password);
   };
 
   const signUpWithEmail = async (email: string, password: string) => {
@@ -113,23 +103,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Firebase Auth not initialized');
       return;
     }
-    try {
-      await createUserWithEmailAndPassword(_auth, email, password);
-    } catch (error) {
-      console.error('Error signing up with email:', error);
-      throw error;
-    }
+    await createUserWithEmailAndPassword(_auth, email, password);
   };
 
   const signOut = async () => {
     const _auth = getFirebaseAuth();
     if (!_auth) return;
-    try {
-      await firebaseSignOut(_auth);
-    } catch (error) {
-      console.error('Error signing out:', error);
-      throw error;
-    }
+    await firebaseSignOut(_auth);
   };
 
   return (

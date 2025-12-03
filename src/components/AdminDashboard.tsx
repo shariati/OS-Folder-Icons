@@ -8,10 +8,15 @@ import { ToastProvider } from '@/components/Toast';
 import { CategoriesManager } from '@/components/CategoriesManager';
 import { TagsManager } from '@/components/TagsManager';
 import { HeroManager } from '@/components/HeroManager';
+import { UsersManager } from '@/components/UsersManager';
+import { AnalyticsManager } from '@/components/AnalyticsManager';
+import { AuditLogViewer } from '@/components/AuditLogViewer';
+import { BlogManager } from '@/components/BlogManager';
+import { PagesManager } from '@/components/PagesManager';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages'>('os');
 
   return (
     <ToastProvider>
@@ -22,7 +27,13 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'bundles' && 'Bundle Management'}
             {activeTab === 'categories' && 'Categories'}
             {activeTab === 'tags' && 'Tags'}
+            {activeTab === 'tags' && 'Tags'}
             {activeTab === 'hero' && 'Hero Slider'}
+            {activeTab === 'users' && 'User Management'}
+            {activeTab === 'analytics' && 'Analytics'}
+            {activeTab === 'audit' && 'Audit Log'}
+            {activeTab === 'blog' && 'Blog Posts'}
+            {activeTab === 'pages' && 'Pages'}
           </h2>
 
           <nav>
@@ -37,7 +48,13 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'bundles' && 'Bundles'}
                 {activeTab === 'categories' && 'Categories'}
                 {activeTab === 'tags' && 'Tags'}
+                {activeTab === 'tags' && 'Tags'}
                 {activeTab === 'hero' && 'Hero'}
+                {activeTab === 'users' && 'Users'}
+                {activeTab === 'analytics' && 'Analytics'}
+                {activeTab === 'audit' && 'Audit'}
+                {activeTab === 'blog' && 'Blog'}
+                {activeTab === 'pages' && 'Pages'}
               </li>
             </ol>
           </nav>
@@ -48,7 +65,13 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'bundles' && <BundlesManager initialData={initialData} />}
           {activeTab === 'categories' && <CategoriesManager initialData={initialData} />}
           {activeTab === 'tags' && <TagsManager initialData={initialData} />}
+          {activeTab === 'tags' && <TagsManager initialData={initialData} />}
           {activeTab === 'hero' && <HeroManager initialData={initialData} />}
+          {activeTab === 'users' && <UsersManager initialData={initialData} />}
+          {activeTab === 'analytics' && <AnalyticsManager initialData={initialData} />}
+          {activeTab === 'audit' && <AuditLogViewer initialData={initialData} />}
+          {activeTab === 'blog' && <BlogManager initialData={initialData} />}
+          {activeTab === 'pages' && <PagesManager initialData={initialData} />}
         </div>
       </AdminLayout>
     </ToastProvider>

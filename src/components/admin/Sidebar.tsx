@@ -3,14 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen } from 'lucide-react';
+import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout } from 'lucide-react';
 import clsx from 'clsx';
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -157,6 +157,66 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                 </button>
               </li>
               {/* <!-- Menu Item Hero --> */}
+              <li>
+                <button
+                  onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'users' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <Users className="h-5 w-5" />
+                  Users
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('analytics'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'analytics' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <BarChart2 className="h-5 w-5" />
+                  Analytics
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('audit'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'audit' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <Activity className="h-5 w-5" />
+                  Audit Log
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('blog'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'blog' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <FileText className="h-5 w-5" />
+                  Blog Posts
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('pages'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'pages' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <Layout className="h-5 w-5" />
+                  Pages
+                </button>
+              </li>
             </ul>
           </div>
         </nav>

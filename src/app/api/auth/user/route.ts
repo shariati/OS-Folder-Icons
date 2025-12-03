@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { getUser, createUser } from '@/lib/db';
 import { UserProfile } from '@/types/user';
 
 export async function POST(request: Request) {
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing UID' }, { status: 400 });
         }
 
-        let profile = await db.getUser(uid);
+        let profile = await getUser(uid);
 
         if (!profile) {
             profile = {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
                 role: 'free',
                 createdAt: new Date().toISOString(),
             };
-            await db.createUser(profile);
+            await createUser(profile);
         }
 
         return NextResponse.json(profile);

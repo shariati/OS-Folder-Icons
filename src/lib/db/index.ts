@@ -1,11 +1,50 @@
+import 'server-only';
 import config from '../config';
 import { DatabaseAdapter } from './types';
-import { jsonAdapter } from './json-adapter';
 import { firestoreAdapter } from './firestore-adapter';
 
-const db: DatabaseAdapter = config.isLocal ? jsonAdapter : firestoreAdapter;
+// Helper to get the correct adapter dynamically to avoid bundling fs on client
+const getAdapter = async (): Promise<DatabaseAdapter> => {
+    if (config.isLocal) {
+        // Ensure we are on server before importing json-adapter
+        if (typeof window === 'undefined') {
+            const { jsonAdapter } = await import('./json-adapter');
+            return jsonAdapter;
+        } else {
+            console.warn('JSON Adapter (fs) cannot be used in browser. Falling back to Firestore or empty.');
+            return firestoreAdapter;
+        }
+    }
+    return firestoreAdapter;
+};
 
-export const getDB = () => db.getDB();
-export const saveDB = (data: any) => db.saveDB(data);
+export const getOperatingSystems = async () => (await getAdapter()).getOperatingSystems();
+export const getBundles = async () => (await getAdapter()).getBundles();
+export const getCategories = async () => (await getAdapter()).getCategories();
+export const getTags = async () => (await getAdapter()).getTags();
+export const getHeroSlides = async () => (await getAdapter()).getHeroSlides();
 
-export default db;
+export const getUser = async (uid: string) => (await getAdapter()).getUser(uid);
+export const createUser = async (user: any) => (await getAdapter()).createUser(user);
+export const updateUser = async (uid: string, data: any) => (await getAdapter()).updateUser(uid, data);
+export const getUsers = async () => (await getAdapter()).getUsers();
+export const deleteUser = async (uid: string) => (await getAdapter()).deleteUser(uid);
+
+export const getAuditLogs = async () => (await getAdapter()).getAuditLogs();
+export const logAuditAction = async (action: any) => (await getAdapter()).logAuditAction(action);
+
+export const getBlogPosts = async () => (await getAdapter()).getBlogPosts();
+export const saveBlogPost = async (post: any) => (await getAdapter()).saveBlogPost(post);
+export const deleteBlogPost = async (id: string) => (await getAdapter()).deleteBlogPost(id);
+
+export const getPages = async () => (await getAdapter()).getPages();
+export const savePage = async (page: any) => (await getAdapter()).savePage(page);
+export const deletePage = async (id: string) => (await getAdapter()).deletePage(id);
+
+export const getSettings = async () => (await getAdapter()).getSettings();
+export const saveSettings = async (settings: any) => (await getAdapter()).saveSettings(settings);
+
+export const getLifetimeUserCount = async () => (await getAdapter()).getLifetimeUserCount();
+
+export const getDB = async () => (await getAdapter()).getDB();
+export const saveDB = async (data: any) => (await getAdapter()).saveDB(data);

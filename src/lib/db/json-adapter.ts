@@ -1,8 +1,9 @@
+import 'server-only';
 import fs from 'fs/promises';
 import path from 'path';
 import { DatabaseAdapter, DatabaseSchema } from './types';
 import { UserProfile } from '../../types/user';
-import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide } from '../types';
+import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
 
 const DB_PATH = path.join(process.cwd(), 'src/data/db.json');
 
@@ -51,13 +52,92 @@ export const jsonAdapter: DatabaseAdapter = {
             await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
         }
     },
+    async getUsers(): Promise<UserProfile[]> {
+        const db = await readDb();
+        return db.users || [];
+    },
+    async deleteUser(uid: string): Promise<void> {
+        const db = await readDb();
+        if (!db.users) return;
+        db.users = db.users.filter(u => u.uid !== uid);
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async getAuditLogs(): Promise<AuditLog[]> {
+        const db = await readDb();
+        return db.auditLogs || [];
+    },
+    async logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void> {
+        const db = await readDb();
+        if (!db.auditLogs) db.auditLogs = [];
+        const newLog: AuditLog = { ...action, id: Date.now().toString() };
+        db.auditLogs.push(newLog);
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async getBlogPosts(): Promise<BlogPost[]> {
+        const db = await readDb();
+        return db.blogPosts || [];
+    },
+    async saveBlogPost(post: BlogPost): Promise<void> {
+        const db = await readDb();
+        if (!db.blogPosts) db.blogPosts = [];
+        const index = db.blogPosts.findIndex(p => p.id === post.id);
+        if (index !== -1) {
+            db.blogPosts[index] = post;
+        } else {
+            db.blogPosts.push(post);
+        }
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async deleteBlogPost(id: string): Promise<void> {
+        const db = await readDb();
+        if (!db.blogPosts) return;
+        db.blogPosts = db.blogPosts.filter(p => p.id !== id);
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async getPages(): Promise<Page[]> {
+        const db = await readDb();
+        return db.pages || [];
+    },
+    async savePage(page: Page): Promise<void> {
+        const db = await readDb();
+        if (!db.pages) db.pages = [];
+        const index = db.pages.findIndex(p => p.id === page.id);
+        if (index !== -1) {
+            db.pages[index] = page;
+        } else {
+            db.pages.push(page);
+        }
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async deletePage(id: string): Promise<void> {
+        const db = await readDb();
+        if (!db.pages) return;
+        db.pages = db.pages.filter(p => p.id !== id);
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
+    async getSettings(): Promise<Settings> {
+        const db = await readDb();
+        return db.settings || {};
+    },
+    async saveSettings(settings: Settings): Promise<void> {
+        const db = await readDb();
+        db.settings = settings;
+        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    },
     async getLifetimeUserCount(): Promise<number> {
         const db = await readDb();
         return db.users?.filter(u => u.role === 'lifetime').length || 0;
     },
     async getDB(): Promise<DB> {
         const db = await readDb();
-        return db;
+        return {
+            ...db,
+            users: db.users || [],
+            auditLogs: db.auditLogs || [],
+            blogPosts: db.blogPosts || [],
+            pages: db.pages || [],
+            settings: db.settings || {},
+        };
     },
     async saveDB(data: DB): Promise<void> {
         // Preserve users if they exist in file but not in data (if data comes from legacy code that doesn't know about users)
@@ -65,7 +145,12 @@ export const jsonAdapter: DatabaseAdapter = {
         // Actually DB type in types.ts doesn't have users.
         // So we need to be careful not to lose users.
         const currentDb = await readDb();
-        const newDb = { ...data, users: currentDb.users };
+        const newDb: DatabaseSchema = {
+            ...data,
+            // Preserve fields if they are missing in data but exist in currentDb?
+            // Actually data is DB which has all fields.
+            // But we might want to be careful.
+        };
         await fs.writeFile(DB_PATH, JSON.stringify(newDb, null, 2));
     },
 };

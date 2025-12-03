@@ -1,3 +1,6 @@
+import { UserProfile } from '../types/user';
+export type { UserProfile };
+
 export interface FolderIcon {
   id: string;
   name: string;
@@ -67,4 +70,48 @@ export interface DB {
   categories: Category[];
   tags: Tag[];
   heroSlides: HeroSlide[];
+  users: UserProfile[];
+  auditLogs: AuditLog[];
+  blogPosts: BlogPost[];
+  pages: Page[];
+  settings: Settings;
+}
+
+export interface Settings {
+  gaMeasurementId?: string;
+}
+
+export interface AuditLog {
+  id: string;
+  action: string;
+  details: string;
+  userId: string;
+  userEmail: string;
+  timestamp: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  coverImage?: string;
+  published: boolean;
+  publishedAt?: string;
+  authorId: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+}
+
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  published: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
 }
