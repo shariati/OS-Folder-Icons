@@ -29,13 +29,13 @@ export function Navbar() {
               <Link href="/bundles" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
                 Bundles
               </Link>
-              <Link href="/admin" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Admin
-              </Link>
             </div>
           </div>
-          <div className="flex items-center">
-             <Link href="/create" className="inline-flex items-center justify-center px-6 py-2 text-sm font-medium rounded-xl text-white bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
+          <div className="flex items-center space-x-4">
+             <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Log in
+             </Link>
+             <Link href="/signup" className="inline-flex items-center justify-center px-6 py-2 text-sm font-medium rounded-xl text-white bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
                 Get Started
              </Link>
           </div>

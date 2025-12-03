@@ -22,6 +22,8 @@ import Image from 'next/image';
 import { ArrowRight, Palette, Layers } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 import { HeroSlider } from '@/components/HeroSlider';
+import { StatsSection } from '@/components/StatsSection';
+import { SubscriptionPlans } from '@/components/SubscriptionPlans';
 
 export default async function Home() {
   const db = await getDB();
@@ -77,6 +79,11 @@ export default async function Home() {
 
         {/* Decorative Elements */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#e0e5ec] dark:from-gray-900 to-transparent z-20" />
+      </section>
+
+      {/* Stats Section */}
+      <section className="relative z-30 -mt-20 mb-12">
+        <StatsSection />
       </section>
 
       {/* Featured Section (Hero Slider) */}
@@ -180,6 +187,15 @@ export default async function Home() {
             Open Icon Generator
           </Link>
         </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
+          <p className="text-xl text-gray-500 dark:text-gray-400">Choose the plan that's right for you.</p>
+        </div>
+        <SubscriptionPlans />
       </section>
 
       {/* Subscribe Section */}

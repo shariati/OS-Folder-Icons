@@ -56,13 +56,18 @@ export function Footer() {
             <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-wider uppercase mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
-                  Documentation
+                <a href="https://fontawesome.com" target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
+                  Font Awesome
+                </a>
+              </li>
+              <li>
+                <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
+                  Lucide Icons
                 </a>
               </li>
               <li>
                 <a href="#" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
-                  Blog
+                  Documentation
                 </a>
               </li>
             </ul>
@@ -86,7 +91,7 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8">
           <p className="text-base text-gray-400 text-center">
-            &copy; {new Date().getFullYear()} OS Folder Icons. All rights reserved.
+            &copy; {new Date().getFullYear()} OS Folder Icons. All rights reserved. | Icons provided by <a href="https://fontawesome.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
           </p>
         </div>
       </div>

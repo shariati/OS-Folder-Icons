@@ -1,20 +1,22 @@
 # Project License & Legal Notices
 
-## 1. Source Code License (AGPLv3)
-The source code of **OS-Folder-Icons** is strictly open-source.
+## 1. Source Code License (Non-Commercial)
+The source code of **OS-Folder-Icons** is "Source Available" and free for non-commercial use.
 
-Unless otherwise noted, the code in this repository is licensed under the **GNU Affero General Public License, Version 3 (AGPLv3)**.
+The code in this repository is licensed under the **OS-Folder-Icons License**.
 
-* **Commercial Use:** You are free to use this code for commercial purposes.
-* **Network Use (SaaS):** If you use this software over a network (e.g., hosted on a website), you **must** disclose your source code to your users.
-* **Modifications:** If you modify this code, you must release your modifications under the same AGPLv3 license.
+* **Non-Commercial Use:** You are free to use, modify, and distribute this code for personal, educational, or non-profit purposes.
+* **Commercial Use:** Commercial use is **STRICTLY PROHIBITED** without a separate commercial license.
+* **Royalty Requirement:** If you wish to use this source code (or any variations of it) for a commercial product or service, you must pay a **monthly royalty fee** to the author for as long as the product is in use.
+
+To arrange a commercial license and royalty payments, please contact **Amin Shariati**.
 
 See the full [LICENSE](./LICENSE) file for legal details.
 
 ---
 
-## 2. Attribution Requirement (AGPL Section 7)
-Pursuant to **Section 7(b)** of the AGPLv3, the following additional term applies to the use of this software:
+## 2. Attribution Requirement
+Pursuant to **Section 5** of the OS-Folder-Icons License, the following additional term applies to the use of this software:
 
 > You must preserve the author attribution in the source code and documentation. Any derivative works, forks, or commercial deployments must clearly credit **Amin Shariati** as the original creator of this project.
 
@@ -26,7 +28,7 @@ Pursuant to **Section 7(b)** of the AGPLv3, the following additional term applie
 ## 3. Asset License Exclusion (PROPRIETARY)
 ** IMPORTANT: NOT ALL FILES ARE OPEN SOURCE.**
 
-Certain media assets located in this repository are **EXCLUDED** from the AGPLv3 license.
+Certain media assets located in this repository are **EXCLUDED** from the OS-Folder-Icons License.
 
 * **Excluded Paths:** `public/backgrounds/` and any file marked with a specific proprietary header.
 * **Terms:** These assets are licensed **exclusively** for use within the official "OS-Folder-Icons" repository hosted at [https://github.com/shariati/OS-Folder-Icons](https://github.com/shariati/OS-Folder-Icons).
