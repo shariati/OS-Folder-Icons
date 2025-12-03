@@ -43,7 +43,7 @@ export default async function Home() {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src="/backgrounds/video/home-video-background-1.mp4" type="video/mp4" />
+            <source src="/backgrounds/video/home-video-background-1.webm" type="video/webm" />
           </video>
         </div>
 
