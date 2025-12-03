@@ -27,7 +27,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'bundles' && 'Bundle Management'}
             {activeTab === 'categories' && 'Categories'}
             {activeTab === 'tags' && 'Tags'}
-            {activeTab === 'tags' && 'Tags'}
             {activeTab === 'hero' && 'Hero Slider'}
             {activeTab === 'users' && 'User Management'}
             {activeTab === 'analytics' && 'Analytics'}
@@ -48,7 +47,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'bundles' && 'Bundles'}
                 {activeTab === 'categories' && 'Categories'}
                 {activeTab === 'tags' && 'Tags'}
-                {activeTab === 'tags' && 'Tags'}
                 {activeTab === 'hero' && 'Hero'}
                 {activeTab === 'users' && 'Users'}
                 {activeTab === 'analytics' && 'Analytics'}
@@ -64,7 +62,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'os' && <OSManager initialData={initialData} />}
           {activeTab === 'bundles' && <BundlesManager initialData={initialData} />}
           {activeTab === 'categories' && <CategoriesManager initialData={initialData} />}
-          {activeTab === 'tags' && <TagsManager initialData={initialData} />}
           {activeTab === 'tags' && <TagsManager initialData={initialData} />}
           {activeTab === 'hero' && <HeroManager initialData={initialData} />}
           {activeTab === 'users' && <UsersManager initialData={initialData} />}
