@@ -22,6 +22,9 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/next"
+import Clarity from "@microsoft/clarity"
+import config from '../lib/config';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +35,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const clarityConfig = config.clarity;
+if (clarityConfig.projectId) {
+  Clarity.init(clarityConfig.projectId);
+}
 
 export const metadata: Metadata = {
   title: "OS Folder Icons - Custom Folder Icons for Mac, Windows & Linux",
