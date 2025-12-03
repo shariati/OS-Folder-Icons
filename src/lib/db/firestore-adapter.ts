@@ -1,5 +1,5 @@
 import { db } from '../firebase/client';
-import { collection, getDocs, doc, getDoc, setDoc, updateDoc, query, where, getCountFromServer, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where, getCountFromServer, writeBatch } from 'firebase/firestore';
 import { DatabaseAdapter } from './types';
 import { UserProfile } from '../../types/user';
 import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
@@ -55,11 +55,8 @@ export const firestoreAdapter: DatabaseAdapter = {
     async deleteUser(uid: string): Promise<void> {
         // Note: Deleting users from client-side Auth is not possible directly.
         // This only deletes the user profile document.
-        // A cloud function would be needed to delete the Auth user.
         if (!db) return;
-        // await deleteDoc(doc(db, 'users', uid)); // Import deleteDoc if needed
-        // For now, let's just log it or maybe we shouldn't implement delete from UI without backend
-        console.warn("Delete user not fully implemented without backend");
+        await deleteDoc(doc(db, 'users', uid));
     },
     async getAuditLogs(): Promise<AuditLog[]> {
         if (!db) return [];
@@ -82,7 +79,7 @@ export const firestoreAdapter: DatabaseAdapter = {
     },
     async deleteBlogPost(id: string): Promise<void> {
         if (!db) return;
-        // await deleteDoc(doc(db, 'blogPosts', id));
+        await deleteDoc(doc(db, 'blogPosts', id));
     },
     async getPages(): Promise<Page[]> {
         if (!db) return [];
@@ -95,7 +92,7 @@ export const firestoreAdapter: DatabaseAdapter = {
     },
     async deletePage(id: string): Promise<void> {
         if (!db) return;
-        // await deleteDoc(doc(db, 'pages', id));
+        await deleteDoc(doc(db, 'pages', id));
     },
     async getSettings(): Promise<Settings> {
         if (!db) return {};
@@ -144,43 +141,58 @@ export const firestoreAdapter: DatabaseAdapter = {
     },
     async saveDB(data: DB): Promise<void> {
         if (!db) return;
-        const batch = writeBatch(db);
 
-        // This is a naive implementation. In a real app, we should only update changed items.
-        // Also, batch has a limit of 500 operations.
-        // For now, we assume the data size is small enough or we accept the risk.
+        const BATCH_LIMIT = 500;
+        let batch = writeBatch(db);
+        let operationCount = 0;
 
-        data.operatingSystems.forEach(os => {
-            batch.set(doc(db, 'operatingSystems', os.id), os);
-        });
-        data.bundles.forEach(bundle => {
-            batch.set(doc(db, 'bundles', bundle.id), bundle);
-        });
-        data.categories.forEach(cat => {
-            batch.set(doc(db, 'categories', cat.id), cat);
-        });
-        data.tags.forEach(tag => {
-            batch.set(doc(db, 'tags', tag.id), tag);
-        });
-        data.heroSlides.forEach(slide => {
-            batch.set(doc(db, 'heroSlides', slide.id), slide);
-        });
-        data.users.forEach(user => {
-            batch.set(doc(db, 'users', user.uid), user);
-        });
-        data.auditLogs.forEach(log => {
-            batch.set(doc(db, 'auditLogs', log.id), log);
-        });
-        data.blogPosts.forEach(post => {
-            batch.set(doc(db, 'blogPosts', post.id), post);
-        });
-        data.pages.forEach(page => {
-            batch.set(doc(db, 'pages', page.id), page);
-        });
+        const commitBatchIfFull = async () => {
+            if (operationCount >= BATCH_LIMIT) {
+                await batch.commit();
+                batch = writeBatch(db);
+                operationCount = 0;
+            }
+        };
+
+        const addToBatch = async (docRef: any, data: any) => {
+            batch.set(docRef, data);
+            operationCount++;
+            await commitBatchIfFull();
+        };
+
+        for (const os of data.operatingSystems) {
+            await addToBatch(doc(db, 'operatingSystems', os.id), os);
+        }
+        for (const bundle of data.bundles) {
+            await addToBatch(doc(db, 'bundles', bundle.id), bundle);
+        }
+        for (const cat of data.categories) {
+            await addToBatch(doc(db, 'categories', cat.id), cat);
+        }
+        for (const tag of data.tags) {
+            await addToBatch(doc(db, 'tags', tag.id), tag);
+        }
+        for (const slide of data.heroSlides) {
+            await addToBatch(doc(db, 'heroSlides', slide.id), slide);
+        }
+        for (const user of data.users) {
+            await addToBatch(doc(db, 'users', user.uid), user);
+        }
+        for (const log of data.auditLogs) {
+            await addToBatch(doc(db, 'auditLogs', log.id), log);
+        }
+        for (const post of data.blogPosts) {
+            await addToBatch(doc(db, 'blogPosts', post.id), post);
+        }
+        for (const page of data.pages) {
+            await addToBatch(doc(db, 'pages', page.id), page);
+        }
         if (data.settings) {
-            batch.set(doc(db, 'settings', 'general'), data.settings);
+            await addToBatch(doc(db, 'settings', 'general'), data.settings);
         }
 
-        await batch.commit();
+        if (operationCount > 0) {
+            await batch.commit();
+        }
     },
 };

@@ -52,3 +52,9 @@ public/uploads
 
 # Documentation
 DEPLOYMENT.md
+
+
+# Firebase
+firebase.json
+firestore.rules
+storage.rules
