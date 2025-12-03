@@ -44,19 +44,36 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Licensing
+## Licensing & Legal
 
-This project is open-source, but **not all elements are free for unrestricted distribution**.
+**This project is "Source Available" software.** It is NOT "Open Source" in the strict OSI definition because it contains restrictions on commercial use.
 
-### Code License
-The source code is available for use, modification, and distribution, provided that you:
-1.  **Give Credit**: You must credit **Amin Shariati** as the original author and link back to the [original repository](https://github.com/shariati/OS-Folder-Icons).
-2.  **Contribute Back**: Improvements and bug fixes are encouraged via pull requests.
+### 1. Personal & Educational Use (Free)
+You are free to:
+- Read, study, and modify the source code.
+- Run the application on your local machine for personal use.
+- Use the code for educational purposes.
 
-### Asset Exclusions
-**Important**: Certain assets, such as video backgrounds in `public/backgrounds/video/`, are **EXCLUDED** from the open-source license. These assets are licensed exclusively for this repository and **cannot be redistributed** without purchasing a separate license.
+### 2. Commercial Use (Restricted)
+**Commercial use is STRICTLY PROHIBITED without a license.**
+If you intend to use this source code (or any modified version of it) for a commercial product, service, or business:
+- You **MUST** obtain written consent from the author (Amin Shariati).
+- You **MUST** pay a monthly royalty fee.
+- Please raise your interest by starting a discussion in the **"💰 Commercial Use Requests"** category:
+  [https://github.com/shariati/OS-Folder-Icons/discussions/155](https://github.com/shariati/OS-Folder-Icons/discussions/155)
 
-Please read the full [LICENSE.md](LICENSE.md) file for detailed terms and conditions before using or forking this project.
+### 3. Restricted Assets
+Certain media files in this repository (specifically in `public/backgrounds/`) are licensed **exclusively** for the official `hdpick.com` deployment.
+- These files are **NOT** covered by the general license.
+- You may **NOT** redistribute, modify, or use these assets in any other project without purchasing a separate license from the original creator.
+- See [licenses/README.md](licenses/README.md) for details.
+
+### 4. Deployment
+- **Official Deployment**: [hdpick.com](https://hdpick.com) (Commercial, Ad-supported).
+- **Public Repository**: [GitHub](https://github.com/shariati/OS-Folder-Icons) (Source Available for transparency and education).
+
+### Legal Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ## Connect
 

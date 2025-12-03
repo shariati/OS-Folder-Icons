@@ -1,5 +1,5 @@
 OS-FOLDER-ICONS LICENSE
-Version 1.0
+Version 1.1
 
 Copyright (c) 2025 Amin Shariati
 
@@ -25,9 +25,12 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 4. Commercial Use and Royalty Fees.
    Any Commercial Use of the Work, or any variations, modifications, or derivative works thereof, requires a mandatory commercial license from the Licensor.
    
-   As a condition of such commercial license, You agree to pay a ROYALTY FEE to the Licensor on a MONTHLY BASIS for the entire duration that the Work (or any variation thereof) is used in a commercial product or service.
+   As a condition of such commercial license, You agree to pay a ROYALTY FEE to the Licensor. The specific terms of the royalty fee (amount, frequency, payment method) must be agreed upon in writing.
    
-   To obtain a commercial license and set up the royalty payment schedule, You must contact the Licensor directly.
+   **MANDATORY REQUIREMENT:** You must obtain **WRITTEN CONSENT** from the Licensor before deploying or using this Work for any Commercial Purpose.
+   
+   To initiate a commercial license request, please start a discussion in the "💰 Commercial Use Requests" category on GitHub:
+   https://github.com/shariati/OS-Folder-Icons/discussions/155
 
 5. Redistribution.
    You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, provided that You meet the following conditions:
@@ -36,10 +39,13 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
    (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work; and
    (d) You may not remove or alter the terms regarding Non-Commercial Use and Royalty Fees.
 
-6. Disclaimer of Warranty.
+6. Restricted Assets.
+   Certain assets included in this repository (specifically within the 'licenses' folder or marked as restricted) are subject to their own specific licenses and are NOT covered by this general License for redistribution or commercial use. Please refer to the 'licenses/README.md' file for details.
+
+7. Disclaimer of Warranty.
    Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
 
-7. Limitation of Liability.
+8. Limitation of Liability.
    In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work.
 
 END OF TERMS AND CONDITIONS
