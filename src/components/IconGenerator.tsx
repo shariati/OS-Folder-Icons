@@ -13,9 +13,10 @@ import { AdModal } from './AdModal';
 
 interface IconGeneratorProps {
   initialData: DB;
+  isAdmin?: boolean;
 }
 
-export function IconGenerator({ initialData }: { initialData: DB }) {
+export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorProps) {
   const [mode, setMode] = useState<'simple' | 'advanced'>('simple');
   const [customOffsetX, setCustomOffsetX] = useState(0);
   const [customOffsetY, setCustomOffsetY] = useState(0);
@@ -77,7 +78,8 @@ export function IconGenerator({ initialData }: { initialData: DB }) {
     if (loading) return;
 
     // Check if user is free or not logged in (assuming site visitor is free)
-    const isFreeUser = !userProfile || userProfile.role === 'free';
+    // If isAdmin is true, bypass ad logic
+    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
 
     if (isFreeUser) {
       setShowAd(true);

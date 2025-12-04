@@ -13,10 +13,12 @@ import { AnalyticsManager } from '@/components/AnalyticsManager';
 import { AuditLogViewer } from '@/components/AuditLogViewer';
 import { BlogManager } from '@/components/BlogManager';
 import { PagesManager } from '@/components/PagesManager';
+import { IconGenerator } from '@/components/IconGenerator';
+import { PhotoFrameGenerator } from '@/components/PhotoFrameGenerator';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame'>('os');
 
   return (
     <ToastProvider>
@@ -33,6 +35,8 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'audit' && 'Audit Log'}
             {activeTab === 'blog' && 'Blog Posts'}
             {activeTab === 'pages' && 'Pages'}
+            {activeTab === 'folder-icon' && 'Folder Icon Generator'}
+            {activeTab === 'photo-frame' && 'Photo Frame'}
           </h2>
 
           <nav>
@@ -53,6 +57,8 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'audit' && 'Audit'}
                 {activeTab === 'blog' && 'Blog'}
                 {activeTab === 'pages' && 'Pages'}
+                {activeTab === 'folder-icon' && 'Folder Icon'}
+                {activeTab === 'photo-frame' && 'Photo Frame'}
               </li>
             </ol>
           </nav>
@@ -69,6 +75,8 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'audit' && <AuditLogViewer initialData={initialData} />}
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
+          {activeTab === 'folder-icon' && <IconGenerator initialData={initialData} isAdmin={true} />}
+          {activeTab === 'photo-frame' && <PhotoFrameGenerator />}
         </div>
       </AdminLayout>
     </ToastProvider>

@@ -10,7 +10,7 @@ interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -215,6 +215,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                 >
                   <Layout className="h-5 w-5" />
                   Pages
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('folder-icon'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'folder-icon' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <FolderOpen className="h-5 w-5" />
+                  Folder Icon
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('photo-frame'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'photo-frame' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <ImageIcon className="h-5 w-5" />
+                  Photo Frame
                 </button>
               </li>
             </ul>

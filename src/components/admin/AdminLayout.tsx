@@ -7,7 +7,7 @@ import Header from './Header';
 interface AdminLayoutProps {
   children: ReactNode;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame') => void;
 }
 
 const AdminLayout = ({ children, activeTab, setActiveTab }: AdminLayoutProps) => {

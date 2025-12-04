@@ -32,6 +32,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { Recursive } from "next/font/google";
+
+const recursive = Recursive({
+  subsets: ["latin"],
+  variable: "--font-recursive",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "OS Folder Icons - Custom Folder Icons for Mac, Windows & Linux",
   description: "Generate custom folder icons or download premium bundles for macOS, Windows, and Linux. Personalize your desktop with OS Folder Icons.",
@@ -48,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
         <Providers>
           <Navbar />
