@@ -15,6 +15,13 @@ const getAdapter = async (): Promise<DatabaseAdapter> => {
             return firestoreAdapter;
         }
     }
+
+    // Use Admin Adapter on server for secure access (bypassing rules)
+    if (typeof window === 'undefined') {
+        const { adminAdapter } = await import('./admin-adapter');
+        return adminAdapter;
+    }
+
     return firestoreAdapter;
 };
 
