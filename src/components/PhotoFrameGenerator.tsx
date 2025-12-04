@@ -65,10 +65,9 @@ export function PhotoFrameGenerator() {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       const options = {
-        cacheBust: true,
         pixelRatio: 2,
         quality: format === 'jpg' ? 0.95 : undefined,
-        backgroundColor: 'transparent', // Ensure transparency for PNG if needed, though frame is white
+        backgroundColor: 'transparent',
       };
 
       const dataUrl = format === 'png' 
@@ -81,7 +80,7 @@ export function PhotoFrameGenerator() {
       link.click();
     } catch (err) {
       console.error('Failed to download image', err);
-      alert('Failed to generate image. Please try again.');
+      alert(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
