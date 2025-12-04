@@ -29,6 +29,14 @@ export function PhotoFrameGenerator() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   
+  // Frame customization state
+  const FRAME_COLORS = [
+    { name: 'Classic White', value: '#FFFFFF', text: '#1F2937' },
+    { name: 'Cream', value: '#FDFBF7', text: '#4B5563' },
+    { name: 'Soft Black', value: '#1F2937', text: '#F9FAFB' },
+  ];
+  const [frameColor, setFrameColor] = useState(FRAME_COLORS[0]);
+
   const frameRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
@@ -67,7 +75,7 @@ export function PhotoFrameGenerator() {
       const options = {
         pixelRatio: 2,
         quality: format === 'jpg' ? 0.95 : undefined,
-        backgroundColor: 'transparent',
+        backgroundColor: frameColor.value, // Explicitly set background color for export
       };
 
       const dataUrl = format === 'png' 
@@ -212,39 +220,35 @@ export function PhotoFrameGenerator() {
           </div>
         </div>
 
-        {/* Image Controls */}
-        {image && (
-          <div className="neu-flat p-6 rounded-3xl space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                <Move size={20} />
-                Adjust Image
-              </h3>
-              <button 
-                onClick={() => { setZoom(1); setPosition(initialPosition); }}
-                className="text-xs text-blue-500 font-bold flex items-center gap-1 hover:text-blue-600"
+        {/* Frame Color Selector */}
+        <div className="neu-flat p-6 rounded-3xl space-y-4">
+          <h3 className="text-lg font-bold mb-2 text-gray-700 dark:text-white flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>
+            Frame Color
+          </h3>
+          <div className="flex gap-3">
+            {FRAME_COLORS.map((color) => (
+              <button
+                key={color.name}
+                onClick={() => setFrameColor(color)}
+                className={clsx(
+                  "flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2",
+                  frameColor.name === color.name 
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
+                    : "border-transparent bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+                )}
               >
-                <RotateCcw size={12} /> Reset
+                <div 
+                  className="w-8 h-8 rounded-full shadow-sm border border-gray-200" 
+                  style={{ backgroundColor: color.value }}
+                />
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{color.name}</span>
               </button>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
-                <span>Zoom</span>
-                <span className="text-xs text-gray-500">{Math.round(zoom * 100)}%</span>
-              </label>
-              <input
-                type="range"
-                min="0.5"
-                max="3"
-                step="0.1"
-                value={zoom}
-                onChange={(e) => setZoom(parseFloat(e.target.value))}
-                className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-              />
-            </div>
+            ))}
           </div>
-        )}
+        </div>
+
+
       </div>
 
       {/* Right Column: Preview */}
@@ -255,12 +259,13 @@ export function PhotoFrameGenerator() {
             {/* Polaroid Frame */}
             <div 
               ref={frameRef}
-              className="bg-white shadow-2xl relative flex flex-col items-center"
+              className="shadow-2xl relative flex flex-col items-center"
               style={{
                 width: '420px', // 14 units * 30px scale
                 height: '510px', // 17 units * 30px scale
                 padding: '30px 30px 120px 30px', // 1 unit top/sides, 4 units bottom
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                backgroundColor: frameColor.value,
               }}
             >
               {/* Image Area */}
@@ -318,14 +323,23 @@ export function PhotoFrameGenerator() {
                 <div className="flex justify-between items-end">
                   <div className="flex flex-col gap-1">
                     <h2 
-                      className="text-2xl text-gray-800 leading-tight"
-                      style={{ fontFamily: 'var(--font-recursive), sans-serif', fontWeight: 600 }}
+                      className="text-2xl leading-tight"
+                      style={{ 
+                        fontFamily: 'var(--font-recursive), sans-serif', 
+                        fontWeight: 600,
+                        color: frameColor.text 
+                      }}
                     >
                       {title}
                     </h2>
                     <p 
-                      className="text-lg text-gray-600"
-                      style={{ fontFamily: 'var(--font-recursive), sans-serif', fontWeight: 400 }}
+                      className="text-lg"
+                      style={{ 
+                        fontFamily: 'var(--font-recursive), sans-serif', 
+                        fontWeight: 400,
+                        color: frameColor.text,
+                        opacity: 0.8
+                      }}
                     >
                       {selectedMonth} {selectedYear}
                     </p>
@@ -338,6 +352,40 @@ export function PhotoFrameGenerator() {
             </div>
 
           </div>
+
+          {/* Image Controls */}
+          {image && (
+            <div className="neu-flat p-6 rounded-3xl space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                  <Move size={20} />
+                  Adjust Image
+                </h3>
+                <button 
+                  onClick={() => { setZoom(1); setPosition(initialPosition); }}
+                  className="text-xs text-blue-500 font-bold flex items-center gap-1 hover:text-blue-600"
+                >
+                  <RotateCcw size={12} /> Reset
+                </button>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
+                  <span>Zoom</span>
+                  <span className="text-xs text-gray-500">{Math.round(zoom * 100)}%</span>
+                </label>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="3"
+                  step="0.1"
+                  value={zoom}
+                  onChange={(e) => setZoom(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Download Buttons */}
           <div className="flex gap-4">
