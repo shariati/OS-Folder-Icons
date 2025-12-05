@@ -5,17 +5,6 @@ import { firestoreAdapter } from './firestore-adapter';
 
 // Helper to get the correct adapter dynamically to avoid bundling fs on client
 const getAdapter = async (): Promise<DatabaseAdapter> => {
-    if (config.isLocal) {
-        // Ensure we are on server before importing json-adapter
-        if (typeof window === 'undefined') {
-            const { jsonAdapter } = await import('./json-adapter');
-            return jsonAdapter;
-        } else {
-            console.warn('JSON Adapter (fs) cannot be used in browser. Falling back to Firestore or empty.');
-            return firestoreAdapter;
-        }
-    }
-
     // Use Admin Adapter on server for secure access (bypassing rules)
     if (typeof window === 'undefined') {
         const { adminAdapter } = await import('./admin-adapter');
