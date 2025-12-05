@@ -41,8 +41,8 @@ const recursive = Recursive({
 });
 
 export const metadata: Metadata = {
-  title: "OS Folder Icons - Custom Folder Icons for Mac, Windows & Linux",
-  description: "Generate custom folder icons or download premium bundles for macOS, Windows, and Linux. Personalize your desktop with OS Folder Icons.",
+  title: "HDPick - Custom Folder Icons & Photo Frames",
+  description: "Generate custom folder icons, browse premium bundles, or create photo frames for your desktop. Personalize your digital workspace with HDPick.",
   icons: {
     icon: '/favicon.ico',
   },

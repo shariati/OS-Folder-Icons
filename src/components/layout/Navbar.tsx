@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FolderOpen, User, LogOut, Settings } from 'lucide-react';
+import { FolderOpen, User, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 
@@ -10,12 +10,17 @@ export function Navbar() {
   const pathname = usePathname();
   const { user, userProfile, signOut } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const productsDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setDropdownOpen(false);
+      }
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target as Node)) {
+        setProductsDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -37,17 +42,41 @@ export function Navbar() {
               <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <FolderOpen className="w-6 h-6 text-white" />
               </div>
-              <span className="hidden sm:block">OS Folder Icons</span>
+              <span className="hidden sm:block">HDPick</span>
             </Link>
-            <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
-              <Link href="/" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Home
-              </Link>
-              <Link href="/bundles" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Bundles
-              </Link>
-              <Link href="/create" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Create
+            <div className="hidden sm:ml-10 sm:flex sm:space-x-8 items-center">
+              {/* Custom Folders Dropdown */}
+              <div className="relative" ref={productsDropdownRef}>
+                <button
+                  onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                  className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all gap-1 outline-none"
+                >
+                  Custom Folders
+                  <ChevronDown size={16} className={`transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {productsDropdownOpen && (
+                  <div className="absolute left-0 mt-2 w-48 rounded-xl bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 py-1 focus:outline-none transform opacity-100 scale-100 transition-all duration-200">
+                    <Link
+                      href="/bundles"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => setProductsDropdownOpen(false)}
+                    >
+                      Bundles
+                    </Link>
+                    <Link
+                      href="/create"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => setProductsDropdownOpen(false)}
+                    >
+                      Custom Folders
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              <Link href="/photo-frame" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
+                Photo Frame
               </Link>
             </div>
           </div>

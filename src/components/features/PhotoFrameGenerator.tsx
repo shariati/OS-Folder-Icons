@@ -7,6 +7,7 @@ import { toPng, toJpeg } from 'html-to-image';
 import { clsx } from 'clsx';
 
 import { COUNTRIES } from '@/data/countries';
+import { PreviewPanel } from '@/components/ui/PreviewPanel';
 
 export function PhotoFrameGenerator() {
   const [image, setImage] = useState<string | null>(null);
@@ -253,13 +254,66 @@ export function PhotoFrameGenerator() {
 
       {/* Right Column: Preview */}
       <div className="lg:col-span-8">
-        <div className="sticky top-24 space-y-6">
-          <div className="glass-panel p-8 flex items-center justify-center bg-gray-100/50 dark:bg-gray-900/50 min-h-[600px]">
-            
+        <div className="sticky top-24">
+          <PreviewPanel
+            minHeight="min-h-[600px]"
+            controls={
+              image && (
+                <div className="neu-flat p-6 rounded-3xl space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                      <Move size={20} />
+                      Adjust Image
+                    </h3>
+                    <button 
+                      onClick={() => { setZoom(1); setPosition(initialPosition); }}
+                      className="text-xs text-blue-500 font-bold flex items-center gap-1 hover:text-blue-600"
+                    >
+                      <RotateCcw size={12} /> Reset
+                    </button>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
+                      <span>Zoom</span>
+                      <span className="text-xs text-gray-500">{Math.round(zoom * 100)}%</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="3"
+                      step="0.1"
+                      value={zoom}
+                      onChange={(e) => setZoom(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                  </div>
+                </div>
+              )
+            }
+            actions={
+              <div className="flex gap-4">
+                <button
+                  onClick={() => handleDownload('png')}
+                  className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
+                >
+                  <Download size={20} />
+                  Download PNG
+                </button>
+                <button
+                  onClick={() => handleDownload('jpg')}
+                  className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-bold rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <Download size={20} />
+                  Download JPG
+                </button>
+              </div>
+            }
+          >
             {/* Polaroid Frame */}
             <div 
               ref={frameRef}
-              className="shadow-2xl relative flex flex-col items-center"
+              className="shadow-2xl relative flex flex-col items-center flex-shrink-0"
               style={{
                 width: '420px', // 14 units * 30px scale
                 height: '510px', // 17 units * 30px scale
@@ -350,60 +404,7 @@ export function PhotoFrameGenerator() {
                 </div>
               </div>
             </div>
-
-          </div>
-
-          {/* Image Controls */}
-          {image && (
-            <div className="neu-flat p-6 rounded-3xl space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                  <Move size={20} />
-                  Adjust Image
-                </h3>
-                <button 
-                  onClick={() => { setZoom(1); setPosition(initialPosition); }}
-                  className="text-xs text-blue-500 font-bold flex items-center gap-1 hover:text-blue-600"
-                >
-                  <RotateCcw size={12} /> Reset
-                </button>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
-                  <span>Zoom</span>
-                  <span className="text-xs text-gray-500">{Math.round(zoom * 100)}%</span>
-                </label>
-                <input
-                  type="range"
-                  min="0.5"
-                  max="3"
-                  step="0.1"
-                  value={zoom}
-                  onChange={(e) => setZoom(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Download Buttons */}
-          <div className="flex gap-4">
-            <button
-              onClick={() => handleDownload('png')}
-              className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
-            >
-              <Download size={20} />
-              Download PNG
-            </button>
-            <button
-              onClick={() => handleDownload('jpg')}
-              className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-bold rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg transition-all flex items-center justify-center gap-2"
-            >
-              <Download size={20} />
-              Download JPG
-            </button>
-          </div>
+          </PreviewPanel>
         </div>
       </div>
     </div>

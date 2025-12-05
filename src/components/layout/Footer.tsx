@@ -12,7 +12,7 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center shadow-md shadow-blue-500/20">
                 <FolderOpen className="w-5 h-5 text-white" />
               </div>
-              <span>OS Folder Icons</span>
+              <span>HDPick</span>
             </Link>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
               Beautiful, customizable folder icons for your digital workspace. Designed with love and pixel-perfect precision.
@@ -47,7 +47,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/create" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
-                  Icon Generator
+                  Custom Folders
                 </Link>
               </li>
             </ul>
@@ -92,7 +92,7 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8">
           <p className="text-base text-gray-400 text-center">
-            &copy; {new Date().getFullYear()} OS Folder Icons. All rights reserved. | Icons provided by <a href={RESOURCE_LINKS.FONTAWESOME} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href={RESOURCE_LINKS.LUCIDE} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
+            &copy; {new Date().getFullYear()} HDPick. All rights reserved. | Icons provided by <a href={RESOURCE_LINKS.FONTAWESOME} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href={RESOURCE_LINKS.LUCIDE} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
           </p>
         </div>
       </div>

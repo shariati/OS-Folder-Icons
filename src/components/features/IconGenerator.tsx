@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -379,35 +380,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       {/* Right Column: Preview */}
       <div className="lg:col-span-8">
         <div className="sticky top-24">
-          <div className="glass-panel p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-            
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Preview</h2>
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                <div className="w-3 h-3 rounded-full bg-green-400"></div>
-              </div>
-            </div>
-
-            <div className="flex justify-center mb-10 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl p-12 neu-pressed checkerboard min-h-[400px] flex items-center">
-              <CanvasPreview
-                folderImage={selectedFolder?.imageUrl}
-                iconName={selectedIcon}
-                iconType={iconType}
-                iconColor={iconColor}
-                iconSize={iconSize}
-                offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-                offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-                format={selectedOS?.format}
-                iconEffect={iconEffect}
-                iconTransparency={iconTransparency}
-                folderHue={folderHue}
-              />
-            </div>
-            
-            <div className="space-y-4 max-w-md mx-auto">
+          <PreviewPanel
+            actions={
               <button
                 id="download-btn"
                 onClick={handleDownloadClick}
@@ -416,11 +390,27 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 <Download size={24} />
                 Download Icon
               </button>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 font-medium">
+            }
+            footerText={
+              <p>
                 Downloaded as {selectedOS?.format?.toUpperCase() || 'PNG'} for {selectedOS?.name}
               </p>
-            </div>
-          </div>
+            }
+          >
+            <CanvasPreview
+              folderImage={selectedFolder?.imageUrl}
+              iconName={selectedIcon}
+              iconType={iconType}
+              iconColor={iconColor}
+              iconSize={iconSize}
+              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+              format={selectedOS?.format}
+              iconEffect={iconEffect}
+              iconTransparency={iconTransparency}
+              folderHue={folderHue}
+            />
+          </PreviewPanel>
         </div>
       </div>
       <AdModal 

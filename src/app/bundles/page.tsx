@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Icon Bundles - OS Folder Icons",
+  title: "Icon Bundles - HDPick",
   description: "Browse and download curated collections of folder icons for macOS, Windows, and Linux. Find the perfect style for your desktop.",
 };
 
