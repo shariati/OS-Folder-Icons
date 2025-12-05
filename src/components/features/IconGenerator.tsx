@@ -81,7 +81,9 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
     // Check if user is free or not logged in (assuming site visitor is free)
     // If isAdmin is true, bypass ad logic
-    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
+    // TODO: Re-enable strict role check after verification
+    // const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
+    const isFreeUser = !isAdmin; // Force show ads on public pages for testing
 
     if (isFreeUser) {
       setShowAd(true);
