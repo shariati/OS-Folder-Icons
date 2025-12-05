@@ -381,7 +381,21 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
   }
 
   return (
-    <NeumorphBox className="rounded-3xl overflow-hidden transition-all duration-300">
+    <NeumorphBox 
+      className="overflow-hidden transition-all duration-300"
+      showActions
+      onEdit={() => setIsEditing(true)}
+      onDelete={onDelete}
+      customActions={
+        <button 
+          onClick={(e) => { e.stopPropagation(); addVersion(); }}
+          className="text-green-500 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-lg"
+          title="Add Version"
+        >
+          <Plus size={18} />
+        </button>
+      }
+    >
       <div className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-6 flex-1">
           <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
@@ -400,17 +414,6 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
             </h3>
             <p className="text-sm text-gray-500 font-medium mt-1">{os.versions.length} versions</p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); setIsEditing(true); }} className="p-3 text-gray-500 hover:text-blue-600 hover:neu-pressed rounded-xl transition-all" title="Edit OS">
-            <Edit2 size={18} />
-          </NeumorphBox>
-          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); addVersion(); }} className="p-3 text-gray-500 hover:text-green-600 hover:neu-pressed rounded-xl transition-all" title="Add Version">
-            <Plus size={18} />
-          </NeumorphBox>
-          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); onDelete(); }} className="p-3 text-gray-500 hover:text-red-600 hover:neu-pressed rounded-xl transition-all" title="Delete OS">
-            <Trash2 size={18} />
-          </NeumorphBox>
         </div>
       </div>
 
