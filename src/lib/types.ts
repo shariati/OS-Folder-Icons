@@ -77,8 +77,25 @@ export interface DB {
   settings: Settings;
 }
 
+export interface AdConfig {
+  enabled: boolean;
+  provider: 'adsterra' | 'google-adsense' | 'propellerads';
+  adsterra: {
+    script: string;
+  };
+  googleAdsense: {
+    client: string;
+    slot: string;
+  };
+  propellerads: {
+    zoneId: string;
+    script: string;
+  };
+}
+
 export interface Settings {
   gaMeasurementId?: string;
+  adConfig?: AdConfig;
 }
 
 export interface AuditLog {

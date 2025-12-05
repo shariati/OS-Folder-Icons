@@ -1,7 +1,7 @@
 import { getDB } from '@/lib/db';
-import { BundleViewer } from '@/components/BundleViewer';
+import { BundleViewer } from '@/components/features/BundleViewer';
 import { notFound } from 'next/navigation';
-import { Footer } from '@/components/Footer';
+import { Footer } from '@/components/layout/Footer';
 
 export default async function BundleDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
