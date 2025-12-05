@@ -9,6 +9,7 @@ import { Trash2, Plus, Upload, ChevronDown, ChevronRight, Edit2, X, Check } from
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
+import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
 
 export function OSManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
@@ -135,10 +136,10 @@ export function OSManager({ initialData }: { initialData: DB }) {
                   onChange={(e) => {
                     const name = e.target.value;
                     setNewOSName(name);
-                    if (name.toLowerCase().includes('mac') || name.toLowerCase().includes('apple') || name.toLowerCase().includes('os x')) {
-                      setNewOSFormat('icns');
-                    } else if (name.toLowerCase().includes('windows') || name.toLowerCase().includes('win')) {
-                      setNewOSFormat('ico');
+                    if (OS_KEYWORD_MATCHERS.ICNS.some(k => name.toLowerCase().includes(k))) {
+                      setNewOSFormat(OS_FORMATS.ICNS);
+                    } else if (OS_KEYWORD_MATCHERS.ICO.some(k => name.toLowerCase().includes(k))) {
+                      setNewOSFormat(OS_FORMATS.ICO);
                     }
                   }}
                   className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
@@ -154,9 +155,9 @@ export function OSManager({ initialData }: { initialData: DB }) {
                     onChange={(e) => setNewOSFormat(e.target.value as any)}
                     className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent appearance-none"
                   >
-                    <option value="png">PNG</option>
-                    <option value="ico">ICO</option>
-                    <option value="icns">ICNS</option>
+                    <option value={OS_FORMATS.PNG}>PNG</option>
+                    <option value={OS_FORMATS.ICO}>ICO</option>
+                    <option value={OS_FORMATS.ICNS}>ICNS</option>
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
                 </div>
@@ -164,11 +165,7 @@ export function OSManager({ initialData }: { initialData: DB }) {
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Brand Icon</label>
                 <div className="flex gap-3">
-                  {[
-                    { name: 'Apple', class: 'fa-brands fa-apple' },
-                    { name: 'Windows', class: 'fa-brands fa-windows' },
-                    { name: 'Linux', class: 'fa-brands fa-linux' }
-                  ].map((icon) => (
+                  {BRAND_ICONS.map((icon) => (
                     <button
                       key={icon.name}
                       type="button"
@@ -335,9 +332,9 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
                 onChange={(e) => setEditFormat(e.target.value as any)} 
                 className="w-full px-3 py-2 rounded-lg neu-pressed outline-none bg-transparent appearance-none"
               >
-                <option value="png">PNG</option>
-                <option value="ico">ICO</option>
-                <option value="icns">ICNS</option>
+                <option value={OS_FORMATS.PNG}>PNG</option>
+                <option value={OS_FORMATS.ICO}>ICO</option>
+                <option value={OS_FORMATS.ICNS}>ICNS</option>
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-3 h-3" />
             </div>
@@ -345,11 +342,7 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Brand Icon</label>
             <div className="flex gap-2">
-              {[
-                { name: 'Apple', class: 'fa-brands fa-apple' },
-                { name: 'Windows', class: 'fa-brands fa-windows' },
-                { name: 'Linux', class: 'fa-brands fa-linux' }
-              ].map((icon) => (
+              {BRAND_ICONS.map((icon) => (
                 <button
                   key={icon.name}
                   type="button"

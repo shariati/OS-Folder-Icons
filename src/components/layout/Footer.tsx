@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FolderOpen, Twitter, Github, Linkedin, Palette, BookOpen } from 'lucide-react';
+import { SOCIAL_LINKS, RESOURCE_LINKS } from '@/constants/links';
 
 export function Footer() {
   return (
@@ -17,19 +18,19 @@ export function Footer() {
               Beautiful, customizable folder icons for your digital workspace. Designed with love and pixel-perfect precision.
             </p>
             <div className="mt-6 flex space-x-4">
-              <a href="https://github.com/shariati/OS-Folder-Icons" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
+              <a href={SOCIAL_LINKS.GITHUB} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">GitHub</span>
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://www.linkedin.com/in/aminshariati" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-600 shadow-sm hover:shadow-md transition-all duration-200">
+              <a href={SOCIAL_LINKS.LINKEDIN} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-600 shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">LinkedIn</span>
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="https://www.behance.net/aminshariati?" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-500 shadow-sm hover:shadow-md transition-all duration-200">
+              <a href={SOCIAL_LINKS.BEHANCE} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-500 shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">Behance</span>
                 <Palette className="h-5 w-5" />
               </a>
-              <a href="https://medium.com/@shariati" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-black dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
+              <a href={SOCIAL_LINKS.MEDIUM} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-black dark:hover:text-white shadow-sm hover:shadow-md transition-all duration-200">
                 <span className="sr-only">Medium</span>
                 <BookOpen className="h-5 w-5" />
               </a>
@@ -56,12 +57,12 @@ export function Footer() {
             <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-wider uppercase mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <a href="https://fontawesome.com" target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
+                <a href={RESOURCE_LINKS.FONTAWESOME} target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
                   Font Awesome
                 </a>
               </li>
               <li>
-                <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
+                <a href={RESOURCE_LINKS.LUCIDE} target="_blank" rel="noopener noreferrer" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
                   Lucide Icons
                 </a>
               </li>
@@ -91,7 +92,7 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8">
           <p className="text-base text-gray-400 text-center">
-            &copy; {new Date().getFullYear()} OS Folder Icons. All rights reserved. | Icons provided by <a href="https://fontawesome.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
+            &copy; {new Date().getFullYear()} OS Folder Icons. All rights reserved. | Icons provided by <a href={RESOURCE_LINKS.FONTAWESOME} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href={RESOURCE_LINKS.LUCIDE} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
           </p>
         </div>
       </div>
