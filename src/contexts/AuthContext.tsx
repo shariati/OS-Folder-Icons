@@ -10,6 +10,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType>({
   userProfile: null,
   loading: true,
   signInWithGoogle: async () => {},
+  signInWithApple: async () => {},
   signInWithEmail: async () => {},
   signUpWithEmail: async () => {},
   signOut: async () => {},
@@ -88,6 +90,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithPopup(_auth, provider);
   };
 
+  const signInWithApple = async () => {
+    const _auth = getFirebaseAuth();
+    if (!_auth) {
+      console.error('Firebase Auth not initialized');
+      return;
+    }
+    // Apple Auth Provider
+    const { OAuthProvider } = await import('firebase/auth');
+    const provider = new OAuthProvider('apple.com');
+    await signInWithPopup(_auth, provider);
+  };
+
   const signInWithEmail = async (email: string, password: string) => {
     const _auth = getFirebaseAuth();
     if (!_auth) {
@@ -113,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, userProfile, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}>
+    <AuthContext.Provider value={{ user, userProfile, loading, signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail, signOut }}>
       {children}
     </AuthContext.Provider>
   );
