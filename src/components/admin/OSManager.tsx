@@ -136,7 +136,7 @@ export function OSManager({ initialData }: { initialData: DB }) {
                   onChange={(e) => {
                     const name = e.target.value;
                     setNewOSName(name);
-                    if (OS_KEYWORD_MATCHERS.ICNS.some(k => name.toLowerCase().includes()k)) {
+                    if (OS_KEYWORD_MATCHERS.ICNS.some(k => name.toLowerCase().includes(k))) {
                       setNewOSFormat(OS_FORMATS.ICNS);
                     } else if (OS_KEYWORD_MATCHERS.ICO.some(k => name.toLowerCase().includes(k))) {
                       setNewOSFormat(OS_FORMATS.ICO);
