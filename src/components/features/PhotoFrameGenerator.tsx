@@ -9,6 +9,7 @@ import { clsx } from 'clsx';
 import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { AdModal } from '@/components/ui/AdModal';
 
 export function PhotoFrameGenerator() {
   const [image, setImage] = useState<string | null>(null);
@@ -94,6 +95,9 @@ export function PhotoFrameGenerator() {
     }
   };
 
+  const [isAdOpen, setIsAdOpen] = useState(false);
+  const [pendingDownload, setPendingDownload] = useState<'png' | 'jpg' | null>(null);
+
   // Dragging logic
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -110,6 +114,53 @@ export function PhotoFrameGenerator() {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+  };
+
+  const triggerDownload = async (format: 'png' | 'jpg') => {
+    if (!frameRef.current) return;
+    
+    try {
+      // Small delay to ensure rendering is complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const options = {
+        pixelRatio: 2,
+        quality: format === 'jpg' ? 0.95 : undefined,
+        backgroundColor: frameColor.value, // Explicitly set background color for export
+      };
+
+      const dataUrl = format === 'png' 
+        ? await toPng(frameRef.current, options)
+        : await toJpeg(frameRef.current, options);
+        
+      const link = document.createElement('a');
+      link.download = `photo-frame-${Date.now()}.${format}`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to download image', err);
+      alert(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleDownloadClick = (format: 'png' | 'jpg') => {
+    // Check if user is free tier (mock check for now, replace with actual auth/subscription check)
+    const isFreeUser = true; 
+
+    if (isFreeUser) {
+      setPendingDownload(format);
+      setIsAdOpen(true);
+    } else {
+      triggerDownload(format);
+    }
+  };
+
+  const handleAdComplete = () => {
+    setIsAdOpen(false);
+    if (pendingDownload) {
+      triggerDownload(pendingDownload);
+      setPendingDownload(null);
+    }
   };
 
   return (
@@ -301,14 +352,14 @@ export function PhotoFrameGenerator() {
             actions={
               <div className="flex gap-4">
                 <button
-                  onClick={() => handleDownload('png')}
+                  onClick={() => handleDownloadClick('png')}
                   className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={20} />
                   Download PNG
                 </button>
                 <button
-                  onClick={() => handleDownload('jpg')}
+                  onClick={() => handleDownloadClick('jpg')}
                   className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-bold rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={20} />
@@ -414,6 +465,12 @@ export function PhotoFrameGenerator() {
           </PreviewPanel>
         </div>
       </div>
+      
+      <AdModal 
+        isOpen={isAdOpen} 
+        onClose={() => { setIsAdOpen(false); setPendingDownload(null); }} 
+        onComplete={handleAdComplete} 
+      />
     </div>
   );
 }

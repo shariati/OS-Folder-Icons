@@ -10,7 +10,7 @@ interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame' | 'ads') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -239,6 +239,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                 >
                   <ImageIcon className="h-5 w-5" />
                   Photo Frame
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('ads'); setSidebarOpen(false); }}
+                  className={clsx(
+                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
+                    activeTab === 'ads' && "bg-graydark dark:bg-meta-4 text-white"
+                  )}
+                >
+                  <Activity className="h-5 w-5" />
+                  Monetization
                 </button>
               </li>
             </ul>

@@ -15,10 +15,11 @@ import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { IconGenerator } from '@/components/features/IconGenerator';
 import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
+import { AdSettings } from '@/components/admin/AdSettings';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame' | 'ads'>('os');
 
   return (
     <ToastProvider>
@@ -37,6 +38,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'pages' && 'Pages'}
             {activeTab === 'folder-icon' && 'Folder Icon Generator'}
             {activeTab === 'photo-frame' && 'Photo Frame'}
+            {activeTab === 'ads' && 'Monetization'}
           </h2>
 
           <nav>
@@ -59,6 +61,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'pages' && 'Pages'}
                 {activeTab === 'folder-icon' && 'Folder Icon'}
                 {activeTab === 'photo-frame' && 'Photo Frame'}
+                {activeTab === 'ads' && 'Ads'}
               </li>
             </ol>
           </nav>
@@ -77,6 +80,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
           {activeTab === 'folder-icon' && <IconGenerator initialData={initialData} isAdmin={true} />}
           {activeTab === 'photo-frame' && <PhotoFrameGenerator />}
+          {activeTab === 'ads' && <AdSettings />}
         </div>
       </AdminLayout>
     </ToastProvider>
