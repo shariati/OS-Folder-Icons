@@ -20,10 +20,10 @@ import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Palette, Layers } from 'lucide-react';
-import { Footer } from '@/components/Footer';
-import { HeroSlider } from '@/components/HeroSlider';
-import { StatsSection } from '@/components/StatsSection';
-import { SubscriptionPlans } from '@/components/SubscriptionPlans';
+import { Footer } from '@/components/layout/Footer';
+import { HeroSlider } from '@/components/features/HeroSlider';
+import { StatsSection } from '@/components/features/StatsSection';
+import { SubscriptionPlans } from '@/components/features/SubscriptionPlans';
 
 export default async function Home() {
   const db = await getDB();

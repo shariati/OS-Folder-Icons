@@ -1,6 +1,6 @@
 import { getDB } from '@/lib/db';
-import { IconGenerator } from '@/components/IconGenerator';
-import { Footer } from '@/components/Footer';
+import { IconGenerator } from '@/components/features/IconGenerator';
+import { Footer } from '@/components/layout/Footer';
 
 import { Metadata } from 'next';
 
