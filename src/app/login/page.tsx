@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signInWithGoogle, signInWithEmail } = useAuth();
+  const { signInWithGoogle, signInWithApple, signInWithEmail } = useAuth();
   const router = useRouter();
   
   const handleGoogleSignIn = async () => {
@@ -23,6 +23,20 @@ export default function LoginPage() {
       router.push('/');
     } catch (err) {
       setError('Failed to sign in with Google.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      setError('');
+      setLoading(true);
+      await signInWithApple();
+      router.push('/');
+    } catch (err) {
+      setError('Failed to sign in with Apple.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -131,7 +145,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col gap-3">
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
@@ -156,6 +170,17 @@ export default function LoginPage() {
                   />
                 </svg>
                 Sign in with Google
+              </button>
+
+              <button
+                onClick={handleAppleSignIn}
+                disabled={loading}
+                className="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-black text-white hover:bg-gray-800 font-medium transition-all flex items-center justify-center gap-3"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.03-.48-3.24.05-1.44.62-2.29.44-3.53-1.09-2.22-2.73-2.3-6.73-1.41-8.28 1.16-1.92 2.87-2.18 4.09-1.9 1.41.33 2.14 1.14 3.75 1.1 1.5-.04 2.22-.92 3.86-1.24 1.63-.32 3.16.51 4.13 1.94-3.69 1.96-3.08 6.94.52 8.44-.7 1.76-1.6 3.42-3.03 4.96-.86.9-1.74 1.66-2.9 1.66z M12.03 7.25c-.25-2.17 1.62-4.14 3.96-4.25.4.01.66.07.66.07.41 2.39-1.87 4.54-4.62 4.18z" />
+                </svg>
+                Sign in with Apple
               </button>
             </div>
           </div>
