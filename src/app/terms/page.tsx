@@ -8,7 +8,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto">
           <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Terms of Service</h1>
-            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 1, 2025</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 5, 2025</p>
             
             <div className="space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
               <p>
