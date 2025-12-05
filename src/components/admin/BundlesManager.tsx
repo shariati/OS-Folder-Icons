@@ -165,11 +165,15 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
       </div>
 
       {isCreating && (
-        <NeumorphBox className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
-          <div className="flex justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">{editingBundleId ? 'Edit Bundle' : 'Create New Bundle'}</h3>
-            <button onClick={() => { setIsCreating(false); resetForm(); }} className="text-gray-400 hover:text-red-500 transition-colors"><X size={24} /></button>
-          </div>
+        <NeumorphBox 
+          className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4"
+          title={editingBundleId ? 'Edit Bundle' : 'Create New Bundle'}
+          badge={
+            <button onClick={() => { setIsCreating(false); resetForm(); }} className="text-gray-400 hover:text-red-500 transition-colors">
+              <X size={24} />
+            </button>
+          }
+        >
           
           <form onSubmit={handleSave} className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

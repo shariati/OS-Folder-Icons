@@ -118,11 +118,12 @@ export function PhotoFrameGenerator() {
       <div className="lg:col-span-4 space-y-6">
         
         {/* Image Upload */}
-        <NeumorphBox className="p-6 rounded-3xl">
-          <h3 className="text-lg font-bold mb-4 text-gray-700 dark:text-white flex items-center gap-2">
-            <Upload size={20} />
-            Upload Photo
-          </h3>
+        <NeumorphBox 
+          className="p-6 rounded-3xl"
+          title="Upload Photo"
+          subtitle="Choose your memory"
+          icon={<Upload size={20} />}
+        >
           <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <Upload className="w-8 h-8 mb-3 text-gray-400" />
@@ -133,12 +134,12 @@ export function PhotoFrameGenerator() {
         </NeumorphBox>
 
         {/* Text Inputs */}
-        <NeumorphBox className="p-6 rounded-3xl space-y-4">
-          <h3 className="text-lg font-bold mb-2 text-gray-700 dark:text-white flex items-center gap-2">
-            <Type size={20} />
-            Details
-          </h3>
-          
+        <NeumorphBox 
+          className="p-6 rounded-3xl space-y-4"
+          title="Details"
+          subtitle="Add context to your frame"
+          icon={<Type size={20} />}
+        >
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Title</label>
             <NeumorphBox
@@ -230,11 +231,12 @@ export function PhotoFrameGenerator() {
         </NeumorphBox>
 
         {/* Frame Color Selector */}
-        <NeumorphBox className="p-6 rounded-3xl space-y-4">
-          <h3 className="text-lg font-bold mb-2 text-gray-700 dark:text-white flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>
-            Frame Color
-          </h3>
+        <NeumorphBox 
+          className="p-6 rounded-3xl space-y-4"
+          title="Frame Color"
+          subtitle="Match your aesthetic"
+          icon={<div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>}
+        >
           <div className="flex gap-3">
             {FRAME_COLORS.map((color) => (
               <button
@@ -267,20 +269,20 @@ export function PhotoFrameGenerator() {
             minHeight="min-h-[600px]"
             controls={
               image && (
-                <NeumorphBox className="p-6 rounded-3xl space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                      <Move size={20} />
-                      Adjust Image
-                    </h3>
+                <NeumorphBox 
+                  className="p-6 rounded-3xl space-y-4"
+                  title="Adjust Image"
+                  subtitle="Perfect your composition"
+                  icon={<Move size={20} />}
+                  badge={
                     <button 
                       onClick={() => { setZoom(1); setPosition(initialPosition); }}
                       className="text-xs text-blue-500 font-bold flex items-center gap-1 hover:text-blue-600"
                     >
                       <RotateCcw size={12} /> Reset
                     </button>
-                  </div>
-                  
+                  }
+                >
                   <div>
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
                       <span>Zoom</span>

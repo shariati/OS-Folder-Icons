@@ -130,13 +130,16 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         </NeumorphBox>
 
         {/* OS Selection */}
-        <NeumorphBox className="p-6 rounded-3xl">
-          <div className="mb-4 flex items-center gap-2">
+        <NeumorphBox 
+          className="p-6 rounded-3xl"
+          title="Operating System"
+          subtitle="Select your platform"
+          icon={
             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
               <Monitor size={16} />
             </div>
-            <h3 className="text-lg font-bold text-gray-700 dark:text-white">Operating System</h3>
-          </div>
+          }
+        >
           <div className="grid grid-cols-2 gap-4">
             {initialData.operatingSystems.map(os => (
               <NeumorphBox
@@ -160,7 +163,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* Version & Folder Style */}
         {selectedOS && (
-          <NeumorphBox className="p-6 rounded-3xl">
+          <NeumorphBox 
+            className="p-6 rounded-3xl"
+            title="Configuration"
+            subtitle="Choose your style"
+          >
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Version</label>
@@ -221,9 +228,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         {/* Simple Mode Style Presets */}
         {mode === 'simple' && (
           <>
-            <NeumorphBox className="p-6 rounded-3xl">
-              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Style</h3>
-              <p className="text-sm text-gray-500 mb-4">Choose a preset style</p>
+            <NeumorphBox 
+              className="p-6 rounded-3xl"
+              title="Icon Style"
+              subtitle="Choose a preset style"
+            >
               <div className="grid grid-cols-3 gap-3">
                 {(['carved', 'glassy', 'none'] as const).map(effect => (
                   <NeumorphBox
@@ -245,9 +254,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             </NeumorphBox>
 
             {/* Simple Mode Folder Color */}
-            <NeumorphBox className="p-6 rounded-3xl">
-               <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
-               <p className="text-sm text-gray-500 mb-4">Select a color theme</p>
+            <NeumorphBox 
+              className="p-6 rounded-3xl"
+              title="Folder Color"
+              subtitle="Colorize your folder"
+            >
                <div className="flex flex-wrap gap-3">
                  {[0, 140, 180, 240, 300].map(hue => (
                    <button
@@ -286,7 +297,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* Advanced Controls */}
         {mode === 'advanced' && (
-          <NeumorphBox className="p-6 rounded-3xl space-y-6">
+          <NeumorphBox 
+            className="p-6 rounded-3xl space-y-6"
+            title="Advanced Customization"
+            subtitle="Fine-tune your icon"
+          >
             
             {/* Folder Color */}
             <div>

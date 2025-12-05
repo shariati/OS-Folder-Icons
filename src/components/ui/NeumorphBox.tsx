@@ -32,6 +32,21 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   
   const hasHeader = !!(icon || title || subtitle || badge);
   const hasFooter = !!(helperText || error);
+  const isVoid = typeof as === 'string' && ['input', 'img', 'br', 'hr'].includes(as);
+
+  if (isVoid) {
+    return (
+      <Component
+        className={twMerge(
+          clsx(
+            variant === 'flat' ? 'neu-flat' : 'neu-pressed',
+            className
+          )
+        )}
+        {...props}
+      />
+    );
+  }
 
   return (
     <Component

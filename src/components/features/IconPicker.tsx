@@ -86,13 +86,16 @@ export function IconPicker({
   }, [lucideIconNames, heroIconNames, uniconsIconNames, grommetIconNames, search, iconType]);
 
   return (
-    <NeumorphBox className="p-6 rounded-3xl space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-gray-700 dark:text-white">Icon Selection</h3>
+    <NeumorphBox 
+      className="p-6 rounded-3xl space-y-6"
+      title="Icon Selection"
+      subtitle="Pick your symbol"
+      badge={
         <span className="text-xs font-medium px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500">
           {filteredIcons.length} icons
         </span>
-      </div>
+      }
+    >
 
       {/* Icon Source & Search - Only in Advanced Mode */}
       {mode === 'advanced' && (

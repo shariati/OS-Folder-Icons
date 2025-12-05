@@ -120,13 +120,15 @@ export function OSManager({ initialData }: { initialData: DB }) {
 
       {/* Add OS Form */}
       {isAddingOS && (
-        <NeumorphBox className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Add New Operating System</h2>
+        <NeumorphBox 
+          className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4"
+          title="Add New Operating System"
+          badge={
             <button onClick={() => setIsAddingOS(false)} className="text-gray-400 hover:text-red-500 transition-colors">
               <X size={24} />
             </button>
-          </div>
+          }
+        >
           <form onSubmit={handleAddOS} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>

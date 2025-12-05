@@ -138,11 +138,12 @@ export function TagsManager({ initialData }: { initialData: DB }) {
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {tags.map(tag => (
-          <NeumorphBox key={tag.id} className="p-4 rounded-2xl flex flex-col justify-between group">
-            <div>
-              <h3 className="font-bold text-gray-800 dark:text-white">{tag.name}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">{tag.slug}</p>
-            </div>
+          <NeumorphBox 
+            key={tag.id} 
+            className="p-4 rounded-2xl flex flex-col justify-between group"
+            title={tag.name}
+            subtitle={<span className="text-xs font-mono">{tag.slug}</span>}
+          >
             
             <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
