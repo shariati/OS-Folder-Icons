@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Menu, User } from 'lucide-react';
 import clsx from 'clsx';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 
 const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
+  const { user, userProfile } = useAuth();
   return (
     <header className="sticky top-0 z-40 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -54,13 +56,21 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
              <Link href="/" className="flex items-center gap-4">
                 <span className="hidden text-right lg:block">
                   <span className="block text-sm font-medium text-black dark:text-white">
-                    Admin User
+                    {userProfile?.displayName || user?.displayName || 'User'}
                   </span>
-                  <span className="block text-xs">Administrator</span>
+                  <span className="block text-xs capitalize">{userProfile?.role || 'User'}</span>
                 </span>
 
                 <span className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                   <User className="h-6 w-6 text-gray-500" />
+                   {userProfile?.photoURL || user?.photoURL ? (
+                     <img 
+                       src={userProfile?.photoURL || user?.photoURL || ''} 
+                       alt="User" 
+                       className="h-full w-full object-cover"
+                     />
+                   ) : (
+                     <User className="h-6 w-6 text-gray-500" />
+                   )}
                 </span>
              </Link>
           </div>
