@@ -8,6 +8,7 @@ import * as GrommetIcons from 'grommet-icons';
 import { HexColorPicker } from 'react-colorful';
 import { Search, Grid, Type, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface IconPickerProps {
   selectedIcon: string | null;
@@ -85,7 +86,7 @@ export function IconPicker({
   }, [lucideIconNames, heroIconNames, uniconsIconNames, grommetIconNames, search, iconType]);
 
   return (
-    <div className="neu-flat p-6 rounded-3xl space-y-6">
+    <NeumorphBox className="p-6 rounded-3xl space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-700 dark:text-white">Icon Selection</h3>
         <span className="text-xs font-medium px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500">
@@ -159,12 +160,14 @@ export function IconPicker({
 
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
+            <NeumorphBox
+              as="input"
+              variant="pressed"
               type="text"
               placeholder="Search icons..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
+              onChange={(e: any) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
             />
           </div>
         </div>
@@ -192,19 +195,21 @@ export function IconPicker({
             </div>
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
+              <NeumorphBox
+                as="input"
+                variant="pressed"
                 type="text"
                 placeholder="Search icons..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
+                onChange={(e: any) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
               />
             </div>
           </div>
       )}
 
       {/* Icon Grid */}
-      <div className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-6 gap-2 p-2 rounded-xl neu-pressed bg-gray-50/50 dark:bg-gray-900/30 custom-scrollbar">
+      <NeumorphBox variant="pressed" className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-6 gap-2 p-2 rounded-xl bg-gray-50/50 dark:bg-gray-900/30 custom-scrollbar">
         {filteredIcons.map((name) => {
           if (iconType === 'lucide') {
             const Icon = (LucideIcons as any)[name];
@@ -297,7 +302,7 @@ export function IconPicker({
           }
           return null;
         })}
-      </div>
+      </NeumorphBox>
 
       {/* Customization Controls */}
       <div className="grid grid-cols-1 gap-6">
@@ -365,6 +370,6 @@ export function IconPicker({
           </div>
         </div>
       </div>
-    </div>
+    </NeumorphBox>
   );
 }

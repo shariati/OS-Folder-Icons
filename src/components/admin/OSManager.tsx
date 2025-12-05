@@ -10,6 +10,7 @@ import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
 import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function OSManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
@@ -119,7 +120,7 @@ export function OSManager({ initialData }: { initialData: DB }) {
 
       {/* Add OS Form */}
       {isAddingOS && (
-        <div className="neu-flat p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
+        <NeumorphBox className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800 dark:text-white">Add New Operating System</h2>
             <button onClick={() => setIsAddingOS(false)} className="text-gray-400 hover:text-red-500 transition-colors">
@@ -130,10 +131,12 @@ export function OSManager({ initialData }: { initialData: DB }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
-                <input
+                <NeumorphBox
+                  as="input"
+                  variant="pressed"
                   type="text"
                   value={newOSName}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     const name = e.target.value;
                     setNewOSName(name);
                     if (OS_KEYWORD_MATCHERS.ICNS.some(k => name.toLowerCase().includes(k))) {
@@ -142,7 +145,7 @@ export function OSManager({ initialData }: { initialData: DB }) {
                       setNewOSFormat(OS_FORMATS.ICO);
                     }
                   }}
-                  className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
+                  className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
                   placeholder="e.g. Ubuntu"
                   required
                 />
@@ -150,15 +153,17 @@ export function OSManager({ initialData }: { initialData: DB }) {
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Format</label>
                 <div className="relative">
-                  <select
+                  <NeumorphBox
+                    as="select"
+                    variant="pressed"
                     value={newOSFormat}
-                    onChange={(e) => setNewOSFormat(e.target.value as any)}
-                    className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent appearance-none"
+                    onChange={(e: any) => setNewOSFormat(e.target.value as any)}
+                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent appearance-none"
                   >
                     <option value={OS_FORMATS.PNG}>PNG</option>
                     <option value={OS_FORMATS.ICO}>ICO</option>
                     <option value={OS_FORMATS.ICNS}>ICNS</option>
-                  </select>
+                  </NeumorphBox>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
                 </div>
               </div>
@@ -202,7 +207,7 @@ export function OSManager({ initialData }: { initialData: DB }) {
               </button>
             </div>
           </form>
-        </div>
+        </NeumorphBox>
       )}
 
       {/* OS List */}
@@ -314,28 +319,32 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
 
   if (isEditing) {
     return (
-      <div className="neu-flat p-6 rounded-2xl space-y-6">
+      <NeumorphBox className="p-6 rounded-2xl space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Name</label>
-            <input 
+            <NeumorphBox
+              as="input"
+              variant="pressed"
               value={editName} 
-              onChange={(e) => setEditName(e.target.value)} 
-              className="w-full px-3 py-2 rounded-lg neu-pressed outline-none bg-transparent"
+              onChange={(e: any) => setEditName(e.target.value)} 
+              className="w-full px-3 py-2 rounded-lg outline-none bg-transparent"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Format</label>
             <div className="relative">
-              <select 
+              <NeumorphBox
+                as="select"
+                variant="pressed"
                 value={editFormat} 
-                onChange={(e) => setEditFormat(e.target.value as any)} 
-                className="w-full px-3 py-2 rounded-lg neu-pressed outline-none bg-transparent appearance-none"
+                onChange={(e: any) => setEditFormat(e.target.value as any)} 
+                className="w-full px-3 py-2 rounded-lg outline-none bg-transparent appearance-none"
               >
                 <option value={OS_FORMATS.PNG}>PNG</option>
                 <option value={OS_FORMATS.ICO}>ICO</option>
                 <option value={OS_FORMATS.ICNS}>ICNS</option>
-              </select>
+              </NeumorphBox>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-3 h-3" />
             </div>
           </div>
@@ -365,17 +374,17 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium">Cancel</button>
           <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30">Save Changes</button>
         </div>
-      </div>
+      </NeumorphBox>
     );
   }
 
   return (
-    <div className="neu-flat rounded-3xl overflow-hidden transition-all duration-300">
+    <NeumorphBox className="rounded-3xl overflow-hidden transition-all duration-300">
       <div className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-6 flex-1">
-          <div className={clsx("transition-transform duration-200 p-2 rounded-full neu-pressed", expanded && "rotate-90")}>
+          <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
             <ChevronRight size={20} className="text-gray-400" />
-          </div>
+          </NeumorphBox>
           {os.image ? (
             <Image src={os.image} alt={os.name} width={48} height={48} className="rounded-xl shadow-sm" />
           ) : (
@@ -391,15 +400,15 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={(e) => { e.stopPropagation(); setIsEditing(true); }} className="p-3 text-gray-500 hover:text-blue-600 neu-flat hover:neu-pressed rounded-xl transition-all" title="Edit OS">
+          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); setIsEditing(true); }} className="p-3 text-gray-500 hover:text-blue-600 hover:neu-pressed rounded-xl transition-all" title="Edit OS">
             <Edit2 size={18} />
-          </button>
-          <button onClick={(e) => { e.stopPropagation(); addVersion(); }} className="p-3 text-gray-500 hover:text-green-600 neu-flat hover:neu-pressed rounded-xl transition-all" title="Add Version">
+          </NeumorphBox>
+          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); addVersion(); }} className="p-3 text-gray-500 hover:text-green-600 hover:neu-pressed rounded-xl transition-all" title="Add Version">
             <Plus size={18} />
-          </button>
-          <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-3 text-gray-500 hover:text-red-600 neu-flat hover:neu-pressed rounded-xl transition-all" title="Delete OS">
+          </NeumorphBox>
+          <NeumorphBox as="button" onClick={(e: any) => { e.stopPropagation(); onDelete(); }} className="p-3 text-gray-500 hover:text-red-600 hover:neu-pressed rounded-xl transition-all" title="Delete OS">
             <Trash2 size={18} />
-          </button>
+          </NeumorphBox>
         </div>
       </div>
 
@@ -413,7 +422,7 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           )}
           
           {os.versions.map(version => (
-            <div key={version.id} className="neu-flat rounded-2xl overflow-hidden">
+            <NeumorphBox key={version.id} className="rounded-2xl overflow-hidden">
               <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex items-center gap-3">
                   <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
@@ -455,7 +464,7 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
                 ) : (
                   <div className="space-y-6">
                     {version.folderIcons.map(folder => (
-                      <div key={folder.id} className="neu-pressed rounded-2xl p-6 transition-all">
+                      <NeumorphBox key={folder.id} variant="pressed" className="rounded-2xl p-6 transition-all">
                         <div className="flex flex-col xl:flex-row items-start gap-8">
                           {/* Controls */}
                           <div className="w-full xl:w-72 flex-shrink-0 space-y-5">
@@ -518,15 +527,15 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </NeumorphBox>
                     ))}
                   </div>
                 )}
               </div>
-            </div>
+            </NeumorphBox>
           ))}
         </div>
       )}
-    </div>
+    </NeumorphBox>
   );
 }

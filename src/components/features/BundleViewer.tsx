@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 import JSZip from 'jszip';
 import { toPng } from 'html-to-image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import * as LucideIcons from 'lucide-react';
 
 export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
@@ -125,8 +126,9 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left: Details */}
+      {/* Left: Details */}
       <div className="lg:col-span-2 space-y-8">
-        <div className="neu-flat p-8 rounded-3xl">
+        <NeumorphBox className="p-8 rounded-3xl">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-3">{bundle.name}</h1>
@@ -139,9 +141,13 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
                 ))}
               </div>
             </div>
-            <button onClick={handleShare} className="p-3 text-gray-500 hover:text-blue-600 neu-flat hover:neu-pressed rounded-full transition-all">
+            <NeumorphBox 
+              as="button" 
+              onClick={handleShare} 
+              className="p-3 text-gray-500 hover:text-blue-600 hover:neu-pressed rounded-full transition-all"
+            >
               <Share2 size={20} />
-            </button>
+            </NeumorphBox>
           </div>
           
           <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">{bundle.description}</p>
@@ -152,14 +158,14 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
               const Icon = (LucideIcons as any)[icon.name];
               if (!Icon) return null;
               return (
-                <div key={icon.name} className="flex flex-col items-center gap-3 p-4 neu-pressed rounded-2xl transition-all hover:-translate-y-1">
+                <NeumorphBox key={icon.name} variant="pressed" className="flex flex-col items-center gap-3 p-4 rounded-2xl transition-all hover:-translate-y-1">
                   <Icon size={24} className="text-gray-700 dark:text-gray-300" />
                   <span className="text-[10px] font-medium text-gray-500 truncate w-full text-center">{icon.name}</span>
-                </div>
+                </NeumorphBox>
               );
             })}
           </div>
-        </div>
+        </NeumorphBox>
       </div>
 
       {/* Right: Download */}
@@ -173,14 +179,16 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
               const os = db.operatingSystems.find(o => o.id === osId);
               if (!os) return null;
               return (
-                <button
+                <NeumorphBox
+                  as="button"
                   key={osId}
                   onClick={() => toggleOS(osId)}
+                  variant={selectedOS.includes(osId) ? 'pressed' : 'flat'}
                   className={clsx(
                     "w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200",
                     selectedOS.includes(osId)
-                      ? "neu-pressed bg-blue-50 dark:bg-blue-900/20 text-blue-700 border border-blue-200 dark:border-blue-800"
-                      : "neu-flat hover:translate-x-1"
+                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 border border-blue-200 dark:border-blue-800"
+                      : "hover:translate-x-1"
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -188,7 +196,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
                     <span className="font-semibold text-sm">{os.name}</span>
                   </div>
                   {selectedOS.includes(osId) && <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center"><Check size={12} className="text-white" /></div>}
-                </button>
+                </NeumorphBox>
               );
             })}
           </div>

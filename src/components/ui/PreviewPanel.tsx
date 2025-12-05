@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { clsx } from 'clsx';
+import { NeumorphBox } from './NeumorphBox';
 
 interface PreviewPanelProps {
   children: ReactNode;
@@ -31,12 +32,15 @@ export function PreviewPanel({
         </div>
       </div>
 
-      <div className={clsx(
-        "flex justify-center mb-10 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl p-12 neu-pressed checkerboard flex items-center overflow-auto",
-        minHeight
-      )}>
+      <NeumorphBox 
+        variant="pressed"
+        className={clsx(
+          "flex justify-center mb-10 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl p-12 checkerboard flex items-center overflow-auto",
+          minHeight
+        )}
+      >
         {children}
-      </div>
+      </NeumorphBox>
       
       {controls && (
         <div className="mb-6">

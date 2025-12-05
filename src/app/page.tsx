@@ -24,6 +24,7 @@ import { Footer } from '@/components/layout/Footer';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
 import { SubscriptionPlans } from '@/components/features/SubscriptionPlans';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export default async function Home() {
   const db = await getDB();
@@ -141,7 +142,7 @@ export default async function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {latestBundles.map((bundle) => (
-              <Link key={bundle.id} href={`/bundles/${bundle.id}`} className="group neu-flat p-3 rounded-3xl hover:-translate-y-1 transition-all duration-300">
+              <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group p-3 rounded-3xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
                    {bundle.previewImage ? (
                     <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
@@ -158,14 +159,14 @@ export default async function Home() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </NeumorphBox>
             ))}
           </div>
           
           <div className="mt-12 text-center md:hidden">
-            <Link href="/bundles" className="inline-flex items-center px-8 py-4 neu-flat hover:neu-pressed rounded-2xl text-base font-bold text-gray-700 dark:text-gray-200 transition-all">
+            <NeumorphBox as={Link} href="/bundles" className="inline-flex items-center px-8 py-4 hover:neu-pressed rounded-2xl text-base font-bold text-gray-700 dark:text-gray-200 transition-all">
               View All Bundles
-            </Link>
+            </NeumorphBox>
           </div>
         </div>
       </section>

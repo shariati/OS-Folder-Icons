@@ -7,6 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -101,7 +102,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <div className="lg:col-span-4 space-y-8">
         
         {/* Mode Toggle */}
-        <div className="neu-flat p-2 flex items-center justify-between rounded-2xl">
+        <NeumorphBox className="p-2 flex items-center justify-between rounded-2xl">
           <button
             onClick={() => handleModeChange('simple')}
             className={clsx(
@@ -126,10 +127,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             <Sliders size={16} />
             Advanced
           </button>
-        </div>
+        </NeumorphBox>
 
         {/* OS Selection */}
-        <div className="neu-flat p-6 rounded-3xl">
+        <NeumorphBox className="p-6 rounded-3xl">
           <div className="mb-4 flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
               <Monitor size={16} />
@@ -138,39 +139,43 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           </div>
           <div className="grid grid-cols-2 gap-4">
             {initialData.operatingSystems.map(os => (
-              <button
+              <NeumorphBox
+                as="button"
                 key={os.id}
                 onClick={() => setSelectedOSId(os.id)}
+                variant={selectedOSId === os.id ? 'pressed' : 'flat'}
                 className={clsx(
                   "flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
                   selectedOSId === os.id
-                    ? "neu-pressed bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800"
-                    : "neu-flat hover:-translate-y-1"
+                    ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800"
+                    : "hover:-translate-y-1"
                 )}
               >
                 {os.image && <Image src={os.image} alt={os.name} width={32} height={32} className="rounded-full shadow-sm" />}
                 <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">{os.name}</span>
-              </button>
+              </NeumorphBox>
             ))}
           </div>
-        </div>
+        </NeumorphBox>
 
         {/* Version & Folder Style */}
         {selectedOS && (
-          <div className="neu-flat p-6 rounded-3xl">
+          <NeumorphBox className="p-6 rounded-3xl">
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Version</label>
                 <div className="relative">
-                  <select
+                  <NeumorphBox
+                    as="select"
+                    variant="pressed"
                     value={selectedVersionId}
-                    onChange={(e) => setSelectedVersionId(e.target.value)}
-                    className="w-full px-4 py-3 neu-pressed rounded-xl text-gray-700 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    onChange={(e: any) => setSelectedVersionId(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                   >
                     {selectedOS.versions.map(v => (
                       <option key={v.id} value={v.id}>{v.name}</option>
                     ))}
-                  </select>
+                  </NeumorphBox>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   </div>
@@ -186,14 +191,16 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {selectedVersion?.folderIcons.map(folder => (
-                    <button
+                    <NeumorphBox
+                      as="button"
                       key={folder.id}
                       onClick={() => setSelectedFolderId(folder.id)}
+                      variant={selectedFolderId === folder.id ? 'pressed' : 'flat'}
                       className={clsx(
                         "relative aspect-square rounded-xl overflow-hidden transition-all duration-200 p-2",
                         selectedFolderId === folder.id
-                          ? "neu-pressed ring-2 ring-blue-500 ring-offset-2 ring-offset-transparent"
-                          : "neu-flat hover:-translate-y-1"
+                          ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-transparent"
+                          : "hover:-translate-y-1"
                       )}
                     >
                       <Image 
@@ -203,40 +210,42 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                         className="object-contain p-2" 
                         style={{ filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' }}
                       />
-                    </button>
+                    </NeumorphBox>
                   ))}
                 </div>
               </div>
             </div>
-          </div>
+          </NeumorphBox>
         )}
 
         {/* Simple Mode Style Presets */}
         {mode === 'simple' && (
           <>
-            <div className="neu-flat p-6 rounded-3xl">
+            <NeumorphBox className="p-6 rounded-3xl">
               <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Style</h3>
               <p className="text-sm text-gray-500 mb-4">Choose a preset style</p>
               <div className="grid grid-cols-3 gap-3">
                 {(['carved', 'glassy', 'none'] as const).map(effect => (
-                  <button
+                  <NeumorphBox
+                    as="button"
                     key={effect}
                     onClick={() => setIconEffect(effect)}
+                    variant={iconEffect === effect ? 'pressed' : 'flat'}
                     className={clsx(
                       "py-3 px-2 rounded-xl text-sm font-bold transition-all",
                       iconEffect === effect
-                        ? "neu-pressed text-blue-600"
-                        : "neu-flat text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
+                        ? "text-blue-600"
+                        : "text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
                     )}
                   >
                     {effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
-                  </button>
+                  </NeumorphBox>
                 ))}
               </div>
-            </div>
+            </NeumorphBox>
 
             {/* Simple Mode Folder Color */}
-            <div className="neu-flat p-6 rounded-3xl">
+            <NeumorphBox className="p-6 rounded-3xl">
                <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
                <p className="text-sm text-gray-500 mb-4">Select a color theme</p>
                <div className="flex flex-wrap gap-3">
@@ -258,7 +267,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                    />
                  ))}
                </div>
-            </div>
+            </NeumorphBox>
           </>
         )}
 
@@ -277,7 +286,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* Advanced Controls */}
         {mode === 'advanced' && (
-          <div className="neu-flat p-6 rounded-3xl space-y-6">
+          <NeumorphBox className="p-6 rounded-3xl space-y-6">
             
             {/* Folder Color */}
             <div>
@@ -335,7 +344,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             {/* Position Adjustment */}
             <div>
               <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Position</h3>
-              <div className="space-y-4 p-4 neu-pressed rounded-xl">
+              <NeumorphBox variant="pressed" className="space-y-4 p-4 rounded-xl">
                 <div>
                   <div className="flex justify-between mb-1">
                     <label className="text-xs font-bold text-gray-500">Horizontal (X)</label>
@@ -370,9 +379,9 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 >
                   Reset Position
                 </button>
-              </div>
+              </NeumorphBox>
             </div>
-          </div>
+          </NeumorphBox>
         )}
 
       </div>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Download, Search, Filter } from 'lucide-react';
 import { Footer } from '@/components/layout/Footer';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 import { Metadata } from 'next';
 
@@ -44,16 +45,18 @@ export default async function BundlesPage({
           <div className="max-w-3xl mx-auto flex gap-6">
             <div className="relative flex-1">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input 
+              <NeumorphBox
+                as="input"
+                variant="pressed"
                 type="text" 
                 placeholder="Search bundles..." 
-                className="w-full pl-14 pr-6 py-4 rounded-2xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent transition-all"
+                className="w-full pl-14 pr-6 py-4 rounded-2xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent transition-all"
               />
             </div>
-            <button className="px-8 py-4 rounded-2xl neu-flat hover:neu-pressed text-gray-700 dark:text-gray-200 flex items-center gap-3 font-bold transition-all">
+            <NeumorphBox as="button" className="px-8 py-4 rounded-2xl hover:neu-pressed text-gray-700 dark:text-gray-200 flex items-center gap-3 font-bold transition-all">
               <Filter className="w-5 h-5" />
               Filters
-            </button>
+            </NeumorphBox>
           </div>
         </div>
       </div>
@@ -62,7 +65,7 @@ export default async function BundlesPage({
         {bundles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {bundles.map(bundle => (
-              <div key={bundle.id} className="group relative neu-flat p-4 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+              <NeumorphBox key={bundle.id} className="group relative p-4 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                 <Link href={`/bundles/${bundle.id}`} className="block h-full flex flex-col">
                   <div className="relative h-64 w-full rounded-2xl overflow-hidden shadow-inner mb-6">
                     {bundle.previewImage ? (
@@ -101,7 +104,7 @@ export default async function BundlesPage({
                     </div>
                   </div>
                 </Link>
-              </div>
+              </NeumorphBox>
             ))}
           </div>
         ) : (

@@ -7,6 +7,7 @@ import { clsx } from 'clsx';
 import { useToast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function CategoriesManager({ initialData }: { initialData: DB }) {
   const [categories, setCategories] = useState<Category[]>(initialData.categories || []);
@@ -237,7 +238,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map(category => (
-          <div key={category.id} className="neu-flat p-6 rounded-3xl relative group">
+          <NeumorphBox key={category.id} className="p-6 rounded-3xl relative group">
             <div className={`absolute -top-6 right-6 w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}>
                 {category.imageUrl ? (
                     <Image src={category.imageUrl} alt={category.name} width={40} height={40} className="object-contain" />
@@ -263,7 +264,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
                 <Trash2 size={18} />
               </button>
             </div>
-          </div>
+          </NeumorphBox>
         ))}
       </div>
     </div>

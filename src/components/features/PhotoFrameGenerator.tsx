@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 
 import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function PhotoFrameGenerator() {
   const [image, setImage] = useState<string | null>(null);
@@ -117,7 +118,7 @@ export function PhotoFrameGenerator() {
       <div className="lg:col-span-4 space-y-6">
         
         {/* Image Upload */}
-        <div className="neu-flat p-6 rounded-3xl">
+        <NeumorphBox className="p-6 rounded-3xl">
           <h3 className="text-lg font-bold mb-4 text-gray-700 dark:text-white flex items-center gap-2">
             <Upload size={20} />
             Upload Photo
@@ -129,10 +130,10 @@ export function PhotoFrameGenerator() {
             </div>
             <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
           </label>
-        </div>
+        </NeumorphBox>
 
         {/* Text Inputs */}
-        <div className="neu-flat p-6 rounded-3xl space-y-4">
+        <NeumorphBox className="p-6 rounded-3xl space-y-4">
           <h3 className="text-lg font-bold mb-2 text-gray-700 dark:text-white flex items-center gap-2">
             <Type size={20} />
             Details
@@ -140,11 +141,13 @@ export function PhotoFrameGenerator() {
           
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Title</label>
-            <input
+            <NeumorphBox
+              as="input"
+              variant="pressed"
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none bg-transparent"
+              onChange={(e: any) => setTitle(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent"
               placeholder="e.g. Tumpak Sewu Waterfall"
             />
           </div>
@@ -152,31 +155,36 @@ export function PhotoFrameGenerator() {
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Date</label>
             <div className="flex gap-2">
-              <select
+              <NeumorphBox
+                as="select"
+                variant="pressed"
                 value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
+                onChange={(e: any) => setSelectedMonth(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
               >
                 {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(month => (
                   <option key={month} value={month}>{month}</option>
                 ))}
-              </select>
-              <select
+              </NeumorphBox>
+              <NeumorphBox
+                as="select"
+                variant="pressed"
                 value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
+                onChange={(e: any) => setSelectedYear(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
               >
                 {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
-              </select>
+              </NeumorphBox>
             </div>
           </div>
 
           <div className="relative" ref={countryDropdownRef}>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Country Flag</label>
-            <div 
-              className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white bg-transparent flex items-center justify-between cursor-pointer"
+            <NeumorphBox 
+              variant="pressed"
+              className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white bg-transparent flex items-center justify-between cursor-pointer"
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
             >
               <div className="flex items-center gap-2">
@@ -184,7 +192,7 @@ export function PhotoFrameGenerator() {
                 <span>{selectedCountry.name}</span>
               </div>
               <span className="text-xs">▼</span>
-            </div>
+            </NeumorphBox>
 
             {showCountryDropdown && (
               <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl max-h-60 overflow-y-auto border border-gray-100 dark:border-gray-700">
@@ -219,10 +227,10 @@ export function PhotoFrameGenerator() {
               </div>
             )}
           </div>
-        </div>
+        </NeumorphBox>
 
         {/* Frame Color Selector */}
-        <div className="neu-flat p-6 rounded-3xl space-y-4">
+        <NeumorphBox className="p-6 rounded-3xl space-y-4">
           <h3 className="text-lg font-bold mb-2 text-gray-700 dark:text-white flex items-center gap-2">
             <div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>
             Frame Color
@@ -247,7 +255,7 @@ export function PhotoFrameGenerator() {
               </button>
             ))}
           </div>
-        </div>
+        </NeumorphBox>
 
 
       </div>
@@ -259,7 +267,7 @@ export function PhotoFrameGenerator() {
             minHeight="min-h-[600px]"
             controls={
               image && (
-                <div className="neu-flat p-6 rounded-3xl space-y-4">
+                <NeumorphBox className="p-6 rounded-3xl space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                       <Move size={20} />
@@ -288,7 +296,7 @@ export function PhotoFrameGenerator() {
                       className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
                     />
                   </div>
-                </div>
+                </NeumorphBox>
               )
             }
             actions={

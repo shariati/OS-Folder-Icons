@@ -5,6 +5,7 @@ import { DB, Tag } from '@/lib/types';
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { v4 as uuidv4 } from 'uuid';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function TagsManager({ initialData }: { initialData: DB }) {
   const [tags, setTags] = useState<Tag[]>(initialData.tags || []);
@@ -137,7 +138,7 @@ export function TagsManager({ initialData }: { initialData: DB }) {
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {tags.map(tag => (
-          <div key={tag.id} className="neu-flat p-4 rounded-2xl flex flex-col justify-between group">
+          <NeumorphBox key={tag.id} className="p-4 rounded-2xl flex flex-col justify-between group">
             <div>
               <h3 className="font-bold text-gray-800 dark:text-white">{tag.name}</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">{tag.slug}</p>
@@ -157,7 +158,7 @@ export function TagsManager({ initialData }: { initialData: DB }) {
                 <Trash2 size={16} />
               </button>
             </div>
-          </div>
+          </NeumorphBox>
         ))}
       </div>
     </div>

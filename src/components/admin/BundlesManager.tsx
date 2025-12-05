@@ -9,6 +9,7 @@ import { Trash2, Plus, Upload, Search, X, Edit2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function BundlesManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
@@ -164,7 +165,7 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
       </div>
 
       {isCreating && (
-        <div className="neu-flat p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
+        <NeumorphBox className="p-8 rounded-3xl animate-in fade-in slide-in-from-top-4">
           <div className="flex justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">{editingBundleId ? 'Edit Bundle' : 'Create New Bundle'}</h3>
             <button onClick={() => { setIsCreating(false); resetForm(); }} className="text-gray-400 hover:text-red-500 transition-colors"><X size={24} /></button>
@@ -175,19 +176,23 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
-                  <input 
+                  <NeumorphBox
+                    as="input"
+                    variant="pressed"
                     value={name} 
-                    onChange={e => setName(e.target.value)} 
-                    className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent" 
+                    onChange={(e: any) => setName(e.target.value)} 
+                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent" 
                     required 
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                  <textarea 
+                  <NeumorphBox
+                    as="textarea"
+                    variant="pressed"
                     value={description} 
-                    onChange={e => setDescription(e.target.value)} 
-                    className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent min-h-[120px]" 
+                    onChange={(e: any) => setDescription(e.target.value)} 
+                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent min-h-[120px]" 
                   />
                 </div>
                 <div>
@@ -216,10 +221,12 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
                       </button>
                     ))}
                   </div>
-                  <input 
+                  <NeumorphBox
+                    as="input"
+                    variant="pressed"
                     value={tags} 
-                    onChange={e => setTags(e.target.value)} 
-                    className="w-full px-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent" 
+                    onChange={(e: any) => setTags(e.target.value)} 
+                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent" 
                     placeholder="finance, productivity (comma separated)" 
                   />
                   <p className="text-xs text-gray-400 mt-2">Select from existing tags or type new ones.</p>
@@ -265,14 +272,16 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Select Icons ({selectedIcons.length})</label>
                   <div className="relative mb-4">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input 
+                    <NeumorphBox
+                      as="input"
+                      variant="pressed"
                       value={iconSearch} 
-                      onChange={e => setIconSearch(e.target.value)} 
-                      className="w-full pl-10 pr-4 py-3 rounded-xl neu-pressed text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent text-sm" 
+                      onChange={(e: any) => setIconSearch(e.target.value)} 
+                      className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent text-sm" 
                       placeholder="Search icons..." 
                     />
                   </div>
-                  <div className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-8 gap-2 p-4 rounded-xl neu-pressed bg-gray-50/50 dark:bg-gray-900/50">
+                  <NeumorphBox variant="pressed" className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-8 gap-2 p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50">
                     {filteredIcons.map(iconName => {
                       const Icon = (LucideIcons as any)[iconName];
                       if (!Icon) return null;
@@ -293,7 +302,7 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
                         </button>
                       );
                     })}
-                  </div>
+                  </NeumorphBox>
                 </div>
               </div>
             </div>
@@ -308,12 +317,12 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
               </button>
             </div>
           </form>
-        </div>
+        </NeumorphBox>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {initialData.bundles.map(bundle => (
-          <div key={bundle.id} className="neu-flat rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl">
+          <NeumorphBox key={bundle.id} className="rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl">
             {bundle.previewImage ? (
               <div className="relative h-56 w-full bg-gray-100 dark:bg-gray-800">
                 <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
@@ -354,7 +363,7 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
                 <span>{bundle.targetOS.length} OSs</span>
               </div>
             </div>
-          </div>
+          </NeumorphBox>
         ))}
       </div>
     </div>

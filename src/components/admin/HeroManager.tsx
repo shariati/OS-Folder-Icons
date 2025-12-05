@@ -6,6 +6,7 @@ import { Plus, Trash2, Edit2, Save, X, Upload, ArrowUp, ArrowDown } from 'lucide
 import { useToast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export function HeroManager({ initialData }: { initialData: DB }) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialData.heroSlides || []);
@@ -196,7 +197,7 @@ export function HeroManager({ initialData }: { initialData: DB }) {
 
       <div className="space-y-4">
         {slides.sort((a, b) => a.order - b.order).map((slide, index) => (
-          <div key={slide.id} className="neu-flat p-4 rounded-2xl flex items-center gap-4 group">
+          <NeumorphBox key={slide.id} className="p-4 rounded-2xl flex items-center gap-4 group">
             <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
                 {slide.imageUrl ? (
                     <Image src={slide.imageUrl} alt={slide.title} fill className="object-cover" />
@@ -225,7 +226,7 @@ export function HeroManager({ initialData }: { initialData: DB }) {
                 <Trash2 size={18} />
               </button>
             </div>
-          </div>
+          </NeumorphBox>
         ))}
       </div>
     </div>
