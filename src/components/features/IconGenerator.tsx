@@ -79,11 +79,14 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const handleDownloadClick = () => {
     if (loading) return;
 
-    // Check if user is free or not logged in (assuming site visitor is free)
-    // If isAdmin is true, bypass ad logic
-    // TODO: Re-enable strict role check after verification
-    // const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
-    const isFreeUser = !isAdmin; // Force show ads on public pages for testing
+    // Check if user is free or not logged in
+    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
+    
+    // Feature Gating: Advanced Mode is for Pro/Lifetime/Admin only
+    if (mode === 'advanced' && isFreeUser) {
+        alert('Advanced mode is available for Pro and Lifetime users only. Please upgrade to use this feature.');
+        return;
+    }
 
     if (isFreeUser) {
       setShowAd(true);

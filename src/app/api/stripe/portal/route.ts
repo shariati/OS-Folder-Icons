@@ -1,16 +1,32 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { auth, db } from '@/lib/firebase/admin';
+import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-
+    // apiVersion: '2024-11-20.acacia',
 });
 
 export async function POST(req: Request) {
     try {
-        const { customerId, returnUrl } = await req.json();
+        const { returnUrl } = await req.json();
+        const authorization = (await headers()).get('Authorization');
+
+        if (!authorization || !authorization.startsWith('Bearer ')) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const idToken = authorization.split('Bearer ')[1];
+        const decodedToken = await auth.verifyIdToken(idToken);
+        const userId = decodedToken.uid;
+
+        // Fetch user profile to get stripeCustomerId
+        const userDoc = await db.collection('users').doc(userId).get();
+        const userData = userDoc.data();
+        const customerId = userData?.stripeCustomerId;
 
         if (!customerId) {
-            return NextResponse.json({ error: 'Missing customer ID' }, { status: 400 });
+            return NextResponse.json({ error: 'No subscription found' }, { status: 404 });
         }
 
         const session = await stripe.billingPortal.sessions.create({

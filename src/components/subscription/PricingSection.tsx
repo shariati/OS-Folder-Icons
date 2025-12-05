@@ -44,16 +44,16 @@ const PricingSection = () => {
     setLoading(priceId);
 
     try {
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           priceId,
           mode,
-          userId: user.uid,
-          email: user.email,
           returnUrl: window.location.href,
         }),
       });

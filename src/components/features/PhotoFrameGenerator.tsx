@@ -10,6 +10,7 @@ import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function PhotoFrameGenerator() {
   const [image, setImage] = useState<string | null>(null);
@@ -143,9 +144,13 @@ export function PhotoFrameGenerator() {
     }
   };
 
+  const { userProfile, loading } = useAuth(); // Add useAuth hook
+
   const handleDownloadClick = (format: 'png' | 'jpg') => {
-    // Check if user is free tier (mock check for now, replace with actual auth/subscription check)
-    const isFreeUser = true; 
+    if (loading) return;
+    
+    // Check if user is free tier
+    const isFreeUser = !userProfile || userProfile.role === 'free';
 
     if (isFreeUser) {
       setPendingDownload(format);

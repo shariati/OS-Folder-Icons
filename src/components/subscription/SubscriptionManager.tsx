@@ -4,21 +4,22 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const SubscriptionManager = () => {
-  const { userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleManageSubscription = async () => {
-    if (!userProfile?.stripeCustomerId) return;
+    if (!user || !userProfile?.stripeCustomerId) return;
 
     setLoading(true);
     try {
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/stripe/portal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify({
-          customerId: userProfile.stripeCustomerId,
           returnUrl: window.location.href,
         }),
       });
@@ -26,10 +27,12 @@ const SubscriptionManager = () => {
       const { url } = await response.json();
       if (url) {
         window.location.href = url;
+      } else {
+        alert('Failed to redirect to subscription portal.');
       }
     } catch (error) {
       console.error('Error accessing portal:', error);
-      alert('Failed to access subscription portal.');
+      alert('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
