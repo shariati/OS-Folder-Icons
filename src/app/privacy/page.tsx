@@ -26,9 +26,10 @@ export default function PrivacyPage() {
 
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">B. Information Collected Automatically</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Usage Data:</strong> We use tools like <strong>Google Analytics</strong> and <strong>Microsoft Clarity</strong> to collect anonymous data about how you interact with our site (e.g., pages visited, time spent, clicks).</li>
+                  <li><strong>Usage Data:</strong> We use tools like <strong>Google Analytics</strong>, <strong>Microsoft Clarity</strong>, and <strong>Vercel Analytics</strong> to collect anonymous data about how you interact with our site (e.g., pages visited, time spent, clicks, heatmaps, and session recordings).</li>
+                  <li><strong>Advertising Data:</strong> We work with third-party ad providers such as <strong>Google AdSense</strong> which may use cookies and similar technologies to show personalized ads based on your visits to this and other websites.</li>
                   <li><strong>Device Information:</strong> We may collect information about your browser, device type, and operating system.</li>
-                  <li><strong>Cookies:</strong> We use cookies to maintain your session and store your preferences.</li>
+                  <li><strong>Cookies:</strong> We use cookies to maintain your session, store your preferences, and for advertising purposes.</li>
                 </ul>
               </section>
 
@@ -36,9 +37,10 @@ export default function PrivacyPage() {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">2. How We Use Your Information</h2>
                 <p className="mb-2">We use the collected information to:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Provide and maintain our services.</li>
+                  <li>Provide and maintain our services, including hosting via <strong>Vercel</strong> and backend services via <strong>Firebase</strong>.</li>
                   <li>Personalize your experience (e.g., saving your favorite colors).</li>
                   <li>Analyze usage patterns to improve our website and tools.</li>
+                  <li>Serve relevant advertisements to support the free version of our tools.</li>
                   <li>Communicate with you about updates or support.</li>
                 </ul>
               </section>
@@ -47,8 +49,28 @@ export default function PrivacyPage() {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">3. Third-Party Services</h2>
                 <p className="mb-2">We share data with trusted third-party service providers to help us operate our business:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Authentication:</strong> We use third-party providers (e.g., Google, GitHub) for secure login.</li>
-                  <li><strong>Analytics:</strong> We use Google Analytics and Microsoft Clarity to understand user behavior. These services may capture data such as heatmaps and session recordings to help us improve usability.</li>
+                  <li><strong>Authentication & Backend:</strong> We use <strong>Firebase</strong> (by Google) for secure authentication and database services.</li>
+                  <li><strong>Hosting:</strong> Our application is hosted on <strong>Vercel</strong>, which may collect anonymous usage statistics.</li>
+                  <li><strong>Analytics:</strong>
+                    <ul className="list-disc pl-6 mt-1 space-y-1">
+                      <li><strong>Google Analytics:</strong> To understand user behavior and traffic.</li>
+                      <li><strong>Microsoft Clarity:</strong> We partner with Microsoft Clarity and Microsoft Advertising to capture how you use and interact with our website through behavioral metrics, heatmaps, and session replay to improve and market our products/services. Website usage data is captured using first and third-party cookies and other tracking technologies to determine the popularity of products/services and online activity. Additionally, we use this information for site optimization, fraud/security purposes, and advertising. For more information about how Microsoft collects and uses your data, visit the <a href="https://privacy.microsoft.com/en-US/privacystatement" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Microsoft Privacy Statement</a>. See also <a href="https://learn.microsoft.com/en-us/clarity/setup-and-installation/privacy-disclosure" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Clarity Privacy Disclosure</a>.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Advertising:</strong> We use <strong>Google AdSense</strong> and other ad partners to display advertisements. These partners may use cookies to serve ads based on your prior visits to our website or other websites.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">4. Photo Frame Privacy & Client-Side Processing</h2>
+                <p className="mb-4">
+                  We prioritize your privacy when using our tools, specifically the <strong>Photo Frame</strong> feature.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li><strong>Client-Side Processing:</strong> All image processing for the Photo Frame feature happens entirely on your device (in your browser). <strong>We do not upload your photos to any server.</strong></li>
+                  <li><strong>No Storage:</strong> Since processing is local, we do not store or have access to the photos you use in the Photo Frame tool.</li>
+                  <li><strong>Transparency:</strong> You can verify this by reviewing our source code (see Terms of Service for repository details).</li>
+                  <li><strong>Future Changes:</strong> In the future, if we introduce a feature to save your projects to the cloud, we will update this policy. Any such feature would involve uploading data to secure, encrypted storage, and would only occur with your explicit action and consent. As of now, no such upload occurs.</li>
                 </ul>
               </section>
 

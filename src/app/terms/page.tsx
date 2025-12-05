@@ -36,7 +36,15 @@ export default function TermsPage() {
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Our Content:</strong> All content provided by OS Folder Icons, including the icon generator tool, designs, logos, and code, is the property of OS Folder Icons or its licensors and is protected by copyright and other intellectual property laws.</li>
                   <li><strong>User-Generated Content:</strong> By creating icons using our tools, you retain rights to your specific customizations, but you grant us a license to display and use them for the purpose of providing the service.</li>
-                  <li><strong>Restrictions:</strong> You may not reverse engineer, decompile, or attempt to extract the source code of our software, except as permitted by open-source licenses where applicable.</li>
+                </ul>
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mt-4 mb-2">Source Code License</h3>
+                <p className="mb-2">
+                  The source code for OS Folder Icons is available for transparency and educational purposes.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li><strong>Open Source (Non-Commercial):</strong> The source code is available for personal and educational use. You can view the source code on our <a href="https://github.com/shariati/OS-Folder-Icons" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">GitHub Repository</a>.</li>
+                  <li><strong>Commercial Use:</strong> Any commercial use of the source code, its variations, or deployment of this application for commercial purposes requires a separate commercial license and payment of royalty fees. Please contact us for details.</li>
+                  <li><strong>Restrictions:</strong> You may not reverse engineer, decompile, or attempt to extract the source code of our software for commercial reproduction without a license.</li>
                 </ul>
               </section>
 
@@ -50,10 +58,12 @@ export default function TermsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">5. Third-Party Services</h2>
-                <p className="mb-2">Our service may integrate with third-party tools such as:</p>
+                <p className="mb-2">Our service integrates with third-party tools to provide functionality, analytics, and advertising:</p>
                 <ul className="list-disc pl-6 space-y-2 mb-4">
-                  <li><strong>Social Login:</strong> Google, GitHub, or other providers for authentication.</li>
-                  <li><strong>Analytics:</strong> Google Analytics and Microsoft Clarity to improve user experience.</li>
+                  <li><strong>Infrastructure:</strong> Hosted on <strong>Vercel</strong> with backend services provided by <strong>Firebase</strong> (Google).</li>
+                  <li><strong>Authentication:</strong> Google, GitHub, or other providers for secure sign-in.</li>
+                  <li><strong>Analytics:</strong> <strong>Google Analytics</strong> and <strong>Microsoft Clarity</strong> are used to improve user experience through traffic analysis, heatmaps, and session recordings.</li>
+                  <li><strong>Advertising:</strong> <strong>Google AdSense</strong> and other providers display ads, which may use cookies to personalize content.</li>
                 </ul>
                 <p>
                   Your use of these third-party services is subject to their respective terms and privacy policies.
@@ -61,7 +71,19 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">6. Prohibited Conduct</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">6. Photo Frame Feature Usage</h2>
+                <p className="mb-2">
+                  We are committed to your privacy when using our tools.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li><strong>Local Processing:</strong> The Photo Frame feature processes your images entirely within your browser (client-side). We do not upload your personal photos to our servers.</li>
+                  <li><strong>Data Security:</strong> Since your photos never leave your device, they remain secure and private.</li>
+                  <li><strong>Future Updates:</strong> If we introduce cloud saving features in the future, we will explicitly inform you and ensure data is stored in secure, encrypted storage.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">7. Prohibited Conduct</h2>
                 <p className="mb-2">You agree not to:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Use the service for any illegal purpose.</li>
@@ -72,28 +94,28 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">7. Disclaimer of Warranties</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">8. Disclaimer of Warranties</h2>
                 <p>
                   The service is provided "as is" without warranties of any kind, whether express or implied. We do not guarantee that the service will be uninterrupted or error-free.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">8. Limitation of Liability</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">9. Limitation of Liability</h2>
                 <p>
                   OS Folder Icons shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the service.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">9. Changes to Terms</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">10. Changes to Terms</h2>
                 <p>
                   We reserve the right to modify these Terms at any time. We will notify users of significant changes. Your continued use of the service constitutes acceptance of the updated Terms.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">10. Contact Us</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">11. Contact Us</h2>
                 <p>
                   If you have any questions about these Terms, please contact us at <a href="https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a" className="text-blue-600 hover:underline">GitHub Discussions</a>.
                 </p>
