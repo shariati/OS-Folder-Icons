@@ -6,6 +6,7 @@ import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X } from 'lucide-react';
 import { updateUserRoleAction, deleteUserAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface UsersManagerProps {
   initialData: DB;
@@ -71,7 +72,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <NeumorphBox className="p-6">
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
@@ -144,6 +145,6 @@ export function UsersManager({ initialData }: UsersManagerProps) {
           </tbody>
         </table>
       </div>
-    </div>
+    </NeumorphBox>
   );
 }

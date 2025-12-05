@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { DB, AuditLog } from '@/lib/types';
 import { Clock, User, Activity } from 'lucide-react';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface AuditLogViewerProps {
   initialData: DB;
@@ -24,7 +25,7 @@ export function AuditLogViewer({ initialData }: AuditLogViewerProps) {
   );
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <NeumorphBox className="p-6">
       <div className="mb-6 flex justify-between">
         <h3 className="font-medium text-black dark:text-white flex items-center gap-2">
           <Activity size={20} />
@@ -95,6 +96,6 @@ export function AuditLogViewer({ initialData }: AuditLogViewerProps) {
           </tbody>
         </table>
       </div>
-    </div>
+    </NeumorphBox>
   );
 }
