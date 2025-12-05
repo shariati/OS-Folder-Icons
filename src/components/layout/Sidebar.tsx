@@ -3,20 +3,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout } from 'lucide-react';
+import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool } from 'lucide-react';
 import clsx from 'clsx';
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame' | 'ads') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
   const pathname = usePathname();
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
+
+  const [isFolderIconOpen, setIsFolderIconOpen] = useState(true);
+  const [isSiteManagerOpen, setIsSiteManagerOpen] = useState(true);
+  const [isSiteContentOpen, setIsSiteContentOpen] = useState(true);
 
   // close on click outside
   useEffect(() => {
@@ -83,80 +87,159 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              {/* <!-- Menu Item Dashboard --> */}
+              
+              {/* Folder Icon Group */}
               <li>
                 <button
-                  onClick={() => { setActiveTab('os'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'os' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
+                  onClick={() => setIsFolderIconOpen(!isFolderIconOpen)}
+                  className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left justify-between"
                 >
-                  <LayoutDashboard className="h-5 w-5" />
-                  Operating Systems
+                  <div className="flex items-center gap-2.5">
+                    <FolderOpen className="h-5 w-5" />
+                    Folder Icon
+                  </div>
+                  <ChevronDown className={clsx("h-4 w-4 transition-transform", !isFolderIconOpen && "-rotate-90")} />
                 </button>
+                {/* Sub Menu */}
+                <div className={clsx("overflow-hidden transition-all duration-300", isFolderIconOpen ? "max-h-40 mt-2" : "max-h-0")}>
+                  <ul className="flex flex-col gap-1.5 pl-9">
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('os'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'os' && "text-white"
+                        )}
+                      >
+                        Operating Systems
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('bundles'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'bundles' && "text-white"
+                        )}
+                      >
+                        Bundle Management
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </li>
-              {/* <!-- Menu Item Dashboard --> */}
 
-              {/* <!-- Menu Item Bundles --> */}
+              {/* Photo Frame */}
               <li>
                 <button
-                  onClick={() => { setActiveTab('bundles'); setSidebarOpen(false); }}
+                  onClick={() => { setActiveTab('photo-frame'); setSidebarOpen(false); }}
                   className={clsx(
                     "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'bundles' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <Package className="h-5 w-5" />
-                  Bundles
-                </button>
-              </li>
-              {/* <!-- Menu Item Bundles --> */}
-
-              {/* <!-- Menu Item Categories --> */}
-              <li>
-                <button
-                  onClick={() => { setActiveTab('categories'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'categories' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <Grid className="h-5 w-5" />
-                  Categories
-                </button>
-              </li>
-              {/* <!-- Menu Item Categories --> */}
-
-              {/* <!-- Menu Item Tags --> */}
-              <li>
-                <button
-                  onClick={() => { setActiveTab('tags'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'tags' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <Tags className="h-5 w-5" />
-                  Tags
-                </button>
-              </li>
-              {/* <!-- Menu Item Tags --> */}
-
-               {/* <!-- Menu Item Hero --> */}
-               <li>
-                <button
-                  onClick={() => { setActiveTab('hero'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'hero' && "bg-graydark dark:bg-meta-4 text-white"
+                    activeTab === 'photo-frame' && "bg-graydark dark:bg-meta-4 text-white"
                   )}
                 >
                   <ImageIcon className="h-5 w-5" />
-                  Hero Slider
+                  Photo Frame
                 </button>
               </li>
-              {/* <!-- Menu Item Hero --> */}
+
+              {/* Site Manager Group */}
+              <li>
+                <button
+                  onClick={() => setIsSiteManagerOpen(!isSiteManagerOpen)}
+                  className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left justify-between mt-2"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Globe className="h-5 w-5" />
+                    Site Manager
+                  </div>
+                  <ChevronDown className={clsx("h-4 w-4 transition-transform", !isSiteManagerOpen && "-rotate-90")} />
+                </button>
+                {/* Sub Menu */}
+                <div className={clsx("overflow-hidden transition-all duration-300", isSiteManagerOpen ? "max-h-[500px] mt-2" : "max-h-0")}>
+                  <ul className="flex flex-col gap-1.5 pl-9">
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('categories'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'categories' && "text-white"
+                        )}
+                      >
+                        Categories
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('tags'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'tags' && "text-white"
+                        )}
+                      >
+                        Tags
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('hero'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'hero' && "text-white"
+                        )}
+                      >
+                        Hero Slides
+                      </button>
+                    </li>
+                    
+                    {/* Site Content Sub-Group */}
+                    <li>
+                      <button
+                        onClick={() => setIsSiteContentOpen(!isSiteContentOpen)}
+                        className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left justify-between text-sm"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          Site Content
+                        </div>
+                        <ChevronDown className={clsx("h-3 w-3 transition-transform", !isSiteContentOpen && "-rotate-90")} />
+                      </button>
+                      <div className={clsx("overflow-hidden transition-all duration-300", isSiteContentOpen ? "max-h-40 mt-1" : "max-h-0")}>
+                        <ul className="flex flex-col gap-1.5 pl-4">
+                          <li>
+                            <button
+                              onClick={() => { setActiveTab('blog'); setSidebarOpen(false); }}
+                              className={clsx(
+                                "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                                activeTab === 'blog' && "text-white"
+                              )}
+                            >
+                              Blog Posts
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => { setActiveTab('pages'); setSidebarOpen(false); }}
+                              className={clsx(
+                                "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                                activeTab === 'pages' && "text-white"
+                              )}
+                            >
+                              Pages
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              {/* Divider */}
+              <li>
+                <div className="h-px bg-gray-700 my-4 mx-4"></div>
+              </li>
+
+              {/* Other Items */}
               <li>
                 <button
                   onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
@@ -195,54 +278,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
               </li>
               <li>
                 <button
-                  onClick={() => { setActiveTab('blog'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'blog' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <FileText className="h-5 w-5" />
-                  Blog Posts
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setActiveTab('pages'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'pages' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <Layout className="h-5 w-5" />
-                  Pages
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setActiveTab('folder-icon'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'folder-icon' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <FolderOpen className="h-5 w-5" />
-                  Folder Icon
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setActiveTab('photo-frame'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'photo-frame' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <ImageIcon className="h-5 w-5" />
-                  Photo Frame
-                </button>
-              </li>
-              <li>
-                <button
                   onClick={() => { setActiveTab('ads'); setSidebarOpen(false); }}
                   className={clsx(
                     "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
@@ -253,6 +288,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                   Monetization
                 </button>
               </li>
+
             </ul>
           </div>
         </nav>

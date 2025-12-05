@@ -13,30 +13,28 @@ import { AnalyticsManager } from '@/components/admin/AnalyticsManager';
 import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
 import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
-import { IconGenerator } from '@/components/features/IconGenerator';
 import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
 import { AdSettings } from '@/components/admin/AdSettings';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame' | 'ads'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads'>('os');
 
   return (
     <ToastProvider>
       <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-            {activeTab === 'os' && 'Operating Systems'}
-            {activeTab === 'bundles' && 'Bundle Management'}
-            {activeTab === 'categories' && 'Categories'}
-            {activeTab === 'tags' && 'Tags'}
-            {activeTab === 'hero' && 'Hero Slider'}
+            {activeTab === 'os' && 'Folder Icon / Operating Systems'}
+            {activeTab === 'bundles' && 'Folder Icon / Bundle Management'}
+            {activeTab === 'categories' && 'Site Manager / Categories'}
+            {activeTab === 'tags' && 'Site Manager / Tags'}
+            {activeTab === 'hero' && 'Site Manager / Hero Slider'}
             {activeTab === 'users' && 'User Management'}
             {activeTab === 'analytics' && 'Analytics'}
             {activeTab === 'audit' && 'Audit Log'}
-            {activeTab === 'blog' && 'Blog Posts'}
-            {activeTab === 'pages' && 'Pages'}
-            {activeTab === 'folder-icon' && 'Folder Icon Generator'}
+            {activeTab === 'blog' && 'Site Manager / Site Content / Blog Posts'}
+            {activeTab === 'pages' && 'Site Manager / Site Content / Pages'}
             {activeTab === 'photo-frame' && 'Photo Frame'}
             {activeTab === 'ads' && 'Monetization'}
           </h2>
@@ -49,17 +47,16 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 </a>
               </li>
               <li className="font-medium text-primary">
-                {activeTab === 'os' && 'OS'}
-                {activeTab === 'bundles' && 'Bundles'}
-                {activeTab === 'categories' && 'Categories'}
-                {activeTab === 'tags' && 'Tags'}
-                {activeTab === 'hero' && 'Hero'}
+                {activeTab === 'os' && 'Folder Icon / OS'}
+                {activeTab === 'bundles' && 'Folder Icon / Bundles'}
+                {activeTab === 'categories' && 'Site Manager / Categories'}
+                {activeTab === 'tags' && 'Site Manager / Tags'}
+                {activeTab === 'hero' && 'Site Manager / Hero'}
                 {activeTab === 'users' && 'Users'}
                 {activeTab === 'analytics' && 'Analytics'}
                 {activeTab === 'audit' && 'Audit'}
-                {activeTab === 'blog' && 'Blog'}
-                {activeTab === 'pages' && 'Pages'}
-                {activeTab === 'folder-icon' && 'Folder Icon'}
+                {activeTab === 'blog' && 'Site Manager / Content / Blog'}
+                {activeTab === 'pages' && 'Site Manager / Content / Pages'}
                 {activeTab === 'photo-frame' && 'Photo Frame'}
                 {activeTab === 'ads' && 'Ads'}
               </li>
@@ -78,7 +75,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'audit' && <AuditLogViewer initialData={initialData} />}
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
-          {activeTab === 'folder-icon' && <IconGenerator initialData={initialData} isAdmin={true} />}
           {activeTab === 'photo-frame' && <PhotoFrameGenerator />}
           {activeTab === 'ads' && <AdSettings />}
         </div>
