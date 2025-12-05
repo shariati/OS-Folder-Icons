@@ -1,6 +1,7 @@
 import React, { ElementType, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Edit2, Trash2 } from 'lucide-react';
 
 interface NeumorphBoxProps<T extends ElementType> {
   children?: ReactNode;
@@ -13,6 +14,11 @@ interface NeumorphBoxProps<T extends ElementType> {
   badge?: ReactNode;
   helperText?: ReactNode;
   error?: ReactNode;
+  showActions?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  customActions?: ReactNode;
+  actionsClassName?: string;
 }
 
 export function NeumorphBox<T extends ElementType = 'div'>({
@@ -26,12 +32,18 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   badge,
   helperText,
   error,
+  showActions,
+  onEdit,
+  onDelete,
+  customActions,
+  actionsClassName,
   ...props
 }: NeumorphBoxProps<T> & React.ComponentPropsWithoutRef<T>) {
   const Component = as || 'div';
   
   const hasHeader = !!(icon || title || subtitle || badge);
   const hasFooter = !!(helperText || error);
+  const hasActions = !!(showActions || customActions);
   const isVoid = typeof as === 'string' && ['input', 'img', 'br', 'hr'].includes(as);
 
   if (isVoid) {
@@ -78,6 +90,34 @@ export function NeumorphBox<T extends ElementType = 'div'>({
       )}
       
       {children}
+
+      {hasActions && (
+        <div className={twMerge("flex justify-end items-center gap-3 mt-4", actionsClassName)}>
+          {customActions}
+          {showActions && (
+            <>
+              {onEdit && (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                  className="text-blue-500 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-lg"
+                  title="Edit"
+                >
+                  <Edit2 size={18} />
+                </button>
+              )}
+              {onDelete && (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                  className="text-red-500 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-lg"
+                  title="Delete"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {hasFooter && (
         <div className="mt-2 text-sm">

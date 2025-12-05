@@ -326,33 +326,23 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {initialData.bundles.map(bundle => (
-          <NeumorphBox key={bundle.id} className="rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl">
+          <NeumorphBox 
+            key={bundle.id} 
+            className="rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl"
+            showActions
+            onEdit={() => startEdit(bundle)}
+            onDelete={() => handleDelete(bundle.id)}
+          >
             {bundle.previewImage ? (
-              <div className="relative h-56 w-full bg-gray-100 dark:bg-gray-800">
+              <div className="relative h-56 w-full bg-gray-100 dark:bg-gray-800 -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
                 <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
-                <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                  <button onClick={() => startEdit(bundle)} className="bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg text-gray-600 hover:text-blue-600 transition-colors">
-                    <Edit2 size={18} />
-                  </button>
-                  <button onClick={() => handleDelete(bundle.id)} className="bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg text-gray-600 hover:text-red-600 transition-colors">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
               </div>
             ) : (
-              <div className="h-56 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 relative font-medium">
+              <div className="h-56 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 relative font-medium -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
                 No Preview
-                <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                  <button onClick={() => startEdit(bundle)} className="bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg text-gray-600 hover:text-blue-600 transition-colors">
-                    <Edit2 size={18} />
-                  </button>
-                  <button onClick={() => handleDelete(bundle.id)} className="bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg text-gray-600 hover:text-red-600 transition-colors">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
               </div>
             )}
-            <div className="p-6">
+            <div>
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-bold text-xl text-gray-800 dark:text-white">{bundle.name}</h3>
               </div>

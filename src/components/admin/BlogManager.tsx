@@ -6,6 +6,7 @@ import { saveBlogPostAction, deleteBlogPostAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
 import { SocialPreview } from '@/components/features/SocialPreview';
 import { Plus, Edit, Trash2, Save, ArrowLeft, Eye } from 'lucide-react';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface BlogManagerProps {
   initialData: DB;
@@ -270,93 +271,44 @@ export function BlogManager({ initialData }: BlogManagerProps) {
   }
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="mb-6 flex justify-between">
-        <h3 className="font-medium text-black dark:text-white">
-          Blog Posts
-        </h3>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Blog Posts</h2>
         <button
           onClick={handleCreateNew}
-          className="inline-flex items-center justify-center gap-2.5 rounded-md bg-primary py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
         >
-          <Plus size={20} />
+          <Plus size={18} />
           New Post
         </button>
       </div>
 
-      <div className="max-w-full overflow-x-auto">
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                Title
-              </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Status
-              </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Date
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.length > 0 ? (
-              posts.map((post, key) => (
-                <tr key={key}>
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {post.title}
-                    </h5>
-                    <p className="text-sm text-gray-500">/{post.slug}</p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <span
-                      className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                        post.published
-                          ? 'bg-success text-success'
-                          : 'bg-warning text-warning'
-                      }`}
-                    >
-                      {post.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">
-                      {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Unpublished'}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center space-x-3.5">
-                      <button
-                        onClick={() => handleEdit(post)}
-                        className="hover:text-primary"
-                        title="Edit"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="hover:text-primary"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className="py-5 text-center text-gray-500">
-                  No posts found. Create one to get started.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <NeumorphBox 
+              key={post.id}
+              title={post.title}
+              subtitle={`/${post.slug}`}
+              showActions
+              onEdit={() => handleEdit(post)}
+              onDelete={() => handleDelete(post.id)}
+              badge={
+                <span className={`px-2 py-1 rounded-full text-xs font-bold ${post.published ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
+                  {post.published ? 'Published' : 'Draft'}
+                </span>
+              }
+            >
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Unpublished'}
+              </div>
+            </NeumorphBox>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12 text-gray-500">
+            No posts found. Create one to get started.
+          </div>
+        )}
       </div>
     </div>
   );

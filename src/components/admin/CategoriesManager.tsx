@@ -238,7 +238,13 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map(category => (
-          <NeumorphBox key={category.id} className="p-6 rounded-3xl relative group">
+          <NeumorphBox 
+            key={category.id} 
+            className="p-6 rounded-3xl relative group"
+            showActions
+            onEdit={() => setEditingCategory(category)}
+            onDelete={() => handleDelete(category.id)}
+          >
             <div className={`absolute -top-6 right-6 w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}>
                 {category.imageUrl ? (
                     <Image src={category.imageUrl} alt={category.name} width={40} height={40} className="object-contain" />
@@ -249,21 +255,6 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
             
             <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-4 mb-2">{category.name}</h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{category.description}</p>
-            
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setEditingCategory(category)}
-                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-              >
-                <Edit2 size={18} />
-              </button>
-              <button
-                onClick={() => handleDelete(category.id)}
-                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
           </NeumorphBox>
         ))}
       </div>

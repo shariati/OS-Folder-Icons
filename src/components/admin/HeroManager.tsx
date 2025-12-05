@@ -197,7 +197,14 @@ export function HeroManager({ initialData }: { initialData: DB }) {
 
       <div className="space-y-4">
         {slides.sort((a, b) => a.order - b.order).map((slide, index) => (
-          <NeumorphBox key={slide.id} className="p-4 rounded-2xl flex items-center gap-4 group">
+          <NeumorphBox 
+            key={slide.id} 
+            className="p-4 rounded-2xl flex items-center gap-4 group"
+            showActions
+            onEdit={() => setEditingSlide(slide)}
+            onDelete={() => handleDelete(slide.id)}
+            actionsClassName="mt-0"
+          >
             <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
                 {slide.imageUrl ? (
                     <Image src={slide.imageUrl} alt={slide.title} fill className="object-cover" />
@@ -210,21 +217,6 @@ export function HeroManager({ initialData }: { initialData: DB }) {
               <h3 className="font-bold text-gray-800 dark:text-white text-lg">{slide.title}</h3>
               <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{slide.subtitle}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{slide.description}</p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setEditingSlide(slide)}
-                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-              >
-                <Edit2 size={18} />
-              </button>
-              <button
-                onClick={() => handleDelete(slide.id)}
-                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-              >
-                <Trash2 size={18} />
-              </button>
             </div>
           </NeumorphBox>
         ))}
