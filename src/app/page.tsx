@@ -142,7 +142,7 @@ export default async function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {latestBundles.map((bundle) => (
-              <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group p-3 rounded-3xl hover:-translate-y-1 transition-all duration-300">
+              <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group hover:-translate-y-1 transition-all duration-300">
                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
                    {bundle.previewImage ? (
                     <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />

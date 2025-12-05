@@ -102,7 +102,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <div className="lg:col-span-4 space-y-8">
         
         {/* Mode Toggle */}
-        <NeumorphBox className="p-2 flex items-center justify-between rounded-2xl">
+        <NeumorphBox className="p-2 space-y-0 flex items-center justify-between">
           <button
             onClick={() => handleModeChange('simple')}
             className={clsx(
@@ -131,7 +131,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* OS Selection */}
         <NeumorphBox 
-          className="p-6 rounded-3xl"
           title="Operating System"
           subtitle="Select your platform"
           icon={
@@ -164,7 +163,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         {/* Version & Folder Style */}
         {selectedOS && (
           <NeumorphBox 
-            className="p-6 rounded-3xl"
             title="Configuration"
             subtitle="Choose your style"
           >
@@ -229,7 +227,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         {mode === 'simple' && (
           <>
             <NeumorphBox 
-              className="p-6 rounded-3xl"
               title="Icon Style"
               subtitle="Choose a preset style"
             >
@@ -255,7 +252,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
             {/* Simple Mode Folder Color */}
             <NeumorphBox 
-              className="p-6 rounded-3xl"
               title="Folder Color"
               subtitle="Colorize your folder"
             >

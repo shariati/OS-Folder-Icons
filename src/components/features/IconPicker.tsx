@@ -87,7 +87,6 @@ export function IconPicker({
 
   return (
     <NeumorphBox 
-      className="p-6 rounded-3xl space-y-6"
       title="Icon Selection"
       subtitle="Pick your symbol"
       badge={

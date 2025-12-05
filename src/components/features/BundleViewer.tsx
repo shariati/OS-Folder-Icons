@@ -128,7 +128,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
       {/* Left: Details */}
       {/* Left: Details */}
       <div className="lg:col-span-2 space-y-8">
-        <NeumorphBox className="p-8 rounded-3xl">
+        <NeumorphBox>
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-3">{bundle.name}</h1>

@@ -140,7 +140,7 @@ export function TagsManager({ initialData }: { initialData: DB }) {
         {tags.map(tag => (
           <NeumorphBox 
             key={tag.id} 
-            className="p-4 rounded-2xl flex flex-col justify-between group"
+            className="flex flex-col justify-between group"
             title={tag.name}
             subtitle={<span className="text-xs font-mono">{tag.slug}</span>}
           >

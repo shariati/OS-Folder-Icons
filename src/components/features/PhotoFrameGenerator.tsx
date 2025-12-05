@@ -119,7 +119,6 @@ export function PhotoFrameGenerator() {
         
         {/* Image Upload */}
         <NeumorphBox 
-          className="p-6 rounded-3xl"
           title="Upload Photo"
           subtitle="Choose your memory"
           icon={<Upload size={20} />}
@@ -135,7 +134,6 @@ export function PhotoFrameGenerator() {
 
         {/* Text Inputs */}
         <NeumorphBox 
-          className="p-6 rounded-3xl space-y-4"
           title="Details"
           subtitle="Add context to your frame"
           icon={<Type size={20} />}
@@ -185,7 +183,7 @@ export function PhotoFrameGenerator() {
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Country Flag</label>
             <NeumorphBox 
               variant="pressed"
-              className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white bg-transparent flex items-center justify-between cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl space-y-0 text-gray-700 dark:text-white bg-transparent flex items-center justify-between cursor-pointer"
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
             >
               <div className="flex items-center gap-2">
@@ -232,7 +230,6 @@ export function PhotoFrameGenerator() {
 
         {/* Frame Color Selector */}
         <NeumorphBox 
-          className="p-6 rounded-3xl space-y-4"
           title="Frame Color"
           subtitle="Match your aesthetic"
           icon={<div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>}
@@ -270,8 +267,8 @@ export function PhotoFrameGenerator() {
             controls={
               image && (
                 <NeumorphBox 
-                  className="p-6 rounded-3xl space-y-4"
                   title="Adjust Image"
+                  variant="pressed"
                   subtitle="Perfect your composition"
                   icon={<Move size={20} />}
                   badge={

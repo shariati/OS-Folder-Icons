@@ -54,6 +54,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
         clsx(
           variant === 'flat' ? 'neu-flat' : 'neu-pressed',
           'relative',
+          'rounded-xl bg-white p-8 space-y-6',
           className
         )
       )}
@@ -64,7 +65,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
            <div className="flex items-center gap-3 overflow-hidden">
               {icon && <div className="flex-shrink-0 text-gray-500 dark:text-gray-400">{icon}</div>}
               <div className="flex flex-col min-w-0">
-                 {title && <h3 className="font-bold text-gray-800 dark:text-white truncate">{title}</h3>}
+                 {title && <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">{title}</h3>}
                  {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{subtitle}</p>}
               </div>
            </div>
