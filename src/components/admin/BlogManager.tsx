@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { DB, BlogPost } from '@/lib/types';
 import { saveBlogPostAction, deleteBlogPostAction } from '@/app/admin/actions';
-import { useToast } from '@/components/Toast';
-import { SocialPreview } from '@/components/SocialPreview';
+import { useToast } from '@/components/ui/Toast';
+import { SocialPreview } from '@/components/features/SocialPreview';
 import { Plus, Edit, Trash2, Save, ArrowLeft, Eye } from 'lucide-react';
 
 interface BlogManagerProps {

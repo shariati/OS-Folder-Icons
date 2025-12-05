@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { DB, Settings } from '@/lib/types';
 import { saveSettingsAction } from '@/app/admin/actions';
-import { useToast } from '@/components/Toast';
+import { useToast } from '@/components/ui/Toast';
 import { Save, BarChart2, ExternalLink } from 'lucide-react';
 
 interface AnalyticsManagerProps {

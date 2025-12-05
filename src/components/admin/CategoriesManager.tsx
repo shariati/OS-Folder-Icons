@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { DB, Category } from '@/lib/types';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 import { clsx } from 'clsx';
-import { useToast } from '@/components/Toast';
+import { useToast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 

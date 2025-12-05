@@ -1,5 +1,5 @@
 import { getDB } from '@/lib/db';
-import AdminDashboard from '@/components/AdminDashboard';
+import AdminDashboard from '@/components/admin/AdminDashboard';
 
 import { Metadata } from 'next';
 

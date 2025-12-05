@@ -2,20 +2,20 @@
 
 import { useState } from 'react';
 import { DB } from '@/lib/types';
-import { OSManager } from '@/components/OSManager';
-import { BundlesManager } from '@/components/BundlesManager';
-import { ToastProvider } from '@/components/Toast';
-import { CategoriesManager } from '@/components/CategoriesManager';
-import { TagsManager } from '@/components/TagsManager';
-import { HeroManager } from '@/components/HeroManager';
-import { UsersManager } from '@/components/UsersManager';
-import { AnalyticsManager } from '@/components/AnalyticsManager';
-import { AuditLogViewer } from '@/components/AuditLogViewer';
-import { BlogManager } from '@/components/BlogManager';
-import { PagesManager } from '@/components/PagesManager';
-import { IconGenerator } from '@/components/IconGenerator';
-import { PhotoFrameGenerator } from '@/components/PhotoFrameGenerator';
-import AdminLayout from '@/components/admin/AdminLayout';
+import { OSManager } from '@/components/admin/OSManager';
+import { BundlesManager } from '@/components/admin/BundlesManager';
+import { ToastProvider } from '@/components/ui/Toast';
+import { CategoriesManager } from '@/components/admin/CategoriesManager';
+import { TagsManager } from '@/components/admin/TagsManager';
+import { HeroManager } from '@/components/admin/HeroManager';
+import { UsersManager } from '@/components/admin/UsersManager';
+import { AnalyticsManager } from '@/components/admin/AnalyticsManager';
+import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
+import { BlogManager } from '@/components/admin/BlogManager';
+import { PagesManager } from '@/components/admin/PagesManager';
+import { IconGenerator } from '@/components/features/IconGenerator';
+import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
+import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
   const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'folder-icon' | 'photo-frame'>('os');

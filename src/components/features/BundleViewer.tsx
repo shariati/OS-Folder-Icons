@@ -7,7 +7,7 @@ import { Download, Share2, Check, Tag } from 'lucide-react';
 import { clsx } from 'clsx';
 import JSZip from 'jszip';
 import { toPng } from 'html-to-image';
-import { CanvasPreview } from './CanvasPreview';
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import * as LucideIcons from 'lucide-react';
 
 export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {

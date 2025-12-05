@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 import { Trash2, Plus, Upload, ChevronDown, ChevronRight, Edit2, X, Check } from 'lucide-react';
-import { CanvasPreview } from './CanvasPreview';
-import { useToast } from './Toast';
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
 
 export function OSManager({ initialData }: { initialData: DB }) {

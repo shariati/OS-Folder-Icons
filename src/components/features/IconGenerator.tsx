@@ -5,11 +5,11 @@ import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
-import { CanvasPreview } from './CanvasPreview';
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { AdModal } from './AdModal';
+import { AdModal } from '@/components/ui/AdModal';
 
 interface IconGeneratorProps {
   initialData: DB;

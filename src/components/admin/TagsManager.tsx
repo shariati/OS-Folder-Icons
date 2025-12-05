@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { DB, Tag } from '@/lib/types';
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
-import { useToast } from '@/components/Toast';
+import { useToast } from '@/components/ui/Toast';
 import { v4 as uuidv4 } from 'uuid';
 
 export function TagsManager({ initialData }: { initialData: DB }) {

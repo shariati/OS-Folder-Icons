@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 import { Trash2, Plus, Upload, Search, X, Edit2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { useToast } from './Toast';
+import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
 
 export function BundlesManager({ initialData }: { initialData: DB }) {

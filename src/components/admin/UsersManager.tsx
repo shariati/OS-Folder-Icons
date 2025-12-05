@@ -5,7 +5,7 @@ import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X } from 'lucide-react';
 import { updateUserRoleAction, deleteUserAction } from '@/app/admin/actions';
-import { useToast } from '@/components/Toast';
+import { useToast } from '@/components/ui/Toast';
 
 interface UsersManagerProps {
   initialData: DB;

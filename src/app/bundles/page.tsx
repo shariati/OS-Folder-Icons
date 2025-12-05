@@ -2,7 +2,7 @@ import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Download, Search, Filter } from 'lucide-react';
-import { Footer } from '@/components/Footer';
+import { Footer } from '@/components/layout/Footer';
 
 import { Metadata } from 'next';
 
