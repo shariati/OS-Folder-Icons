@@ -58,3 +58,6 @@ DEPLOYMENT.md
 firebase.json
 firestore.rules
 storage.rules
+
+# Local db
+src/data/db.json

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { FolderOpen, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
-import { SubscriptionPlans } from '@/components/SubscriptionPlans';
+import { SubscriptionPlans } from '@/components/features/SubscriptionPlans';
 
 function SignupContent() {
   const router = useRouter();

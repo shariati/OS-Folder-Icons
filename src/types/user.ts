@@ -11,6 +11,10 @@ export interface UserProfile {
     lifetimeAccess?: boolean;
     favouriteLists?: string[]; // IDs of favourite lists
     generatedFoldersCount?: number;
+    stripeCustomerId?: string;
+    subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing' | null;
+    currentPeriodEnd?: string; // ISO date
+    planId?: string; // To track monthly vs annual vs lifetime
 }
 
 export interface FavouriteList {

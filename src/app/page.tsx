@@ -20,10 +20,11 @@ import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Palette, Layers } from 'lucide-react';
-import { Footer } from '@/components/Footer';
-import { HeroSlider } from '@/components/HeroSlider';
-import { StatsSection } from '@/components/StatsSection';
-import { SubscriptionPlans } from '@/components/SubscriptionPlans';
+import { Footer } from '@/components/layout/Footer';
+import { HeroSlider } from '@/components/features/HeroSlider';
+import { StatsSection } from '@/components/features/StatsSection';
+import PricingSection from '@/components/subscription/PricingSection';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export default async function Home() {
   const db = await getDB();
@@ -141,7 +142,7 @@ export default async function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {latestBundles.map((bundle) => (
-              <Link key={bundle.id} href={`/bundles/${bundle.id}`} className="group neu-flat p-3 rounded-3xl hover:-translate-y-1 transition-all duration-300">
+              <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group hover:-translate-y-1 transition-all duration-300">
                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
                    {bundle.previewImage ? (
                     <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
@@ -158,14 +159,14 @@ export default async function Home() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </NeumorphBox>
             ))}
           </div>
           
           <div className="mt-12 text-center md:hidden">
-            <Link href="/bundles" className="inline-flex items-center px-8 py-4 neu-flat hover:neu-pressed rounded-2xl text-base font-bold text-gray-700 dark:text-gray-200 transition-all">
+            <NeumorphBox as={Link} href="/bundles" className="inline-flex items-center px-8 py-4 hover:neu-pressed rounded-2xl text-base font-bold text-gray-700 dark:text-gray-200 transition-all">
               View All Bundles
-            </Link>
+            </NeumorphBox>
           </div>
         </div>
       </section>
@@ -191,11 +192,7 @@ export default async function Home() {
 
       {/* Pricing Section */}
       <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-xl text-gray-500 dark:text-gray-400">Choose the plan that's right for you.</p>
-        </div>
-        <SubscriptionPlans />
+        <PricingSection />
       </section>
 
       {/* Subscribe Section */}

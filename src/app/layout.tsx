@@ -19,12 +19,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import { Providers } from "@/components/Providers";
-import { Analytics } from "@vercel/analytics/next"
-import Clarity from "@microsoft/clarity"
-import config from '../lib/config';
-
+import { Navbar } from "@/components/layout/Navbar";
+import { Providers } from "@/components/shared/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,14 +32,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const clarityConfig = config.clarity;
-if (clarityConfig.projectId) {
-  Clarity.init(clarityConfig.projectId);
-}
+import { Recursive } from "next/font/google";
+
+const recursive = Recursive({
+  subsets: ["latin"],
+  variable: "--font-recursive",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "OS Folder Icons - Custom Folder Icons for Mac, Windows & Linux",
-  description: "Generate custom folder icons or download premium bundles for macOS, Windows, and Linux. Personalize your desktop with OS Folder Icons.",
+  title: "HDPick - Custom Folder Icons & Photo Frames",
+  description: "Generate custom folder icons, browse premium bundles, or create photo frames for your desktop. Personalize your digital workspace with HDPick.",
   icons: {
     icon: '/favicon.ico',
   },
@@ -57,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
         <Providers>
           <Navbar />
@@ -65,7 +64,6 @@ export default function RootLayout({
             {children}
           </main>
         </Providers>
-        <Analytics />
       </body>
     </html>
   );
