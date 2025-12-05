@@ -25,6 +25,7 @@
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@heroicons/react": "^2.2.0",
     "@iconscout/react-unicons": "^2.2.5",
+    "@stripe/stripe-js": "^8.5.3",
     "clsx": "^2.1.1",
     "firebase": "^11.0.2",
     "firebase-admin": "^12.7.0",
@@ -38,6 +39,7 @@
     "react-colorful": "^5.6.1",
     "react-dom": "19.2.0",
     "server-only": "^0.0.1",
+    "stripe": "^20.0.0",
     "styled-components": "^6.1.19",
     "tailwind-merge": "^3.4.0",
     "uuid": "^13.0.0"

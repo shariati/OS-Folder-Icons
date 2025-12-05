@@ -23,7 +23,7 @@ import { ArrowRight, Palette, Layers } from 'lucide-react';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
-import { SubscriptionPlans } from '@/components/features/SubscriptionPlans';
+import PricingSection from '@/components/subscription/PricingSection';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 export default async function Home() {
@@ -192,11 +192,7 @@ export default async function Home() {
 
       {/* Pricing Section */}
       <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-xl text-gray-500 dark:text-gray-400">Choose the plan that's right for you.</p>
-        </div>
-        <SubscriptionPlans />
+        <PricingSection />
       </section>
 
       {/* Subscribe Section */}

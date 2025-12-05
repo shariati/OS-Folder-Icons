@@ -89,6 +89,11 @@ export function Navbar() {
                 >
                   <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-200">
                     {userProfile?.displayName || user.email?.split('@')[0] || 'User'}
+                    {(userProfile?.role === 'paid' || userProfile?.role === 'lifetime') && (
+                        <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
+                            {userProfile.role === 'lifetime' ? 'LIFETIME' : 'PRO'}
+                        </span>
+                    )}
                   </span>
                   <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 shadow-sm">
                     {user.photoURL ? (
@@ -118,6 +123,15 @@ export function Navbar() {
                         Admin Dashboard
                       </Link>
                     )}
+
+                    <Link 
+                        href="/profile" 
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        <User size={16} />
+                        My Profile
+                    </Link>
                     
                     <button
                       onClick={() => {

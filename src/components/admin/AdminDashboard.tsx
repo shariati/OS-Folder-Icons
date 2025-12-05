@@ -14,7 +14,7 @@ import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
 import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
-import { AdSettings } from '@/components/admin/AdSettings';
+import { MonetizationManager } from '@/components/admin/MonetizationManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
@@ -76,7 +76,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
           {activeTab === 'photo-frame' && <PhotoFrameGenerator />}
-          {activeTab === 'ads' && <AdSettings />}
+          {activeTab === 'ads' && <MonetizationManager />}
         </div>
       </AdminLayout>
     </ToastProvider>
