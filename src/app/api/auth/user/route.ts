@@ -2,9 +2,15 @@ import { NextResponse } from 'next/server';
 import { getUser, createUser, updateUser, deleteUser } from '@/lib/db';
 import { UserProfile } from '@/types/user';
 import { verifyAuth } from '@/lib/auth-server';
+import { auth } from '@/lib/firebase/admin';
 
 export async function POST(request: Request) {
     try {
+        if (!auth) {
+            console.error('Firebase Admin Auth is not initialized. Missing FIREBASE_SERVICE_ACCOUNT_KEY?');
+            return NextResponse.json({ error: 'Server misconfiguration: Firebase Admin not initialized' }, { status: 500 });
+        }
+
         const decodedToken = await verifyAuth(request);
         if (!decodedToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

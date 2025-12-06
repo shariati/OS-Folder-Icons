@@ -160,7 +160,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
 
     // Check if user is free or not logged in
-    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free' || userProfile.role === 'starter');
+    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
     
     // Feature Gating: Advanced Mode is for Pro/Lifetime/Admin only
     if (mode === 'advanced' && isFreeUser) {
