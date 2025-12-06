@@ -4,6 +4,73 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const SubscriptionManager = () => {
+  return <SubscriptionManagerContent />;
+};
+
+const RenewalProgress = ({ end }: { end: string }) => {
+    const calculateTimeLeft = () => {
+        const now = new Date();
+        const endDate = new Date(end);
+        
+        // Calculate total difference in milliseconds first
+        const diffTime = endDate.getTime() - now.getTime();
+        const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Calculate exact month difference
+        let months = (endDate.getFullYear() - now.getFullYear()) * 12 + (endDate.getMonth() - now.getMonth());
+        // Adjust if the day of month hasn't been reached yet in the target month
+        if (endDate.getDate() < now.getDate()) {
+            months--;
+        }
+
+        // if value is 1 month and below then show in days but if it is above 1 month then show in months
+        if (months > 1) {
+            return { value: months, unit: 'Months', percent: Math.min(100, (months / 12) * 100) };
+        }
+        
+        // Otherwise show days
+        return { value: Math.max(0, totalDays), unit: 'Days', percent: Math.min(100, (totalDays / 30) * 100) };
+    };
+
+    const { value, unit, percent } = calculateTimeLeft();
+    const radius = 28;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (percent / 100) * circumference;
+
+    return (
+        <div className="relative flex items-center justify-center">
+            <svg className="transform -rotate-90 w-16 h-16">
+                <circle
+                    cx="32"
+                    cy="32"
+                    r={radius}
+                    stroke="currentColor"
+                    strokeWidth="6"
+                    fill="transparent"
+                    className="text-blue-200 dark:text-blue-900"
+                />
+                <circle
+                    cx="32"
+                    cy="32"
+                    r={radius}
+                    stroke="currentColor"
+                    strokeWidth="6"
+                    fill="transparent"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="round"
+                    className="text-blue-600 dark:text-blue-400 transition-all duration-1000 ease-out"
+                />
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center text-center">
+                <span className="text-sm font-bold text-gray-900 dark:text-white leading-none">{value}</span>
+                <span className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">{unit}</span>
+            </div>
+        </div>
+    );
+};
+
+const SubscriptionManagerContent = () => {
   const { user, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -104,12 +171,32 @@ const SubscriptionManager = () => {
             </div>
         </div>
 
-        {userProfile.currentPeriodEnd && userProfile.role !== 'lifetime' && (
-             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50">
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-300 mb-1">Next Billing / Renewal Date</p>
-                <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                    {new Date(userProfile.currentPeriodEnd).toLocaleDateString(undefined, { dateStyle: 'long' })}
-                </p>
+        {(userProfile.currentPeriodEnd || userProfile.role === 'lifetime') && (
+             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
+                <div>
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-300 mb-1">
+                        {userProfile.role === 'lifetime' ? 'Access Duration' : 'Next Cycle'}
+                    </p>
+                    {userProfile.role === 'lifetime' ? (
+                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                            Permanent Access
+                        </p>
+                    ) : (
+                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                            {new Date(userProfile.currentPeriodEnd!).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                        </p>
+                    )}
+                </div>
+
+                <div className="flex-shrink-0">
+                    {userProfile.role === 'lifetime' ? (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
+                            LIFETIME
+                        </span>
+                    ) : (
+                        <RenewalProgress end={userProfile.currentPeriodEnd!} />
+                    )}
+                </div>
             </div>
         )}
             
