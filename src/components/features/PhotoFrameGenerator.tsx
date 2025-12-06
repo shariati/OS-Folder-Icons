@@ -3,17 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Upload, Download, Move, ZoomIn, Type, Calendar, Flag, RotateCcw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { toPng, toJpeg } from 'html-to-image';
 import { clsx } from 'clsx';
-import { set, get, del } from 'idb-keyval';
 import { useToast } from '@/components/ui/Toast';
 
 import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
-import { SignupPromptModal } from '@/components/ui/SignupPromptModal';
 import { useAuth } from '@/contexts/AuthContext';
 
 const MONTHS = [
@@ -75,32 +72,8 @@ export function PhotoFrameGenerator() {
 
   const { showToast } = useToast();
 
-  // Restore state from IndexedDB (idb-keyval) if available
-  useEffect(() => {
-      const restoreState = async () => {
-          try {
-              const savedStateString = await get('pending_photo_frame_state');
-              if (savedStateString) {
-                  const parsed = JSON.parse(savedStateString);
-                  if (parsed.image) setImage(parsed.image);
-                  if (parsed.title) setTitle(parsed.title);
-                  if (parsed.selectedCountry) setSelectedCountry(parsed.selectedCountry);
-                  if (parsed.selectedMonth) setSelectedMonth(parsed.selectedMonth);
-                  if (parsed.selectedYear) setSelectedYear(parsed.selectedYear);
-                  if (parsed.frameColor) setFrameColor(parsed.frameColor);
-                  if (parsed.zoom) setZoom(parsed.zoom);
-                  if (parsed.position) setPosition(parsed.position);
-                  
-                  // Clear after restoring
-                  await del('pending_photo_frame_state');
-                  showToast("We've restored your work so you can continue!", "success");
-              }
-          } catch (e) {
-              console.error('Failed to restore state', e);
-          }
-      };
-      restoreState();
-  }, [showToast]);
+
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -184,67 +157,14 @@ export function PhotoFrameGenerator() {
     }
   };
 
-  const { user, userProfile, loading } = useAuth(); // Add useAuth hook
-  const router = useRouter(); // Use useRouter for redirection
-  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const { user, userProfile, loading } = useAuth();
 
-  const saveStateAndRedirect = async () => {
-    let imageBase64 = image;
-    // If image is a blob URL, try to convert to base64
-    if (image && image.startsWith('blob:')) {
-        try {
-            const response = await fetch(image);
-            const blob = await response.blob();
-            imageBase64 = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.readAsDataURL(blob);
-            });
-        } catch (e) {
-            console.error('Failed to convert image for persistence', e);
-            // Proceed without image if conversion fails
-        }
-    }
 
-    const stateToSave = {
-        image: imageBase64,
-        title,
-        selectedCountry,
-        selectedMonth,
-        selectedYear,
-        frameColor,
-        zoom,
-        position
-    };
-    
-    try {
-       // Use idb-keyval (IndexedDB) instead of localStorage to avoid quota limits
-       await set('pending_photo_frame_state', JSON.stringify(stateToSave));
-       
-       showToast("Saving your work... Redirecting to signup.", "info");
-       
-       // Small delay to let the toast be seen and storage to finish (though await set handles the latter)
-       setTimeout(() => {
-           const currentPath = window.location.pathname;
-           router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-       }, 1500);
-       
-    } catch (e) {
-        console.error('Failed to save state to storage', e);
-        alert("We couldn't save your work fully, but you can still sign up to download.");
-        const currentPath = window.location.pathname;
-        router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-    }
-  };
+  // We are removing saveStateAndRedirect, so just empty or remove. To be safe with chunks, I'll remove the block.
 
   const handleDownloadClick = (format: 'png' | 'jpg') => {
     if (loading) return;
 
-    // Check if user is logged in
-    if (!user) {
-         setShowSignupPrompt(true);
-         return;
-    }
     
     // Check if user is free tier
     const isFreeUser = !userProfile || userProfile.role === 'free';
@@ -572,11 +492,6 @@ export function PhotoFrameGenerator() {
         }} 
       />
 
-      <SignupPromptModal 
-        isOpen={showSignupPrompt}
-        onClose={() => setShowSignupPrompt(false)}
-        onConfirm={saveStateAndRedirect}
-      />
     </div>
   );
 }
