@@ -42,21 +42,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={toast.id}
             className={clsx(
-              "pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border transition-all transform animate-in slide-in-from-right-full fade-in duration-300",
+              "pointer-events-auto flex items-center gap-4 px-6 py-4 rounded-xl shadow-2xl border transition-all transform animate-in slide-in-from-right-full fade-in zoom-in-95 duration-300 ease-out min-w-[320px] max-w-md",
               toast.type === 'success' && "bg-white dark:bg-gray-800 border-green-200 dark:border-green-900 text-green-700 dark:text-green-400",
               toast.type === 'error' && "bg-white dark:bg-gray-800 border-red-200 dark:border-red-900 text-red-700 dark:text-red-400",
               toast.type === 'info' && "bg-white dark:bg-gray-800 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400"
             )}
           >
-            {toast.type === 'success' && <CheckCircle size={20} />}
-            {toast.type === 'error' && <AlertCircle size={20} />}
-            {toast.type === 'info' && <Info size={20} />}
-            <span className="text-sm font-medium">{toast.message}</span>
+            {toast.type === 'success' && <CheckCircle size={24} className="shrink-0" />}
+            {toast.type === 'error' && <AlertCircle size={24} className="shrink-0" />}
+            {toast.type === 'info' && <Info size={24} className="shrink-0" />}
+            <span className="text-base font-medium flex-1">{toast.message}</span>
             <button
               onClick={() => removeToast(toast.id)}
-              className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
-              <X size={16} />
+              <X size={20} />
             </button>
           </div>
         ))}
