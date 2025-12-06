@@ -40,6 +40,7 @@ export async function GET() {
                 type: price.type === 'recurring' ? 'subscription' : 'payment',
                 productName: product.name,
                 productDescription: product.description,
+                marketingFeatures: product.marketing_features?.map(f => f.name) || [],
             };
         });
 
