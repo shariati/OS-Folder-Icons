@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         const activeStripePriceIds = new Set<string>();
 
         while (hasMore) {
-            const prices = await stripe.prices.list({
+            const prices: Stripe.ApiList<Stripe.Price> = await stripe.prices.list({
                 active: true,
                 limit: 100,
                 starting_after: startingAfter,
