@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { Plan } from '@/types/plan';
-import { Plus, Edit, Trash, Save, X, Check, Download, RefreshCw } from 'lucide-react';
+import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 
 export function MonetizationManager() {
@@ -12,14 +12,19 @@ export function MonetizationManager() {
   const [loading, setLoading] = useState(true);
   const [editingPlan, setEditingPlan] = useState<Partial<Plan> | null>(null);
 
-  const [showImportModal, setShowImportModal] = useState(false);
-  const [importableProducts, setImportableProducts] = useState<any[]>([]);
-  const [loadingImport, setLoadingImport] = useState(false);
-
   const [syncing, setSyncing] = useState(false);
+  const [lastSyncDate, setLastSyncDate] = useState<string | null>(null);
+  
+  // Sync modal states
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [newProducts, setNewProducts] = useState<any[]>([]);
+  const [missingProducts, setMissingProducts] = useState<Plan[]>([]);
+  const [selectedNewProducts, setSelectedNewProducts] = useState<Set<string>>(new Set());
+  const [selectedMissingProducts, setSelectedMissingProducts] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchPlans();
+    fetchLastSyncDate();
   }, []);
 
   const fetchPlans = async () => {
@@ -36,73 +41,135 @@ export function MonetizationManager() {
     }
   };
 
-  const fetchStripeProducts = async () => {
-    setLoadingImport(true);
+  const fetchLastSyncDate = async () => {
     try {
-        const res = await fetch('/api/admin/plans/stripe-products');
-        const data = await res.json();
-        if (Array.isArray(data)) {
-            setImportableProducts(data);
-        }
+      const res = await fetch('/api/admin/sync-status');
+      const data = await res.json();
+      if (data.lastSyncDate) {
+        setLastSyncDate(data.lastSyncDate);
+      }
     } catch (error) {
-        console.error('Failed to fetch Stripe products', error);
-    } finally {
-        setLoadingImport(false);
+      console.error('Failed to fetch last sync date', error);
     }
   };
 
-  const handleOpenImport = () => {
-      setShowImportModal(true);
-      fetchStripeProducts();
+  const updateLastSyncDate = async () => {
+    const now = new Date().toISOString();
+    try {
+      await fetch('/api/admin/sync-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lastSyncDate: now }),
+      });
+      setLastSyncDate(now);
+    } catch (error) {
+      console.error('Failed to update sync date', error);
+    }
   };
 
   const handleSyncWithStripe = async () => {
-      setSyncing(true);
-      try {
-          const res = await fetch('/api/admin/plans/sync-check', { method: 'POST' });
-          const data = await res.json();
-          setSyncing(false);
+    setSyncing(true);
+    try {
+      // Fetch new products from Stripe
+      const newProductsRes = await fetch('/api/admin/plans/stripe-products');
+      const newProductsData = await newProductsRes.json();
+      
+      // Fetch missing products
+      const missingRes = await fetch('/api/admin/plans/sync-check', { method: 'POST' });
+      const missingData = await missingRes.json();
 
-          if (data.missingPlans && data.missingPlans.length > 0) {
-              const plansToDelete = data.missingPlans as Plan[];
-              const planNames = plansToDelete.map(p => p.name).join(', ');
-              const confirmMsg = `The following products are not available on Stripe and will be deleted from Admin: ${planNames}. Proceed?`;
-              
-              if (confirm(confirmMsg)) {
-                  // Delete missing plans
-                  await Promise.all(plansToDelete.map(p => 
-                      fetch('/api/admin/plans', {
-                          method: 'DELETE',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ id: p.id }),
-                      })
-                  ));
-                  fetchPlans();
-                  alert('Synced successfully. Missing products deleted from Admin.');
-              }
-          } else {
-              alert('All synced! No missing products found.');
-          }
-      } catch (error) {
-          console.error('Sync failed', error);
-          setSyncing(false);
-          alert('Sync check failed.');
+      setSyncing(false);
+
+      const hasNewProducts = Array.isArray(newProductsData) && newProductsData.length > 0;
+      const hasMissingProducts = missingData.missingPlans && missingData.missingPlans.length > 0;
+
+      if (!hasNewProducts && !hasMissingProducts) {
+        alert('All synced! No changes detected.');
+        await updateLastSyncDate();
+        return;
       }
+
+      // Show sync modal with results
+      setNewProducts(hasNewProducts ? newProductsData : []);
+      setMissingProducts(hasMissingProducts ? missingData.missingPlans : []);
+      setSelectedNewProducts(new Set());
+      setSelectedMissingProducts(new Set());
+      setShowSyncModal(true);
+
+    } catch (error) {
+      console.error('Sync failed', error);
+      setSyncing(false);
+      alert('Sync check failed.');
+    }
   };
 
-  const handleImportSelect = (product: any) => {
-      setEditingPlan({
-          name: product.productName,
-          description: product.productDescription || '',
-          price: product.amount,
-          currency: product.currency,
-          interval: product.interval,
-          features: product.marketingFeatures || [],
-          stripePriceId: product.id,
-          type: product.type,
-          active: true,
-      });
-      setShowImportModal(false);
+  const handleApplySync = async () => {
+    try {
+      // Import selected new products
+      for (const productId of selectedNewProducts) {
+        const product = newProducts.find(p => p.id === productId);
+        if (product) {
+          await fetch('/api/admin/plans', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: product.productName,
+              description: product.productDescription || '',
+              price: product.amount,
+              currency: product.currency,
+              interval: product.interval,
+              features: product.marketingFeatures || [],
+              stripePriceId: product.id,
+              type: product.type,
+              active: true,
+            }),
+          });
+        }
+      }
+
+      // Delete selected missing products
+      for (const productId of selectedMissingProducts) {
+        await fetch('/api/admin/plans', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: productId }),
+        });
+      }
+
+      // Update last sync date
+      await updateLastSyncDate();
+
+      // Refresh plans and close modal
+      setShowSyncModal(false);
+      fetchPlans();
+      
+      const importedCount = selectedNewProducts.size;
+      const deletedCount = selectedMissingProducts.size;
+      alert(`Sync complete! Imported: ${importedCount}, Deleted: ${deletedCount}`);
+    } catch (error) {
+      console.error('Failed to apply sync', error);
+      alert('Failed to apply sync changes.');
+    }
+  };
+
+  const toggleNewProduct = (productId: string) => {
+    const newSet = new Set(selectedNewProducts);
+    if (newSet.has(productId)) {
+      newSet.delete(productId);
+    } else {
+      newSet.add(productId);
+    }
+    setSelectedNewProducts(newSet);
+  };
+
+  const toggleMissingProduct = (productId: string) => {
+    const newSet = new Set(selectedMissingProducts);
+    if (newSet.has(productId)) {
+      newSet.delete(productId);
+    } else {
+      newSet.add(productId);
+    }
+    setSelectedMissingProducts(newSet);
   };
 
   const handleSavePlan = async () => {
@@ -144,6 +211,22 @@ export function MonetizationManager() {
     }
   };
 
+  const formatSyncDate = (dateString: string | null) => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="space-y-6 relative">
       <div className="flex space-x-4 border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -166,22 +249,20 @@ export function MonetizationManager() {
       {activeTab === 'plans' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Manage Plans</h3>
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">Manage Plans</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Last synced: {formatSyncDate(lastSyncDate)}
+              </p>
+            </div>
             <div className="flex gap-2">
                 <button
                     onClick={handleSyncWithStripe}
                     disabled={syncing}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
                 >
                     <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
                     Sync with Stripe
-                </button>
-                <button
-                    onClick={handleOpenImport}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                    <Download size={16} />
-                    Import from Stripe
                 </button>
                 <button
                 onClick={() => setEditingPlan({
@@ -350,51 +431,123 @@ export function MonetizationManager() {
         </div>
       )}
 
-      {/* Import Modal */}
-      {showImportModal && (
+      {/* Sync Modal */}
+      {showSyncModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <h3 className="text-xl font-bold">Import from Stripe</h3>
-                    <button onClick={() => setShowImportModal(false)}>
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
-                <div className="p-6 overflow-y-auto flex-1">
-                    {loadingImport ? (
-                        <div className="text-center py-12">Loading Stripe products...</div>
-                    ) : importableProducts.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
-                            No actionable products found in Stripe that aren't already in the dashboard.
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {importableProducts.map((prod) => (
-                                <div key={prod.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                    <div>
-                                        <h4 className="font-bold">{prod.productName}</h4>
-                                        <p className="text-sm text-gray-500">{prod.productDescription || 'No description'}</p>
-                                        <div className="flex gap-2 mt-2 text-xs">
-                                          <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                                            {prod.currency.toUpperCase()} {prod.amount}
-                                          </span>
-                                          <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded uppercase">
-                                            {prod.interval}
-                                          </span>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        onClick={() => handleImportSelect(prod)}
-                                        className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-                                    >
-                                        Import
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <h3 className="text-xl font-bold">Sync with Stripe</h3>
+              <button onClick={() => setShowSyncModal(false)}>
+                <X className="w-6 h-6" />
+              </button>
             </div>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              {/* New Products Section */}
+              {newProducts.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-bold mb-3 text-green-700 dark:text-green-400">
+                    New Products Found in Stripe ({newProducts.length})
+                  </h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Select products to import into HDPick:
+                  </p>
+                  <div className="space-y-3">
+                    {newProducts.map((prod) => (
+                      <div key={prod.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedNewProducts.has(prod.id)}
+                          onChange={() => toggleNewProduct(prod.id)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <h5 className="font-bold">{prod.productName}</h5>
+                          <p className="text-sm text-gray-500">{prod.productDescription || 'No description'}</p>
+                          <div className="flex gap-2 mt-2 text-xs">
+                            <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                              {prod.currency.toUpperCase()} {prod.amount}
+                            </span>
+                            <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded uppercase">
+                              {prod.interval}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Missing Products Section */}
+              {missingProducts.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-bold mb-3 text-red-700 dark:text-red-400">
+                    Products Missing from Stripe ({missingProducts.length})
+                  </h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    These products exist in HDPick but are no longer active in Stripe. Select to delete:
+                  </p>
+                  <div className="space-y-3">
+                    {missingProducts.map((prod) => (
+                      <div key={prod.id} className="border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/20 rounded-lg p-4 flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedMissingProducts.has(prod.id)}
+                          onChange={() => toggleMissingProduct(prod.id)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <h5 className="font-bold">{prod.name}</h5>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{prod.description}</p>
+                          <div className="flex gap-2 mt-2 text-xs">
+                            <span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded">
+                              {prod.currency?.toUpperCase() || 'USD'} {prod.price}
+                            </span>
+                            <span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded uppercase">
+                              {prod.interval}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {newProducts.length === 0 && missingProducts.length === 0 && (
+                <div className="text-center py-12 text-gray-500">
+                  Everything is in sync!
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {selectedNewProducts.size > 0 && (
+                  <span className="mr-4">Import: {selectedNewProducts.size}</span>
+                )}
+                {selectedMissingProducts.size > 0 && (
+                  <span>Delete: {selectedMissingProducts.size}</span>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowSyncModal(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Skip
+                </button>
+                <button
+                  onClick={handleApplySync}
+                  disabled={selectedNewProducts.size === 0 && selectedMissingProducts.size === 0}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Apply Changes
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
