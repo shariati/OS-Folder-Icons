@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -12,9 +11,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { SignupPromptModal } from '@/components/ui/SignupPromptModal';
 import { AdModal } from '@/components/ui/AdModal';
-import { set, get, del } from 'idb-keyval';
 import { useToast } from '@/components/ui/Toast';
 
 interface IconGeneratorProps {
@@ -39,10 +36,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [folderHue, setFolderHue] = useState(0); // 0 to 360
 
   const { user, userProfile, loading } = useAuth();
-  const router = useRouter();
   const { showToast } = useToast();
   const [showAd, setShowAd] = useState(false);
-  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
 
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
@@ -70,37 +65,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   }, [selectedVersion, selectedFolderId]);
 
-  // Restore state from IndexedDB (idb-keyval) if available
-  useEffect(() => {
-      const restoreState = async () => {
-          try {
-              const savedStateString = await get('pending_icon_gen_state');
-              if (savedStateString) {
-                  const parsed = JSON.parse(savedStateString);
-                  if (parsed.mode) setMode(parsed.mode);
-                  if (parsed.selectedOSId) setSelectedOSId(parsed.selectedOSId);
-                  if (parsed.selectedVersionId) setSelectedVersionId(parsed.selectedVersionId);
-                  if (parsed.selectedFolderId) setSelectedFolderId(parsed.selectedFolderId);
-                  if (parsed.selectedIcon) setSelectedIcon(parsed.selectedIcon);
-                  if (parsed.iconType) setIconType(parsed.iconType);
-                  if (parsed.iconColor) setIconColor(parsed.iconColor);
-                  if (parsed.iconSize) setIconSize(parsed.iconSize);
-                  if (parsed.iconEffect) setIconEffect(parsed.iconEffect);
-                  if (parsed.iconTransparency) setIconTransparency(parsed.iconTransparency);
-                  if (parsed.folderHue) setFolderHue(parsed.folderHue);
-                  if (parsed.customOffsetX) setCustomOffsetX(parsed.customOffsetX);
-                  if (parsed.customOffsetY) setCustomOffsetY(parsed.customOffsetY);
 
-                  // Clear after restoring
-                  await del('pending_icon_gen_state');
-                  showToast("We've restored your icon design so you can continue!", "success");
-              }
-          } catch (e) {
-              console.error('Failed to restore state', e);
-          }
-      };
-      restoreState();
-  }, [showToast]);
 
   // Handle Mode Switching
   const handleModeChange = (newMode: 'simple' | 'advanced') => {
@@ -115,50 +80,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   };
 
-  const saveStateAndRedirect = async () => {
-       const stateToSave = {
-           mode,
-           selectedOSId,
-           selectedVersionId,
-           selectedFolderId,
-           selectedIcon,
-           iconType,
-           iconColor,
-           iconSize,
-           iconEffect,
-           iconTransparency,
-           folderHue,
-           customOffsetX,
-           customOffsetY
-       };
-
-       try {
-          // Use idb-keyval instead of localStorage
-          await set('pending_icon_gen_state', JSON.stringify(stateToSave));
-          
-          showToast("Saving your design... Redirecting to signup.", "info");
-          
-          setTimeout(() => {
-              const currentPath = window.location.pathname;
-              router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-          }, 1500);
-
-       } catch (e) {
-           console.error('Failed to save state to storage', e);
-           alert("We couldn't fully save your design, but you can still sign up to download.");
-           const currentPath = window.location.pathname;
-           router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-       }
-  };
-
   const handleDownloadClick = () => {
     if (loading) return;
 
-    // Check if user is logged in
-    if (!isAdmin && !user) {
-         setShowSignupPrompt(true);
-         return;
-    }
+
 
     // Check if user is free or not logged in
     const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
@@ -519,19 +444,13 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           </PreviewPanel>
         </div>
       </div>
-      <AdModal 
+    <AdModal 
         isOpen={showAd} 
         onClose={() => setShowAd(false)} 
         onComplete={() => {
             setShowAd(false);
             triggerDownload();
         }} 
-      />
-      
-      <SignupPromptModal 
-        isOpen={showSignupPrompt}
-        onClose={() => setShowSignupPrompt(false)}
-        onConfirm={saveStateAndRedirect}
       />
     </div>
   );
