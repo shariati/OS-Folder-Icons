@@ -11,6 +11,8 @@ export interface Plan {
     active: boolean;
     highlight?: boolean;
     buttonText?: string;
+    maxQuantity?: number;
+    soldCount?: number;
 }
 
 export interface PaymentLog {

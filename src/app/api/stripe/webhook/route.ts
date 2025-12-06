@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { adminDb } from '@/lib/firebase/admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: '2024-11-20.acacia',
@@ -29,6 +30,7 @@ export async function POST(req: Request) {
                 const session = event.data.object as Stripe.Checkout.Session;
                 const userId = session.metadata?.userId;
                 const customerId = session.customer as string;
+                const planFirestoreId = session.metadata?.planId;
 
                 if (userId) {
                     // Retrieve the subscription details if it's a subscription
@@ -45,6 +47,17 @@ export async function POST(req: Request) {
                         // Lifetime payment
                         subscriptionStatus = 'active'; // Or specific status for lifetime
                         planId = 'lifetime';
+
+                        // Increment soldCount for lifetime plan
+                        if (planFirestoreId) {
+                            try {
+                                await adminDb.collection('plans').doc(planFirestoreId).update({
+                                    soldCount: FieldValue.increment(1)
+                                });
+                            } catch (error) {
+                                console.error('Error incrementing plan soldCount:', error);
+                            }
+                        }
                     }
 
                     await adminDb.collection('users').doc(userId).set({

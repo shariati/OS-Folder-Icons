@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { adminAuth as auth } from '@/lib/firebase/admin';
+import { adminAuth as auth, adminDb as db } from '@/lib/firebase/admin';
 import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -23,6 +23,21 @@ export async function POST(req: Request) {
 
         if (!priceId || !mode || !email) {
             return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
+        }
+
+        // Check plan availability
+        let planFirestoreId;
+        const plansRef = db.collection('plans');
+        const querySnapshot = await plansRef.where('stripePriceId', '==', priceId).limit(1).get();
+
+        if (!querySnapshot.empty) {
+            const planDoc = querySnapshot.docs[0];
+            const planData = planDoc.data();
+            planFirestoreId = planDoc.id;
+
+            if (planData.maxQuantity && planData.soldCount >= planData.maxQuantity) {
+                return NextResponse.json({ error: 'This plan is sold out.' }, { status: 400 });
+            }
         }
 
         // Optional: Retrieve existing customer by email or metadata to avoid duplicates
@@ -57,6 +72,7 @@ export async function POST(req: Request) {
             cancel_url: returnUrl || process.env.NEXT_PUBLIC_BASE_URL,
             metadata: {
                 userId: userId,
+                planId: planFirestoreId || '',
             },
         });
 
