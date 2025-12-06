@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { Plan } from '@/types/plan';
-import { Plus, Edit, Trash, Save, X, Check } from 'lucide-react';
+import { Plus, Edit, Trash, Save, X, Check, Download } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 
 export function MonetizationManager() {
@@ -11,6 +11,10 @@ export function MonetizationManager() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingPlan, setEditingPlan] = useState<Partial<Plan> | null>(null);
+
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importableProducts, setImportableProducts] = useState<any[]>([]);
+  const [loadingImport, setLoadingImport] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -30,6 +34,41 @@ export function MonetizationManager() {
     }
   };
 
+  const fetchStripeProducts = async () => {
+    setLoadingImport(true);
+    try {
+        const res = await fetch('/api/admin/plans/stripe-products');
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            setImportableProducts(data);
+        }
+    } catch (error) {
+        console.error('Failed to fetch Stripe products', error);
+    } finally {
+        setLoadingImport(false);
+    }
+  };
+
+  const handleOpenImport = () => {
+      setShowImportModal(true);
+      fetchStripeProducts();
+  };
+
+  const handleImportSelect = (product: any) => {
+      setEditingPlan({
+          name: product.productName,
+          description: product.productDescription || '',
+          price: product.amount,
+          currency: product.currency,
+          interval: product.interval,
+          features: [],
+          stripePriceId: product.id,
+          type: product.type,
+          active: true,
+      });
+      setShowImportModal(false);
+  };
+
   const handleSavePlan = async () => {
     if (!editingPlan) return;
 
@@ -44,9 +83,13 @@ export function MonetizationManager() {
       if (res.ok) {
         setEditingPlan(null);
         fetchPlans();
+      } else {
+        const err = await res.json();
+        alert('Error saving plan: ' + err.error);
       }
     } catch (error) {
       console.error('Failed to save plan', error);
+      alert('Failed to save plan');
     }
   };
 
@@ -66,7 +109,7 @@ export function MonetizationManager() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex space-x-4 border-b border-gray-200 dark:border-gray-700 pb-2">
         <button
           onClick={() => setActiveTab('plans')}
@@ -88,23 +131,32 @@ export function MonetizationManager() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">Manage Plans</h3>
-            <button
-              onClick={() => setEditingPlan({
-                name: '',
-                description: '',
-                price: 0,
-                currency: 'USD',
-                interval: 'month',
-                features: [],
-                stripePriceId: '',
-                type: 'subscription',
-                active: true,
-              })}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus size={16} />
-              Add Plan
-            </button>
+            <div className="flex gap-2">
+                <button
+                    onClick={handleOpenImport}
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                    <Download size={16} />
+                    Import from Stripe
+                </button>
+                <button
+                onClick={() => setEditingPlan({
+                    name: '',
+                    description: '',
+                    price: 0,
+                    currency: 'USD',
+                    interval: 'month',
+                    features: [],
+                    stripePriceId: '',
+                    type: 'subscription',
+                    active: true,
+                })}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                <Plus size={16} />
+                Add Plan
+                </button>
+            </div>
           </div>
 
           {editingPlan && (
@@ -167,8 +219,9 @@ export function MonetizationManager() {
                     value={editingPlan.stripePriceId}
                     onChange={(e) => setEditingPlan({ ...editingPlan, stripePriceId: e.target.value })}
                     className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
-                    placeholder="price_..."
+                    placeholder="Leave empty to auto-create in Stripe"
                   />
+                  {!editingPlan.stripePriceId && <p className="text-xs text-gray-500 mt-1">If left empty, a new Product and Price will be created in Stripe upon saving.</p>}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium mb-1">Features (comma separated)</label>
@@ -227,6 +280,9 @@ export function MonetizationManager() {
                     <span className={`text-xs font-bold px-2 py-1 rounded ${plan.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {plan.active ? 'Active' : 'Inactive'}
                     </span>
+                    <span className="ml-2 text-xs font-bold px-2 py-1 bg-gray-100 text-gray-800 rounded uppercase">
+                        {plan.type === 'payment' ? 'ONE-TIME' : plan.interval}
+                    </span>
                 </div>
                 <h4 className="text-xl font-bold mb-2">{plan.name}</h4>
                 <p className="text-2xl font-bold text-blue-600 mb-4">
@@ -247,6 +303,54 @@ export function MonetizationManager() {
               </NeumorphBox>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">Import from Stripe</h3>
+                    <button onClick={() => setShowImportModal(false)}>
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+                <div className="p-6 overflow-y-auto flex-1">
+                    {loadingImport ? (
+                        <div className="text-center py-12">Loading Stripe products...</div>
+                    ) : importableProducts.length === 0 ? (
+                        <div className="text-center py-12 text-gray-500">
+                            No actionable products found in Stripe that aren't already in the dashboard.
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {importableProducts.map((prod) => (
+                                <div key={prod.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                    <div>
+                                        <h4 className="font-bold">{prod.productName}</h4>
+                                        <p className="text-sm text-gray-500">{prod.productDescription || 'No description'}</p>
+                                        <div className="flex gap-2 mt-2 text-xs">
+                                          <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                            {prod.currency.toUpperCase()} {prod.amount}
+                                          </span>
+                                          <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded uppercase">
+                                            {prod.interval}
+                                          </span>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => handleImportSelect(prod)}
+                                        className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                                    >
+                                        Import
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
       )}
     </div>
