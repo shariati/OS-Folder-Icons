@@ -63,8 +63,22 @@ function SignupContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#e0e5ec] dark:bg-gray-900 p-4 py-12">
-      <div className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 py-12 overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div className="absolute inset-0 bg-white/60 z-10" /> {/* Overlay */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/backgrounds/video/home-video-background-1.webm" type="video/webm" />
+        </video>
+      </div>
+
+      <div className="relative z-20 w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
         <div className="p-8 sm:p-10">
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-500 text-white mb-6 shadow-lg shadow-blue-500/30">
