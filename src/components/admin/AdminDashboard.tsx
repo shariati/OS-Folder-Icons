@@ -9,7 +9,7 @@ import { CategoriesManager } from '@/components/admin/CategoriesManager';
 import { TagsManager } from '@/components/admin/TagsManager';
 import { HeroManager } from '@/components/admin/HeroManager';
 import { UsersManager } from '@/components/admin/UsersManager';
-import { AnalyticsManager } from '@/components/admin/AnalyticsManager';
+
 import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
 import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
@@ -18,7 +18,7 @@ import { MonetizationManager } from '@/components/admin/MonetizationManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads'>('os');
 
   return (
     <ToastProvider>
@@ -31,7 +31,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'tags' && 'Site Manager / Tags'}
             {activeTab === 'hero' && 'Site Manager / Hero Slider'}
             {activeTab === 'users' && 'User Management'}
-            {activeTab === 'analytics' && 'Analytics'}
+
             {activeTab === 'audit' && 'Audit Log'}
             {activeTab === 'blog' && 'Site Manager / Site Content / Blog Posts'}
             {activeTab === 'pages' && 'Site Manager / Site Content / Pages'}
@@ -53,7 +53,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'tags' && 'Site Manager / Tags'}
                 {activeTab === 'hero' && 'Site Manager / Hero'}
                 {activeTab === 'users' && 'Users'}
-                {activeTab === 'analytics' && 'Analytics'}
+
                 {activeTab === 'audit' && 'Audit'}
                 {activeTab === 'blog' && 'Site Manager / Content / Blog'}
                 {activeTab === 'pages' && 'Site Manager / Content / Pages'}
@@ -71,7 +71,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'tags' && <TagsManager initialData={initialData} />}
           {activeTab === 'hero' && <HeroManager initialData={initialData} />}
           {activeTab === 'users' && <UsersManager initialData={initialData} />}
-          {activeTab === 'analytics' && <AnalyticsManager initialData={initialData} />}
+
           {activeTab === 'audit' && <AuditLogViewer initialData={initialData} />}
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}

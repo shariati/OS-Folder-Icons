@@ -21,6 +21,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Providers } from "@/components/shared/Providers";
+import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
+        <GoogleAnalytics />
         <Providers>
           <Navbar />
           <main>
