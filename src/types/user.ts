@@ -5,6 +5,12 @@ export interface UserProfile {
     email: string | null;
     displayName: string | null;
     photoURL: string | null;
+    providers?: Array<{
+        providerId: string;
+        uid: string;
+        displayName: string | null;
+        email: string | null;
+    }>;
     role: UserRole;
     createdAt: string;
     subscriptionId?: string; // Stripe or other subscription ID
