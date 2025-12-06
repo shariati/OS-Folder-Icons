@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { CancellationModal } from './CancellationModal';
 
 const SubscriptionManager = () => {
   return <SubscriptionManagerContent />;
@@ -70,173 +71,303 @@ const RenewalProgress = ({ end }: { end: string }) => {
     );
 };
 
+import { FileText, Download, CreditCard } from 'lucide-react';
+
 const SubscriptionManagerContent = () => {
-  const { user, userProfile } = useAuth();
-  const [loading, setLoading] = useState(false);
+    const { user, userProfile } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [invoicesLoading, setInvoicesLoading] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [activeTab, setActiveTab] = useState<'subscription' | 'invoices'>('subscription');
+    const [invoices, setInvoices] = useState<any[]>([]);
 
-  const handleSyncSubscription = async () => {
-    if (!user) return;
+    const handleSyncSubscription = async () => {
+        if (!user) return;
+        setLoading(true);
+        try {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/stripe/sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`,
+                },
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert('Subscription status synced successfully!');
+                window.location.reload();
+            } else {
+                alert('Failed to sync: ' + (data.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error syncing subscription:', error);
+            alert('An error occurred while syncing.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    setLoading(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('/api/stripe/sync', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-      });
+    const handleManageSubscription = async () => {
+        if (!user || !userProfile?.stripeCustomerId) return;
+        setLoading(true);
+        try {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/stripe/portal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`,
+                },
+                body: JSON.stringify({
+                    returnUrl: window.location.href,
+                }),
+            });
+            const { url } = await response.json();
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert('Failed to redirect to subscription portal.');
+            }
+        } catch (error) {
+            console.error('Error accessing portal:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      const data = await response.json();
-      if (data.success) {
-        alert('Subscription status synced successfully!');
-        window.location.reload(); // Reload to reflect changes
-      } else {
-        alert('Failed to sync: ' + (data.message || 'Unknown error'));
-      }
-    } catch (error) {
-      console.error('Error syncing subscription:', error);
-      alert('An error occurred while syncing.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchInvoices = async () => {
+        if (!user) return;
+        setInvoicesLoading(true);
+        try {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/stripe/invoices', {
+                headers: {
+                    'Authorization': `Bearer ${idToken}`,
+                },
+            });
+            const data = await response.json();
+            if (data.invoices) {
+                setInvoices(data.invoices);
+            }
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+        } finally {
+            setInvoicesLoading(false);
+        }
+    };
 
-  const handleManageSubscription = async () => {
-    if (!user || !userProfile?.stripeCustomerId) return;
+    React.useEffect(() => {
+        if (activeTab === 'invoices' && invoices.length === 0) {
+            fetchInvoices();
+        }
+    }, [activeTab]);
 
-    setLoading(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('/api/stripe/portal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          returnUrl: window.location.href,
-        }),
-      });
+    if (!userProfile) return null;
 
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
-      } else {
-        alert('Failed to redirect to subscription portal.');
-      }
-    } catch (error) {
-      console.error('Error accessing portal:', error);
-      alert('An error occurred. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    return (
+        <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl border border-white/20 overflow-hidden">
+            {/* Header & Tabs */}
+            <div className="p-8 pb-0">
+                <div className="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Subscription Management</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your plan and billing details</p>
+                    </div>
+                    <button
+                        onClick={handleSyncSubscription}
+                        disabled={loading}
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium underline disabled:opacity-50"
+                    >
+                        {loading ? 'Syncing...' : 'Sync Status'}
+                    </button>
+                </div>
 
-  if (!userProfile) return null;
+                <div className="flex border-b border-gray-200 dark:border-gray-700">
+                    <button
+                        onClick={() => setActiveTab('subscription')}
+                        className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                            activeTab === 'subscription'
+                                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                        }`}
+                    >
+                        Overview
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('invoices')}
+                        className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                            activeTab === 'invoices'
+                                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                        }`}
+                    >
+                        Billing & Invoices
+                    </button>
+                </div>
+            </div>
 
-  return (
-    <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 border border-white/20">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-           <h3 className="text-xl font-bold text-gray-900 dark:text-white">Subscription Management</h3>
-           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your billing and plan details</p>
+            <div className="p-8">
+                {activeTab === 'subscription' ? (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Current Plan</p>
+                                <p className="text-xl font-bold text-gray-900 dark:text-white capitalize">
+                                    {userProfile.role === 'paid' ? 'Pro' : userProfile.role === 'lifetime' ? 'Lifetime' : 'Starter (Free)'}
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Status</p>
+                                <div className="flex items-center gap-2">
+                                    <span className={`inline-block w-2.5 h-2.5 rounded-full ${
+                                        userProfile.role === 'lifetime' ? 'bg-purple-500' :
+                                        userProfile.cancelAtPeriodEnd ? 'bg-amber-500' :
+                                        userProfile.subscriptionStatus === 'active' ? 'bg-green-500' :
+                                        'bg-gray-400'
+                                    }`}></span>
+                                    <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
+                                        {userProfile.role === 'lifetime' ? 'Lifetime Active' :
+                                         userProfile.cancelAtPeriodEnd ? 'Cancels Soon' :
+                                         userProfile.subscriptionStatus || 'Inactive'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {(userProfile.currentPeriodEnd || userProfile.role === 'lifetime') && (
+                            <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-blue-600 dark:text-blue-300 mb-1">
+                                        {userProfile.role === 'lifetime' ? 'Access Duration' :
+                                         userProfile.cancelAtPeriodEnd ? 'Access Ends' : 'Next Cycle'}
+                                    </p>
+                                    {userProfile.role === 'lifetime' ? (
+                                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                                            Permanent Access
+                                        </p>
+                                    ) : (
+                                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                                            {new Date(userProfile.currentPeriodEnd!).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex-shrink-0">
+                                    {userProfile.role === 'lifetime' ? (
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
+                                            LIFETIME
+                                        </span>
+                                    ) : (
+                                        <RenewalProgress end={userProfile.currentPeriodEnd!} />
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-4 pt-2">
+                             {/* Manage Billing moved to invoices tab generally, but can keep basic or just Upgrade buttons here */}
+                            {userProfile.role === 'paid' && !userProfile.cancelAtPeriodEnd && (
+                                <button
+                                    onClick={() => setShowCancelModal(true)}
+                                    disabled={loading}
+                                    className="inline-flex items-center px-6 py-3 border border-red-200 dark:border-red-900/50 text-base font-medium rounded-xl shadow-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all disabled:opacity-50"
+                                >
+                                    Cancel Subscription
+                                </button>
+                            )}
+
+                            {userProfile.role === 'free' && (
+                                <a href="/#pricing" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:-translate-y-0.5">
+                                    Upgrade to Pro
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    // Invoices Tab
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl">
+                            <div>
+                                <h4 className="font-semibold text-gray-900 dark:text-white">Payment Method & Settings</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Update cards and billing information via Stripe</p>
+                            </div>
+                            <button
+                                onClick={handleManageSubscription}
+                                disabled={loading}
+                                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                            >
+                                <CreditCard size={16} />
+                                Manage in Stripe
+                            </button>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Transaction History</h4>
+                            {invoicesLoading ? (
+                                <div className="text-center py-8 text-gray-500">Loading transactions...</div>
+                            ) : invoices.length > 0 ? (
+                                <div className="border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden">
+                                    <table className="w-full text-left text-sm">
+                                        <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+                                            <tr>
+                                                <th className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">Date</th>
+                                                <th className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">Amount</th>
+                                                <th className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">Status</th>
+                                                <th className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200 text-right">Invoice</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                                            {invoices.map((inv) => (
+                                                <tr key={inv.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                                        {new Date(inv.date).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-gray-900 dark:text-white font-medium">
+                                                        {(inv.amount / 100).toLocaleString('en-US', { style: 'currency', currency: inv.currency.toUpperCase() })}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                            inv.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-800'
+                                                        }`}>
+                                                            {inv.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right">
+                                                        {inv.pdf_url && (
+                                                            <a href={inv.pdf_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                                                                <Download size={14} />
+                                                                <span className="hidden sm:inline">PDF</span>
+                                                            </a>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                                    <FileText className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+                                    <p className="text-gray-500 dark:text-gray-400 font-medium">No invoices found</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <CancellationModal
+                isOpen={showCancelModal}
+                onClose={() => setShowCancelModal(false)}
+                onSuccess={() => {
+                    alert('Subscription cancelled successfully.');
+                    window.location.reload();
+                }}
+            />
         </div>
-        <button
-            onClick={handleSyncSubscription}
-            disabled={loading}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium underline disabled:opacity-50"
-        >
-            {loading ? 'Syncing...' : 'Sync Status'}
-        </button>
-      </div>
-      
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Current Plan</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white capitalize">
-                    {userProfile.role === 'paid' ? 'Pro' : userProfile.role === 'lifetime' ? 'Lifetime' : 'Starter (Free)'}
-                </p>
-            </div>
-             <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Status</p>
-                <div className="flex items-center gap-2">
-                     <span className={`inline-block w-2.5 h-2.5 rounded-full ${userProfile.subscriptionStatus === 'active' || userProfile.role === 'lifetime' ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
-                        {userProfile.subscriptionStatus || (userProfile.role === 'lifetime' ? 'Active' : 'Inactive')}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        {(userProfile.currentPeriodEnd || userProfile.role === 'lifetime') && (
-             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
-                <div>
-                    <p className="text-sm font-medium text-blue-600 dark:text-blue-300 mb-1">
-                        {userProfile.role === 'lifetime' ? 'Access Duration' : 'Next Cycle'}
-                    </p>
-                    {userProfile.role === 'lifetime' ? (
-                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                            Permanent Access
-                        </p>
-                    ) : (
-                        <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                            {new Date(userProfile.currentPeriodEnd!).toLocaleDateString(undefined, { dateStyle: 'long' })}
-                        </p>
-                    )}
-                </div>
-
-                <div className="flex-shrink-0">
-                    {userProfile.role === 'lifetime' ? (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
-                            LIFETIME
-                        </span>
-                    ) : (
-                        <RenewalProgress end={userProfile.currentPeriodEnd!} />
-                    )}
-                </div>
-            </div>
-        )}
-            
-        <div className="flex flex-wrap gap-4 pt-2">
-            {userProfile.stripeCustomerId && (
-                 <button
-                    onClick={handleManageSubscription}
-                    disabled={loading}
-                    className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-xl shadow-sm text-gray-700 dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
-                >
-                    Manage Billing & Invoices
-                </button>
-            )}
-
-            {userProfile.role === 'free' && (
-                 <a href="/#pricing" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:-translate-y-0.5">
-                    Upgrade to Pro
-                </a>
-            )}
-        </div>
-        
-        {userProfile.stripeCustomerId && (
-            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-                <p className="text-xs text-center text-gray-400 dark:text-gray-500 mb-4">
-                    View your payment history and download invoices in the billing portal.
-                </p>
-                <div className="bg-gray-100 dark:bg-gray-900/50 rounded-lg p-3 flex flex-col items-center justify-center text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Support ID (Stripe Customer ID)</p>
-                    <code className="text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-2 py-1 rounded border border-gray-200 dark:border-gray-700 select-all">
-                        {userProfile.stripeCustomerId}
-                    </code>
-                    <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 max-w-xs mx-auto leading-relaxed">
-                        Please provide this ID when contacting support regarding any payment or subscription issues.
-                    </p>
-                </div>
-            </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default SubscriptionManager;
