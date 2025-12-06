@@ -11,8 +11,11 @@ import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { AdModal } from '@/components/ui/AdModal';
+import { set, get, del } from 'idb-keyval';
+import { useToast } from '@/components/ui/Toast';
 
 interface IconGeneratorProps {
   initialData: DB;
@@ -37,6 +40,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
   const { user, userProfile, loading } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
   const [showAd, setShowAd] = useState(false);
 
   // Derived state
@@ -65,33 +69,37 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   }, [selectedVersion, selectedFolderId]);
 
-  // Restore state from localStorage if available
+  // Restore state from IndexedDB (idb-keyval) if available
   useEffect(() => {
-      const savedState = window.localStorage.getItem('pending_icon_gen_state');
-      if (savedState) {
+      const restoreState = async () => {
           try {
-              const parsed = JSON.parse(savedState);
-              if (parsed.mode) setMode(parsed.mode);
-              if (parsed.selectedOSId) setSelectedOSId(parsed.selectedOSId);
-              if (parsed.selectedVersionId) setSelectedVersionId(parsed.selectedVersionId);
-              if (parsed.selectedFolderId) setSelectedFolderId(parsed.selectedFolderId);
-              if (parsed.selectedIcon) setSelectedIcon(parsed.selectedIcon);
-              if (parsed.iconType) setIconType(parsed.iconType);
-              if (parsed.iconColor) setIconColor(parsed.iconColor);
-              if (parsed.iconSize) setIconSize(parsed.iconSize);
-              if (parsed.iconEffect) setIconEffect(parsed.iconEffect);
-              if (parsed.iconTransparency) setIconTransparency(parsed.iconTransparency);
-              if (parsed.folderHue) setFolderHue(parsed.folderHue);
-              if (parsed.customOffsetX) setCustomOffsetX(parsed.customOffsetX);
-              if (parsed.customOffsetY) setCustomOffsetY(parsed.customOffsetY);
+              const savedStateString = await get('pending_icon_gen_state');
+              if (savedStateString) {
+                  const parsed = JSON.parse(savedStateString);
+                  if (parsed.mode) setMode(parsed.mode);
+                  if (parsed.selectedOSId) setSelectedOSId(parsed.selectedOSId);
+                  if (parsed.selectedVersionId) setSelectedVersionId(parsed.selectedVersionId);
+                  if (parsed.selectedFolderId) setSelectedFolderId(parsed.selectedFolderId);
+                  if (parsed.selectedIcon) setSelectedIcon(parsed.selectedIcon);
+                  if (parsed.iconType) setIconType(parsed.iconType);
+                  if (parsed.iconColor) setIconColor(parsed.iconColor);
+                  if (parsed.iconSize) setIconSize(parsed.iconSize);
+                  if (parsed.iconEffect) setIconEffect(parsed.iconEffect);
+                  if (parsed.iconTransparency) setIconTransparency(parsed.iconTransparency);
+                  if (parsed.folderHue) setFolderHue(parsed.folderHue);
+                  if (parsed.customOffsetX) setCustomOffsetX(parsed.customOffsetX);
+                  if (parsed.customOffsetY) setCustomOffsetY(parsed.customOffsetY);
 
-              // Clear after restoring
-              window.localStorage.removeItem('pending_icon_gen_state');
+                  // Clear after restoring
+                  await del('pending_icon_gen_state');
+                  showToast("We've restored your icon design so you can continue!", "success");
+              }
           } catch (e) {
               console.error('Failed to restore state', e);
           }
-      }
-  }, []);
+      };
+      restoreState();
+  }, [showToast]);
 
   // Handle Mode Switching
   const handleModeChange = (newMode: 'simple' | 'advanced') => {
@@ -111,30 +119,43 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
     // Check if user is logged in
     if (!isAdmin && !user) {
-         const stateToSave = {
-             mode,
-             selectedOSId,
-             selectedVersionId,
-             selectedFolderId,
-             selectedIcon,
-             iconType,
-             iconColor,
-             iconSize,
-             iconEffect,
-             iconTransparency,
-             folderHue,
-             customOffsetX,
-             customOffsetY
+         const saveAndRedirect = async () => {
+             const stateToSave = {
+                 mode,
+                 selectedOSId,
+                 selectedVersionId,
+                 selectedFolderId,
+                 selectedIcon,
+                 iconType,
+                 iconColor,
+                 iconSize,
+                 iconEffect,
+                 iconTransparency,
+                 folderHue,
+                 customOffsetX,
+                 customOffsetY
+             };
+
+             try {
+                // Use idb-keyval instead of localStorage
+                await set('pending_icon_gen_state', JSON.stringify(stateToSave));
+                
+                showToast("Saving your design... Redirecting to signup.", "info");
+                
+                setTimeout(() => {
+                    const currentPath = window.location.pathname;
+                    router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+                }, 1500);
+
+             } catch (e) {
+                 console.error('Failed to save state to storage', e);
+                 alert("We couldn't fully save your design, but you can still sign up to download.");
+                 const currentPath = window.location.pathname;
+                 router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+             }
          };
-
-         try {
-            window.localStorage.setItem('pending_icon_gen_state', JSON.stringify(stateToSave));
-         } catch (e) {
-             console.error('Failed to save state to localStorage', e);
-         }
-
-         const currentPath = window.location.pathname;
-         router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+         
+         saveAndRedirect();
          return;
     }
 
