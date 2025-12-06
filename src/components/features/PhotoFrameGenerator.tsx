@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Upload, Download, Move, ZoomIn, Type, Calendar, Flag, RotateCcw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { toPng, toJpeg } from 'html-to-image';
 import { clsx } from 'clsx';
 
@@ -60,6 +61,31 @@ export function PhotoFrameGenerator() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  // Restore state from localStorage if available
+  useEffect(() => {
+      const savedState = window.localStorage.getItem('pending_photo_frame_state');
+      if (savedState) {
+          try {
+              const parsed = JSON.parse(savedState);
+              if (parsed.image) setImage(parsed.image);
+              if (parsed.title) setTitle(parsed.title);
+              if (parsed.selectedCountry) setSelectedCountry(parsed.selectedCountry);
+              if (parsed.selectedMonth) setSelectedMonth(parsed.selectedMonth);
+              if (parsed.selectedYear) setSelectedYear(parsed.selectedYear);
+              if (parsed.frameColor) setFrameColor(parsed.frameColor);
+              if (parsed.zoom) setZoom(parsed.zoom);
+              if (parsed.position) setPosition(parsed.position);
+              
+              // Clear after restoring
+              window.localStorage.removeItem('pending_photo_frame_state');
+              
+              // Optional: Show a toast or message saying "Work restored"
+          } catch (e) {
+              console.error('Failed to restore state', e);
+          }
+      }
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,13 +170,61 @@ export function PhotoFrameGenerator() {
     }
   };
 
-  const { userProfile, loading } = useAuth(); // Add useAuth hook
+  const { user, userProfile, loading } = useAuth(); // Add useAuth hook
+  const router = useRouter(); // Use useRouter for redirection
 
   const handleDownloadClick = (format: 'png' | 'jpg') => {
     if (loading) return;
+
+    // Check if user is logged in
+    if (!user) {
+         // Save state before redirecting
+         const saveAndRedirect = async () => {
+             let imageBase64 = image;
+             // If image is a blob URL, try to convert to base64
+             if (image && image.startsWith('blob:')) {
+                 try {
+                     const response = await fetch(image);
+                     const blob = await response.blob();
+                     imageBase64 = await new Promise((resolve) => {
+                         const reader = new FileReader();
+                         reader.onloadend = () => resolve(reader.result as string);
+                         reader.readAsDataURL(blob);
+                     });
+                 } catch (e) {
+                     console.error('Failed to convert image for persistence', e);
+                     // Proceed without image if conversion fails
+                 }
+             }
+
+             const stateToSave = {
+                 image: imageBase64,
+                 title,
+                 selectedCountry,
+                 selectedMonth,
+                 selectedYear,
+                 frameColor,
+                 zoom,
+                 position
+             };
+             
+             try {
+                window.localStorage.setItem('pending_photo_frame_state', JSON.stringify(stateToSave));
+             } catch (e) {
+                 console.error('Failed to save state to localStorage', e);
+                 // Quota exceeded or other error
+             }
+
+             const currentPath = window.location.pathname;
+             router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+         };
+         
+         saveAndRedirect();
+         return;
+    }
     
     // Check if user is free tier
-    const isFreeUser = !userProfile || userProfile.role === 'free';
+    const isFreeUser = !userProfile || userProfile.role === 'free' || userProfile.role === 'starter'; // Include 'starter' as requested default
 
     if (isFreeUser) {
       setPendingDownload(format);

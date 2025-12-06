@@ -15,12 +15,23 @@ function SignupContent() {
   const [loading, setLoading] = useState(false);
   const { signInWithGoogle, signUpWithEmail } = useAuth();
   
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
+
+  const handleRedirect = () => {
+      if (redirect) {
+          router.push(redirect);
+      } else {
+          router.push('/');
+      }
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       setError('');
       setLoading(true);
       await signInWithGoogle();
-      router.push('/');
+      handleRedirect();
     } catch (err) {
       setError('Failed to sign up with Google.');
       console.error(err);
@@ -36,7 +47,7 @@ function SignupContent() {
 
     try {
       await signUpWithEmail(email, password);
-      router.push('/');
+      handleRedirect();
     } catch (err: any) {
       console.error(err);
       if (err.code === 'auth/email-already-in-use') {
