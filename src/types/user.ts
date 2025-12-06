@@ -15,6 +15,15 @@ export interface UserProfile {
     subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing' | null;
     currentPeriodEnd?: string; // ISO date
     planId?: string; // To track monthly vs annual vs lifetime
+    cancellationReason?: string;
+    cancellationFeedback?: string;
+    cancelledAt?: string; // ISO date
+    cancelAtPeriodEnd?: boolean;
+    cancellationFeedbackHistory?: Array<{
+        reason: string;
+        feedback: string;
+        date: string;
+    }>;
 }
 
 export interface FavouriteList {
