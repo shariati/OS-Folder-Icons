@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, getFirebaseAuth } from '@/lib/firebase/client';
+import config from '@/lib/config';
 import { UserProfile } from '@/types/user';
 
 interface AuthContextType {
@@ -10,13 +11,14 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
+  sendMagicLink: (email: string) => Promise<void>;
+  signInWithMagicLink: (email: string, href: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateUserProfile: (data: Partial<UserProfile>) => Promise<void>;
   changePassword: (current: string, newPass: string) => Promise<void>;
-  linkWithProvider: (provider: 'google' | 'apple') => Promise<void>;
+  linkWithProvider: (provider: 'google') => Promise<void>;
   unlinkProvider: (providerId: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
 }
@@ -26,7 +28,8 @@ const AuthContext = createContext<AuthContextType>({
   userProfile: null,
   loading: true,
   signInWithGoogle: async () => {},
-  signInWithApple: async () => {},
+  sendMagicLink: async () => {},
+  signInWithMagicLink: async () => {},
   signInWithEmail: async () => {},
   signUpWithEmail: async () => {},
   signOut: async () => {},
@@ -100,16 +103,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithPopup(_auth, provider);
   };
 
-  const signInWithApple = async () => {
+  const sendMagicLink = async (email: string) => {
     const _auth = getFirebaseAuth();
-    if (!_auth) {
-      console.error('Firebase Auth not initialized');
-      return;
+    if (!_auth) return;
+    
+    const { sendSignInLinkToEmail } = await import('firebase/auth');
+    const actionCodeSettings = {
+      url: `${window.location.origin}/login?finishSignUp=true`,
+      handleCodeInApp: true,
+    };
+    
+    console.log('--- Sending Magic Link ---');
+    console.log('Target Email:', email);
+    console.log('Action Code Settings:', actionCodeSettings);
+    
+    try {
+        await sendSignInLinkToEmail(_auth, email, actionCodeSettings);
+        console.log('Magic Link sent successfully!');
+    } catch (error) {
+        console.error('Error sending magic link:', error);
+        throw error;
     }
-    // Apple Auth Provider
-    const { OAuthProvider } = await import('firebase/auth');
-    const provider = new OAuthProvider('apple.com');
-    await signInWithPopup(_auth, provider);
+    // Save email locally to complete sign in on return
+    window.localStorage.setItem('emailForSignIn', email);
+  };
+
+  const signInWithMagicLink = async (email: string, href: string) => {
+    const _auth = getFirebaseAuth();
+    if (!_auth) return;
+
+    const { signInWithEmailLink } = await import('firebase/auth');
+    await signInWithEmailLink(_auth, email, href);
+    window.localStorage.removeItem('emailForSignIn');
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -191,25 +216,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const linkWithProvider = async (providerName: 'google' | 'apple') => {
+  const linkWithProvider = async (providerName: 'google') => {
     const _auth = getFirebaseAuth();
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        const { linkWithPopup, GoogleAuthProvider, OAuthProvider } = await import('firebase/auth');
+        const { linkWithPopup, GoogleAuthProvider } = await import('firebase/auth');
         let provider;
         if (providerName === 'google') {
             provider = new GoogleAuthProvider();
         } else {
-            provider = new OAuthProvider('apple.com');
+           throw new Error('Provider not supported');
         }
-
+        
         const result = await linkWithPopup(_auth.currentUser, provider);
         const user = result.user;
         
         // Sync providers to DB
         await syncProviders(user);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error linking provider:', error);
         throw error;
     }
@@ -277,7 +302,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userProfile, 
         loading, 
         signInWithGoogle, 
-        signInWithApple, 
+        sendMagicLink,
+        signInWithMagicLink,
         signInWithEmail, 
         signUpWithEmail, 
         signOut,

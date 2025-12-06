@@ -11,10 +11,40 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signInWithGoogle, signInWithApple, signInWithEmail } = useAuth();
+  const { signInWithGoogle, signInWithEmail, sendMagicLink, signInWithMagicLink } = useAuth();
   const router = useRouter();
   
+  // Handle Magic Link Sign-In on Check
+  React.useEffect(() => {
+    const checkMagicLink = async () => {
+        const { isSignInWithEmailLink } = await import('firebase/auth');
+        const { getFirebaseAuth } = await import('@/lib/firebase/client');
+        const auth = getFirebaseAuth();
+        
+        if (auth && isSignInWithEmailLink(auth, window.location.href)) {
+             let emailForSignIn = window.localStorage.getItem('emailForSignIn');
+             if (!emailForSignIn) {
+                 emailForSignIn = window.prompt('Please provide your email for confirmation');
+             }
+             
+             if (emailForSignIn) {
+                 setLoading(true);
+                 try {
+                     await signInWithMagicLink(emailForSignIn, window.location.href);
+                     router.push('/');
+                 } catch (err: any) {
+                     setError(err.message || 'Failed to sign in with magic link.');
+                 } finally {
+                     setLoading(false);
+                 }
+             }
+        }
+    };
+    checkMagicLink();
+  }, [signInWithMagicLink, router]);
+
   const handleGoogleSignIn = async () => {
     try {
       setError('');
@@ -29,37 +59,43 @@ export default function LoginPage() {
     }
   };
 
-  const handleAppleSignIn = async () => {
-    try {
-      setError('');
-      setLoading(true);
-      await signInWithApple();
-      router.push('/');
-    } catch (err) {
-      setError('Failed to sign in with Apple.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Mode state: 'password' | 'magic_link'
+  const [loginMode, setLoginMode] = useState<'password' | 'magic_link'>('magic_link');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    try {
-      await signInWithEmail(email, password);
-      router.push('/');
-    } catch (err: any) {
-      console.error(err);
-      if (err.code === 'auth/invalid-credential') {
-        setError('Invalid email or password.');
-      } else {
-        setError('Failed to sign in. Please try again.');
-      }
-    } finally {
-      setLoading(false);
+    if (loginMode === 'magic_link') {
+        try {
+            setSuccess('');
+            await sendMagicLink(email);
+            setSuccess('Magic link sent! Check your email (including spam/junk) to sign in instantly.');
+        } catch (err: any) {
+            console.error(err);
+            if (err.code === 'auth/quota-exceeded') {
+                setError('Too many login attempts. Please try again later or use a password to sign in.');
+            } else {
+                setError(err.message || 'Failed to send magic link.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    } else {
+         try {
+            await signInWithEmail(email, password);
+            router.push('/');
+         } catch (err: any) {
+            console.error(err);
+            if (err.code === 'auth/invalid-credential') {
+                setError('Invalid email or password.');
+            } else {
+                setError('Failed to sign in. Please try again.');
+            }
+         } finally {
+            setLoading(false);
+         }
     }
   };
 
@@ -78,6 +114,12 @@ export default function LoginPage() {
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium text-center">
               {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium text-center">
+              {success}
             </div>
           )}
 
@@ -99,40 +141,56 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+            {loginMode === 'password' && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                     <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        Forgot password?
+                     </Link>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
                 </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center text-gray-600 dark:text-gray-400">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                <span className="ml-2">Remember me</span>
-              </label>
-              <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
-                Forgot password?
-              </Link>
-            </div>
+            )}
+            
+            {loginMode === 'magic_link' && (
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm text-blue-800 dark:text-blue-300">
+                    <p className="font-semibold mb-1">What is a Magic Link?</p>
+                    <p>We'll send a secure link to your email. Click it to log in instantly without a password. It's safe and convenient!</p>
+                </div>
+            )}
 
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Sign In <ArrowRight className="ml-2 w-5 h-5" />
+                {loginMode === 'magic_link' ? 'Send Magic Link' : 'Sign In'} <ArrowRight className="ml-2 w-5 h-5" />
             </button>
+            
+            <div className="pt-2 text-center">
+                <button
+                    type="button"
+                    onClick={() => setLoginMode(loginMode === 'magic_link' ? 'password' : 'magic_link')}
+                    className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors underline decoration-dotted underline-offset-4"
+                >
+                    {loginMode === 'magic_link' ? 'I have a password, sign in with password instead' : 'Email me a magic login link instead'}
+                </button>
+            </div>
+
+
           </form>
 
           <div className="mt-8">
@@ -170,17 +228,6 @@ export default function LoginPage() {
                   />
                 </svg>
                 Sign in with Google
-              </button>
-
-              <button
-                onClick={handleAppleSignIn}
-                disabled={loading}
-                className="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-black text-white hover:bg-gray-800 font-medium transition-all flex items-center justify-center gap-3"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.03-.48-3.24.05-1.44.62-2.29.44-3.53-1.09-2.22-2.73-2.3-6.73-1.41-8.28 1.16-1.92 2.87-2.18 4.09-1.9 1.41.33 2.14 1.14 3.75 1.1 1.5-.04 2.22-.92 3.86-1.24 1.63-.32 3.16.51 4.13 1.94-3.69 1.96-3.08 6.94.52 8.44-.7 1.76-1.6 3.42-3.03 4.96-.86.9-1.74 1.66-2.9 1.66z M12.03 7.25c-.25-2.17 1.62-4.14 3.96-4.25.4.01.66.07.66.07.41 2.39-1.87 4.54-4.62 4.18z" />
-                </svg>
-                Sign in with Apple
               </button>
             </div>
           </div>

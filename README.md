@@ -10,6 +10,11 @@ Custom OS Folder Icons is a web application designed to help users customize the
 - **Admin Panel**: Manage categories, tags, bundles, and the hero slider.
 - **Responsive Design**: Modern, glassmorphic UI that works on all devices.
 
+## Legacy Python Code
+
+The old Python code is removed from the code base. Developers can access it from:
+[https://github.com/shariati/setupmymac/releases/tag/2.1.0](https://github.com/shariati/setupmymac/releases/tag/2.1.0)
+
 ## Project Structure
 
 ```
