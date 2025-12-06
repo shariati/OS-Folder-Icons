@@ -240,7 +240,7 @@ export function PhotoFrameGenerator() {
     }
     
     // Check if user is free tier
-    const isFreeUser = !userProfile || userProfile.role === 'free' || userProfile.role === 'starter'; // Include 'starter' as requested default
+    const isFreeUser = !userProfile || userProfile.role === 'free';
 
     if (isFreeUser) {
       setPendingDownload(format);

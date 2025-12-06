@@ -80,7 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const profile = await response.json();
             setUserProfile(profile);
           } else {
-            console.error('Failed to fetch user profile');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Failed to fetch user profile:', response.status, errorData.error || response.statusText);
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
