@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
-import { Trash2, Shield, User, Check, X, Eye, AlertTriangle } from 'lucide-react';
+import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network } from 'lucide-react';
 import { updateUserRoleAction, deleteUserAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
@@ -224,6 +224,30 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                             <div className="space-y-2 text-sm">
                                 <p><span className="text-gray-500">Joined:</span> <span className="font-medium text-black dark:text-white">{new Date(selectedUser.createdAt).toLocaleDateString()}</span></p>
                                 <p><span className="text-gray-500">Generated Folders:</span> <span className="font-medium text-black dark:text-white">{selectedUser.generatedFoldersCount || 0}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div className="p-4 bg-gray-50 dark:bg-meta-4 rounded-lg">
+                             <h5 className="font-semibold text-black dark:text-white mb-3 flex items-center gap-2">
+                                <Network size={18} /> Connected Accounts
+                            </h5>
+                            <div className="space-y-2">
+                                {selectedUser.providers && selectedUser.providers.length > 0 ? (
+                                    selectedUser.providers.map((p, idx) => (
+                                        <div key={idx} className="flex items-center justify-between text-sm p-2 bg-white dark:bg-gray-800 rounded border border-gray-100 dark:border-gray-700">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium text-black dark:text-white capitalize">
+                                                    {p.providerId.replace('.com', '')}
+                                                </span>
+                                                {p.email && <span className="text-xs text-gray-400">({p.email})</span>}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic">No connected providers found (likely email/pass only)</p>
+                                )}
                             </div>
                         </div>
                     </div>

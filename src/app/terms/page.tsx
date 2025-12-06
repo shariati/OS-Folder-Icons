@@ -8,7 +8,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto">
           <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Terms of Service</h1>
-            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 5, 2025</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 6, 2025</p>
             
             <div className="space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
               <p>
@@ -27,7 +27,8 @@ export default function TermsPage() {
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Registration:</strong> You may need to create an account to access certain features. You agree to provide accurate and complete information.</li>
                   <li><strong>Security:</strong> You are responsible for maintaining the confidentiality of your account credentials.</li>
-                  <li><strong>Deletion:</strong> You have the right to delete your account and personal data at any time through your account settings.</li>
+                  <li><strong>Deletion:</strong> You have the right to delete your account and personal data at any time through your account settings. However, if you have an active paid subscription, you must first cancel the subscription and wait for the remainder of the paid term to expire before deleting the account.</li>
+                  <li><strong>Subscription Cancellation:</strong> You may cancel your subscription at any time. Your access to paid features will continue until the end of your current billing period. We do not provide refunds for partial subscription periods.</li>
                 </ul>
               </section>
 

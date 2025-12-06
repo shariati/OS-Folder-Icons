@@ -8,7 +8,7 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto">
           <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Privacy Policy</h1>
-            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 5, 2025</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">Last Updated: December 6, 2025</p>
             
             <div className="space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
               <p>
@@ -78,7 +78,9 @@ export default function PrivacyPage() {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">4. Data Retention and Deletion</h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Retention:</strong> We retain your personal information only as long as necessary to provide you with our services and as required by law.</li>
-                  <li><strong>Deletion:</strong> You have the right to request the deletion of your account and all associated personal data. You can do this directly through your account settings or by contacting us. Upon deletion, your data will be permanently removed from our active databases.</li>
+                  <li><strong>Deletion:</strong> You have the right to request the deletion of your account and all associated personal data. You can do this directly through your "My Profile" page. 
+                    <br/><strong>Note:</strong> If you have an active paid subscription, you must first cancel your subscription and wait for the current billing period to end before you can permanently delete your account. This ensures you receive the full service you paid for and allows for proper billing settlement.
+                  </li>
                 </ul>
               </section>
 
