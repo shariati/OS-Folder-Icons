@@ -35,7 +35,7 @@ export async function POST(req: Request) {
                 if (userId) {
                     // Retrieve the subscription details if it's a subscription
                     let subscriptionStatus = 'active';
-                    let currentPeriodEnd = new Date().toISOString();
+                    let currentPeriodEnd: string | null = new Date().toISOString();
                     let planId = '';
 
                     if (session.mode === 'subscription' && session.subscription) {
@@ -46,7 +46,19 @@ export async function POST(req: Request) {
                     } else if (session.mode === 'payment') {
                         // Lifetime payment
                         subscriptionStatus = 'active'; // Or specific status for lifetime
-                        planId = 'lifetime';
+
+                        try {
+                            const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
+                                expand: ['line_items']
+                            });
+                            const priceId = expandedSession.line_items?.data[0]?.price?.id;
+                            planId = priceId || 'lifetime';
+                        } catch (e) {
+                            console.error('Error fetching line items for payment session:', e);
+                            planId = 'lifetime';
+                        }
+
+                        currentPeriodEnd = null; // Permanent access
 
                         // Increment soldCount for lifetime plan
                         if (planFirestoreId) {
