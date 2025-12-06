@@ -11,8 +11,8 @@ import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { IconPicker } from './IconPicker';
 import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
-
 import { useAuth } from '@/contexts/AuthContext';
+import { SignupPromptModal } from '@/components/ui/SignupPromptModal';
 import { AdModal } from '@/components/ui/AdModal';
 import { set, get, del } from 'idb-keyval';
 import { useToast } from '@/components/ui/Toast';
@@ -42,6 +42,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const router = useRouter();
   const { showToast } = useToast();
   const [showAd, setShowAd] = useState(false);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
 
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
@@ -114,48 +115,48 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   };
 
+  const saveStateAndRedirect = async () => {
+       const stateToSave = {
+           mode,
+           selectedOSId,
+           selectedVersionId,
+           selectedFolderId,
+           selectedIcon,
+           iconType,
+           iconColor,
+           iconSize,
+           iconEffect,
+           iconTransparency,
+           folderHue,
+           customOffsetX,
+           customOffsetY
+       };
+
+       try {
+          // Use idb-keyval instead of localStorage
+          await set('pending_icon_gen_state', JSON.stringify(stateToSave));
+          
+          showToast("Saving your design... Redirecting to signup.", "info");
+          
+          setTimeout(() => {
+              const currentPath = window.location.pathname;
+              router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+          }, 1500);
+
+       } catch (e) {
+           console.error('Failed to save state to storage', e);
+           alert("We couldn't fully save your design, but you can still sign up to download.");
+           const currentPath = window.location.pathname;
+           router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+       }
+  };
+
   const handleDownloadClick = () => {
     if (loading) return;
 
     // Check if user is logged in
     if (!isAdmin && !user) {
-         const saveAndRedirect = async () => {
-             const stateToSave = {
-                 mode,
-                 selectedOSId,
-                 selectedVersionId,
-                 selectedFolderId,
-                 selectedIcon,
-                 iconType,
-                 iconColor,
-                 iconSize,
-                 iconEffect,
-                 iconTransparency,
-                 folderHue,
-                 customOffsetX,
-                 customOffsetY
-             };
-
-             try {
-                // Use idb-keyval instead of localStorage
-                await set('pending_icon_gen_state', JSON.stringify(stateToSave));
-                
-                showToast("Saving your design... Redirecting to signup.", "info");
-                
-                setTimeout(() => {
-                    const currentPath = window.location.pathname;
-                    router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-                }, 1500);
-
-             } catch (e) {
-                 console.error('Failed to save state to storage', e);
-                 alert("We couldn't fully save your design, but you can still sign up to download.");
-                 const currentPath = window.location.pathname;
-                 router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-             }
-         };
-         
-         saveAndRedirect();
+         setShowSignupPrompt(true);
          return;
     }
 
@@ -521,7 +522,16 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <AdModal 
         isOpen={showAd} 
         onClose={() => setShowAd(false)} 
-        onComplete={triggerDownload} 
+        onComplete={() => {
+            setShowAd(false);
+            triggerDownload();
+        }} 
+      />
+      
+      <SignupPromptModal 
+        isOpen={showSignupPrompt}
+        onClose={() => setShowSignupPrompt(false)}
+        onConfirm={saveStateAndRedirect}
       />
     </div>
   );

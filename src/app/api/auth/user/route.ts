@@ -44,9 +44,13 @@ export async function POST(request: Request) {
         } else {
             // Update existing profile with new info if provided
             const updates: Partial<UserProfile> = {};
-            if (displayName) updates.displayName = displayName;
-            if (photoURL) updates.photoURL = photoURL;
+            if (displayName && displayName !== profile.displayName) updates.displayName = displayName;
+            if (photoURL && photoURL !== profile.photoURL) updates.photoURL = photoURL;
             if (providers) updates.providers = providers;
+
+            // Always update from body if provided to keep local state in sync or update if missing
+            // But be careful not to overwrite with nulls if we want to keep existing data
+            // Actually, we should probably merge providers if possible, but replacing is easier for sync.
 
             if (Object.keys(updates).length > 0) {
                 await updateUser(uid, updates);

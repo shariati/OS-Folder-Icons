@@ -73,6 +73,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               email: firebaseUser.email,
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
+              providers: firebaseUser.providerData.map(p => ({
+                providerId: p.providerId,
+                uid: p.uid,
+                displayName: p.displayName,
+                email: p.email,
+                phoneNumber: p.phoneNumber,
+                photoURL: p.photoURL
+              }))
             }),
           });
 

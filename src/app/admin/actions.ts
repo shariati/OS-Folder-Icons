@@ -37,7 +37,7 @@ export async function deletePageAction(id: string) {
     revalidatePath('/admin');
 }
 
-export async function updateUserRoleAction(uid: string, role: 'admin' | 'user' | 'lifetime') {
+export async function updateUserRoleAction(uid: string, role: 'admin' | 'free' | 'paid' | 'lifetime') {
     await dbUpdateUser(uid, { role });
     revalidatePath('/admin');
 }

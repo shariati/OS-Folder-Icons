@@ -13,7 +13,15 @@ import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
+import { SignupPromptModal } from '@/components/ui/SignupPromptModal';
 import { useAuth } from '@/contexts/AuthContext';
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const YEARS = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - 25 + i).toString());
 
 export function PhotoFrameGenerator() {
   const [image, setImage] = useState<string | null>(null);
@@ -178,64 +186,63 @@ export function PhotoFrameGenerator() {
 
   const { user, userProfile, loading } = useAuth(); // Add useAuth hook
   const router = useRouter(); // Use useRouter for redirection
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+
+  const saveStateAndRedirect = async () => {
+    let imageBase64 = image;
+    // If image is a blob URL, try to convert to base64
+    if (image && image.startsWith('blob:')) {
+        try {
+            const response = await fetch(image);
+            const blob = await response.blob();
+            imageBase64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(blob);
+            });
+        } catch (e) {
+            console.error('Failed to convert image for persistence', e);
+            // Proceed without image if conversion fails
+        }
+    }
+
+    const stateToSave = {
+        image: imageBase64,
+        title,
+        selectedCountry,
+        selectedMonth,
+        selectedYear,
+        frameColor,
+        zoom,
+        position
+    };
+    
+    try {
+       // Use idb-keyval (IndexedDB) instead of localStorage to avoid quota limits
+       await set('pending_photo_frame_state', JSON.stringify(stateToSave));
+       
+       showToast("Saving your work... Redirecting to signup.", "info");
+       
+       // Small delay to let the toast be seen and storage to finish (though await set handles the latter)
+       setTimeout(() => {
+           const currentPath = window.location.pathname;
+           router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+       }, 1500);
+       
+    } catch (e) {
+        console.error('Failed to save state to storage', e);
+        alert("We couldn't save your work fully, but you can still sign up to download.");
+        const currentPath = window.location.pathname;
+        router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+    }
+  };
 
   const handleDownloadClick = (format: 'png' | 'jpg') => {
     if (loading) return;
 
     // Check if user is logged in
     if (!user) {
-         // Save state before redirecting
-         const saveAndRedirect = async () => {
-             let imageBase64 = image;
-             // If image is a blob URL, try to convert to base64
-             if (image && image.startsWith('blob:')) {
-                 try {
-                     const response = await fetch(image);
-                     const blob = await response.blob();
-                     imageBase64 = await new Promise((resolve) => {
-                         const reader = new FileReader();
-                         reader.onloadend = () => resolve(reader.result as string);
-                         reader.readAsDataURL(blob);
-                     });
-                 } catch (e) {
-                     console.error('Failed to convert image for persistence', e);
-                     // Proceed without image if conversion fails
-                 }
-             }
-
-             const stateToSave = {
-                 image: imageBase64,
-                 title,
-                 selectedCountry,
-                 selectedMonth,
-                 selectedYear,
-                 frameColor,
-                 zoom,
-                 position
-             };
-             
-             
-             try {
-                // Use idb-keyval (IndexedDB) instead of localStorage to avoid quota limits
-                await set('pending_photo_frame_state', JSON.stringify(stateToSave));
-                
-                showToast("Saving your work... Redirecting to signup.", "info");
-                
-                // Small delay to let the toast be seen and storage to finish (though await set handles the latter)
-                setTimeout(() => {
-                    const currentPath = window.location.pathname;
-                    router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-                }, 1500);
-                
-             } catch (e) {
-                 console.error('Failed to save state to storage', e);
-                 alert("We couldn't save your work fully, but you can still sign up to download.");
-                 const currentPath = window.location.pathname;
-                 router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
-             }
-         };
-         
-         saveAndRedirect();
+         setShowSignupPrompt(true);
          return;
     }
     
@@ -247,14 +254,6 @@ export function PhotoFrameGenerator() {
       setIsAdOpen(true);
     } else {
       triggerDownload(format);
-    }
-  };
-
-  const handleAdComplete = () => {
-    setIsAdOpen(false);
-    if (pendingDownload) {
-      triggerDownload(pendingDownload);
-      setPendingDownload(null);
     }
   };
 
@@ -564,7 +563,19 @@ export function PhotoFrameGenerator() {
       <AdModal 
         isOpen={isAdOpen} 
         onClose={() => { setIsAdOpen(false); setPendingDownload(null); }} 
-        onComplete={handleAdComplete} 
+        onComplete={() => {
+          setIsAdOpen(false);
+          if (pendingDownload) {
+            triggerDownload(pendingDownload);
+            setPendingDownload(null);
+          }
+        }} 
+      />
+
+      <SignupPromptModal 
+        isOpen={showSignupPrompt}
+        onClose={() => setShowSignupPrompt(false)}
+        onConfirm={saveStateAndRedirect}
       />
     </div>
   );
