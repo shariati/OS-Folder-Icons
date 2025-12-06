@@ -61,10 +61,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (firebaseUser) {
         try {
           // Fetch or create user profile via API
+          const token = await firebaseUser.getIdToken();
           const response = await fetch('/api/auth/user', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
               uid: firebaseUser.uid,
@@ -177,9 +179,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         // Update Database Profile
+        const token = await _auth.currentUser.getIdToken();
         const response = await fetch('/api/auth/user', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 uid: _auth.currentUser.uid,
                 ...data
@@ -281,8 +287,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const uid = _auth.currentUser.uid;
         
         // Delete from DB (via API)
+        const token = await _auth.currentUser.getIdToken();
         const response = await fetch(`/api/auth/user?uid=${uid}`, {
              method: 'DELETE',
+             headers: {
+                 'Authorization': `Bearer ${token}`
+             }
         });
 
         if (!response.ok) {

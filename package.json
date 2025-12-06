@@ -34,6 +34,7 @@
     "framer-motion": "^12.23.24",
     "grommet-icons": "^4.14.0",
     "html-to-image": "^1.11.13",
+    "idb-keyval": "^6.2.2",
     "jszip": "^3.10.1",
     "lucide-react": "^0.555.0",
     "next": "16.0.6",

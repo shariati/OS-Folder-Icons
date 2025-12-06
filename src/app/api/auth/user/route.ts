@@ -1,24 +1,35 @@
 import { NextResponse } from 'next/server';
 import { getUser, createUser, updateUser, deleteUser } from '@/lib/db';
 import { UserProfile } from '@/types/user';
+import { verifyAuth } from '@/lib/auth-server';
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
-        const { uid, email, displayName, photoURL, providers } = body;
-
-        if (!uid) {
-            return NextResponse.json({ error: 'Missing UID' }, { status: 400 });
+        const decodedToken = await verifyAuth(request);
+        if (!decodedToken) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        const authUid = decodedToken.uid;
+
+        const body = await request.json();
+        const { displayName, photoURL, providers } = body;
+
+        // Ensure we are operating on the authenticated user
+        // We can ignore body.uid or verify it matches authUid
+        const uid = authUid;
 
         let profile = await getUser(uid);
 
         if (!profile) {
+            // Check if email matches token email for extra safety on creation
+            // (Though Firebase ID token guarantees email claim usually)
+            const email = decodedToken.email || body.email;
+
             profile = {
                 uid,
                 email,
-                displayName,
-                photoURL,
+                displayName: displayName || decodedToken.name || '',
+                photoURL: photoURL || decodedToken.picture || '',
                 providers: providers || [],
                 role: 'free',
                 createdAt: new Date().toISOString(),
@@ -47,14 +58,20 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const uid = searchParams.get('uid');
-
-        if (!uid) {
-            return NextResponse.json({ error: 'Missing UID' }, { status: 400 });
+        const decodedToken = await verifyAuth(request);
+        if (!decodedToken) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await deleteUser(uid);
+        const { searchParams } = new URL(request.url);
+        const uidToDelete = searchParams.get('uid');
+
+        // Only allow users to delete themselves
+        if (!uidToDelete || uidToDelete !== decodedToken.uid) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        await deleteUser(decodedToken.uid);
 
         return NextResponse.json({ success: true });
     } catch (error) {
