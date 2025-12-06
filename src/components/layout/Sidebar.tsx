@@ -10,7 +10,7 @@ interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'analytics' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -252,18 +252,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                   Users
                 </button>
               </li>
-              <li>
-                <button
-                  onClick={() => { setActiveTab('analytics'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'analytics' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <BarChart2 className="h-5 w-5" />
-                  Analytics
-                </button>
-              </li>
+
               <li>
                 <button
                   onClick={() => { setActiveTab('audit'); setSidebarOpen(false); }}

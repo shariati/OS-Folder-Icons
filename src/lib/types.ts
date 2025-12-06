@@ -94,7 +94,6 @@ export interface AdConfig {
 }
 
 export interface Settings {
-  gaMeasurementId?: string;
   adConfig?: AdConfig;
 }
 

@@ -11,6 +11,9 @@ const config = {
     clarity: {
         projectId: process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID,
     },
+    googleAnalytics: {
+        id: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID,
+    },
     isLocal: (process.env.NEXT_PUBLIC_APP_ENV || 'local') === 'local',
     isTest: process.env.NEXT_PUBLIC_APP_ENV === 'test',
     isProduction: process.env.NEXT_PUBLIC_APP_ENV === 'production',
