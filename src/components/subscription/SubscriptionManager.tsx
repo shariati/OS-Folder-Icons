@@ -132,9 +132,20 @@ const SubscriptionManager = () => {
         </div>
         
         {userProfile.stripeCustomerId && (
-            <p className="text-xs text-center text-gray-400 dark:text-gray-500 mt-4">
-                View your payment history and download invoices in thebilling portal.
-            </p>
+            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+                <p className="text-xs text-center text-gray-400 dark:text-gray-500 mb-4">
+                    View your payment history and download invoices in the billing portal.
+                </p>
+                <div className="bg-gray-100 dark:bg-gray-900/50 rounded-lg p-3 flex flex-col items-center justify-center text-center">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Support ID (Stripe Customer ID)</p>
+                    <code className="text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-2 py-1 rounded border border-gray-200 dark:border-gray-700 select-all">
+                        {userProfile.stripeCustomerId}
+                    </code>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 max-w-xs mx-auto leading-relaxed">
+                        Please provide this ID when contacting support regarding any payment or subscription issues.
+                    </p>
+                </div>
+            </div>
         )}
       </div>
     </div>
