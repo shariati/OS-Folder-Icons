@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
-import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity } from 'lucide-react';
+import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity, Mail, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import clsx from 'clsx';
@@ -17,6 +17,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterPending, setFilterPending] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -93,11 +94,57 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     }
   };
 
-  const filteredUsers = users.filter(user => 
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.stripeCustomerId?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleManualActivation = async (uid: string) => {
+    if (!confirm('Manually activate this user\'s account?')) return;
+    
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          uid, 
+          emailVerified: true,
+          activatedAt: new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u.uid === uid ? { 
+          ...u, 
+          emailVerified: true,
+          activatedAt: new Date().toISOString()
+        } : u));
+        if (selectedUser?.uid === uid) {
+          setSelectedUser({ 
+            ...selectedUser, 
+            emailVerified: true,
+            activatedAt: new Date().toISOString()
+          });
+        }
+        showToast('User activated successfully', 'success');
+      }
+    } catch (error) {
+      showToast('Failed to activate user', 'error');
+    }
+  };
+
+  const getDaysPending = (user: UserProfile): number | null => {
+    if (user.emailVerified) return null;
+    const createdDate = new Date(user.createdAt);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.stripeCustomerId?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesFilter = !filterPending || !user.emailVerified;
+    
+    return matchesSearch && matchesFilter;
+  });
 
   const formatDate = (dateString?: string) => {
       if (!dateString) return 'N/A';
@@ -115,7 +162,22 @@ export function UsersManager({ initialData }: UsersManagerProps) {
           <UsersIcon size={24} className="text-primary" />
           User Management
         </h3>
-        <div className="relative w-full sm:w-96">
+        <div className="flex gap-3 items-center w-full sm:w-auto">
+          <button
+            onClick={() => setFilterPending(!filterPending)}
+            className={clsx(
+              "px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap",
+              filterPending 
+                ? "bg-orange-500 text-white shadow-md" 
+                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <Clock size={16} />
+              Pending Only
+            </div>
+          </button>
+          <div className="relative flex-1 sm:w-96">
             <input
             type="text"
             placeholder="Search by email, name, or Stripe ID..."
@@ -124,6 +186,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
             className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition focus:border-primary active:border-primary dark:border-gray-700 dark:bg-gray-800"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          </div>
         </div>
       </div>
 
@@ -133,6 +196,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
             <tr className="bg-gray-100 dark:bg-gray-800 text-left">
               <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">User</th>
               <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Role</th>
+              <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Activation</th>
               <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Status</th>
               <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Last Login</th>
               <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider text-right">Actions</th>
@@ -140,7 +204,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
             {loading ? (
-                <tr><td colSpan={5} className="py-8 text-center text-gray-500">Loading users...</td></tr>
+                <tr><td colSpan={6} className="py-8 text-center text-gray-500">Loading users...</td></tr>
             ) : filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
                     <tr key={user.uid} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
@@ -172,6 +236,34 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                             </select>
                         </td>
                         <td className="py-4 px-6">
+                            <div className="flex items-center gap-2">
+                                {user.emailVerified === false ? (
+                                    <>
+                                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                                            Pending
+                                        </span>
+                                        {getDaysPending(user)! >= 15 && (
+                                            <div title={`Pending for ${getDaysPending(user)} days`}>
+                                                <AlertTriangle 
+                                                    size={18} 
+                                                    className="text-red-500"
+                                                />
+                                            </div>
+                                        )}
+                                        {getDaysPending(user)! < 15 && (
+                                            <span className="text-xs text-gray-500">
+                                                {getDaysPending(user)}d
+                                            </span>
+                                        )}
+                                    </>
+                                ) : (
+                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                        Activated
+                                    </span>
+                                )}
+                            </div>
+                        </td>
+                        <td className="py-4 px-6">
                             <span className={clsx("px-2.5 py-0.5 rounded-full text-xs font-bold", 
                                 user.subscriptionStatus === 'active' ? "bg-green-100 text-green-700" : 
                                 user.subscriptionStatus === 'canceled' ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"
@@ -184,6 +276,15 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                         </td>
                         <td className="py-4 px-6 text-right">
                             <div className="flex items-center justify-end gap-2">
+                                {user.emailVerified === false && (
+                                    <button 
+                                        onClick={() => handleManualActivation(user.uid)} 
+                                        className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" 
+                                        title="Manually Activate"
+                                    >
+                                        <Check size={18} />
+                                    </button>
+                                )}
                                 <button onClick={() => setSelectedUser(user)} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
                                     <Eye size={18} />
                                 </button>
@@ -198,7 +299,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                     </tr>
                 ))
             ) : (
-                <tr><td colSpan={5} className="py-8 text-center text-gray-500">No users found.</td></tr>
+                <tr><td colSpan={6} className="py-8 text-center text-gray-500">No users found.</td></tr>
             )}
           </tbody>
         </table>

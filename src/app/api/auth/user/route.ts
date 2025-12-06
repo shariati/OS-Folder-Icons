@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         const authUid = decodedToken.uid;
 
         const body = await request.json();
-        const { displayName, photoURL, providers } = body;
+        const { displayName, photoURL, providers, emailVerified, activationEmailSentAt } = body;
 
         // Ensure we are operating on the authenticated user
         // We can ignore body.uid or verify it matches authUid
@@ -39,6 +39,8 @@ export async function POST(request: Request) {
                 providers: providers || [],
                 role: 'free',
                 createdAt: new Date().toISOString(),
+                emailVerified: emailVerified || false,
+                activationEmailSentAt: activationEmailSentAt || undefined,
             };
             await createUser(profile);
         } else {
@@ -47,6 +49,26 @@ export async function POST(request: Request) {
             if (displayName && displayName !== profile.displayName) updates.displayName = displayName;
             if (photoURL && photoURL !== profile.photoURL) updates.photoURL = photoURL;
             if (providers) updates.providers = providers;
+
+            // Handle email verification status
+            if (emailVerified !== undefined && emailVerified !== profile.emailVerified) {
+                updates.emailVerified = emailVerified;
+                // If email is now verified and wasn't before, set activatedAt
+                if (emailVerified && !profile.emailVerified && !profile.activatedAt) {
+                    updates.activatedAt = new Date().toISOString();
+                }
+            }
+
+            // Update activation email sent timestamp if provided
+            if (activationEmailSentAt) {
+                updates.activationEmailSentAt = activationEmailSentAt;
+            }
+
+            // Auto-activate existing users who don't have emailVerified set (migration)
+            if (profile.emailVerified === undefined && emailVerified === undefined) {
+                updates.emailVerified = true;
+                updates.activatedAt = profile.createdAt; // Use their creation date as activation date
+            }
 
             // Always update from body if provided to keep local state in sync or update if missing
             // But be careful not to overwrite with nulls if we want to keep existing data

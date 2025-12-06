@@ -40,6 +40,19 @@ export async function POST(req: Request) {
             }
         }
 
+        // Check if user's email is verified (for email/password users)
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            // Only enforce verification for users who signed up with email/password
+            // Google/social login users are auto-verified
+            if (userData?.emailVerified === false) {
+                return NextResponse.json({
+                    error: 'Please activate your account before purchasing. Check your email for the activation link.'
+                }, { status: 403 });
+            }
+        }
+
         // Optional: Retrieve existing customer by email or metadata to avoid duplicates
         const customers = await stripe.customers.list({
             email: email,
