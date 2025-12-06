@@ -55,8 +55,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     
     try {
       setIsLoading(true);
-      // @ts-ignore - fixing action type separately
-      await updateUserRoleAction(uid, newRole as any);
+      await updateUserRoleAction(uid, newRole);
       
       const updatedUsers = users.map(u => 
         u.uid === uid ? { ...u, role: newRole } : u

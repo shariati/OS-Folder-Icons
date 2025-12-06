@@ -290,7 +290,7 @@ export function PhotoFrameGenerator() {
               variant="pressed"
               type="text"
               value={title}
-              onChange={(e: any) => setTitle(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
               className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent"
               placeholder="e.g. Tumpak Sewu Waterfall"
             />
@@ -303,7 +303,7 @@ export function PhotoFrameGenerator() {
                 as="select"
                 variant="pressed"
                 value={selectedMonth}
-                onChange={(e: any) => setSelectedMonth(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedMonth(e.target.value)}
                 className="flex-1 px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
               >
                 {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(month => (
@@ -314,7 +314,7 @@ export function PhotoFrameGenerator() {
                 as="select"
                 variant="pressed"
                 value={selectedYear}
-                onChange={(e: any) => setSelectedYear(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedYear(e.target.value)}
                 className="flex-1 px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none bg-transparent appearance-none"
               >
                 {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map(year => (

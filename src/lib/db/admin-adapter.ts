@@ -141,21 +141,6 @@ export const adminAdapter: DatabaseAdapter = {
         let operationCount = 0;
         const BATCH_LIMIT = 500;
 
-        const commitBatchIfFull = async () => {
-            if (operationCount >= BATCH_LIMIT) {
-                await batch.commit();
-                // batch is not reusable after commit in some SDKs, but in Admin SDK it returns WriteResults.
-                // We need to create a new batch.
-                // However, re-assigning 'batch' variable which is const? No, I defined it as const above.
-                // I need to change it to let.
-                // Wait, I can't change const. I'll fix this logic.
-            }
-        };
-
-        // Actually, let's just use a simple loop and create new batches as needed, 
-        // or just use the same logic as firestore-adapter but adapted for Admin SDK.
-        // Admin SDK batch also has commit().
-
         // Refactoring to handle batching correctly
         const saveData = async () => {
             let currentBatch = db.batch();
