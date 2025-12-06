@@ -191,29 +191,8 @@ export default async function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
+      <section id="pricing" className="py-24 bg-gray-50 dark:bg-gray-900/50">
         <PricingSection />
-      </section>
-
-      {/* Subscribe Section */}
-      <section className="py-24 bg-gray-800 dark:bg-gray-950 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay in the Loop</h2>
-          <p className="text-gray-400 mb-10 text-lg">
-            Subscribe to our newsletter to get notified about new bundle releases and exclusive design tips.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="flex-1 px-6 py-4 rounded-2xl bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
-              required
-            />
-            <button type="submit" className="px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 font-bold transition-all shadow-lg hover:shadow-blue-500/30">
-              Subscribe
-            </button>
-          </form>
-        </div>
       </section>
 
       <Footer />

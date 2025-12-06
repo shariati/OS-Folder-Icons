@@ -197,6 +197,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const _auth = getFirebaseAuth();
     if (!_auth) return;
     await firebaseSignOut(_auth);
+    // Redirect to home page after logout
+    window.location.href = '/';
   };
 
   const updateUserProfile = async (data: Partial<UserProfile>) => {
