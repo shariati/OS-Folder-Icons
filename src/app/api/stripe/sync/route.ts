@@ -64,19 +64,64 @@ async function checkSubscription(stripeCustomerId: string, userDocRef: FirebaseF
     const subscriptions = await stripe.subscriptions.list({
         customer: stripeCustomerId,
         status: 'all',
-        limit: 1,
+        limit: 5,
     });
 
     let role = 'free';
     let subscriptionStatus = 'none';
-    let currentPeriodEnd = new Date().toISOString();
+    let currentPeriodEnd: string | null = null;
     let planId = '';
 
-    if (subscriptions.data.length > 0) {
-        const subscription = subscriptions.data[0];
+    // Prioritize active or trialing subscriptions
+    const activeSubscription = subscriptions.data.find(
+        (sub) => sub.status === 'active' || sub.status === 'trialing'
+    );
+    const subscription = activeSubscription || subscriptions.data[0];
+
+    if (subscription) {
         subscriptionStatus = subscription.status;
-        if ((subscription as any).current_period_end) {
-            currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString();
+
+        let targetDate: Date | null = null;
+
+        // Try to get the end date provided by Stripe
+        const periodEndTimestamp = (subscription as any).current_period_end || (subscription as any).trial_end;
+        if (periodEndTimestamp) {
+            targetDate = new Date(periodEndTimestamp * 1000);
+        }
+
+        // If date is missing OR it's in the past/now (and sub is active), we calculate next cycle manually
+        if (subscription.status === 'active' || subscription.status === 'trialing') {
+            const now = new Date();
+            // If targetDate is incorrectly "now" or "past" or missing
+            if (!targetDate || targetDate <= now) {
+                // If we didn't have a date, start from 'now'. If we did, use it as base (to increment from).
+                // Actually if it's in the past, sticking to it + interval is safer than 'now + interval' to keep anchor, 
+                // but for a fresh "today" issue, 'now' is fine.
+                const baseDate = targetDate || now;
+
+                const price = subscription.items.data[0].price;
+                const interval = price.recurring?.interval;
+                const intervalCount = price.recurring?.interval_count || 1;
+
+                // Create a new date object to modify
+                const newDate = new Date(baseDate);
+
+                if (interval === 'month') {
+                    newDate.setMonth(newDate.getMonth() + intervalCount);
+                } else if (interval === 'year') {
+                    newDate.setFullYear(newDate.getFullYear() + intervalCount);
+                } else if (interval === 'day') {
+                    newDate.setDate(newDate.getDate() + intervalCount);
+                } else if (interval === 'week') {
+                    newDate.setDate(newDate.getDate() + (intervalCount * 7));
+                }
+
+                targetDate = newDate;
+            }
+        }
+
+        if (targetDate) {
+            currentPeriodEnd = targetDate.toISOString();
         }
 
         if (subscription.items && subscription.items.data.length > 0) {
@@ -91,6 +136,7 @@ async function checkSubscription(stripeCustomerId: string, userDocRef: FirebaseF
         if (userData?.role === 'lifetime') {
             role = 'lifetime';
             subscriptionStatus = 'active';
+            currentPeriodEnd = null; // No next cycle for lifetime
         }
     }
 
