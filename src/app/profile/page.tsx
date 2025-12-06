@@ -77,7 +77,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleLinkProvider = async (provider: 'google' | 'apple') => {
+  const handleLinkProvider = async (provider: 'google') => {
     try {
       await linkWithProvider(provider);
       showToast(`Successfully linked ${provider}`, 'success');
@@ -134,7 +134,6 @@ export default function ProfilePage() {
   // Determine connected providers
   const connectedProviders = user.providerData.map(p => p.providerId);
   const isGoogleConnected = connectedProviders.includes('google.com');
-  const isAppleConnected = connectedProviders.includes('apple.com');
   const isEmailLinked = connectedProviders.includes('password');
 
   return (
@@ -257,33 +256,6 @@ export default function ProfilePage() {
                          ) : (
                              <button 
                                 onClick={() => handleLinkProvider('google')}
-                                className="text-blue-600 hover:text-blue-700 text-xs font-medium px-3 py-1 bg-blue-50 dark:bg-blue-900/10 rounded"
-                            >
-                                Connect
-                             </button>
-                         )}
-                     </div>
-
-                     {/* Apple */}
-                     <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
-                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-white">
-                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                     <path d="M17.05 19.36c-.92 1.35-1.89 2.67-3.37 2.69-1.46.03-1.94-.88-3.64-.88-1.69 0-2.23.85-3.62.91-1.46.05-2.58-1.46-3.52-2.82-1.92-2.76-3.39-7.85-.02-10.96 1.65-1.53 4.62-1.74 5.92-.3 1.07.72 2.76.66 3.99.11 1.5-.7 4.14-1.29 5.86 1.02 2.65.66 3.99 2.2 4 2.23-.03.02-2.4 1.4-2.46 3.95-.06 2.53 2.11 4.14 2.26 4.34-.03.07-1.37 4.66-4.4 9.1zM14.97 4.69c.87-1.07 1.45-2.55 1.29-4.04-1.25.05-2.77.85-3.67 1.9-1.25.96-1.56 2.38-1.37 3.97 1.41.11 2.85-.72 3.75-1.83z"/>
-                                </svg>
-                            </div>
-                             <span className="text-gray-700 dark:text-gray-300 font-medium text-sm">Apple</span>
-                         </div>
-                         {isAppleConnected ? (
-                             <button
-                                onClick={() => handleUnlinkProvider('apple.com')}
-                                className="text-red-500 hover:text-red-600 text-xs font-medium px-3 py-1 bg-red-50 dark:bg-red-900/10 rounded"
-                             >
-                                Disconnect
-                             </button>
-                         ) : (
-                             <button 
-                                onClick={() => handleLinkProvider('apple')}
                                 className="text-blue-600 hover:text-blue-700 text-xs font-medium px-3 py-1 bg-blue-50 dark:bg-blue-900/10 rounded"
                             >
                                 Connect
