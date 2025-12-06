@@ -19,7 +19,12 @@ const PricingSection = () => {
         const data = await res.json();
         if (Array.isArray(data)) {
             // Sort plans: Free first, then by price
-            const sorted = data.filter(p => p.active).sort((a, b) => a.price - b.price);
+            const sorted = data.filter(p => {
+                if (!p.active) return false;
+                // Hide sold out lifetime plans
+                if (p.maxQuantity && (p.soldCount || 0) >= p.maxQuantity) return false;
+                return true;
+            }).sort((a, b) => a.price - b.price);
             setPlans(sorted);
         }
       } catch (error) {
