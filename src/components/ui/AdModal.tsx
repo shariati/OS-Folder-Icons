@@ -162,7 +162,7 @@ export function AdModal({ isOpen, onClose, onComplete }: AdModalProps) {
 
           <div className="text-center pt-2 border-t border-gray-100 dark:border-gray-800">
               <p className="text-xs text-gray-500 mb-2">Tired of waiting?</p>
-              <Link href="/pricing" className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-1">
+              <Link href="/#pricing" className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-1">
                   Upgrade to Pro to remove ads <ExternalLink size={12} />
               </Link>
           </div>
