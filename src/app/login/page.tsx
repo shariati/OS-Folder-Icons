@@ -60,7 +60,7 @@ export default function LoginPage() {
   };
 
   // Mode state: 'password' | 'magic_link'
-  const [loginMode, setLoginMode] = useState<'password' | 'magic_link'>('magic_link');
+  const [loginMode, setLoginMode] = useState<'password' | 'magic_link'>('password');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
