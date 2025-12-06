@@ -61,7 +61,7 @@ export function MonetizationManager() {
           price: product.amount,
           currency: product.currency,
           interval: product.interval,
-          features: [],
+          features: product.marketingFeatures || [],
           stripePriceId: product.id,
           type: product.type,
           active: true,
@@ -94,7 +94,7 @@ export function MonetizationManager() {
   };
 
   const handleDeletePlan = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this plan?')) return;
+    if (!confirm('Are you sure you want to delete this plan? This will also archive it in Stripe.')) return;
 
     try {
       await fetch('/api/admin/plans', {
