@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 export default async function BundlesPage({
   searchParams,
 }: {
-  searchParams: { category?: string; q?: string };
+  searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const db = await getDB();
-  const { category, q } = searchParams;
+  const { category, q } = await searchParams;
 
   let bundles = db.bundles;
 
