@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { auth, db } from '@/lib/firebase/admin';
+import { adminAuth as auth, adminDb as db } from '@/lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { headers } from 'next/headers';
 

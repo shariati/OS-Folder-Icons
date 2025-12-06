@@ -7,12 +7,14 @@ import { useToast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 export function HeroManager({ initialData }: { initialData: DB }) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialData.heroSlides || []);
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const { showToast } = useToast();
+  const hasItems = slides.length > 0;
 
   const handleSave = async (slide: HeroSlide) => {
     try {
@@ -97,16 +99,27 @@ export function HeroManager({ initialData }: { initialData: DB }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Hero Slides</h2>
-        <button
-          onClick={startCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-        >
-          <Plus size={18} />
-          Add Slide
-        </button>
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Hero Slides</h2>
+          <button
+            onClick={startCreate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+          >
+            <Plus size={18} />
+            Add Slide
+          </button>
+        </div>
+      )}
+
+      {!hasItems && !isCreating && (
+        <EmptyState 
+            title="No Hero Slides Found"
+            description="Create slides to showcase important content on your homepage."
+            actionLabel="Add Slide"
+            onAction={startCreate}
+        />
+      )}
 
       {editingSlide && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
@@ -195,32 +208,34 @@ export function HeroManager({ initialData }: { initialData: DB }) {
         </div>
       )}
 
-      <div className="space-y-4">
-        {slides.sort((a, b) => a.order - b.order).map((slide, index) => (
-          <NeumorphBox 
-            key={slide.id} 
-            className="p-4 rounded-2xl flex items-center gap-4 group"
-            showActions
-            onEdit={() => setEditingSlide(slide)}
-            onDelete={() => handleDelete(slide.id)}
-            actionsClassName="mt-0"
-          >
-            <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
-                {slide.imageUrl ? (
-                    <Image src={slide.imageUrl} alt={slide.title} fill className="object-cover" />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">No Img</div>
-                )}
-            </div>
-            
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-800 dark:text-white text-lg">{slide.title}</h3>
-              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{slide.subtitle}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{slide.description}</p>
-            </div>
-          </NeumorphBox>
-        ))}
-      </div>
+      {hasItems && (
+        <div className="space-y-4">
+            {slides.sort((a, b) => a.order - b.order).map((slide, index) => (
+            <NeumorphBox 
+                key={slide.id} 
+                className="p-4 rounded-2xl flex items-center gap-4 group"
+                showActions
+                onEdit={() => setEditingSlide(slide)}
+                onDelete={() => handleDelete(slide.id)}
+                actionsClassName="mt-0"
+            >
+                <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                    {slide.imageUrl ? (
+                        <Image src={slide.imageUrl} alt={slide.title} fill className="object-cover" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">No Img</div>
+                    )}
+                </div>
+                
+                <div className="flex-1">
+                <h3 className="font-bold text-gray-800 dark:text-white text-lg">{slide.title}</h3>
+                <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{slide.subtitle}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{slide.description}</p>
+                </div>
+            </NeumorphBox>
+            ))}
+        </div>
+      )}
     </div>
   );
 }

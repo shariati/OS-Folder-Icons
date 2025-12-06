@@ -8,12 +8,14 @@ import { useToast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 export function CategoriesManager({ initialData }: { initialData: DB }) {
   const [categories, setCategories] = useState<Category[]>(initialData.categories || []);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const { showToast } = useToast();
+  const hasItems = categories.length > 0;
 
   const handleSave = async (category: Category) => {
     try {
@@ -99,16 +101,27 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Categories</h2>
-        <button
-          onClick={startCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-        >
-          <Plus size={18} />
-          Add Category
-        </button>
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Categories</h2>
+          <button
+            onClick={startCreate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+          >
+            <Plus size={18} />
+            Add Category
+          </button>
+        </div>
+      )}
+
+      {!hasItems && !isCreating && (
+        <EmptyState 
+            title="No Categories Found"
+            description="Create categories to organize your icons efficiently."
+            actionLabel="Add Category"
+            onAction={startCreate}
+        />
+      )}
 
       {editingCategory && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
@@ -236,28 +249,30 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map(category => (
-          <NeumorphBox 
-            key={category.id} 
-            className="p-6 rounded-3xl relative group"
-            showActions
-            onEdit={() => setEditingCategory(category)}
-            onDelete={() => handleDelete(category.id)}
-          >
-            <div className={`absolute -top-6 right-6 w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}>
-                {category.imageUrl ? (
-                    <Image src={category.imageUrl} alt={category.name} width={40} height={40} className="object-contain" />
-                ) : (
-                    <span className="text-white font-bold text-xl">{category.name[0]}</span>
-                )}
-            </div>
-            
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-4 mb-2">{category.name}</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{category.description}</p>
-          </NeumorphBox>
-        ))}
-      </div>
+      {hasItems && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map(category => (
+            <NeumorphBox 
+              key={category.id} 
+              className="p-6 rounded-3xl relative group"
+              showActions
+              onEdit={() => setEditingCategory(category)}
+              onDelete={() => handleDelete(category.id)}
+            >
+              <div className={`absolute -top-6 right-6 w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}>
+                  {category.imageUrl ? (
+                      <Image src={category.imageUrl} alt={category.name} width={40} height={40} className="object-contain" />
+                  ) : (
+                      <span className="text-white font-bold text-xl">{category.name[0]}</span>
+                  )}
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-4 mb-2">{category.name}</h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{category.description}</p>
+            </NeumorphBox>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

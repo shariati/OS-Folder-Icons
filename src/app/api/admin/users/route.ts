@@ -1,0 +1,112 @@
+import { NextResponse } from 'next/server';
+import { adminAuth, adminDb } from '@/lib/firebase/admin';
+import { UserProfile } from '@/types/user';
+
+export async function GET() {
+    try {
+        const listUsersResult = await adminAuth.listUsers(1000);
+        const users: UserProfile[] = [];
+
+        for (const userRecord of listUsersResult.users) {
+            // Fetch additional data from Firestore if needed
+            const userDoc = await adminDb.collection('users').doc(userRecord.uid).get();
+            const userData = userDoc.data() as Partial<UserProfile> || {};
+
+            users.push({
+                uid: userRecord.uid,
+                email: userRecord.email || '',
+                displayName: userRecord.displayName || '',
+                photoURL: userRecord.photoURL || '',
+                role: userData.role || 'free',
+                subscriptionStatus: userData.subscriptionStatus || null,
+                createdAt: userRecord.metadata.creationTime || new Date().toISOString(),
+                lastLoginAt: userRecord.metadata.lastSignInTime || undefined,
+                planId: userData.planId,
+                currentPeriodEnd: userData.currentPeriodEnd,
+                stripeCustomerId: userData.stripeCustomerId,
+                providers: userRecord.providerData.map((p: any) => ({
+                    providerId: p.providerId,
+                    uid: p.uid,
+                    displayName: p.displayName || null,
+                    email: p.email || null,
+                    photoURL: p.photoURL || null,
+                })),
+                cancellationReason: userData.cancellationReason,
+                cancellationFeedback: userData.cancellationFeedback,
+                cancellationFeedbackHistory: userData.cancellationFeedbackHistory || [],
+                generatedFoldersCount: userData.generatedFoldersCount || 0,
+            });
+        }
+
+        return NextResponse.json(users);
+    } catch (error) {
+        console.error('Error listing users:', error);
+        return NextResponse.json({ error: 'Failed to list users' }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const uid = searchParams.get('uid');
+
+        if (!uid) {
+            return NextResponse.json({ error: 'UID is required' }, { status: 400 });
+        }
+
+        await adminAuth.deleteUser(uid);
+        await adminDb.collection('users').doc(uid).delete();
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+    }
+}
+
+export async function PUT(req: Request) {
+    try {
+        const body = await req.json();
+        const { uid, role, disabled } = body;
+
+        if (!uid) {
+            return NextResponse.json({ error: 'UID is required' }, { status: 400 });
+        }
+
+        const updates: any = {};
+        if (role) {
+            updates.role = role;
+            // Also update custom claims if necessary
+            await adminAuth.setCustomUserClaims(uid, { role });
+            await adminDb.collection('users').doc(uid).set({ role }, { merge: true });
+        }
+
+        if (disabled !== undefined) {
+            await adminAuth.updateUser(uid, { disabled });
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        const body = await req.json();
+        const { action, email } = body;
+
+        if (action === 'reset_password' && email) {
+            const link = await adminAuth.generatePasswordResetLink(email);
+            // In a real app we might email this. For now we return it or just say success if we want to simulate "sent".
+            // But admin might want to copy it.
+            return NextResponse.json({ success: true, link });
+        }
+
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+    } catch (error) {
+        console.error('Error performing action:', error);
+        return NextResponse.json({ error: 'Action failed' }, { status: 500 });
+    }
+}

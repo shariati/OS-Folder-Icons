@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/admin';
+import { adminDb as db } from '@/lib/firebase/admin';
 import fs from 'fs/promises';
 import path from 'path';
 import { DatabaseSchema } from '@/lib/db/types';
