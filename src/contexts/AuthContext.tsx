@@ -77,9 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 providerId: p.providerId,
                 uid: p.uid,
                 displayName: p.displayName,
-                email: p.email,
-                phoneNumber: p.phoneNumber,
-                photoURL: p.photoURL
+                email: p.email
               }))
             }),
           });
@@ -249,7 +247,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Sync providers to DB
         await syncProviders(user);
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error linking provider:', error);
         throw error;
     }
