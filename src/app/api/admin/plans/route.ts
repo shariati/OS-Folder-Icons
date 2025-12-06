@@ -80,34 +80,9 @@ export async function DELETE(req: Request) {
     try {
         const { id } = await req.json();
 
-        // 1. Get plan from Firestore to find the Stripe Price ID
-        const planDoc = await db.collection('plans').doc(id).get();
-        if (!planDoc.exists) {
-            return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
-        }
-        const planData = planDoc.data();
-        const stripePriceId = planData?.stripePriceId;
-
-        if (stripePriceId) {
-            try {
-                // 2. Retrieve Price to get Product ID
-                const price = await stripe.prices.retrieve(stripePriceId);
-                const productId = typeof price.product === 'string' ? price.product : price.product.id;
-
-                // 3. Archive the Price and Product (Stripe doesn't allow easy deletion if used)
-                await stripe.prices.update(stripePriceId, { active: false });
-                if (productId) {
-                    await stripe.products.update(productId, { active: false });
-                }
-                console.log(`Archived Stripe Price ${stripePriceId} and Product ${productId}`);
-            } catch (stripeError) {
-                console.error('Error archiving Stripe resources:', stripeError);
-                // Continue to delete from DB even if Stripe fails, but log it.
-            }
-        }
-
-        // 4. Delete from Firestore
+        // Only delete from Firestore, do NOT touch Stripe
         await db.collection('plans').doc(id).delete();
+
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Error deleting plan:', error);

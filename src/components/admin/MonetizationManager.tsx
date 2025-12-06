@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { Plan } from '@/types/plan';
-import { Plus, Edit, Trash, Save, X, Check, Download } from 'lucide-react';
+import { Plus, Edit, Trash, Save, X, Check, Download, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 
 export function MonetizationManager() {
@@ -15,6 +15,8 @@ export function MonetizationManager() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [importableProducts, setImportableProducts] = useState<any[]>([]);
   const [loadingImport, setLoadingImport] = useState(false);
+
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -52,6 +54,40 @@ export function MonetizationManager() {
   const handleOpenImport = () => {
       setShowImportModal(true);
       fetchStripeProducts();
+  };
+
+  const handleSyncWithStripe = async () => {
+      setSyncing(true);
+      try {
+          const res = await fetch('/api/admin/plans/sync-check', { method: 'POST' });
+          const data = await res.json();
+          setSyncing(false);
+
+          if (data.missingPlans && data.missingPlans.length > 0) {
+              const plansToDelete = data.missingPlans as Plan[];
+              const planNames = plansToDelete.map(p => p.name).join(', ');
+              const confirmMsg = `The following products are not available on Stripe and will be deleted from Admin: ${planNames}. Proceed?`;
+              
+              if (confirm(confirmMsg)) {
+                  // Delete missing plans
+                  await Promise.all(plansToDelete.map(p => 
+                      fetch('/api/admin/plans', {
+                          method: 'DELETE',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ id: p.id }),
+                      })
+                  ));
+                  fetchPlans();
+                  alert('Synced successfully. Missing products deleted from Admin.');
+              }
+          } else {
+              alert('All synced! No missing products found.');
+          }
+      } catch (error) {
+          console.error('Sync failed', error);
+          setSyncing(false);
+          alert('Sync check failed.');
+      }
   };
 
   const handleImportSelect = (product: any) => {
@@ -94,7 +130,7 @@ export function MonetizationManager() {
   };
 
   const handleDeletePlan = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this plan? This will also archive it in Stripe.')) return;
+    if (!confirm('Are you sure you want to delete this plan?')) return;
 
     try {
       await fetch('/api/admin/plans', {
@@ -132,6 +168,14 @@ export function MonetizationManager() {
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">Manage Plans</h3>
             <div className="flex gap-2">
+                <button
+                    onClick={handleSyncWithStripe}
+                    disabled={syncing}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
+                >
+                    <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+                    Sync with Stripe
+                </button>
                 <button
                     onClick={handleOpenImport}
                     className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
