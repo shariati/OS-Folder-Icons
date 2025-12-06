@@ -13,7 +13,7 @@ interface UsersManagerProps {
 }
 
 export function UsersManager({ initialData }: UsersManagerProps) {
-  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>(initialData.users || []);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,7 +27,12 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     try {
       const res = await fetch('/api/admin/users');
       const data = await res.json();
-      setUsers(data);
+      if (Array.isArray(data)) {
+        setUsers(data);
+      } else {
+        console.error('Fetched users data is not an array:', data);
+        showToast('Failed to refresh users list', 'error');
+      }
     } catch (error) {
       console.error('Failed to fetch users:', error);
       showToast('Failed to load users', 'error');
