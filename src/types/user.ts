@@ -31,6 +31,9 @@ export interface UserProfile {
         date: string;
     }>;
     lastLoginAt?: string; // ISO date
+    emailVerified?: boolean; // Whether the user's email has been verified
+    activationEmailSentAt?: string; // ISO date when activation email was last sent
+    activatedAt?: string; // ISO date when user activated their account
 }
 
 export interface FavouriteList {

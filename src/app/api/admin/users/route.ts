@@ -24,6 +24,9 @@ export async function GET() {
                 planId: userData.planId,
                 currentPeriodEnd: userData.currentPeriodEnd,
                 stripeCustomerId: userData.stripeCustomerId,
+                emailVerified: userData.emailVerified !== undefined ? userData.emailVerified : userRecord.emailVerified,
+                activatedAt: userData.activatedAt,
+                activationEmailSentAt: userData.activationEmailSentAt,
                 providers: userRecord.providerData.map((p: any) => ({
                     providerId: p.providerId,
                     uid: p.uid,
@@ -67,7 +70,7 @@ export async function DELETE(req: Request) {
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
-        const { uid, role, disabled } = body;
+        const { uid, role, disabled, emailVerified, activatedAt } = body;
 
         if (!uid) {
             return NextResponse.json({ error: 'UID is required' }, { status: 400 });
@@ -83,6 +86,15 @@ export async function PUT(req: Request) {
 
         if (disabled !== undefined) {
             await adminAuth.updateUser(uid, { disabled });
+        }
+
+        // Handle manual email verification
+        if (emailVerified !== undefined || activatedAt !== undefined) {
+            const firestoreUpdates: any = {};
+            if (emailVerified !== undefined) firestoreUpdates.emailVerified = emailVerified;
+            if (activatedAt) firestoreUpdates.activatedAt = activatedAt;
+
+            await adminDb.collection('users').doc(uid).set(firestoreUpdates, { merge: true });
         }
 
         return NextResponse.json({ success: true });

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth, getFirebaseAuth } from '@/lib/firebase/client';
 import config from '@/lib/config';
 import { UserProfile } from '@/types/user';
@@ -21,6 +21,7 @@ interface AuthContextType {
   linkWithProvider: (provider: 'google') => Promise<void>;
   unlinkProvider: (providerId: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
+  resendActivationEmail: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -38,6 +39,7 @@ const AuthContext = createContext<AuthContextType>({
   linkWithProvider: async () => {},
   unlinkProvider: async () => {},
   deleteAccount: async () => {},
+  resendActivationEmail: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -73,6 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               email: firebaseUser.email,
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
+              emailVerified: firebaseUser.emailVerified,
               providers: firebaseUser.providerData.map(p => ({
                 providerId: p.providerId,
                 uid: p.uid,
@@ -161,7 +164,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Firebase Auth not initialized');
       return;
     }
-    await createUserWithEmailAndPassword(_auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(_auth, email, password);
+    
+    // Send email verification
+    try {
+      await sendEmailVerification(userCredential.user, {
+        url: `${window.location.origin}/profile`,
+        handleCodeInApp: false,
+      });
+      console.log('Verification email sent successfully');
+      
+      // Update activation email sent timestamp
+      const token = await userCredential.user.getIdToken();
+      await fetch('/api/auth/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          uid: userCredential.user.uid,
+          activationEmailSentAt: new Date().toISOString(),
+        }),
+      });
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+      // Don't throw - allow user to sign up even if email fails
+    }
   };
 
   const signOut = async () => {
@@ -313,6 +342,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const resendActivationEmail = async () => {
+    const _auth = getFirebaseAuth();
+    if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
+
+    try {
+      await sendEmailVerification(_auth.currentUser, {
+        url: `${window.location.origin}/profile`,
+        handleCodeInApp: false,
+      });
+      
+      // Update activation email sent timestamp
+      const token = await _auth.currentUser.getIdToken();
+      await fetch('/api/auth/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          uid: _auth.currentUser.uid,
+          activationEmailSentAt: new Date().toISOString(),
+        }),
+      });
+    } catch (error) {
+      console.error('Error resending activation email:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
         user, 
@@ -328,7 +386,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         changePassword,
         linkWithProvider,
         unlinkProvider,
-        deleteAccount
+        deleteAccount,
+        resendActivationEmail
     }}>
       {children}
     </AuthContext.Provider>
