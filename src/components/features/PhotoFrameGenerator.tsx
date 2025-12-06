@@ -6,6 +6,8 @@ import { Upload, Download, Move, ZoomIn, Type, Calendar, Flag, RotateCcw } from 
 import { useRouter } from 'next/navigation';
 import { toPng, toJpeg } from 'html-to-image';
 import { clsx } from 'clsx';
+import { set, get, del } from 'idb-keyval';
+import { useToast } from '@/components/ui/Toast';
 
 import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
@@ -63,30 +65,34 @@ export function PhotoFrameGenerator() {
     };
   }, []);
 
-  // Restore state from localStorage if available
+  const { showToast } = useToast();
+
+  // Restore state from IndexedDB (idb-keyval) if available
   useEffect(() => {
-      const savedState = window.localStorage.getItem('pending_photo_frame_state');
-      if (savedState) {
+      const restoreState = async () => {
           try {
-              const parsed = JSON.parse(savedState);
-              if (parsed.image) setImage(parsed.image);
-              if (parsed.title) setTitle(parsed.title);
-              if (parsed.selectedCountry) setSelectedCountry(parsed.selectedCountry);
-              if (parsed.selectedMonth) setSelectedMonth(parsed.selectedMonth);
-              if (parsed.selectedYear) setSelectedYear(parsed.selectedYear);
-              if (parsed.frameColor) setFrameColor(parsed.frameColor);
-              if (parsed.zoom) setZoom(parsed.zoom);
-              if (parsed.position) setPosition(parsed.position);
-              
-              // Clear after restoring
-              window.localStorage.removeItem('pending_photo_frame_state');
-              
-              // Optional: Show a toast or message saying "Work restored"
+              const savedStateString = await get('pending_photo_frame_state');
+              if (savedStateString) {
+                  const parsed = JSON.parse(savedStateString);
+                  if (parsed.image) setImage(parsed.image);
+                  if (parsed.title) setTitle(parsed.title);
+                  if (parsed.selectedCountry) setSelectedCountry(parsed.selectedCountry);
+                  if (parsed.selectedMonth) setSelectedMonth(parsed.selectedMonth);
+                  if (parsed.selectedYear) setSelectedYear(parsed.selectedYear);
+                  if (parsed.frameColor) setFrameColor(parsed.frameColor);
+                  if (parsed.zoom) setZoom(parsed.zoom);
+                  if (parsed.position) setPosition(parsed.position);
+                  
+                  // Clear after restoring
+                  await del('pending_photo_frame_state');
+                  showToast("We've restored your work so you can continue!", "success");
+              }
           } catch (e) {
               console.error('Failed to restore state', e);
           }
-      }
-  }, []);
+      };
+      restoreState();
+  }, [showToast]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -208,15 +214,25 @@ export function PhotoFrameGenerator() {
                  position
              };
              
+             
              try {
-                window.localStorage.setItem('pending_photo_frame_state', JSON.stringify(stateToSave));
+                // Use idb-keyval (IndexedDB) instead of localStorage to avoid quota limits
+                await set('pending_photo_frame_state', JSON.stringify(stateToSave));
+                
+                showToast("Saving your work... Redirecting to signup.", "info");
+                
+                // Small delay to let the toast be seen and storage to finish (though await set handles the latter)
+                setTimeout(() => {
+                    const currentPath = window.location.pathname;
+                    router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+                }, 1500);
+                
              } catch (e) {
-                 console.error('Failed to save state to localStorage', e);
-                 // Quota exceeded or other error
+                 console.error('Failed to save state to storage', e);
+                 alert("We couldn't save your work fully, but you can still sign up to download.");
+                 const currentPath = window.location.pathname;
+                 router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
              }
-
-             const currentPath = window.location.pathname;
-             router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
          };
          
          saveAndRedirect();
