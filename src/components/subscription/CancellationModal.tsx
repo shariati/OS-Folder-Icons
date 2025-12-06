@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { X, AlertTriangle } from 'lucide-react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 
 interface CancellationModalProps {
     isOpen: boolean;
@@ -12,6 +12,7 @@ interface CancellationModalProps {
 
 export const CancellationModal: React.FC<CancellationModalProps> = ({ isOpen, onClose, onSuccess }) => {
     const { user } = useAuth();
+    const { showToast } = useToast();
     const [step, setStep] = useState(1);
     const [reason, setReason] = useState('');
     const [feedback, setFeedback] = useState('');
@@ -46,11 +47,11 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({ isOpen, on
                     onClose();
                 }, 3000);
             } else {
-                alert('Failed to cancel: ' + (data.error || 'Unknown error'));
+                showToast('Failed to cancel: ' + (data.error || 'Unknown error'), 'error');
             }
         } catch (error) {
             console.error('Cancellation error:', error);
-            alert('An error occurred during cancellation.');
+            showToast('An error occurred during cancellation.', 'error');
         } finally {
             setLoading(false);
         }
