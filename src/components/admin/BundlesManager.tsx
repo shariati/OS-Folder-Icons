@@ -10,6 +10,7 @@ import * as LucideIcons from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 export function BundlesManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
@@ -150,19 +151,32 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
     }
   };
 
+  const hasItems = initialData.bundles.length > 0;
+
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Bundles</h2>
-        {!isCreating && (
-          <button 
-            onClick={() => { resetForm(); setIsCreating(true); }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1"
-          >
-            <Plus size={20} /> New Bundle
-          </button>
-        )}
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Bundles</h2>
+          {!isCreating && (
+            <button 
+              onClick={() => { resetForm(); setIsCreating(true); }}
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1"
+            >
+              <Plus size={20} /> New Bundle
+            </button>
+          )}
+        </div>
+      )}
+
+      {!hasItems && !isCreating && (
+        <EmptyState 
+            title="No Bundles Found"
+            description="Create bundles to group icons for specific needs or themes."
+            actionLabel="Create New Bundle"
+            onAction={() => { resetForm(); setIsCreating(true); }}
+        />
+      )}
 
       {isCreating && (
         <NeumorphBox 
@@ -324,42 +338,44 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
         </NeumorphBox>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {initialData.bundles.map(bundle => (
-          <NeumorphBox 
-            key={bundle.id} 
-            className="rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl"
-            showActions
-            onEdit={() => startEdit(bundle)}
-            onDelete={() => handleDelete(bundle.id)}
-          >
-            {bundle.previewImage ? (
-              <div className="relative h-56 w-full bg-gray-100 dark:bg-gray-800 -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
-                <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
+      {hasItems && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {initialData.bundles.map(bundle => (
+            <NeumorphBox 
+              key={bundle.id} 
+              className="rounded-3xl overflow-hidden group transition-all hover:-translate-y-1 hover:shadow-xl"
+              showActions
+              onEdit={() => startEdit(bundle)}
+              onDelete={() => handleDelete(bundle.id)}
+            >
+              {bundle.previewImage ? (
+                <div className="relative h-56 w-full bg-gray-100 dark:bg-gray-800 -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
+                  <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
+                </div>
+              ) : (
+                <div className="h-56 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 relative font-medium -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
+                  No Preview
+                </div>
+              )}
+              <div>
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="font-bold text-xl text-gray-800 dark:text-white">{bundle.name}</h3>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">{bundle.description}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {bundle.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg uppercase tracking-wide">#{tag}</span>
+                  ))}
+                </div>
+                <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4">
+                  <span>{bundle.icons.length} Icons</span>
+                  <span>{bundle.targetOS.length} OSs</span>
+                </div>
               </div>
-            ) : (
-              <div className="h-56 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 relative font-medium -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]">
-                No Preview
-              </div>
-            )}
-            <div>
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="font-bold text-xl text-gray-800 dark:text-white">{bundle.name}</h3>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">{bundle.description}</p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {bundle.tags.map(tag => (
-                  <span key={tag} className="px-3 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg uppercase tracking-wide">#{tag}</span>
-                ))}
-              </div>
-              <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4">
-                <span>{bundle.icons.length} Icons</span>
-                <span>{bundle.targetOS.length} OSs</span>
-              </div>
-            </div>
-          </NeumorphBox>
-        ))}
-      </div>
+            </NeumorphBox>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

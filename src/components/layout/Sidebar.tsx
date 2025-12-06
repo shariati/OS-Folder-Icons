@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool } from 'lucide-react';
+import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool, FileSearch, Banknote } from 'lucide-react';
 import clsx from 'clsx';
 
 interface SidebarProps {
@@ -272,7 +272,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                     activeTab === 'audit' && "bg-graydark dark:bg-meta-4 text-white"
                   )}
                 >
-                  <Activity className="h-5 w-5" />
+                  <FileSearch className="h-5 w-5" />
                   Audit Log
                 </button>
               </li>
@@ -284,7 +284,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                     activeTab === 'ads' && "bg-graydark dark:bg-meta-4 text-white"
                   )}
                 >
-                  <Activity className="h-5 w-5" />
+                  <Banknote className="h-5 w-5" />
                   Monetization
                 </button>
               </li>

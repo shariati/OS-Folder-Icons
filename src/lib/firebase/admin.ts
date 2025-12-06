@@ -27,4 +27,4 @@ try {
     console.warn('Firebase Admin initialization failed:', error);
 }
 
-export { app, db, auth };
+export { app as adminApp, db as adminDb, auth as adminAuth };

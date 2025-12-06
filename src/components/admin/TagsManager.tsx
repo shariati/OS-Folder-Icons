@@ -6,12 +6,14 @@ import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 export function TagsManager({ initialData }: { initialData: DB }) {
   const [tags, setTags] = useState<Tag[]>(initialData.tags || []);
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const { showToast } = useToast();
+  const hasItems = tags.length > 0;
 
   const handleSave = async (tag: Tag) => {
     try {
@@ -69,16 +71,27 @@ export function TagsManager({ initialData }: { initialData: DB }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Tags</h2>
-        <button
-          onClick={startCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-        >
-          <Plus size={18} />
-          Add Tag
-        </button>
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Tags</h2>
+            <button
+            onClick={startCreate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+            >
+            <Plus size={18} />
+            Add Tag
+            </button>
+        </div>
+      )}
+
+      {!hasItems && !isCreating && (
+        <EmptyState 
+            title="No Tags Found"
+            description="Create tags to categorize your bundles effectively."
+            actionLabel="Add Tag"
+            onAction={startCreate}
+        />
+      )}
 
       {editingTag && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
@@ -136,19 +149,21 @@ export function TagsManager({ initialData }: { initialData: DB }) {
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {tags.map(tag => (
-          <NeumorphBox 
-            key={tag.id} 
-            className="flex flex-col justify-between group"
-            title={tag.name}
-            subtitle={<span className="text-xs font-mono">{tag.slug}</span>}
-            showActions
-            onEdit={() => setEditingTag(tag)}
-            onDelete={() => handleDelete(tag.id)}
-          />
-        ))}
-      </div>
+      {hasItems && (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {tags.map(tag => (
+            <NeumorphBox 
+                key={tag.id} 
+                className="flex flex-col justify-between group"
+                title={tag.name}
+                subtitle={<span className="text-xs font-mono">{tag.slug}</span>}
+                showActions
+                onEdit={() => setEditingTag(tag)}
+                onDelete={() => handleDelete(tag.id)}
+            />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

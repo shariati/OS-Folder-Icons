@@ -1,4 +1,4 @@
-import { db } from '../firebase/admin';
+import { adminDb as db } from '../firebase/admin';
 import { DatabaseAdapter } from './types';
 import { UserProfile } from '../../types/user';
 import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';

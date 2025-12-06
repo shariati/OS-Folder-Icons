@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/Toast';
 import { SocialPreview } from '@/components/features/SocialPreview';
 import { Plus, Edit, Trash2, Save, ArrowLeft, Eye } from 'lucide-react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 interface BlogManagerProps {
   initialData: DB;
@@ -18,6 +19,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
   const [currentPost, setCurrentPost] = useState<Partial<BlogPost>>({});
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+  const hasItems = posts.length > 0;
 
   const handleCreateNew = () => {
     setCurrentPost({
@@ -272,44 +274,51 @@ export function BlogManager({ initialData }: BlogManagerProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Blog Posts</h2>
-        <button
-          onClick={handleCreateNew}
-          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-        >
-          <Plus size={18} />
-          New Post
-        </button>
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Blog Posts</h2>
+          <button
+            onClick={handleCreateNew}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+          >
+            <Plus size={18} />
+            New Post
+          </button>
+        </div>
+      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.length > 0 ? (
-          posts.map((post) => (
+      {!hasItems && !isEditing && (
+        <EmptyState 
+            title="No Blog Posts Found"
+            description="Start writing blog posts to engage with your audience."
+            actionLabel="Create New Post"
+            onAction={handleCreateNew}
+        />
+      )}
+
+      {hasItems && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
             <NeumorphBox 
-              key={post.id}
-              title={post.title}
-              subtitle={`/${post.slug}`}
-              showActions
-              onEdit={() => handleEdit(post)}
-              onDelete={() => handleDelete(post.id)}
-              badge={
+                key={post.id}
+                title={post.title}
+                subtitle={`/${post.slug}`}
+                showActions
+                onEdit={() => handleEdit(post)}
+                onDelete={() => handleDelete(post.id)}
+                badge={
                 <span className={`px-2 py-1 rounded-full text-xs font-bold ${post.published ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                  {post.published ? 'Published' : 'Draft'}
+                    {post.published ? 'Published' : 'Draft'}
                 </span>
-              }
+                }
             >
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
                 {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Unpublished'}
-              </div>
+                </div>
             </NeumorphBox>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12 text-gray-500">
-            No posts found. Create one to get started.
-          </div>
-        )}
-      </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 }

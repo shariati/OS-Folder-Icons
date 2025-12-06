@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getUser, createUser, updateUser, deleteUser } from '@/lib/db';
 import { UserProfile } from '@/types/user';
 import { verifyAuth } from '@/lib/auth-server';
-import { auth } from '@/lib/firebase/admin';
+import { adminAuth as auth } from '@/lib/firebase/admin';
 
 export async function POST(request: Request) {
     try {

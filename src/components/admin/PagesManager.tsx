@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/Toast';
 import { SocialPreview } from '@/components/features/SocialPreview';
 import { Plus, Edit, Trash2, Save, ArrowLeft, Eye } from 'lucide-react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EmptyState } from '@/components/admin/EmptyState';
 
 interface PagesManagerProps {
   initialData: DB;
@@ -18,6 +19,7 @@ export function PagesManager({ initialData }: PagesManagerProps) {
   const [currentPage, setCurrentPage] = useState<Partial<Page>>({});
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+  const hasItems = pages.length > 0;
 
   const handleCreateNew = () => {
     setCurrentPage({
@@ -244,40 +246,47 @@ export function PagesManager({ initialData }: PagesManagerProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Pages</h2>
-        <button
-          onClick={handleCreateNew}
-          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-        >
-          <Plus size={18} />
-          New Page
-        </button>
-      </div>
+      {hasItems && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Pages</h2>
+          <button
+            onClick={handleCreateNew}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+          >
+            <Plus size={18} />
+            New Page
+          </button>
+        </div>
+      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pages.length > 0 ? (
-          pages.map((page) => (
-            <NeumorphBox 
-              key={page.id}
-              title={page.title}
-              subtitle={`/${page.slug}`}
-              showActions
-              onEdit={() => handleEdit(page)}
-              onDelete={() => handleDelete(page.id)}
-              badge={
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${page.published ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                  {page.published ? 'Published' : 'Draft'}
-                </span>
-              }
-            />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12 text-gray-500">
-            No pages found. Create one to get started.
-          </div>
-        )}
-      </div>
+      {!hasItems && !isEditing && (
+        <EmptyState 
+            title="No Pages Found"
+            description="Create pages to build your website content."
+            actionLabel="Create New Page"
+            onAction={handleCreateNew}
+        />
+      )}
+
+      {hasItems && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pages.map((page) => (
+                <NeumorphBox 
+                key={page.id}
+                title={page.title}
+                subtitle={`/${page.slug}`}
+                showActions
+                onEdit={() => handleEdit(page)}
+                onDelete={() => handleDelete(page.id)}
+                badge={
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${page.published ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
+                    {page.published ? 'Published' : 'Draft'}
+                    </span>
+                }
+                />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

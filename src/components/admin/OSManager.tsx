@@ -12,6 +12,8 @@ import { clsx } from 'clsx';
 import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
+import { EmptyState } from '@/components/admin/EmptyState';
+
 export function OSManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -105,17 +107,33 @@ export function OSManager({ initialData }: { initialData: DB }) {
     }
   };
 
+  const hasItems = initialData.operatingSystems.length > 0;
+
   return (
     <div className="space-y-8">
-      {/* Add OS Button */}
-      {!isAddingOS && (
-        <button
-          onClick={() => setIsAddingOS(true)}
-          className="w-full py-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl text-gray-500 hover:border-blue-500 hover:text-blue-500 transition-all flex items-center justify-center gap-2 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/10"
-        >
-          <Plus size={24} />
-          Add New Operating System
-        </button>
+      {/* Header - Only if items exist */}
+      {hasItems && (
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <h2 className="text-2xl font-bold text-black dark:text-white">Operating Systems</h2>
+            {!isAddingOS && (
+                <button 
+                    onClick={() => setIsAddingOS(true)} 
+                    className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2"
+                >
+                <Plus size={20} /> Add Operating System
+                </button>
+            )}
+        </div>
+      )}
+
+      {/* Empty State - Only if no items and not adding */}
+      {!hasItems && !isAddingOS && (
+        <EmptyState 
+            title="No Operating Systems Found"
+            description="Get started by adding your first operating system."
+            actionLabel="Add Operating System"
+            onAction={() => setIsAddingOS(true)}
+        />
       )}
 
       {/* Add OS Form */}
@@ -213,11 +231,13 @@ export function OSManager({ initialData }: { initialData: DB }) {
       )}
 
       {/* OS List */}
-      <div className="space-y-6">
-        {initialData.operatingSystems.map((os) => (
-          <OSItem key={os.id} os={os} onUpdate={updateOS} onDelete={() => handleDeleteOS(os.id)} />
-        ))}
-      </div>
+      {hasItems && (
+        <div className="space-y-6">
+            {initialData.operatingSystems.map((os) => (
+            <OSItem key={os.id} os={os} onUpdate={updateOS} onDelete={() => handleDeleteOS(os.id)} />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

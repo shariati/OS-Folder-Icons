@@ -30,6 +30,7 @@ export interface UserProfile {
         feedback: string;
         date: string;
     }>;
+    lastLoginAt?: string; // ISO date
 }
 
 export interface FavouriteList {
