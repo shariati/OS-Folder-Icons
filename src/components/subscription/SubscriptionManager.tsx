@@ -71,10 +71,12 @@ const RenewalProgress = ({ end }: { end: string }) => {
     );
 };
 
-import { FileText, Download, CreditCard } from 'lucide-react';
+import { FileText, Download, CreditCard, RefreshCw } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 const SubscriptionManagerContent = () => {
     const { user, userProfile } = useAuth();
+    const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [invoicesLoading, setInvoicesLoading] = useState(false);
     const [showCancelModal, setShowCancelModal] = useState(false);
@@ -95,14 +97,14 @@ const SubscriptionManagerContent = () => {
             });
             const data = await response.json();
             if (data.success) {
-                alert('Subscription status synced successfully!');
-                window.location.reload();
+                showToast('Subscription status synced successfully!', 'success');
+                setTimeout(() => window.location.reload(), 2000);
             } else {
-                alert('Failed to sync: ' + (data.message || 'Unknown error'));
+                showToast('Failed to sync: ' + (data.message || 'Unknown error'), 'error');
             }
         } catch (error) {
             console.error('Error syncing subscription:', error);
-            alert('An error occurred while syncing.');
+            showToast('An error occurred while syncing.', 'error');
         } finally {
             setLoading(false);
         }
@@ -127,11 +129,11 @@ const SubscriptionManagerContent = () => {
             if (url) {
                 window.location.href = url;
             } else {
-                alert('Failed to redirect to subscription portal.');
+                showToast('Failed to redirect to subscription portal.', 'error');
             }
         } catch (error) {
             console.error('Error accessing portal:', error);
-            alert('An error occurred. Please try again.');
+            showToast('An error occurred. Please try again.', 'error');
         } finally {
             setLoading(false);
         }
@@ -175,13 +177,20 @@ const SubscriptionManagerContent = () => {
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">Subscription Management</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your plan and billing details</p>
                     </div>
-                    <button
-                        onClick={handleSyncSubscription}
-                        disabled={loading}
-                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium underline disabled:opacity-50"
-                    >
-                        {loading ? 'Syncing...' : 'Sync Status'}
-                    </button>
+                    
+                    <div className="flex flex-col items-end">
+                        <button
+                            onClick={handleSyncSubscription}
+                            disabled={loading}
+                            title="Force Refresh Data"
+                            className="p-2 text-gray-400 hover:text-blue-600 dark:text-gray-500 dark:hover:text-blue-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all disabled:opacity-50"
+                        >
+                            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+                        </button>
+                        <p className="text-[10px] text-gray-400 mt-1 text-right max-w-[180px] leading-tight">
+                            Subscription updates automatically. <br/> Use this only if data seems outdated.
+                        </p>
+                    </div>
                 </div>
 
                 <div className="flex border-b border-gray-200 dark:border-gray-700">
@@ -362,8 +371,8 @@ const SubscriptionManagerContent = () => {
                 isOpen={showCancelModal}
                 onClose={() => setShowCancelModal(false)}
                 onSuccess={() => {
-                    alert('Subscription cancelled successfully.');
-                    window.location.reload();
+                    showToast('Subscription cancelled successfully.', 'success');
+                    setTimeout(() => window.location.reload(), 2000);
                 }}
             />
         </div>
