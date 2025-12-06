@@ -75,8 +75,13 @@ async function checkSubscription(stripeCustomerId: string, userDocRef: FirebaseF
     if (subscriptions.data.length > 0) {
         const subscription = subscriptions.data[0];
         subscriptionStatus = subscription.status;
-        currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString();
-        planId = subscription.items.data[0].price.id;
+        if ((subscription as any).current_period_end) {
+            currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString();
+        }
+
+        if (subscription.items && subscription.items.data.length > 0) {
+            planId = subscription.items.data[0].price.id;
+        }
 
         if (subscription.status === 'active' || subscription.status === 'trialing') {
             role = 'paid';
