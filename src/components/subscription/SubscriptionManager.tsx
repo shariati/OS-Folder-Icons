@@ -340,6 +340,9 @@ const SubscriptionManagerContent = () => {
 
                         <div>
                             <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Transaction History</h4>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                                PDF invoices are only available for subscription payments. One-time payments (like lifetime purchases) don't generate PDF invoices.
+                            </p>
                             {invoicesLoading ? (
                                 <div className="text-center py-8 text-gray-500">Loading transactions...</div>
                             ) : invoices.length > 0 ? (
