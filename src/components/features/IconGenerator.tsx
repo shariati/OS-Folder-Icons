@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -34,7 +35,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [iconTransparency, setIconTransparency] = useState(0.75); // 0 to 1
   const [folderHue, setFolderHue] = useState(0); // 0 to 360
 
-  const { userProfile, loading } = useAuth();
+  const { user, userProfile, loading } = useAuth();
+  const router = useRouter();
   const [showAd, setShowAd] = useState(false);
 
   // Derived state
@@ -63,6 +65,34 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   }, [selectedVersion, selectedFolderId]);
 
+  // Restore state from localStorage if available
+  useEffect(() => {
+      const savedState = window.localStorage.getItem('pending_icon_gen_state');
+      if (savedState) {
+          try {
+              const parsed = JSON.parse(savedState);
+              if (parsed.mode) setMode(parsed.mode);
+              if (parsed.selectedOSId) setSelectedOSId(parsed.selectedOSId);
+              if (parsed.selectedVersionId) setSelectedVersionId(parsed.selectedVersionId);
+              if (parsed.selectedFolderId) setSelectedFolderId(parsed.selectedFolderId);
+              if (parsed.selectedIcon) setSelectedIcon(parsed.selectedIcon);
+              if (parsed.iconType) setIconType(parsed.iconType);
+              if (parsed.iconColor) setIconColor(parsed.iconColor);
+              if (parsed.iconSize) setIconSize(parsed.iconSize);
+              if (parsed.iconEffect) setIconEffect(parsed.iconEffect);
+              if (parsed.iconTransparency) setIconTransparency(parsed.iconTransparency);
+              if (parsed.folderHue) setFolderHue(parsed.folderHue);
+              if (parsed.customOffsetX) setCustomOffsetX(parsed.customOffsetX);
+              if (parsed.customOffsetY) setCustomOffsetY(parsed.customOffsetY);
+
+              // Clear after restoring
+              window.localStorage.removeItem('pending_icon_gen_state');
+          } catch (e) {
+              console.error('Failed to restore state', e);
+          }
+      }
+  }, []);
+
   // Handle Mode Switching
   const handleModeChange = (newMode: 'simple' | 'advanced') => {
     setMode(newMode);
@@ -79,8 +109,37 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const handleDownloadClick = () => {
     if (loading) return;
 
+    // Check if user is logged in
+    if (!isAdmin && !user) {
+         const stateToSave = {
+             mode,
+             selectedOSId,
+             selectedVersionId,
+             selectedFolderId,
+             selectedIcon,
+             iconType,
+             iconColor,
+             iconSize,
+             iconEffect,
+             iconTransparency,
+             folderHue,
+             customOffsetX,
+             customOffsetY
+         };
+
+         try {
+            window.localStorage.setItem('pending_icon_gen_state', JSON.stringify(stateToSave));
+         } catch (e) {
+             console.error('Failed to save state to localStorage', e);
+         }
+
+         const currentPath = window.location.pathname;
+         router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+         return;
+    }
+
     // Check if user is free or not logged in
-    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
+    const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free' || userProfile.role === 'starter');
     
     // Feature Gating: Advanced Mode is for Pro/Lifetime/Admin only
     if (mode === 'advanced' && isFreeUser) {
