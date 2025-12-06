@@ -30,12 +30,19 @@ export async function GET(req: Request) {
             return NextResponse.json({ invoices: [] });
         }
 
-        // Fetch invoices
-        const invoices = await stripe.invoices.list({
-            customer: stripeCustomerId,
-            limit: 20,
-        });
+        // Fetch both invoices (for subscriptions) and payment intents (for one-time payments)
+        const [invoices, paymentIntents] = await Promise.all([
+            stripe.invoices.list({
+                customer: stripeCustomerId,
+                limit: 20,
+            }),
+            stripe.paymentIntents.list({
+                customer: stripeCustomerId,
+                limit: 20,
+            })
+        ]);
 
+        // Format invoices (subscription payments)
         const formattedInvoices = invoices.data.map(invoice => ({
             id: invoice.id,
             number: invoice.number,
@@ -44,9 +51,28 @@ export async function GET(req: Request) {
             status: invoice.status,
             date: new Date(invoice.created * 1000).toISOString(),
             pdf_url: invoice.invoice_pdf,
+            type: 'invoice' as const,
         }));
 
-        return NextResponse.json({ invoices: formattedInvoices });
+        // Format payment intents (one-time payments like lifetime)
+        const formattedPaymentIntents = paymentIntents.data
+            .filter(pi => pi.status === 'succeeded') // Only show successful payments
+            .map(pi => ({
+                id: pi.id,
+                number: null,
+                amount: pi.amount,
+                currency: pi.currency,
+                status: 'paid', // Map 'succeeded' to 'paid' for consistency
+                date: new Date(pi.created * 1000).toISOString(),
+                pdf_url: null,
+                type: 'payment' as const,
+            }));
+
+        // Merge and sort by date (newest first)
+        const allTransactions = [...formattedInvoices, ...formattedPaymentIntents]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        return NextResponse.json({ invoices: allTransactions });
 
     } catch (error: any) {
         console.error('Invoice Fetch Error:', error);

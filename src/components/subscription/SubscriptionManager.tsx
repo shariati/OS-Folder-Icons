@@ -245,6 +245,32 @@ const SubscriptionManagerContent = () => {
                             </div>
                         </div>
 
+                        {userProfile.role === 'lifetime' && (
+                            <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-amber-50 dark:from-purple-900/20 dark:to-amber-900/20 border border-purple-200 dark:border-purple-800/50">
+                                <div className="flex flex-col md:flex-row gap-6 items-center">
+                                    <div className="flex-shrink-0">
+                                        <img 
+                                            src="/lifetime-gift-card.png" 
+                                            alt="Thank you gift card" 
+                                            className="w-48 h-auto rounded-lg shadow-lg"
+                                        />
+                                    </div>
+                                    <div className="flex-1 text-center md:text-left">
+                                        <h4 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-amber-600 dark:from-purple-400 dark:to-amber-400 mb-2">
+                                            Thank You for Your Lifetime Support! 🎉
+                                        </h4>
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                            As a valued lifetime member, you have <strong>permanent access</strong> to all premium features including Custom Folders and Photo Frames. 
+                                            Your support helps keep this project running, and we're committed to providing you with these features for as long as the site is up and running.
+                                        </p>
+                                        <p className="text-sm text-purple-600 dark:text-purple-400 mt-2 font-medium">
+                                            You're part of an exclusive group of supporters who believe in this project! 💜
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {(userProfile.currentPeriodEnd || userProfile.role === 'lifetime') && (
                             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
                                 <div>

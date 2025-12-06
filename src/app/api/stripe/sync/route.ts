@@ -132,11 +132,74 @@ async function checkSubscription(stripeCustomerId: string, userDocRef: FirebaseF
             role = 'paid';
         }
     } else {
-        // Check for lifetime payment intent or similar if applicable
-        if (userData?.role === 'lifetime') {
-            role = 'lifetime';
-            subscriptionStatus = 'active';
-            currentPeriodEnd = null; // No next cycle for lifetime
+        // No active subscription found - check for lifetime purchase
+        // First, check for completed checkout sessions (one-time payments)
+        try {
+            const checkoutSessions = await stripe.checkout.sessions.list({
+                customer: stripeCustomerId,
+                limit: 20, // Check recent sessions
+            });
+
+            // Look for completed payment mode sessions (lifetime purchases)
+            const lifetimeSession = checkoutSessions.data.find(
+                session => session.mode === 'payment' &&
+                    session.payment_status === 'paid' &&
+                    session.status === 'complete'
+            );
+
+            if (lifetimeSession) {
+                // Found a lifetime purchase!
+                console.log('Detected lifetime purchase from checkout session:', lifetimeSession.id);
+                role = 'lifetime';
+                subscriptionStatus = 'active';
+                currentPeriodEnd = null;
+
+                // Try to get the price ID from the session
+                try {
+                    const expandedSession = await stripe.checkout.sessions.retrieve(
+                        lifetimeSession.id,
+                        { expand: ['line_items'] }
+                    );
+                    planId = expandedSession.line_items?.data[0]?.price?.id || 'lifetime';
+                } catch (e) {
+                    console.error('Error expanding checkout session:', e);
+                    planId = 'lifetime';
+                }
+            } else {
+                // Fallback: check payment intents
+                const paymentIntents = await stripe.paymentIntents.list({
+                    customer: stripeCustomerId,
+                    limit: 10,
+                });
+
+                const successfulPayment = paymentIntents.data.find(
+                    pi => pi.status === 'succeeded' && pi.amount > 0
+                );
+
+                if (successfulPayment) {
+                    // Check if user already has lifetime role or planId indicates lifetime
+                    if (userData?.role === 'lifetime' || userData?.planId?.includes('lifetime')) {
+                        console.log('Preserving existing lifetime status based on payment intent');
+                        role = 'lifetime';
+                        subscriptionStatus = 'active';
+                        currentPeriodEnd = null;
+                    }
+                } else if (userData?.role === 'lifetime') {
+                    // Final fallback: preserve existing lifetime status
+                    console.log('Preserving existing lifetime status (no payment found)');
+                    role = 'lifetime';
+                    subscriptionStatus = 'active';
+                    currentPeriodEnd = null;
+                }
+            }
+        } catch (error) {
+            console.error('Error checking for lifetime purchase:', error);
+            // If there's an error checking Stripe, preserve existing lifetime status
+            if (userData?.role === 'lifetime') {
+                role = 'lifetime';
+                subscriptionStatus = 'active';
+                currentPeriodEnd = null;
+            }
         }
     }
 
