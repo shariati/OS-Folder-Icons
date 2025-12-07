@@ -455,6 +455,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [slashQuery, setSlashQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hideFloatingMenu, setHideFloatingMenu] = useState(false);
   const slashMenuRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
@@ -537,6 +538,21 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[300px] p-4',
       },
       handleKeyDown: (view, event) => {
+        // ESC key hides all menus including FloatingMenu
+        if (event.key === 'Escape') {
+          if (showSlashMenu) {
+            setShowSlashMenu(false);
+            return true;
+          }
+          setHideFloatingMenu(true);
+          return true;
+        }
+
+        // Any typing resets FloatingMenu visibility
+        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
+          setHideFloatingMenu(false);
+        }
+
         if (event.key === '/' && !showSlashMenu) {
           const { from } = view.state.selection;
           const coords = view.coordsAtPos(from);
@@ -553,10 +569,6 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         }
 
         if (showSlashMenu) {
-          if (event.key === 'Escape') {
-            setShowSlashMenu(false);
-            return true;
-          }
           if (event.key === 'ArrowDown') {
             event.preventDefault();
             setSelectedIndex(prev => Math.min(prev + 1, filteredCommands.length - 1));
@@ -869,24 +881,155 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         </button>
       </BubbleMenu>
 
-      {/* Floating Menu */}
-      <FloatingMenu 
-        editor={editor} 
-        className="flex items-center gap-1 p-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
-      >
-        <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 1">
-          <Heading1 size={16} />
-        </button>
-        <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 2">
-          <Heading2 size={16} />
-        </button>
-        <button onClick={() => editor.chain().focus().toggleBulletList().run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Bullet List">
-          <List size={16} />
-        </button>
-        <button onClick={() => setIsImageModalOpen(true)} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Image">
-          <ImageIcon size={16} />
-        </button>
-      </FloatingMenu>
+      {/* Image Bubble Menu - Shows when image is selected */}
+      {editor.isActive('image') && (
+        <BubbleMenu
+          editor={editor}
+          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+        >
+          <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
+            <ImageIcon size={14} />
+            Image
+          </span>
+          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+          <button 
+            onClick={() => {
+              const currentSrc = editor.getAttributes('image').src;
+              const newSrc = window.prompt('Enter new image URL:', currentSrc);
+              if (newSrc) {
+                editor.chain().focus().setImage({ src: newSrc }).run();
+              }
+            }}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300"
+            title="Change Image URL"
+          >
+            Change
+          </button>
+          <button 
+            onClick={() => {
+              const currentAlt = editor.getAttributes('image').alt || '';
+              const newAlt = window.prompt('Enter alt text:', currentAlt);
+              if (newAlt !== null) {
+                editor.chain().focus().updateAttributes('image', { alt: newAlt }).run();
+              }
+            }}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300"
+            title="Edit Alt Text"
+          >
+            Alt Text
+          </button>
+          <button 
+            onClick={() => editor.chain().focus().deleteSelection().run()}
+            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-red-500"
+            title="Delete Image"
+          >
+            <X size={14} />
+          </button>
+        </BubbleMenu>
+      )}
+
+      {/* YouTube Bubble Menu - Shows when YouTube video is selected */}
+      {editor.isActive('youtube') && (
+        <BubbleMenu
+          editor={editor}
+          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+        >
+          <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
+            <YoutubeIcon size={14} className="text-red-500" />
+            YouTube
+          </span>
+          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+          <button 
+            onClick={() => {
+              const currentSrc = editor.getAttributes('youtube').src;
+              window.open(currentSrc, '_blank');
+            }}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1"
+            title="Open in YouTube"
+          >
+            <ExternalLink size={14} />
+            Open
+          </button>
+          <button 
+            onClick={() => editor.chain().focus().deleteSelection().run()}
+            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-red-500"
+            title="Delete Video"
+          >
+            <X size={14} />
+          </button>
+        </BubbleMenu>
+      )}
+
+      {/* Link Bubble Menu - Shows when link is selected */}
+      {editor.isActive('link') && (
+        <BubbleMenu
+          editor={editor}
+          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+        >
+          <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
+            <LinkIcon size={14} />
+            Link
+          </span>
+          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+          <button 
+            onClick={() => {
+              const href = editor.getAttributes('link').href;
+              window.open(href, '_blank');
+            }}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1"
+            title="Open Link"
+          >
+            <ExternalLink size={14} />
+            Open
+          </button>
+          <button 
+            onClick={openLinkModal}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300"
+            title="Edit Link"
+          >
+            Edit
+          </button>
+          <button 
+            onClick={() => editor.chain().focus().unsetLink().run()}
+            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-red-500"
+            title="Remove Link"
+          >
+            <X size={14} />
+          </button>
+        </BubbleMenu>
+      )}
+
+      {/* Floating Menu - Hidden when ESC is pressed */}
+      {!hideFloatingMenu && (
+        <FloatingMenu 
+          editor={editor} 
+          className="flex items-center gap-1 p-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+        >
+          <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 1">
+            <Heading1 size={16} />
+          </button>
+          <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 2">
+            <Heading2 size={16} />
+          </button>
+          <button onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 3">
+            <Heading3 size={16} />
+          </button>
+          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+          <button onClick={() => editor.chain().focus().toggleBulletList().run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Bullet List">
+            <List size={16} />
+          </button>
+          <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Numbered List">
+            <ListOrdered size={16} />
+          </button>
+          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+          <button onClick={() => setIsImageModalOpen(true)} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Image">
+            <ImageIcon size={16} />
+          </button>
+          <button onClick={() => setIsYouTubeModalOpen(true)} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="YouTube">
+            <YoutubeIcon size={16} />
+          </button>
+        </FloatingMenu>
+      )}
 
       {/* Editor Content */}
       <div className="relative border border-t-0 border-gray-200 dark:border-gray-700 rounded-b-lg bg-white dark:bg-gray-900">
