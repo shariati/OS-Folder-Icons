@@ -19,7 +19,7 @@
 import { getDB } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Palette, Layers } from 'lucide-react';
+import { ArrowRight, Palette, Layers, ImageIcon } from 'lucide-react';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
@@ -187,6 +187,25 @@ export default async function Home() {
           <Link href="/create" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-blue-600 bg-white hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
             <Palette className="w-6 h-6 mr-3" />
             Open Icon Generator
+          </Link>
+        </div>
+      </section>
+
+      {/* CTA Section - Photo Frame */}
+      <section id="photo-frame-cta" className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-500">
+           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            Turn Your Memories Into Art
+          </h2>
+          <p className="text-xl text-pink-100 mb-12 max-w-2xl mx-auto">
+            Create stunning photo frames and desktop widgets from your favorite photos. Perfect for personalizing your workspace.
+          </p>
+          <Link href="/photo-frame" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-pink-600 bg-white hover:bg-pink-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+            <ImageIcon className="w-6 h-6 mr-3" />
+            Create Photo Frame
           </Link>
         </div>
       </section>
