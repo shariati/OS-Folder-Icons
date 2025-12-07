@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Settings, FaviconConfig, TrackingConfig, DefaultSeoConfig, SiteIdentity, SocialMetadata } from '@/lib/types';
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
@@ -15,7 +15,8 @@ import {
   Loader2,
   Edit2,
   X,
-  Check
+  Check,
+  Upload
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -226,101 +227,12 @@ export function SiteConfigManager() {
 
         {/* Favicons Tab */}
         {activeTab === 'favicon' && (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Favicon Configuration</h3>
-            
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Upload favicons for different devices and platforms. For best results, use PNG format with transparent backgrounds.
-            </p>
-
-            {/* Animated Favicon Toggle */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <input
-                type="checkbox"
-                id="useAnimated"
-                checked={settings.favicon?.useAnimated || false}
-                onChange={e => updateFavicon('useAnimated', e.target.checked)}
-                className="w-5 h-5 rounded text-blue-600"
-              />
-              <label htmlFor="useAnimated" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Use animated favicon (GIF/APNG/WebP)
-              </label>
-            </div>
-
-            {settings.favicon?.useAnimated && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Animated Favicon
-                </label>
-                <ImageUploader
-                  value={settings.favicon?.animatedFavicon}
-                  onChange={(url) => updateFavicon('animatedFavicon', url)}
-                  folder="favicon"
-                  aspectRatio="square"
-                />
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <FaviconUploadBox
-                label="16×16 (Browser Tabs)"
-                value={settings.favicon?.favicon16}
-                onChange={(url) => updateFavicon('favicon16', url)}
-                size="16×16"
-              />
-              <FaviconUploadBox
-                label="32×32 (New Tab, Desktop)"
-                value={settings.favicon?.favicon32}
-                onChange={(url) => updateFavicon('favicon32', url)}
-                size="32×32"
-              />
-              <FaviconUploadBox
-                label="48×48 (Windows Taskbar)"
-                value={settings.favicon?.favicon48}
-                onChange={(url) => updateFavicon('favicon48', url)}
-                size="48×48"
-              />
-              <FaviconUploadBox
-                label="180×180 (Apple Touch)"
-                value={settings.favicon?.appleTouch180}
-                onChange={(url) => updateFavicon('appleTouch180', url)}
-                size="180×180"
-              />
-              <FaviconUploadBox
-                label="192×192 (Android Chrome)"
-                value={settings.favicon?.android192}
-                onChange={(url) => updateFavicon('android192', url)}
-                size="192×192"
-              />
-              <FaviconUploadBox
-                label="512×512 (PWA Splash)"
-                value={settings.favicon?.android512}
-                onChange={(url) => updateFavicon('android512', url)}
-                size="512×512"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                .ICO File (Multi-size, Legacy Support)
-              </label>
-              <ImageUploader
-                value={settings.favicon?.faviconIco}
-                onChange={(url) => updateFavicon('faviconIco', url)}
-                folder="favicon"
-                aspectRatio="square"
-              />
-            </div>
-
-            <button
-              onClick={() => handleSave({ favicon: settings.favicon })}
-              disabled={saving}
-              className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
-            >
-              {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-              Save Favicons
-            </button>
-          </div>
+          <FaviconTab 
+            settings={settings} 
+            updateFavicon={updateFavicon}
+            handleSave={handleSave}
+            saving={saving}
+          />
         )}
 
         {/* Tracking Codes Tab */}
@@ -591,7 +503,334 @@ export function SiteConfigManager() {
   );
 }
 
-// Favicon upload box component
+// Favicon sizes configuration
+const FAVICON_SIZES = [
+  { key: 'favicon16' as const, size: 16, label: '16×16', description: 'Browser Tabs' },
+  { key: 'favicon32' as const, size: 32, label: '32×32', description: 'New Tab, Desktop' },
+  { key: 'favicon48' as const, size: 48, label: '48×48', description: 'Windows Taskbar' },
+  { key: 'appleTouch180' as const, size: 180, label: '180×180', description: 'Apple Touch' },
+  { key: 'android192' as const, size: 192, label: '192×192', description: 'Android Chrome' },
+  { key: 'android512' as const, size: 512, label: '512×512', description: 'PWA Splash' },
+];
+
+// FaviconTab component with auto-generation
+function FaviconTab({
+  settings,
+  updateFavicon,
+  handleSave,
+  saving,
+}: {
+  settings: Settings;
+  updateFavicon: (key: keyof FaviconConfig, value: string | boolean) => void;
+  handleSave: (updates: Partial<Settings>) => Promise<void>;
+  saving: boolean;
+}) {
+  const [generating, setGenerating] = useState(false);
+  const [editingSize, setEditingSize] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
+
+  // Generate resized images from source
+  const generateFavicons = async (sourceUrl: string) => {
+    setGenerating(true);
+    try {
+      // Load the source image
+      const img = new window.Image();
+      img.crossOrigin = 'anonymous';
+      
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = sourceUrl;
+      });
+
+      // Generate each size
+      for (const { key, size } of FAVICON_SIZES) {
+        if (key === 'android512') continue; // Skip 512, it's the source
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) continue;
+        
+        // Use high-quality image scaling
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, size, size);
+        
+        // Convert to blob and upload
+        const blob = await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob(resolve, 'image/png', 1.0);
+        });
+        
+        if (blob) {
+          const url = await uploadBlob(blob, `favicon-${size}.png`);
+          updateFavicon(key, url);
+        }
+      }
+
+      showToast('All favicon sizes generated successfully!', 'success');
+    } catch (error) {
+      console.error('Error generating favicons:', error);
+      showToast('Failed to generate some favicon sizes', 'error');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  // Upload a blob to storage
+  const uploadBlob = async (blob: Blob, filename: string): Promise<string> => {
+    const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+    const { storage } = await import('@/lib/firebase/client');
+    if (!storage) throw new Error('Storage not initialized');
+    
+    const { v4: uuidv4 } = await import('uuid');
+    const uniqueFilename = `${uuidv4()}-${filename}`;
+    const storageRef = ref(storage, `favicon/${uniqueFilename}`);
+    const snapshot = await uploadBytes(storageRef, blob);
+    return getDownloadURL(snapshot.ref);
+  };
+
+  // Handle source image upload
+  const handleSourceUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      showToast('Please upload an image file', 'error');
+      return;
+    }
+
+    setGenerating(true);
+    try {
+      // Upload the source image first
+      const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      const { storage } = await import('@/lib/firebase/client');
+      if (!storage) throw new Error('Storage not initialized');
+      
+      const { v4: uuidv4 } = await import('uuid');
+      const filename = `${uuidv4()}-source-512.png`;
+      const storageRef = ref(storage, `favicon/${filename}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const sourceUrl = await getDownloadURL(snapshot.ref);
+      
+      // Update the 512x512 favicon
+      updateFavicon('android512', sourceUrl);
+      
+      // Generate all other sizes from this source
+      await generateFavicons(sourceUrl);
+    } catch (error) {
+      console.error('Error uploading source:', error);
+      showToast('Failed to upload image', 'error');
+    } finally {
+      setGenerating(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  // Handle individual size edit
+  const handleEditSize = async (e: React.ChangeEvent<HTMLInputElement>, key: keyof FaviconConfig) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadBlob(file, `favicon-custom-${key}.png`);
+      updateFavicon(key, url);
+      showToast('Favicon updated', 'success');
+    } catch (error) {
+      console.error('Error uploading:', error);
+      showToast('Failed to upload', 'error');
+    } finally {
+      setEditingSize(null);
+      if (editFileInputRef.current) editFileInputRef.current.value = '';
+    }
+  };
+
+  const hasAnyFavicon = FAVICON_SIZES.some(({ key }) => settings.favicon?.[key]);
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Favicon Configuration</h3>
+      
+      {/* Source Upload Section */}
+      <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-700">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+            <ImageIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-2">
+            Upload Master Favicon (512×512)
+          </h4>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Upload a single high-resolution image and we&apos;ll automatically generate all required sizes
+          </p>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleSourceUpload}
+            className="hidden"
+          />
+          
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={generating}
+            className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 mx-auto disabled:opacity-50"
+          >
+            {generating ? (
+              <>
+                <Loader2 size={20} className="animate-spin" />
+                Generating all sizes...
+              </>
+            ) : (
+              <>
+                <Upload size={20} />
+                Upload & Generate All Sizes
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Animated Favicon Toggle */}
+      <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+        <input
+          type="checkbox"
+          id="useAnimated"
+          checked={settings.favicon?.useAnimated || false}
+          onChange={e => updateFavicon('useAnimated', e.target.checked)}
+          className="w-5 h-5 rounded text-blue-600"
+        />
+        <label htmlFor="useAnimated" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Use animated favicon (GIF/APNG/WebP)
+        </label>
+      </div>
+
+      {settings.favicon?.useAnimated && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Animated Favicon
+          </label>
+          <ImageUploader
+            value={settings.favicon?.animatedFavicon}
+            onChange={(url) => updateFavicon('animatedFavicon', url)}
+            folder="favicon"
+            aspectRatio="square"
+          />
+        </div>
+      )}
+
+      {/* Preview Grid */}
+      {hasAnyFavicon && (
+        <div>
+          <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+            Generated Favicons Preview
+          </h4>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Click &quot;Edit&quot; on any size to replace it with a custom image
+          </p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {FAVICON_SIZES.map(({ key, size, label, description }) => {
+              const imageUrl = settings.favicon?.[key];
+              // Calculate preview size (max 64px for display, but show actual for larger)
+              const previewSize = Math.min(size, 64);
+              
+              return (
+                <div 
+                  key={key} 
+                  className="relative bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 flex flex-col items-center group"
+                >
+                  {/* Preview container with checkered background for transparency */}
+                  <div 
+                    className="rounded-lg mb-3 flex items-center justify-center"
+                    style={{ 
+                      width: previewSize + 16,
+                      height: previewSize + 16,
+                      backgroundImage: 'linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)',
+                      backgroundSize: '8px 8px',
+                      backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px'
+                    }}
+                  >
+                    {imageUrl ? (
+                      <img 
+                        src={imageUrl} 
+                        alt={label}
+                        style={{ width: previewSize, height: previewSize }}
+                        className="rounded"
+                      />
+                    ) : (
+                      <div 
+                        className="bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center"
+                        style={{ width: previewSize, height: previewSize }}
+                      >
+                        <ImageIcon size={16} className="text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Label */}
+                  <span className="text-xs font-bold text-gray-800 dark:text-white">{label}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{description}</span>
+                  
+                  {/* Edit button overlay */}
+                  <button
+                    onClick={() => {
+                      setEditingSize(key);
+                      setTimeout(() => editFileInputRef.current?.click(), 0);
+                    }}
+                    className="absolute top-2 right-2 p-1.5 bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    title="Replace with custom image"
+                  >
+                    <Edit2 size={12} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Hidden file input for editing individual sizes */}
+          <input
+            ref={editFileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => editingSize && handleEditSize(e, editingSize as keyof FaviconConfig)}
+            className="hidden"
+          />
+        </div>
+      )}
+
+      {/* ICO File Upload */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          .ICO File (Multi-size, Legacy Support)
+        </label>
+        <ImageUploader
+          value={settings.favicon?.faviconIco}
+          onChange={(url) => updateFavicon('faviconIco', url)}
+          folder="favicon"
+          aspectRatio="square"
+        />
+      </div>
+
+      {/* Save Button */}
+      <button
+        onClick={() => handleSave({ favicon: settings.favicon })}
+        disabled={saving}
+        className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+      >
+        {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+        Save Favicons
+      </button>
+    </div>
+  );
+}
+
+// Favicon upload box component (kept for backwards compatibility but not used in new UI)
 function FaviconUploadBox({ 
   label, 
   value, 
