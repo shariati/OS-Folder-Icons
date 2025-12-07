@@ -6,7 +6,12 @@ import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET(req: Request) {
     const admin = await verifyAdmin(req);
-    if (!admin) return unauthorizedResponse();
+    if (!admin) {
+        return NextResponse.json({
+            error: 'Unauthorized',
+            details: 'Admin verification failed. Check server logs for exact reason (Header missing or Role mismatch).'
+        }, { status: 401 });
+    }
 
     try {
         const listUsersResult = await adminAuth.listUsers(1000);
@@ -91,7 +96,16 @@ export async function PUT(req: Request) {
         if (role) {
             updates.role = role;
             // Also update custom claims if necessary
-            await adminAuth.setCustomUserClaims(uid, { role });
+            const claims: any = { role };
+            if (role === 'admin') {
+                claims.admin = true;
+            } else {
+                claims.admin = null; // Unset if demoting
+            }
+            await adminAuth.setCustomUserClaims(uid, claims);
+            // Force refresh on next login/token fetch
+            await adminAuth.revokeRefreshTokens(uid);
+
             await adminDb.collection('users').doc(uid).set({ role }, { merge: true });
         }
 

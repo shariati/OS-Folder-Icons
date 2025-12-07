@@ -14,16 +14,15 @@ export async function verifyAdmin(req: Request) {
         // Initial check: just valid token. 
         // Ideally check custom claims for 'admin' role if your app uses them.
         // For now, let's assume if they have a valid token they are a user, 
-        // and we might check their role from Firestore or Claims.
+        console.log('Admin Auth Check:', {
+            uid: decodedToken.uid,
+            email: decodedToken.email,
+            role: decodedToken.role,
+            adminClaim: decodedToken.admin
+        });
 
-        // Check for admin role claim if it exists
         if (decodedToken.role !== 'admin' && decodedToken.admin !== true) {
-            // Fallback: check email if you have hardcoded admins (temporary)
-            // or fetch user from DB. 
-            // For production readiness, we should rely on Custom Claims 'role' === 'admin'.
-            // Best practice: Set Custom Claims on login/update.
-
-            // STRICT ENFORCEMENT for Security Audit Fix
+            console.error('Admin verification failed: Missing admin role');
             return null;
         }
 
