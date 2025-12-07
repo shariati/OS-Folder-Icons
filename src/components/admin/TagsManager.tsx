@@ -9,6 +9,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { normalizeTagName } from './TagAutocomplete';
 import clsx from 'clsx';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 interface TagsManagerProps {
   initialData: DB;
@@ -46,7 +47,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
     tag.slug = normalizeTagName(tag.name);
     
     try {
-      const response = await fetch('/api/admin/tags', {
+      const response = await authenticatedFetch('/api/admin/tags', {
         method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tag),
@@ -75,7 +76,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
     if (!confirm('Are you sure you want to delete this tag?')) return;
 
     try {
-      const response = await fetch(`/api/admin/tags?id=${id}`, {
+      const response = await authenticatedFetch(`/api/admin/tags?id=${id}`, {
         method: 'DELETE',
       });
 

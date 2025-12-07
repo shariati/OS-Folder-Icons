@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { adminDb as db } from '@/lib/firebase/admin';
 import { Plan } from '@/types/plan';
 import Stripe from 'stripe';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: '2024-11-20.acacia',
@@ -22,6 +23,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const plan = await req.json();
 
@@ -62,6 +66,9 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const { id, ...data } = await req.json();
 
@@ -77,6 +84,9 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const { id } = await req.json();
 

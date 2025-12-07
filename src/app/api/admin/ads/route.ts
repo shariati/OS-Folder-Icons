@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getDB, saveDB } from '@/lib/db';
 import { AdConfig } from '@/lib/types';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         const db = await getDB();
         const adConfig = db.settings.adConfig || {
@@ -20,6 +21,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+    const admin = await verifyAdmin(request);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const body = await request.json();
         const db = await getDB();

@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ImageUploader } from './ImageUploader';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 export function CategoriesManager({ initialData }: { initialData: DB }) {
   const [categories, setCategories] = useState<Category[]>(initialData.categories || []);
@@ -20,7 +21,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
   const handleSave = async (category: Category) => {
     try {
-      const response = await fetch('/api/admin/categories', {
+      const response = await authenticatedFetch('/api/admin/categories', {
         method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(category),
@@ -49,7 +50,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
     if (!confirm('Are you sure you want to delete this category?')) return;
 
     try {
-      const response = await fetch(`/api/admin/categories?id=${id}`, {
+      const response = await authenticatedFetch(`/api/admin/categories?id=${id}`, {
         method: 'DELETE',
       });
 

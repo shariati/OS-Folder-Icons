@@ -1,13 +1,16 @@
-
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { adminDb as db } from '@/lib/firebase/admin';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: '2024-11-20.acacia',
 });
 
-export async function GET() {
+export async function GET(request: Request) {
+    const admin = await verifyAdmin(request);
+    if (!admin) return unauthorizedResponse();
+
     try {
         // 1. Fetch all active prices from Stripe with product expansion
         const prices = await stripe.prices.list({
