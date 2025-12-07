@@ -33,7 +33,7 @@ export default async function Home() {
   const latestBundles = db.bundles.slice(0, 8); // Taking first 8 as latest
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900" suppressHydrationWarning>
       {/* Main Hero Section */}
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}

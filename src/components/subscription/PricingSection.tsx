@@ -11,6 +11,13 @@ const PricingSection = () => {
 
   const [plans, setPlans] = useState<any[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
+  
+  // Prevent hydration mismatch by waiting for mount
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchPlans = async () => {

@@ -10,13 +10,21 @@ import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  
+  // Prevent hydration mismatch by waiting for mount
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const timer = setInterval(() => {
       nextSlide();
     }, 6000);
     return () => clearInterval(timer);
-  }, [currentIndex]);
+  }, [currentIndex, mounted]);
 
   const nextSlide = () => {
     setDirection(1);
@@ -33,7 +41,10 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     setCurrentIndex(index);
   };
 
-  if (!slides || slides.length === 0) return null;
+  // Always render the container to prevent hydration mismatch
+  if (!slides || slides.length === 0) {
+    return <div className="relative w-full h-screen overflow-hidden bg-black" />;
+  }
 
   const currentSlide = slides[currentIndex];
 
@@ -42,6 +53,27 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     const index = (currentIndex + offset) % slides.length;
     return { ...slides[index], index };
   });
+
+  // Before mount, render a static version without animations
+  if (!mounted) {
+    return (
+      <div className="relative w-full h-screen overflow-hidden bg-black">
+        <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 bg-black/40 z-10" />
+          {currentSlide.imageUrl && (
+            <Image
+              src={currentSlide.imageUrl}
+              alt={currentSlide.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -167,3 +199,4 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     </div>
   );
 }
+
