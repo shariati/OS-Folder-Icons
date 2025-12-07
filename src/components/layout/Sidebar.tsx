@@ -10,7 +10,7 @@ interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'ads') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -20,7 +20,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
 
   const [isFolderIconOpen, setIsFolderIconOpen] = useState(true);
   const [isSiteManagerOpen, setIsSiteManagerOpen] = useState(true);
-  const [isSiteContentOpen, setIsSiteContentOpen] = useState(true);
 
   // close on click outside
   useEffect(() => {
@@ -129,20 +128,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                 </div>
               </li>
 
-              {/* Photo Frame */}
-              <li>
-                <button
-                  onClick={() => { setActiveTab('photo-frame'); setSidebarOpen(false); }}
-                  className={clsx(
-                    "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left",
-                    activeTab === 'photo-frame' && "bg-graydark dark:bg-meta-4 text-white"
-                  )}
-                >
-                  <ImageIcon className="h-5 w-5" />
-                  Photo Frame
-                </button>
-              </li>
-
               {/* Site Manager Group */}
               <li>
                 <button
@@ -158,6 +143,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                 {/* Sub Menu */}
                 <div className={clsx("overflow-hidden transition-all duration-300", isSiteManagerOpen ? "max-h-[500px] mt-2" : "max-h-0")}>
                   <ul className="flex flex-col gap-1.5 pl-9">
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('blog'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'blog' && "text-white"
+                        )}
+                      >
+                        Blog Posts
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('pages'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'pages' && "text-white"
+                        )}
+                      >
+                        Pages
+                      </button>
+                    </li>
                     <li>
                       <button
                         onClick={() => { setActiveTab('categories'); setSidebarOpen(false); }}
@@ -190,45 +197,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                       >
                         Hero Slides
                       </button>
-                    </li>
-                    
-                    {/* Site Content Sub-Group */}
-                    <li>
-                      <button
-                        onClick={() => setIsSiteContentOpen(!isSiteContentOpen)}
-                        className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left justify-between text-sm"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          Site Content
-                        </div>
-                        <ChevronDown className={clsx("h-3 w-3 transition-transform", !isSiteContentOpen && "-rotate-90")} />
-                      </button>
-                      <div className={clsx("overflow-hidden transition-all duration-300", isSiteContentOpen ? "max-h-40 mt-1" : "max-h-0")}>
-                        <ul className="flex flex-col gap-1.5 pl-4">
-                          <li>
-                            <button
-                              onClick={() => { setActiveTab('blog'); setSidebarOpen(false); }}
-                              className={clsx(
-                                "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
-                                activeTab === 'blog' && "text-white"
-                              )}
-                            >
-                              Blog Posts
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => { setActiveTab('pages'); setSidebarOpen(false); }}
-                              className={clsx(
-                                "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
-                                activeTab === 'pages' && "text-white"
-                              )}
-                            >
-                              Pages
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
                     </li>
                   </ul>
                 </div>

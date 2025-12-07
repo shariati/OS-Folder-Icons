@@ -13,12 +13,11 @@ import { UsersManager } from '@/components/admin/UsersManager';
 import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
 import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
-import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
 import { MonetizationManager } from '@/components/admin/MonetizationManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'photo-frame' | 'ads'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'audit' | 'blog' | 'pages' | 'ads'>('os');
 
   return (
     <ToastProvider>
@@ -31,11 +30,9 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'tags' && 'Site Manager / Tags'}
             {activeTab === 'hero' && 'Site Manager / Hero Slider'}
             {activeTab === 'users' && 'User Management'}
-
             {activeTab === 'audit' && 'Audit Log'}
-            {activeTab === 'blog' && 'Site Manager / Site Content / Blog Posts'}
-            {activeTab === 'pages' && 'Site Manager / Site Content / Pages'}
-            {activeTab === 'photo-frame' && 'Photo Frame'}
+            {activeTab === 'blog' && 'Site Manager / Blog Posts'}
+            {activeTab === 'pages' && 'Site Manager / Pages'}
             {activeTab === 'ads' && 'Monetization'}
           </h2>
 
@@ -55,9 +52,8 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'users' && 'Users'}
 
                 {activeTab === 'audit' && 'Audit'}
-                {activeTab === 'blog' && 'Site Manager / Content / Blog'}
-                {activeTab === 'pages' && 'Site Manager / Content / Pages'}
-                {activeTab === 'photo-frame' && 'Photo Frame'}
+                {activeTab === 'blog' && 'Site Manager / Blog'}
+                {activeTab === 'pages' && 'Site Manager / Pages'}
                 {activeTab === 'ads' && 'Ads'}
               </li>
             </ol>
@@ -75,7 +71,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'audit' && <AuditLogViewer initialData={initialData} />}
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
-          {activeTab === 'photo-frame' && <PhotoFrameGenerator />}
           {activeTab === 'ads' && <MonetizationManager />}
         </div>
       </AdminLayout>
