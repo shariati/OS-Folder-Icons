@@ -31,6 +31,7 @@ export const logAuditAction = async (action: any) => (await getAdapter()).logAud
 
 export const getBlogPosts = async () => (await getAdapter()).getBlogPosts();
 export const saveBlogPost = async (post: any) => (await getAdapter()).saveBlogPost(post);
+export const updateBlogPost = async (id: string, data: any) => (await getAdapter()).updateBlogPost(id, data);
 export const deleteBlogPost = async (id: string) => (await getAdapter()).deleteBlogPost(id);
 
 export const getPages = async () => (await getAdapter()).getPages();

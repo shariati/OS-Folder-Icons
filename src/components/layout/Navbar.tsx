@@ -78,6 +78,10 @@ export function Navbar() {
               <Link href="/photo-frame" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
                 Photo Frame
               </Link>
+              
+              <Link href="/blog" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
+                Blog
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4">

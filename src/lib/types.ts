@@ -110,23 +110,42 @@ export interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  content: string;
+  content: string; // HTML content from Tiptap editor
   excerpt?: string;
   coverImage?: string;
-  published: boolean;
+
+  // Status & Scheduling
+  status: 'draft' | 'published' | 'scheduled';
+  published: boolean; // Kept for backward compatibility, sync with status
   publishedAt?: string;
+  scheduledAt?: string;
+
+  createdAt?: string;
+  updatedAt?: string;
   authorId: string;
+
+  // Analytics
+  views?: number;
+  readingTime?: number; // In minutes
+
+  // Taxonomy
+  tags?: string[];
+
+  // SEO & Social
   seoTitle?: string;
   seoDescription?: string;
-  seoKeywords?: string[];
+  seoKeywords?: string[]; // Kept for backward compatibility
+  focusKeyword?: string;
+  socialImage?: string;
 }
 
 export interface Page {
   id: string;
   title: string;
   slug: string;
-  content: string;
+  content: string; // HTML content with component shortcodes
   published: boolean;
+  components?: string[]; // Track which components are used
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];

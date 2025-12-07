@@ -25,6 +25,7 @@ import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
 import PricingSection from '@/components/subscription/PricingSection';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { FeaturedBlogs } from '@/components/features/FeaturedBlogs';
 
 export default async function Home() {
   const db = await getDB();
@@ -189,6 +190,9 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Featured Blog Posts */}
+      <FeaturedBlogs count={3} />
 
       {/* Pricing Section */}
       <section id="pricing" className="py-24 bg-gray-50 dark:bg-gray-900/50">

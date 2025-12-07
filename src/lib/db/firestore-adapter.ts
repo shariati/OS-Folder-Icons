@@ -77,6 +77,10 @@ export const firestoreAdapter: DatabaseAdapter = {
         if (!db) return;
         await setDoc(doc(db, 'blogPosts', post.id), post);
     },
+    async updateBlogPost(id: string, data: Partial<BlogPost>): Promise<void> {
+        if (!db) return;
+        await updateDoc(doc(db, 'blogPosts', id), data);
+    },
     async deleteBlogPost(id: string): Promise<void> {
         if (!db) return;
         await deleteDoc(doc(db, 'blogPosts', id));

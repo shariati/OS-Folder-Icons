@@ -73,6 +73,10 @@ export const adminAdapter: DatabaseAdapter = {
         if (!db) return;
         await db.collection('blogPosts').doc(post.id).set(post);
     },
+    async updateBlogPost(id: string, data: Partial<BlogPost>): Promise<void> {
+        if (!db) return;
+        await db.collection('blogPosts').doc(id).update(data);
+    },
     async deleteBlogPost(id: string): Promise<void> {
         if (!db) return;
         await db.collection('blogPosts').doc(id).delete();
