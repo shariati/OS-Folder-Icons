@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { User, onAuthStateChanged, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth, getFirebaseAuth } from '@/lib/firebase/client';
 import config from '@/lib/config';
 import { UserProfile } from '@/types/user';
@@ -56,6 +56,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
       return;
     }
+
+    // Handle redirect results (from signInWithRedirect)
+    const handleRedirectResult = async () => {
+      try {
+        const { getRedirectResult } = await import('firebase/auth');
+        const result = await getRedirectResult(_auth);
+        if (result?.user) {
+          console.log('Redirect sign-in successful');
+          // The onAuthStateChanged listener will handle updating the user state
+        }
+      } catch (error) {
+        console.error('Error handling redirect result:', error);
+      }
+    };
+    handleRedirectResult();
 
     const unsubscribe = onAuthStateChanged(_auth, async (firebaseUser) => {
       setUser(firebaseUser);
@@ -112,7 +127,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(_auth, provider);
+    // Use redirect instead of popup to avoid COOP blocking
+    const { signInWithRedirect } = await import('firebase/auth');
+    await signInWithRedirect(_auth, provider);
   };
 
   const sendMagicLink = async (email: string) => {
@@ -266,7 +283,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        const { linkWithPopup, GoogleAuthProvider } = await import('firebase/auth');
+        const { linkWithRedirect, GoogleAuthProvider } = await import('firebase/auth');
         let provider;
         if (providerName === 'google') {
             provider = new GoogleAuthProvider();
@@ -274,11 +291,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
            throw new Error('Provider not supported');
         }
         
-        const result = await linkWithPopup(_auth.currentUser, provider);
-        const user = result.user;
-        
-        // Sync providers to DB
-        await syncProviders(user);
+        // Use redirect instead of popup to avoid COOP blocking
+        await linkWithRedirect(_auth.currentUser, provider);
     } catch (error) {
         console.error('Error linking provider:', error);
         throw error;
