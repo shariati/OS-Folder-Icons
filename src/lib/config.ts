@@ -8,12 +8,7 @@ const config = {
         messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
         appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     },
-    clarity: {
-        projectId: process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID,
-    },
-    googleAnalytics: {
-        id: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID,
-    },
+
     isLocal: (process.env.NEXT_PUBLIC_APP_ENV || 'local') === 'local',
     isTest: process.env.NEXT_PUBLIC_APP_ENV === 'test',
     isProduction: process.env.NEXT_PUBLIC_APP_ENV === 'production',
