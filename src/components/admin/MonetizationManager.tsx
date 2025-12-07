@@ -30,7 +30,7 @@ export function MonetizationManager() {
 
   const fetchPlans = async () => {
     try {
-      const res = await fetch('/api/admin/plans');
+      const res = await authenticatedFetch('/api/admin/plans');
       const data = await res.json();
       if (Array.isArray(data)) {
         setPlans(data);
@@ -44,7 +44,7 @@ export function MonetizationManager() {
 
   const fetchLastSyncDate = async () => {
     try {
-      const res = await fetch('/api/admin/sync-status');
+      const res = await authenticatedFetch('/api/admin/sync-status');
       const data = await res.json();
       if (data.lastSyncDate) {
         setLastSyncDate(data.lastSyncDate);
