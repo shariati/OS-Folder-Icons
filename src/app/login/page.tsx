@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { FolderOpen, Mail, Lock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { InputModal } from '@/components/ui/InputModal';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,6 +16,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { signInWithGoogle, signInWithEmail, sendMagicLink, signInWithMagicLink } = useAuth();
   const router = useRouter();
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+
+  const completeMagicLinkSignIn = async (emailForSignIn: string) => {
+      setLoading(true);
+      try {
+          await signInWithMagicLink(emailForSignIn, window.location.href);
+          router.push('/');
+      } catch (err: any) {
+          setError(err.message || 'Failed to sign in with magic link.');
+      } finally {
+          setLoading(false);
+      }
+  };
   
   // Handle Magic Link Sign-In on Check
   React.useEffect(() => {
@@ -24,21 +38,11 @@ export default function LoginPage() {
         const auth = getFirebaseAuth();
         
         if (auth && isSignInWithEmailLink(auth, window.location.href)) {
-             let emailForSignIn = window.localStorage.getItem('emailForSignIn');
+             const emailForSignIn = window.localStorage.getItem('emailForSignIn');
              if (!emailForSignIn) {
-                 emailForSignIn = window.prompt('Please provide your email for confirmation');
-             }
-             
-             if (emailForSignIn) {
-                 setLoading(true);
-                 try {
-                     await signInWithMagicLink(emailForSignIn, window.location.href);
-                     router.push('/');
-                 } catch (err: any) {
-                     setError(err.message || 'Failed to sign in with magic link.');
-                 } finally {
-                     setLoading(false);
-                 }
+                 setIsEmailModalOpen(true);
+             } else {
+                 completeMagicLinkSignIn(emailForSignIn);
              }
         }
     };
@@ -114,6 +118,17 @@ export default function LoginPage() {
           <source src="/backgrounds/video/home-video-background-1.webm" type="video/webm" />
         </video>
       </div>
+
+      <InputModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        onSubmit={completeMagicLinkSignIn}
+        title="Confirm Email"
+        label="Please provide your email to complete sign in"
+        placeholder="you@example.com"
+        type="email"
+        confirmLabel="Sign In"
+      />
 
       <div className="relative z-20 w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
         <div className="p-8 sm:p-10">

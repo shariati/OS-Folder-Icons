@@ -123,9 +123,9 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-hidden flex">
+      <div className="flex-1 flex flex-col xl:flex-row">
         {/* Editor Area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           {activeTab === 'write' && (
             <div className="max-w-4xl mx-auto px-8 py-12">
               <input
@@ -283,7 +283,7 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
         </div>
 
         {/* Sidebar Settings Panel - Fixed height, no scroll */}
-        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex-shrink-0 p-6 hidden xl:flex flex-col">
+        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex-shrink-0 p-6 hidden xl:flex flex-col h-auto min-h-screen">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">
             Post Settings
           </h3>
