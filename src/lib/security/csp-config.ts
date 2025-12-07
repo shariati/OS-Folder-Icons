@@ -18,6 +18,7 @@ export const TRUSTED_ANALYTICS_DOMAINS = [
     'www.googletagmanager.com',
     '*.clarity.ms',
     'clarity.ms',
+    '*.bing.com',
 ] as const;
 
 // Trusted domains for advertising
