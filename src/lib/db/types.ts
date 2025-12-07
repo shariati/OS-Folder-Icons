@@ -29,6 +29,7 @@ export interface DatabaseAdapter {
     logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void>;
     getBlogPosts(): Promise<BlogPost[]>;
     saveBlogPost(post: BlogPost): Promise<void>;
+    updateBlogPost(id: string, data: Partial<BlogPost>): Promise<void>;
     deleteBlogPost(id: string): Promise<void>;
     getPages(): Promise<Page[]>;
     savePage(page: Page): Promise<void>;

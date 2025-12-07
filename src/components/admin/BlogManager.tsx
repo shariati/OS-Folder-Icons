@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { DB, BlogPost } from '@/lib/types';
 import { saveBlogPostAction, deleteBlogPostAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
-import { SocialPreview } from '@/components/features/SocialPreview';
-import { Plus, Edit, Trash2, Save, ArrowLeft, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, ExternalLink, Calendar, Eye } from 'lucide-react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { BlogEditor } from './BlogEditor';
+import { getFullUrl } from '@/lib/url';
 
 interface BlogManagerProps {
   initialData: DB;
@@ -24,8 +25,10 @@ export function BlogManager({ initialData }: BlogManagerProps) {
   const handleCreateNew = () => {
     setCurrentPost({
       id: Date.now().toString(),
+      status: 'draft',
       published: false,
       authorId: 'admin', // Hardcoded for now
+      tags: [],
     });
     setIsEditing(true);
   };
@@ -60,9 +63,14 @@ export function BlogManager({ initialData }: BlogManagerProps) {
       setIsLoading(true);
       const postToSave = currentPost as BlogPost;
       
-      // Auto-generate slug if empty (though validation above checks it)
-      if (!postToSave.slug) {
-        postToSave.slug = postToSave.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      // Sync published boolean with status for backward compatibility
+      // We set published=true for scheduled posts too, so they satisfy naive checks,
+      // but we will filter by date in the public view to ensure they don't appear early.
+      postToSave.published = postToSave.status === 'published' || postToSave.status === 'scheduled';
+
+      // Ensure creation date
+      if (!postToSave.createdAt) {
+          postToSave.createdAt = new Date().toISOString();
       }
 
       await saveBlogPostAction(postToSave);
@@ -74,7 +82,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
         newPosts[existingIndex] = postToSave;
         setPosts(newPosts);
       } else {
-        setPosts([...posts, postToSave]);
+        setPosts([postToSave, ...posts]);
       }
 
       setIsEditing(false);
@@ -87,186 +95,24 @@ export function BlogManager({ initialData }: BlogManagerProps) {
     }
   };
 
-  const generateSlug = (title: string) => {
-    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  };
-
   if (isEditing) {
     return (
-      <div className="flex flex-col gap-9">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setIsEditing(false)}
-            className="flex items-center gap-2 rounded bg-white px-4 py-2 font-medium text-black hover:bg-opacity-90 dark:bg-boxdark dark:text-white"
-          >
-            <ArrowLeft size={20} />
-            Back to List
-          </button>
-          <h2 className="text-xl font-bold text-black dark:text-white">
-            {currentPost.id ? 'Edit Post' : 'New Post'}
-          </h2>
+      <div className="h-full flex flex-col">
+        <div className="mb-4 flex items-center gap-4 px-6 pt-4">
+            <button
+                onClick={() => setIsEditing(false)}
+                className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+                &larr; Back to Posts
+            </button>
         </div>
-
-        <div className="grid grid-cols-1 gap-9 xl:grid-cols-2">
-          <div className="flex flex-col gap-9">
-            {/* Editor Form */}
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  Post Content
-                </h3>
-              </div>
-              <div className="p-6.5">
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Title <span className="text-meta-1">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter post title"
-                    value={currentPost.title || ''}
-                    onChange={(e) => {
-                      const title = e.target.value;
-                      setCurrentPost({ 
-                        ...currentPost, 
-                        title,
-                        slug: !currentPost.id ? generateSlug(title) : currentPost.slug 
-                      });
-                    }}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  />
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Slug <span className="text-meta-1">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="post-url-slug"
-                    value={currentPost.slug || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, slug: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  />
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Excerpt
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Short summary for lists and SEO"
-                    value={currentPost.excerpt || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, excerpt: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  ></textarea>
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Content (Markdown supported)
-                  </label>
-                  <textarea
-                    rows={10}
-                    placeholder="Write your post content here..."
-                    value={currentPost.content || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, content: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input font-mono"
-                  ></textarea>
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Cover Image URL
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={currentPost.coverImage || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, coverImage: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  />
-                </div>
-
-                <div className="mb-6">
-                  <label className="flex cursor-pointer items-center">
-                    <div className="relative">
-                      <input
-                        type="checkbox"
-                        className="sr-only"
-                        checked={currentPost.published || false}
-                        onChange={(e) => setCurrentPost({ ...currentPost, published: e.target.checked })}
-                      />
-                      <div className={`block h-8 w-14 rounded-full ${currentPost.published ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
-                      <div className={`dot absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition ${currentPost.published ? 'translate-x-6' : ''}`}></div>
-                    </div>
-                    <div className="ml-3 font-medium text-black dark:text-white">
-                      Published
-                    </div>
-                  </label>
-                </div>
-
-                <button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-                >
-                  {isLoading ? 'Saving...' : (
-                    <span className="flex items-center gap-2">
-                      <Save size={20} />
-                      Save Post
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-9">
-            {/* SEO & Preview */}
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  SEO Settings
-                </h3>
-              </div>
-              <div className="p-6.5">
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    SEO Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Leave empty to use post title"
-                    value={currentPost.seoTitle || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, seoTitle: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  />
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    SEO Description
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Leave empty to use excerpt"
-                    value={currentPost.seoDescription || ''}
-                    onChange={(e) => setCurrentPost({ ...currentPost, seoDescription: e.target.value })}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-
-            <SocialPreview
-              title={currentPost.seoTitle || currentPost.title || 'Post Title'}
-              description={currentPost.seoDescription || currentPost.excerpt || 'Post description...'}
-              image={currentPost.coverImage}
-              url={`example.com/blog/${currentPost.slug || 'slug'}`}
+        <div className="flex-1 overflow-hidden">
+            <BlogEditor
+                post={currentPost}
+                onChange={setCurrentPost}
+                onSave={handleSave}
+                isLoading={isLoading}
             />
-          </div>
         </div>
       </div>
     );
@@ -274,49 +120,86 @@ export function BlogManager({ initialData }: BlogManagerProps) {
 
   return (
     <div className="space-y-6">
-      {hasItems && (
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Blog Posts</h2>
-          <button
-            onClick={handleCreateNew}
-            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
-          >
-            <Plus size={18} />
-            New Post
-          </button>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Blog Posts</h2>
+          <p className="text-gray-500 dark:text-gray-400">Manage your blog content</p>
         </div>
-      )}
+        <button
+          onClick={handleCreateNew}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <Plus size={20} />
+          New Post
+        </button>
+      </div>
 
-      {!hasItems && !isEditing && (
-        <EmptyState 
-            title="No Blog Posts Found"
-            description="Start writing blog posts to engage with your audience."
-            actionLabel="Create New Post"
-            onAction={handleCreateNew}
+      {!hasItems ? (
+        <EmptyState
+          title="No blog posts yet"
+          description="Create your first blog post to start sharing your thoughts."
+          actionLabel="Create Post"
+          onAction={handleCreateNew}
         />
-      )}
-
-      {hasItems && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {posts
+            .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+            .map((post) => (
             <NeumorphBox 
                 key={post.id}
                 title={post.title}
-                subtitle={`/${post.slug}`}
+                subtitle={
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-400 font-mono">/blog/{post.slug}</span>
+                    {post.status === 'published' && (
+                        <a 
+                            href={getFullUrl(post.slug, 'blog')} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:text-blue-600"
+                        >
+                            <ExternalLink size={12} />
+                        </a>
+                    )}
+                  </div>
+                }
                 showActions
                 onEdit={() => handleEdit(post)}
                 onDelete={() => handleDelete(post.id)}
                 badge={
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${post.published ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                    {post.published ? 'Published' : 'Draft'}
+                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                    post.status === 'published' 
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                        : post.status === 'scheduled'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                }`}>
+                    {post.status || (post.published ? 'Published' : 'Draft')}
                 </span>
                 }
             >
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Unpublished'}
+                <div className="mt-2 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar size={14} />
+                    <span>
+                        {post.publishedAt 
+                            ? new Date(post.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) 
+                            : 'Unscheduled'}
+                    </span>
+                  </div>
+                  {post.views !== undefined && (
+                      <div className="flex items-center gap-1.5">
+                        <Eye size={14} />
+                        <span>{post.views} views</span>
+                      </div>
+                  )}
+                  {post.readingTime && (
+                    <span>{post.readingTime} min read</span>
+                  )}
                 </div>
             </NeumorphBox>
-            ))}
+          ))}
         </div>
       )}
     </div>
