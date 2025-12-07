@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebase/admin';
+import { createLogger } from '@/lib/logger';
+
+const logger = createLogger('admin-auth');
 
 export async function verifyAdmin(req: Request) {
     try {
@@ -11,24 +14,17 @@ export async function verifyAdmin(req: Request) {
         const token = authHeader.split('Bearer ')[1];
         const decodedToken = await adminAuth.verifyIdToken(token);
 
-        // Initial check: just valid token. 
-        // Ideally check custom claims for 'admin' role if your app uses them.
-        // For now, let's assume if they have a valid token they are a user, 
-        console.log('Admin Auth Check:', {
-            uid: decodedToken.uid,
-            email: decodedToken.email,
-            role: decodedToken.role,
-            adminClaim: decodedToken.admin
-        });
+        // Only log in development for debugging
+        logger.debug({ uid: decodedToken.uid, hasAdminRole: decodedToken.role === 'admin' || decodedToken.admin === true }, 'Admin auth check');
 
         if (decodedToken.role !== 'admin' && decodedToken.admin !== true) {
-            console.error('Admin verification failed: Missing admin role');
+            logger.warn({ uid: decodedToken.uid }, 'Admin verification failed: Missing admin role');
             return null;
         }
 
         return decodedToken;
     } catch (error) {
-        console.error('verifyAdmin error:', error);
+        logger.error({ err: error }, 'verifyAdmin error');
         return null;
     }
 }
@@ -36,3 +32,4 @@ export async function verifyAdmin(req: Request) {
 export function unauthorizedResponse() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 }
+
