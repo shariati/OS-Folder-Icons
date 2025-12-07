@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { BlogPost, Tag } from '@/lib/types';
 import { RichTextEditor } from './RichTextEditor';
+import { SocialShareTab } from './SocialShareTab';
 import { 
   Save, Globe, Calendar, User as UserIcon, 
   Image as ImageIcon, Tag as TagIcon, Eye, Settings, 
-  Layout, Search, CheckCircle, Smartphone, Monitor
+  Layout, Search, CheckCircle, Smartphone, Monitor, Share2
 } from 'lucide-react';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { getFullUrl } from '@/lib/url';
@@ -23,28 +24,39 @@ interface BlogEditorProps {
   onCreateTag?: (name: string) => Promise<Tag>;
 }
 
-type Tab = 'write' | 'seo' | 'preview';
+type Tab = 'write' | 'seo' | 'social' | 'preview';
 type PreviewDevice = 'desktop' | 'mobile';
+
+// Helper function to convert title to kebab-case slug
+function toKebabCase(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/[^a-z0-9\s-]/g, '') // Remove non-alphanumeric except spaces and dashes
+    .replace(/\s+/g, '-') // Replace spaces with dashes
+    .replace(/-+/g, '-') // Replace multiple dashes with single dash
+    .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
+}
 
 export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = [], onCreateTag }: BlogEditorProps) {
   const [activeTab, setActiveTab] = useState<Tab>('write');
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('desktop');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title (kebab-case, lowercase)
   useEffect(() => {
     if (!slugManuallyEdited && post.title && !post.id) {
-      const slug = post.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+      const slug = toKebabCase(post.title);
       onChange({ ...post, slug });
     }
   }, [post.title, slugManuallyEdited, post.id, onChange, post]);
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSlugManuallyEdited(true);
-    onChange({ ...post, slug: e.target.value });
+    // Enforce kebab-case on manual input too
+    const value = toKebabCase(e.target.value);
+    onChange({ ...post, slug: value });
   };
 
   return (
@@ -72,6 +84,17 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
               }`}
             >
               SEO
+            </button>
+            <button
+              onClick={() => setActiveTab('social')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === 'social'
+                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <Share2 size={14} />
+              Social
             </button>
             <button
               onClick={() => setActiveTab('preview')}
@@ -120,6 +143,7 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
                   type="text"
                   value={post.slug || ''}
                   onChange={handleSlugChange}
+                  placeholder="post-slug"
                   className="bg-transparent border-none outline-none text-gray-500 dark:text-gray-400 focus:text-blue-500 min-w-[200px]"
                 />
               </div>
@@ -216,6 +240,18 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
             </div>
           )}
 
+          {activeTab === 'social' && (
+            <SocialShareTab
+              social={post.social}
+              onChange={(social) => onChange({ ...post, social })}
+              title={post.title}
+              description={post.seoDescription || post.excerpt}
+              coverImage={post.coverImage}
+              slug={post.slug}
+              type="blog"
+            />
+          )}
+
           {activeTab === 'preview' && (
             <div className="h-full flex flex-col bg-gray-100 dark:bg-gray-950">
                <div className="flex justify-center p-4 gap-4">
@@ -246,13 +282,13 @@ export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = 
           )}
         </div>
 
-        {/* Sidebar Settings Panel */}
-        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto p-6 hidden xl:block">
+        {/* Sidebar Settings Panel - Fixed height, no scroll */}
+        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex-shrink-0 p-6 hidden xl:flex flex-col">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">
             Post Settings
           </h3>
 
-          <div className="space-y-6">
+          <div className="space-y-6 flex-1 overflow-y-auto">
             {/* Status */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

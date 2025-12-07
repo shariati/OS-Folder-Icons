@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { Page } from '@/lib/types';
 import { RichTextEditor } from './RichTextEditor';
-import { ImageUploader } from './ImageUploader';
+import { SocialShareTab } from './SocialShareTab';
 import { 
-  Save, Globe, Search, Smartphone, Monitor
+  Save, Globe, 
+  Image as ImageIcon, Eye, Search, Smartphone, Monitor, Share2
 } from 'lucide-react';
 import { sanitizeHtml } from '@/lib/sanitize';
-import { getFullUrl } from '@/lib/url';
+import { ImageUploader } from './ImageUploader';
 
 interface PageEditorProps {
   page: Partial<Page>;
@@ -17,28 +18,39 @@ interface PageEditorProps {
   isLoading?: boolean;
 }
 
-type Tab = 'write' | 'seo' | 'preview';
+type Tab = 'write' | 'seo' | 'social' | 'preview';
 type PreviewDevice = 'desktop' | 'mobile';
+
+// Helper function to convert title to kebab-case slug
+function toKebabCase(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/[^a-z0-9\s-]/g, '') // Remove non-alphanumeric except spaces and dashes
+    .replace(/\s+/g, '-') // Replace spaces with dashes
+    .replace(/-+/g, '-') // Replace multiple dashes with single dash
+    .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
+}
 
 export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProps) {
   const [activeTab, setActiveTab] = useState<Tab>('write');
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('desktop');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title (kebab-case, lowercase)
   useEffect(() => {
     if (!slugManuallyEdited && page.title && !page.id) {
-      const slug = page.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+      const slug = toKebabCase(page.title);
       onChange({ ...page, slug });
     }
   }, [page.title, slugManuallyEdited, page.id, onChange, page]);
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSlugManuallyEdited(true);
-    onChange({ ...page, slug: e.target.value });
+    // Enforce kebab-case on manual input too
+    const value = toKebabCase(e.target.value);
+    onChange({ ...page, slug: value });
   };
 
   return (
@@ -66,6 +78,17 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
               }`}
             >
               SEO
+            </button>
+            <button
+              onClick={() => setActiveTab('social')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === 'social'
+                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <Share2 size={14} />
+              Social
             </button>
             <button
               onClick={() => setActiveTab('preview')}
@@ -114,6 +137,7 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
                   type="text"
                   value={page.slug || ''}
                   onChange={handleSlugChange}
+                  placeholder="page-slug"
                   className="bg-transparent border-none outline-none text-gray-500 dark:text-gray-400 focus:text-blue-500 min-w-[200px]"
                 />
               </div>
@@ -186,7 +210,7 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
                       <span className="text-xs text-[#5f6368] dark:text-[#bdc1c6]">https://mysite.com › {page.slug || 'slug'}</span>
                     </div>
                   </div>
-                  <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer mb-1">
+                  <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer mb-1 truncated">
                     {page.seoTitle || page.title || 'Page Title'}
                   </h3>
                   <p className="text-sm text-[#4d5156] dark:text-[#bdc1c6] line-clamp-2">
@@ -195,6 +219,18 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'social' && (
+            <SocialShareTab
+              social={page.social}
+              onChange={(social) => onChange({ ...page, social })}
+              title={page.title}
+              description={page.seoDescription}
+              coverImage={page.coverImage}
+              slug={page.slug}
+              type="page"
+            />
           )}
 
           {activeTab === 'preview' && (
@@ -228,12 +264,12 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
         </div>
 
         {/* Sidebar Settings Panel */}
-        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto p-6 hidden xl:block">
+        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex-shrink-0 p-6 hidden xl:flex flex-col">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">
             Page Settings
           </h3>
 
-          <div className="space-y-6">
+          <div className="space-y-6 flex-1 overflow-y-auto">
             {/* Status */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

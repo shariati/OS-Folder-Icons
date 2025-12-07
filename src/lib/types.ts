@@ -96,6 +96,19 @@ export interface Settings {
   adConfig?: AdConfig;
 }
 
+// Social Metadata for Open Graph and Twitter Cards
+export interface SocialMetadata {
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'blog';
+  ogUrl?: string;
+  twitterCard?: 'summary' | 'summary_large_image' | 'player';
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+}
+
 
 
 export interface BlogPost {
@@ -129,6 +142,7 @@ export interface BlogPost {
   seoKeywords?: string[]; // Kept for backward compatibility
   focusKeyword?: string;
   socialImage?: string;
+  social?: SocialMetadata;
 }
 
 export interface Page {
@@ -146,4 +160,5 @@ export interface Page {
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];
+  social?: SocialMetadata;
 }
