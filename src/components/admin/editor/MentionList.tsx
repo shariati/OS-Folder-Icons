@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef, useEffect, useImperativeHandle, useState, useCallback, useRef } from 'react';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 import clsx from 'clsx';
 
 interface MentionItem {
@@ -119,7 +120,7 @@ MentionList.displayName = 'MentionList';
 // Helper function to fetch admin users for mentions
 export async function fetchMentionableUsers(query: string): Promise<MentionItem[]> {
   try {
-    const response = await fetch(`/api/admin/users?role=admin&search=${encodeURIComponent(query)}`);
+    const response = await authenticatedFetch(`/api/admin/users?role=admin&search=${encodeURIComponent(query)}`);
     if (!response.ok) return [];
     
     const data = await response.json();

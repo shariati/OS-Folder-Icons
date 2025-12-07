@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Upload, X, Loader2, Check } from 'lucide-react';
+import { Upload, X, Loader2, Check, Image as ImageIcon } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
+import { MediaLibraryModal } from '../MediaLibraryModal';
 
 interface ImageUploadModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
   const [altText, setAltText] = useState('');
   const [selectedStyle, setSelectedStyle] = useState('rounded-shadow');
   const [selectedSize, setSelectedSize] = useState('full');
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -154,7 +156,7 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div 
         ref={modalRef}
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
@@ -264,6 +266,14 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                 >
                   Use URL
                 </button>
+                <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-2 self-center" />
+                <button
+                  onClick={() => setIsLibraryOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 text-sm font-medium transition-colors"
+                >
+                  <ImageIcon size={16} />
+                  Browse Library
+                </button>
               </div>
             </>
           ) : (
@@ -367,6 +377,29 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
           </div>
         )}
       </div>
+
+      <MediaLibraryModal
+        isOpen={isLibraryOpen}
+        onClose={() => setIsLibraryOpen(false)}
+        onSelect={(url) => {
+          setUploadedUrl(url);
+          // Try to guess alt text from filename
+          try {
+            // decipher filename from url
+            // decodeURIComponent to handle spaces and special chars
+            const decodedUrl = decodeURIComponent(url);
+            const pathEnd = decodedUrl.split('?')[0]; 
+            const filename = pathEnd.split('/').pop() || '';
+            // Remove UUID if possible (this is tricky as UUID is random, but let's just use what we have)
+            // Or just use the full filename but clean it up
+            setAltText(filename.replace(/[-_]/g, ' ').replace(/\.[^/.]+$/, ""));
+          } catch (e) {
+            setAltText('Image');
+          }
+          setIsLibraryOpen(false);
+        }}
+        folder="content"
+      />
     </div>
   );
 }

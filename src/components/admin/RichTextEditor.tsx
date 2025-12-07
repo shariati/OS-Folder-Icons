@@ -28,6 +28,7 @@ import { twMerge } from 'tailwind-merge';
 
 // Import editor components
 import { ImageUploadModal } from './editor/ImageUploadModal';
+import { InputModal } from '../ui/InputModal';
 
 interface RichTextEditorProps {
   value: string;
@@ -144,7 +145,7 @@ function YouTubeModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={handleClose}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50" onClick={handleClose}>
       <div 
         className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden"
         onClick={e => e.stopPropagation()}
@@ -350,7 +351,7 @@ function LinkModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={handleClose}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50" onClick={handleClose}>
       <div 
         className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
         onClick={e => e.stopPropagation()}
@@ -736,6 +737,10 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   const [currentLinkTitle, setCurrentLinkTitle] = useState('');
   const [currentLinkTarget, setCurrentLinkTarget] = useState(true);
 
+  // Alt Text Modal State
+  const [isAltTextModalOpen, setIsAltTextModalOpen] = useState(false);
+  const [currentAltText, setCurrentAltText] = useState('');
+
   const openLinkModal = useCallback(() => {
     if (!editor) return;
     const attrs = editor.getAttributes('link');
@@ -772,7 +777,6 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
     editor.chain().focus().extendMarkRange('link').setLink({ 
       href: options.url,
       target: options.openInNewTab ? '_blank' : null,
-      title: options.title // Set title attribute
     }).run();
   }, [editor]);
 
@@ -923,6 +927,21 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         isEditing={isEditingLink}
       />
       
+      <InputModal
+        isOpen={isAltTextModalOpen}
+        onClose={() => setIsAltTextModalOpen(false)}
+        onSubmit={(value) => {
+          if (editor) {
+            editor.chain().focus().updateAttributes('image', { alt: value }).run();
+          }
+        }}
+        title="Edit Alt Text"
+        label="Alternative Text"
+        initialValue={currentAltText}
+        placeholder="Describe the image..."
+        confirmLabel="Save"
+      />
+      
       {editor && (
         <BubbleMenu 
           editor={editor} 
@@ -984,18 +1003,15 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           {/* Alt/Title controls and Swap */}
           <div className="flex items-center gap-1 p-2">
             <button
-              onClick={() => {
-                const url = window.prompt('Enter image URL:', editor.getAttributes('image').src);
-                if (url) editor.chain().focus().setImage({ src: url }).run();
-              }}
+              onClick={() => setIsImageModalOpen(true)}
               className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
             >
               <ImageIcon size={14} /> Change Image
             </button>
             <button
               onClick={() => {
-                const alt = window.prompt('Enter alt text:', editor.getAttributes('image').alt);
-                if (alt !== null) editor.chain().focus().updateAttributes('image', { alt }).run();
+                setCurrentAltText(editor.getAttributes('image').alt || '');
+                setIsAltTextModalOpen(true);
               }}
               className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
             >
@@ -1022,69 +1038,55 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       )}
 
       {/* Static Toolbar */}
-      <div className="sticky top-0 z-50 flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Bold (Ctrl+B)">
-          <Bold size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive('italic')} title="Italic (Ctrl+I)">
-          <Italic size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} isActive={editor.isActive('strike')} title="Strikethrough">
-          <Strikethrough size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleCode().run()} isActive={editor.isActive('code')} title="Inline Code">
-          <Code size={18} />
-        </ToolbarButton>
-        <ToolbarDivider />
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} title="Heading 1">
-          <Heading1 size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive('heading', { level: 2 })} title="Heading 2">
-          <Heading2 size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive('heading', { level: 3 })} title="Heading 3">
-          <Heading3 size={18} />
-        </ToolbarButton>
-        <ToolbarDivider />
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} title="Bullet List">
-          <List size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={editor.isActive('orderedList')} title="Numbered List">
-          <ListOrdered size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleTaskList().run()} isActive={editor.isActive('taskList')} title="Task List">
-          <CheckSquare size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={editor.isActive('blockquote')} title="Quote">
-          <Quote size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} title="Code Block">
-          <Code2 size={18} />
-        </ToolbarButton>
-        <ToolbarDivider />
-        <ToolbarButton onClick={openLinkModal} isActive={editor.isActive('link')} title="Add Link">
-          <LinkIcon size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Divider">
-          <Minus size={18} />
-        </ToolbarButton>
-        <ToolbarDivider />
-        <ToolbarButton onClick={() => setIsImageModalOpen(true)} title="Insert Image">
-          <ImageIcon size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => setIsYouTubeModalOpen(true)} title="Insert YouTube Video">
-          <YoutubeIcon size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} title="Insert Table">
-          <TableIcon size={18} />
-        </ToolbarButton>
-        <ToolbarDivider />
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Undo (Ctrl+Z)">
-          <Undo size={18} />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Redo (Ctrl+Shift+Z)">
-          <Redo size={18} />
-        </ToolbarButton>
+      {/* Static Toolbar */}
+      <div className="sticky top-[84px] z-[90] flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+        {(
+          [
+            { icon: Bold, title: 'Bold (Ctrl+B)', action: () => editor.chain().focus().toggleBold().run(), isActive: editor.isActive('bold') },
+            { icon: Italic, title: 'Italic (Ctrl+I)', action: () => editor.chain().focus().toggleItalic().run(), isActive: editor.isActive('italic') },
+            { icon: Strikethrough, title: 'Strikethrough', action: () => editor.chain().focus().toggleStrike().run(), isActive: editor.isActive('strike') },
+            { icon: Code, title: 'Inline Code', action: () => editor.chain().focus().toggleCode().run(), isActive: editor.isActive('code') },
+            { type: 'divider' },
+            { icon: Heading1, title: 'Heading 1', action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), isActive: editor.isActive('heading', { level: 1 }) },
+            { icon: Heading2, title: 'Heading 2', action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), isActive: editor.isActive('heading', { level: 2 }) },
+            { icon: Heading3, title: 'Heading 3', action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), isActive: editor.isActive('heading', { level: 3 }) },
+            { type: 'divider' },
+            { icon: List, title: 'Bullet List', action: () => editor.chain().focus().toggleBulletList().run(), isActive: editor.isActive('bulletList') },
+            { icon: ListOrdered, title: 'Numbered List', action: () => editor.chain().focus().toggleOrderedList().run(), isActive: editor.isActive('orderedList') },
+            { icon: CheckSquare, title: 'Task List', action: () => editor.chain().focus().toggleTaskList().run(), isActive: editor.isActive('taskList') },
+            { icon: Quote, title: 'Quote', action: () => editor.chain().focus().toggleBlockquote().run(), isActive: editor.isActive('blockquote') },
+            { icon: Code2, title: 'Code Block', action: () => editor.chain().focus().toggleCodeBlock().run(), isActive: editor.isActive('codeBlock') },
+            { type: 'divider' },
+            { icon: LinkIcon, title: 'Add Link', action: openLinkModal, isActive: editor.isActive('link') },
+            { icon: Minus, title: 'Horizontal Divider', action: () => editor.chain().focus().setHorizontalRule().run() },
+            { type: 'divider' },
+            { icon: ImageIcon, title: 'Insert Image', action: () => setIsImageModalOpen(true) },
+            { icon: YoutubeIcon, title: 'Insert YouTube Video', action: () => setIsYouTubeModalOpen(true) },
+            { icon: TableIcon, title: 'Insert Table', action: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() },
+            { type: 'divider' },
+            { icon: Undo, title: 'Undo (Ctrl+Z)', action: () => editor.chain().focus().undo().run(), disabled: !editor.can().undo() },
+            { icon: Redo, title: 'Redo (Ctrl+Shift+Z)', action: () => editor.chain().focus().redo().run(), disabled: !editor.can().redo() },
+          ] as const
+        ).map((item, index) => {
+          if ('type' in item && item.type === 'divider') {
+            return <ToolbarDivider key={index} />;
+          }
+          // Type guard or cast for button items
+          const buttonItem = item as { icon: React.ElementType, title: string, action: () => void, isActive?: boolean, disabled?: boolean };
+          const Icon = buttonItem.icon;
+          
+          return (
+            <ToolbarButton
+              key={index}
+              onClick={buttonItem.action}
+              isActive={buttonItem.isActive}
+              disabled={buttonItem.disabled}
+              title={buttonItem.title}
+            >
+              <Icon size={18} />
+            </ToolbarButton>
+          );
+        })}
       </div>
 
       {/* Bubble Menu */}
@@ -1105,7 +1107,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
             }
             return true;
           }}
-          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
         >
           <button onClick={() => editor.chain().focus().toggleBold().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('bold') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Bold">
             <Bold size={16} />
@@ -1128,7 +1130,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           editor={editor} 
           pluginKey="image-menu"
           shouldShow={({ editor }) => editor.isActive('image')}
-          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col min-w-[300px]"
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col min-w-[300px] z-50"
         >
           {/* Alignment controls */}
           <div className="flex items-center gap-1 p-2 border-b border-gray-100 dark:border-gray-700">
@@ -1185,10 +1187,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           {/* Alt/Title controls and Swap */}
           <div className="flex items-center gap-1 p-2">
             <button
-              onClick={() => {
-                const url = window.prompt('Enter image URL:', editor.getAttributes('image').src);
-                if (url) editor.chain().focus().setImage({ src: url }).run();
-              }}
+              onClick={() => setIsImageModalOpen(true)}
               className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
             >
               <ImageIcon size={14} /> Change Image
@@ -1212,7 +1211,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           editor={editor} 
           pluginKey="youtube-menu"
           shouldShow={({ editor }) => editor.isActive('youtube')}
-          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex divide-x divide-gray-200 dark:divide-gray-700"
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex divide-x divide-gray-200 dark:divide-gray-700 z-50"
         >
           <button
             onClick={openYoutubeEdit}
@@ -1237,7 +1236,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           editor={editor}
           pluginKey="link-menu"
           shouldShow={({ editor }) => editor.isActive('link')}
-          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
         >
           <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
             <LinkIcon size={14} />
@@ -1276,7 +1275,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       {!hideFloatingMenu && (
         <FloatingMenu 
           editor={editor} 
-          className="flex items-center gap-1 p-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+          className="flex items-center gap-1 p-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
         >
           <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 1">
             <Heading1 size={16} />

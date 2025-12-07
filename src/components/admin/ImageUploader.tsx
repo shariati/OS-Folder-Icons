@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
+import { MediaLibraryModal } from './MediaLibraryModal';
 
 interface ImageUploaderProps {
   value?: string;
@@ -24,6 +25,7 @@ export function ImageUploader({
 }: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -128,13 +130,22 @@ export function ImageUploader({
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-            >
-              Replace
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm"
+              >
+                Upload New
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsLibraryOpen(true)}
+                className="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm"
+              >
+                Browse Library
+              </button>
+            </div>
             <button
               type="button"
               onClick={handleRemove}
@@ -172,11 +183,24 @@ export function ImageUploader({
               </div>
               <div className="text-center">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Drop an image here, or <span className="text-blue-500">browse</span>
+                  Drop an image here, or <span className="text-blue-500 hover:text-blue-600">upload</span>
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  PNG, JPG, WebP up to 5MB
-                </p>
+                <div className="mt-2 flex flex-col gap-1 items-center">
+                  <p className="text-xs text-gray-400">
+                    PNG, JPG, WebP up to 5MB
+                  </p>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsLibraryOpen(true);
+                    }}
+                    className="text-xs text-blue-500 hover:text-blue-600 hover:underline font-medium flex items-center gap-1 mt-1"
+                  >
+                    <ImageIcon size={12} />
+                    Browse Media Library
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -186,6 +210,16 @@ export function ImageUploader({
       {error && (
         <p className="mt-2 text-sm text-red-500">{error}</p>
       )}
+
+      <MediaLibraryModal
+        isOpen={isLibraryOpen}
+        onClose={() => setIsLibraryOpen(false)}
+        onSelect={(url) => {
+          onChange(url);
+          setIsLibraryOpen(false);
+        }}
+        folder={folder}
+      />
     </div>
   );
 }

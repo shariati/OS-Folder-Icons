@@ -1,5 +1,7 @@
 'use client';
 
+import { authenticatedFetch } from '@/lib/fetch-auth';
+
 import { useState, useEffect } from 'react';
 import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
