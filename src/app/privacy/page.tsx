@@ -1,5 +1,6 @@
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { PROJECT_LINKS, EXTERNAL_LINKS } from '@/constants/links';
 
 export default function PrivacyPage() {
   return (
@@ -54,7 +55,7 @@ export default function PrivacyPage() {
                   <li><strong>Analytics:</strong>
                     <ul className="list-disc pl-6 mt-1 space-y-1">
                       <li><strong>Google Analytics:</strong> To understand user behavior and traffic.</li>
-                      <li><strong>Microsoft Clarity:</strong> We partner with Microsoft Clarity and Microsoft Advertising to capture how you use and interact with our website through behavioral metrics, heatmaps, and session replay to improve and market our products/services. Website usage data is captured using first and third-party cookies and other tracking technologies to determine the popularity of products/services and online activity. Additionally, we use this information for site optimization, fraud/security purposes, and advertising. For more information about how Microsoft collects and uses your data, visit the <a href="https://privacy.microsoft.com/en-US/privacystatement" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Microsoft Privacy Statement</a>. See also <a href="https://learn.microsoft.com/en-us/clarity/setup-and-installation/privacy-disclosure" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Clarity Privacy Disclosure</a>.</li>
+                      <li><strong>Microsoft Clarity:</strong> We partner with Microsoft Clarity and Microsoft Advertising to capture how you use and interact with our website through behavioral metrics, heatmaps, and session replay to improve and market our products/services. Website usage data is captured using first and third-party cookies and other tracking technologies to determine the popularity of products/services and online activity. Additionally, we use this information for site optimization, fraud/security purposes, and advertising. For more information about how Microsoft collects and uses your data, visit the <a href={EXTERNAL_LINKS.MICROSOFT_PRIVACY} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Microsoft Privacy Statement</a>. See also <a href={EXTERNAL_LINKS.CLARITY_DISCLOSURE} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Clarity Privacy Disclosure</a>.</li>
                     </ul>
                   </li>
                   <li><strong>Advertising:</strong> We use <strong>Google AdSense</strong> and other ad partners to display advertisements. These partners may use cookies to serve ads based on your prior visits to our website or other websites.</li>
@@ -108,7 +109,7 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">8. Contact Us</h2>
                 <p>
-                  If you have questions about this Privacy Policy, please contact us at <a href="https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a" className="text-blue-600 hover:underline">GitHub Discussions</a>.
+                  If you have questions about this Privacy Policy, please contact us at <a href={PROJECT_LINKS.GITHUB_DISCUSSIONS} className="text-blue-600 hover:underline">GitHub Discussions</a>.
                 </p>
               </section>
             </div>

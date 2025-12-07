@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
+import { SOCIAL_SHARE_URLS } from '@/constants/links';
 import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 import { BlogPostCard } from '@/components/features/BlogPostCard';
 import { Footer } from '@/components/layout/Footer';
@@ -150,7 +151,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Share this post:
             </span>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              href={`${SOCIAL_SHARE_URLS.TWITTER}?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-medium"
@@ -158,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Twitter
             </a>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              href={`${SOCIAL_SHARE_URLS.FACEBOOK}?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-800 transition-colors font-medium"
@@ -166,7 +167,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Facebook
             </a>
             <a
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              href={`${SOCIAL_SHARE_URLS.LINKEDIN}?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-lg bg-blue-800 text-white hover:bg-blue-900 transition-colors font-medium"

@@ -1,5 +1,6 @@
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { SOCIAL_LINKS, PROJECT_LINKS } from '@/constants/links';
 
 export default function TermsPage() {
   return (
@@ -43,7 +44,7 @@ export default function TermsPage() {
                   The source code for OS Folder Icons is available for transparency and educational purposes.
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Open Source (Non-Commercial):</strong> The source code is available for personal and educational use. You can view the source code on our <a href="https://github.com/shariati/OS-Folder-Icons" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">GitHub Repository</a>.</li>
+                  <li><strong>Open Source (Non-Commercial):</strong> The source code is available for personal and educational use. You can view the source code on our <a href={SOCIAL_LINKS.GITHUB} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">GitHub Repository</a>.</li>
                   <li><strong>Commercial Use:</strong> Any commercial use of the source code, its variations, or deployment of this application for commercial purposes requires a separate commercial license and payment of royalty fees. Please contact us for details.</li>
                   <li><strong>Restrictions:</strong> You may not reverse engineer, decompile, or attempt to extract the source code of our software for commercial reproduction without a license.</li>
                 </ul>
@@ -118,7 +119,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">11. Contact Us</h2>
                 <p>
-                  If you have any questions about these Terms, please contact us at <a href="https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a" className="text-blue-600 hover:underline">GitHub Discussions</a>.
+                  If you have any questions about these Terms, please contact us at <a href={PROJECT_LINKS.GITHUB_DISCUSSIONS} className="text-blue-600 hover:underline">GitHub Discussions</a>.
                 </p>
               </section>
             </div>
