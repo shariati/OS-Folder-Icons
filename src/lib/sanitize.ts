@@ -46,8 +46,7 @@ export function sanitizeHtml(html: string): string {
         // Remove javascript: protocol
         sanitized = sanitized.replace(/javascript:/gi, '');
 
-        // Remove iframe tags
-        sanitized = sanitized.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
+
 
         // Remove object and embed tags
         sanitized = sanitized.replace(/<(object|embed)\b[^<]*(?:(?!<\/\1>)<[^<]*)*<\/\1>/gi, '');
@@ -57,8 +56,8 @@ export function sanitizeHtml(html: string): string {
 
     // Client-side
     return DOMPurify.sanitize(html, {
-        ALLOWED_TAGS,
-        ALLOWED_ATTR,
+        ALLOWED_TAGS: [...ALLOWED_TAGS, 'iframe'],
+        ALLOWED_ATTR: [...ALLOWED_ATTR, 'frameborder', 'allow', 'allowfullscreen', 'scrolling'],
         ALLOW_DATA_ATTR: false,
         ALLOW_UNKNOWN_PROTOCOLS: false,
     });

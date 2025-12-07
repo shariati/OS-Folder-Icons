@@ -21,7 +21,7 @@ import {
   Quote, Image as ImageIcon, Youtube as YoutubeIcon, 
   Link as LinkIcon, Heading1, Heading2, Heading3,
   Table as TableIcon, Code2, CheckSquare, Undo, Redo, Minus,
-  X, ExternalLink, Play, Volume2, VolumeX
+  X, ExternalLink, Play, Volume2, VolumeX, AlignLeft, AlignCenter, AlignRight, Type
 } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -57,6 +57,7 @@ interface YouTubeOptions {
 interface LinkOptions {
   url: string;
   text?: string;
+  title?: string;
   openInNewTab: boolean;
 }
 
@@ -64,11 +65,20 @@ interface LinkOptions {
 function YouTubeModal({ 
   isOpen, 
   onClose, 
-  onInsert 
+  onInsert,
+  initialValues
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   onInsert: (options: YouTubeOptions) => void;
+  initialValues?: {
+    url: string;
+    start: number;
+    controls: boolean;
+    autoplay: boolean;
+    muted: boolean;
+    loop: boolean;
+  } | null;
 }) {
   const [url, setUrl] = useState('');
   const [controls, setControls] = useState(true);
@@ -77,6 +87,26 @@ function YouTubeModal({
   const [loop, setLoop] = useState(false);
   const [startTime, setStartTime] = useState(0);
   const [videoId, setVideoId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen && initialValues) {
+      setUrl(initialValues.url);
+      setControls(initialValues.controls);
+      setAutoplay(initialValues.autoplay);
+      setMuted(initialValues.muted);
+      setLoop(initialValues.loop);
+      setStartTime(initialValues.start);
+    } else if (isOpen) {
+      // Reset for new insert
+      setUrl('');
+      setControls(true);
+      setAutoplay(false);
+      setMuted(false);
+      setLoop(false);
+      setStartTime(0);
+      setVideoId(null);
+    }
+  }, [isOpen, initialValues]);
 
   // Extract video ID from YouTube URL
   useEffect(() => {
@@ -104,17 +134,10 @@ function YouTubeModal({
       loop,
       start: startTime,
     });
-    handleClose();
+    onClose();
   };
 
   const handleClose = () => {
-    setUrl('');
-    setControls(true);
-    setAutoplay(false);
-    setMuted(false);
-    setLoop(false);
-    setStartTime(0);
-    setVideoId(null);
     onClose();
   };
 
@@ -272,25 +295,40 @@ function LinkModal({
   onClose, 
   onInsert,
   initialUrl = '',
+  initialText = '',
+  initialTitle = '',
+  initialTarget = true,
   isEditing = false
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   onInsert: (options: LinkOptions) => void;
   initialUrl?: string;
+  initialText?: string;
+  initialTitle?: string;
+  initialTarget?: boolean;
   isEditing?: boolean;
 }) {
   const [url, setUrl] = useState(initialUrl);
-  const [openInNewTab, setOpenInNewTab] = useState(true);
+  const [text, setText] = useState(initialText);
+  const [title, setTitle] = useState(initialTitle);
+  const [openInNewTab, setOpenInNewTab] = useState(initialTarget);
 
   useEffect(() => {
-    setUrl(initialUrl);
-  }, [initialUrl]);
+    if (isOpen) {
+      setUrl(initialUrl);
+      setText(initialText);
+      setTitle(initialTitle);
+      setOpenInNewTab(initialTarget);
+    }
+  }, [isOpen, initialUrl, initialText, initialTitle, initialTarget]);
 
   const handleInsert = () => {
     if (!url.trim()) return;
     onInsert({
       url: url.startsWith('http') ? url : `https://${url}`,
+      text: text,
+      title: title,
       openInNewTab,
     });
     handleClose();
@@ -303,6 +341,8 @@ function LinkModal({
 
   const handleClose = () => {
     setUrl('');
+    setText('');
+    setTitle('');
     setOpenInNewTab(true);
     onClose();
   };
@@ -328,6 +368,20 @@ function LinkModal({
 
         {/* Content */}
         <div className="p-6 space-y-4">
+          {/* Text Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Link Text
+            </label>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Click here"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
+
           {/* URL Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -346,6 +400,20 @@ function LinkModal({
                   handleInsert();
                 }
               }}
+            />
+          </div>
+
+          {/* Title Input */}
+           <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Tooltip (Title)
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="More info about this link"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             />
           </div>
 
@@ -486,6 +554,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           class: 'rounded-xl shadow-lg my-4 max-w-full',
         },
         allowBase64: true,
+        inline: true,
       }),
       Youtube.configure({
         controls: true,
@@ -612,6 +681,15 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
     immediatelyRender: false,
   });
 
+  const [editingYoutubeNode, setEditingYoutubeNode] = useState<{
+    url: string;
+    start: number;
+    controls: boolean;
+    autoplay: boolean;
+    muted: boolean;
+    loop: boolean;
+  } | null>(null);
+
   const addImage = useCallback((url: string, alt: string) => {
     if (editor) {
       editor.chain().focus().setImage({ 
@@ -626,14 +704,54 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
     if (editor) {
       editor.commands.setYoutubeVideo({ 
         src: options.url,
+        start: options.start || 0,
+        // @ts-ignore
+        controls: options.controls,
+        autoplay: options.autoplay,
+        loop: options.loop,
+        mute: options.muted
       });
     }
   }, [editor]);
 
+  const openYoutubeEdit = useCallback(() => {
+    if (!editor) return;
+    const { selection } = editor.state;
+    // @ts-ignore
+    const node = selection.node;
+    if (node && node.type.name === 'youtube') {
+      setEditingYoutubeNode({
+        url: node.attrs.src,
+        start: node.attrs.start || 0,
+        controls: node.attrs.controls !== false, // default true in tiptap
+        autoplay: node.attrs.autoplay || false,
+        muted: node.attrs.mute || false,
+        loop: node.attrs.loop || false,
+      });
+      setIsYouTubeModalOpen(true);
+    }
+  }, [editor]);
+
+  const [currentLinkText, setCurrentLinkText] = useState('');
+  const [currentLinkTitle, setCurrentLinkTitle] = useState('');
+  const [currentLinkTarget, setCurrentLinkTarget] = useState(true);
+
   const openLinkModal = useCallback(() => {
     if (!editor) return;
-    const previousUrl = editor.getAttributes('link').href || '';
+    const attrs = editor.getAttributes('link');
+    const previousUrl = attrs.href || '';
+    const previousTarget = attrs.target === '_blank';
+    const previousTitle = attrs.title || ''; // May need to configure Link extension to support title
+    
+    // Get selected text
+    const { from, to } = editor.state.selection;
+    const text = editor.state.doc.textBetween(from, to, ' ');
+    
     setCurrentLinkUrl(previousUrl);
+    setCurrentLinkText(text);
+    setCurrentLinkTitle(previousTitle);
+    setCurrentLinkTarget(previousTarget);
+    
     setIsEditingLink(!!previousUrl);
     setIsLinkModalOpen(true);
   }, [editor]);
@@ -646,9 +764,15 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       return;
     }
 
+    // If text update is supported and provided (e.g. extending range or replacing)
+    // For now standard Tiptap link mark just wraps text. 
+    // If we want to change text we might need to insert content.
+    
+    // @ts-ignore
     editor.chain().focus().extendMarkRange('link').setLink({ 
       href: options.url,
       target: options.openInNewTab ? '_blank' : null,
+      title: options.title // Set title attribute
     }).run();
   }, [editor]);
 
@@ -781,16 +905,121 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       />
       <YouTubeModal
         isOpen={isYouTubeModalOpen}
-        onClose={() => setIsYouTubeModalOpen(false)}
+        onClose={() => {
+          setIsYouTubeModalOpen(false);
+          setEditingYoutubeNode(null);
+        }}
         onInsert={addYoutube}
+        initialValues={editingYoutubeNode}
       />
       <LinkModal
         isOpen={isLinkModalOpen}
         onClose={() => setIsLinkModalOpen(false)}
         onInsert={handleLinkInsert}
         initialUrl={currentLinkUrl}
+        initialText={currentLinkText}
+        initialTitle={currentLinkTitle}
+        initialTarget={currentLinkTarget}
         isEditing={isEditingLink}
       />
+      
+      {editor && (
+        <BubbleMenu 
+          editor={editor} 
+          shouldShow={({ editor }) => editor.isActive('image')}
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col min-w-[300px]"
+        >
+          {/* Alignment controls */}
+          <div className="flex items-center gap-1 p-2 border-b border-gray-100 dark:border-gray-700">
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'float: left; margin-right: 1rem;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Left"
+            >
+              <AlignLeft size={16} />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'display: block; margin: 0 auto;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Center"
+            >
+              <AlignCenter size={16} />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'float: right; margin-left: 1rem;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Right"
+            >
+              <AlignRight size={16} />
+            </button>
+            <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1" />
+            
+            {/* Size controls */}
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '25%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              S
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '50%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              M
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '75%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              L
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              Full
+            </button>
+          </div>
+
+          {/* Alt/Title controls and Swap */}
+          <div className="flex items-center gap-1 p-2">
+            <button
+              onClick={() => {
+                const url = window.prompt('Enter image URL:', editor.getAttributes('image').src);
+                if (url) editor.chain().focus().setImage({ src: url }).run();
+              }}
+              className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
+            >
+              <ImageIcon size={14} /> Change Image
+            </button>
+            <button
+              onClick={() => {
+                const alt = window.prompt('Enter alt text:', editor.getAttributes('image').alt);
+                if (alt !== null) editor.chain().focus().updateAttributes('image', { alt }).run();
+              }}
+              className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
+            >
+              <Type size={14} /> Alt Text
+            </button>
+          </div>
+        </BubbleMenu>
+      )}
+
+      {editor && (
+        <BubbleMenu 
+          editor={editor} 
+          shouldShow={({ editor }) => editor.isActive('youtube')}
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex divide-x divide-gray-200 dark:divide-gray-700"
+        >
+          <button
+            onClick={openYoutubeEdit}
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
+          >
+            <YoutubeIcon size={16} />
+            Edit Settings
+          </button>
+        </BubbleMenu>
+      )}
 
       {/* Static Toolbar */}
       <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 shadow-sm">
