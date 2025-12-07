@@ -143,9 +143,14 @@ export interface Page {
   id: string;
   title: string;
   slug: string;
-  content: string; // HTML content with component shortcodes
-  published: boolean;
+  content: string; // HTML content from editor
+  coverImage?: string;
+  status: 'draft' | 'published';
+  authorId?: string;
+  views?: number;
   components?: string[]; // Track which components are used
+  createdAt?: string;
+  updatedAt?: string;
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];

@@ -1,33 +1,60 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { DB, BlogPost } from '@/lib/types';
 import { saveBlogPostAction, deleteBlogPostAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
-import { Plus, Edit, Trash2, ExternalLink, Calendar, Eye } from 'lucide-react';
+import { Plus, Search, Newspaper, Edit2, Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { BlogEditor } from './BlogEditor';
 import { getFullUrl } from '@/lib/url';
+import { socialStyleLargeNumbers } from '@/lib/format';
+import clsx from 'clsx';
 
 interface BlogManagerProps {
   initialData: DB;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 export function BlogManager({ initialData }: BlogManagerProps) {
   const [posts, setPosts] = useState<BlogPost[]>(initialData.blogPosts || []);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<Partial<BlogPost>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'published' | 'scheduled'>('all');
+  const [currentPageNum, setCurrentPageNum] = useState(1);
   const { showToast } = useToast();
-  const hasItems = posts.length > 0;
+
+  // Filter and sort posts
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter(post => {
+        const matchesSearch = 
+          post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.slug?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.authorId?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      })
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+  }, [posts, searchTerm, statusFilter]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+  const paginatedPosts = filteredPosts.slice(
+    (currentPageNum - 1) * ITEMS_PER_PAGE,
+    currentPageNum * ITEMS_PER_PAGE
+  );
 
   const handleCreateNew = () => {
     setCurrentPost({
       id: Date.now().toString(),
       status: 'draft',
       published: false,
-      authorId: 'admin', // Hardcoded for now
+      authorId: 'admin',
       tags: [],
     });
     setIsEditing(true);
@@ -64,14 +91,13 @@ export function BlogManager({ initialData }: BlogManagerProps) {
       const postToSave = currentPost as BlogPost;
       
       // Sync published boolean with status for backward compatibility
-      // We set published=true for scheduled posts too, so they satisfy naive checks,
-      // but we will filter by date in the public view to ensure they don't appear early.
       postToSave.published = postToSave.status === 'published' || postToSave.status === 'scheduled';
 
       // Ensure creation date
       if (!postToSave.createdAt) {
           postToSave.createdAt = new Date().toISOString();
       }
+      postToSave.updatedAt = new Date().toISOString();
 
       await saveBlogPostAction(postToSave);
       
@@ -95,6 +121,15 @@ export function BlogManager({ initialData }: BlogManagerProps) {
     }
   };
 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '—';
+    return new Date(dateString).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
   if (isEditing) {
     return (
       <div className="h-full flex flex-col">
@@ -108,10 +143,10 @@ export function BlogManager({ initialData }: BlogManagerProps) {
         </div>
         <div className="flex-1 overflow-hidden">
             <BlogEditor
-                post={currentPost}
-                onChange={setCurrentPost}
-                onSave={handleSave}
-                isLoading={isLoading}
+              post={currentPost}
+              onChange={setCurrentPost}
+              onSave={handleSave}
+              isLoading={isLoading}
             />
         </div>
       </div>
@@ -119,89 +154,186 @@ export function BlogManager({ initialData }: BlogManagerProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Blog Posts</h2>
-          <p className="text-gray-500 dark:text-gray-400">Manage your blog content</p>
-        </div>
+    <NeumorphBox className="p-6">
+      {/* Header */}
+      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <h3 className="font-bold text-xl text-black dark:text-white flex items-center gap-2">
+          <Newspaper size={24} className="text-primary" />
+          Blog Management
+        </h3>
         <button
           onClick={handleCreateNew}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
-          <Plus size={20} />
+          <Plus size={18} />
           New Post
         </button>
       </div>
 
-      {!hasItems ? (
-        <EmptyState
-          title="No blog posts yet"
-          description="Create your first blog post to start sharing your thoughts."
-          actionLabel="Create Post"
-          onAction={handleCreateNew}
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {posts
-            .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
-            .map((post) => (
-            <NeumorphBox 
-                key={post.id}
-                title={post.title}
-                subtitle={
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400 font-mono">/blog/{post.slug}</span>
-                    {post.status === 'published' && (
-                        <a 
-                            href={getFullUrl(post.slug, 'blog')} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:text-blue-600"
-                        >
-                            <ExternalLink size={12} />
-                        </a>
-                    )}
-                  </div>
-                }
-                showActions
-                onEdit={() => handleEdit(post)}
-                onDelete={() => handleDelete(post.id)}
-                badge={
-                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    post.status === 'published' 
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-                        : post.status === 'scheduled'
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                }`}>
-                    {post.status || (post.published ? 'Published' : 'Draft')}
-                </span>
-                }
+      {/* Search and Filters */}
+      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center">
+        <div className="flex gap-2 flex-wrap">
+          {(['all', 'draft', 'published', 'scheduled'] as const).map(status => (
+            <button
+              key={status}
+              onClick={() => { setStatusFilter(status); setCurrentPageNum(1); }}
+              className={clsx(
+                "px-4 py-2 rounded-xl font-medium text-sm transition-all capitalize",
+                statusFilter === status
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
             >
-                <div className="mt-2 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar size={14} />
-                    <span>
-                        {post.publishedAt 
-                            ? new Date(post.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) 
-                            : 'Unscheduled'}
-                    </span>
-                  </div>
-                  {post.views !== undefined && (
-                      <div className="flex items-center gap-1.5">
-                        <Eye size={14} />
-                        <span>{post.views} views</span>
-                      </div>
-                  )}
-                  {post.readingTime && (
-                    <span>{post.readingTime} min read</span>
-                  )}
-                </div>
-            </NeumorphBox>
+              {status}
+            </button>
           ))}
         </div>
+        <div className="relative flex-1 sm:max-w-md">
+          <input
+            type="text"
+            placeholder="Search by title, slug, or author..."
+            value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPageNum(1); }}
+            className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition focus:border-primary dark:border-gray-700 dark:bg-gray-800"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+        </div>
+      </div>
+
+      {/* Table */}
+      {filteredPosts.length === 0 ? (
+        <EmptyState
+          title="No posts found"
+          description={searchTerm || statusFilter !== 'all' ? "Try adjusting your search or filters." : "Create your first blog post to get started."}
+          actionLabel={!searchTerm && statusFilter === 'all' ? "Create Post" : undefined}
+          onAction={!searchTerm && statusFilter === 'all' ? handleCreateNew : undefined}
+        />
+      ) : (
+        <>
+          <div className="max-w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-gray-100 dark:bg-gray-800 text-left">
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Title</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Slug</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Author</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Status</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Created</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Published</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Views</th>
+                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                {paginatedPosts.map((post) => (
+                  <tr key={post.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td className="py-4 px-6">
+                      <p className="font-medium text-black dark:text-white">{post.title}</p>
+                    </td>
+                    <td className="py-4 px-6">
+                      <code className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                        /blog/{post.slug}
+                      </code>
+                    </td>
+                    <td className="py-4 px-6 text-sm text-gray-600 dark:text-gray-400">
+                      {post.authorId || 'Admin'}
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className={clsx(
+                        "px-2.5 py-0.5 rounded-full text-xs font-bold uppercase",
+                        post.status === 'published' 
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          : post.status === 'scheduled'
+                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                      )}>
+                        {post.status}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-sm text-gray-500">
+                      {formatDate(post.createdAt)}
+                    </td>
+                    <td className="py-4 px-6 text-sm text-gray-500">
+                      {formatDate(post.publishedAt)}
+                    </td>
+                    <td className="py-4 px-6 text-sm text-gray-500">
+                      {socialStyleLargeNumbers(post.views)}
+                    </td>
+                    <td className="py-4 px-6 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {post.status === 'published' && (
+                          <a
+                            href={getFullUrl(post.slug, 'blog')}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="View Live"
+                          >
+                            <ExternalLink size={18} />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleEdit(post)}
+                          className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(post.id)}
+                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                Showing {((currentPageNum - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPageNum * ITEMS_PER_PAGE, filteredPosts.length)} of {filteredPosts.length} posts
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPageNum(Math.max(1, currentPageNum - 1))}
+                  disabled={currentPageNum === 1}
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPageNum(pageNum)}
+                    className={clsx(
+                      "w-10 h-10 rounded-lg font-medium transition-colors",
+                      pageNum === currentPageNum
+                        ? "bg-blue-600 text-white"
+                        : "border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    )}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPageNum(Math.min(totalPages, currentPageNum + 1))}
+                  disabled={currentPageNum === totalPages}
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
-    </div>
+    </NeumorphBox>
   );
 }

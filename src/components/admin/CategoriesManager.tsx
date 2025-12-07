@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ImageUploader } from './ImageUploader';
 
 export function CategoriesManager({ initialData }: { initialData: DB }) {
   const [categories, setCategories] = useState<Category[]>(initialData.categories || []);
@@ -62,28 +63,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, category: Category) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const data = await response.json();
-      setEditingCategory({ ...category, imageUrl: data.url });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      showToast('Failed to upload image', 'error');
-    }
-  };
+  // handleImageUpload removed - now using ImageUploader component directly
 
   const startCreate = () => {
     setEditingCategory({
@@ -182,19 +162,13 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image (PNG Transparent)</label>
-                <div className="flex items-center gap-4">
-                  {editingCategory.imageUrl && (
-                    <div className="relative w-20 h-20 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600">
-                      <Image src={editingCategory.imageUrl} alt="Preview" width={60} height={60} className="object-contain" />
-                    </div>
-                  )}
-                  <label className="cursor-pointer px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl flex items-center gap-2 transition-colors">
-                    <Upload size={18} />
-                    <span>Upload Image</span>
-                    <input type="file" className="hidden" accept="image/png" onChange={(e) => handleImageUpload(e, editingCategory)} />
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category Image</label>
+                <ImageUploader
+                  value={editingCategory.imageUrl}
+                  onChange={(url) => setEditingCategory({ ...editingCategory, imageUrl: url })}
+                  folder="categories"
+                  aspectRatio="square"
+                />
               </div>
 
               <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
