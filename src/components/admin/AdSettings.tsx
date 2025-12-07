@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { Save, AlertCircle } from 'lucide-react';
 import { AdConfig } from '@/lib/types';
 import { clsx } from 'clsx';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 export function AdSettings() {
   const [config, setConfig] = useState<AdConfig>({
@@ -34,7 +35,7 @@ export function AdSettings() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch('/api/admin/ads', {
+      const res = await authenticatedFetch('/api/admin/ads', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config),

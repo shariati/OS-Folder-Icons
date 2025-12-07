@@ -5,6 +5,7 @@ import { Settings, FaviconConfig, TrackingConfig, DefaultSeoConfig, SiteIdentity
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ImageUploader } from './ImageUploader';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 import { 
   Globe, 
   Image as ImageIcon, 
@@ -58,7 +59,7 @@ export function SiteConfigManager() {
   const handleSave = async (updates: Partial<Settings>) => {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/settings', {
+      const res = await authenticatedFetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),

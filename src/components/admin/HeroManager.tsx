@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ImageUploader } from './ImageUploader';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 export function HeroManager({ initialData }: { initialData: DB }) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialData.heroSlides || []);
@@ -19,7 +20,7 @@ export function HeroManager({ initialData }: { initialData: DB }) {
 
   const handleSave = async (slide: HeroSlide) => {
     try {
-      const response = await fetch('/api/admin/hero', {
+      const response = await authenticatedFetch('/api/admin/hero', {
         method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(slide),
@@ -48,7 +49,7 @@ export function HeroManager({ initialData }: { initialData: DB }) {
     if (!confirm('Are you sure you want to delete this slide?')) return;
 
     try {
-      const response = await fetch(`/api/admin/hero?id=${id}`, {
+      const response = await authenticatedFetch(`/api/admin/hero?id=${id}`, {
         method: 'DELETE',
       });
 

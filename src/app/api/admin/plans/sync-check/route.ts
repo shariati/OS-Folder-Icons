@@ -1,14 +1,17 @@
-
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { adminDb as db } from '@/lib/firebase/admin';
 import { Plan } from '@/types/plan';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: '2024-11-20.acacia',
 });
 
 export async function POST(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         // 1. Fetch all plans from Firestore that have a Stripe Price ID
         const snapshot = await db.collection('plans').where('stripePriceId', '!=', '').get();

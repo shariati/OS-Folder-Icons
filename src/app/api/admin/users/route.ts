@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { UserProfile } from '@/types/user';
 
-export async function GET() {
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
+
+export async function GET(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const listUsersResult = await adminAuth.listUsers(1000);
         const users: UserProfile[] = [];
@@ -49,6 +54,9 @@ export async function GET() {
 }
 
 export async function DELETE(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const { searchParams } = new URL(req.url);
         const uid = searchParams.get('uid');
@@ -68,6 +76,9 @@ export async function DELETE(req: Request) {
 }
 
 export async function PUT(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const body = await req.json();
         const { uid, role, disabled, emailVerified, activatedAt } = body;

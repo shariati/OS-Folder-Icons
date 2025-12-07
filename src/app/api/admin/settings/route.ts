@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSettings, saveSettings } from '@/lib/db';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         const settings = await getSettings();
         return NextResponse.json(settings);
@@ -12,6 +13,9 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const updates = await req.json();
 

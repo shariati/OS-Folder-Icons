@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDB, saveDB } from '@/lib/db';
 import { Tag } from '@/lib/types';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function POST(request: NextRequest) {
+    const admin = await verifyAdmin(request);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const db = await getDB();
         const tag: Tag = await request.json();
@@ -21,6 +25,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+    const admin = await verifyAdmin(request);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const db = await getDB();
         const tag: Tag = await request.json();
@@ -40,6 +47,9 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+    const admin = await verifyAdmin(request);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');

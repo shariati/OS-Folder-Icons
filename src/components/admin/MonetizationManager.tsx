@@ -5,6 +5,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { Plan } from '@/types/plan';
 import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 export function MonetizationManager() {
   const [activeTab, setActiveTab] = useState<'plans' | 'ads'>('plans');
@@ -56,7 +57,7 @@ export function MonetizationManager() {
   const updateLastSyncDate = async () => {
     const now = new Date().toISOString();
     try {
-      await fetch('/api/admin/sync-status', {
+      await authenticatedFetch('/api/admin/sync-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lastSyncDate: now }),
@@ -71,11 +72,11 @@ export function MonetizationManager() {
     setSyncing(true);
     try {
       // Fetch new products from Stripe
-      const newProductsRes = await fetch('/api/admin/plans/stripe-products');
+      const newProductsRes = await authenticatedFetch('/api/admin/plans/stripe-products');
       const newProductsData = await newProductsRes.json();
       
       // Fetch missing products
-      const missingRes = await fetch('/api/admin/plans/sync-check', { method: 'POST' });
+      const missingRes = await authenticatedFetch('/api/admin/plans/sync-check', { method: 'POST' });
       const missingData = await missingRes.json();
 
       setSyncing(false);
@@ -109,7 +110,7 @@ export function MonetizationManager() {
       for (const productId of selectedNewProducts) {
         const product = newProducts.find(p => p.id === productId);
         if (product) {
-          await fetch('/api/admin/plans', {
+          await authenticatedFetch('/api/admin/plans', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -129,7 +130,7 @@ export function MonetizationManager() {
 
       // Delete selected missing products
       for (const productId of selectedMissingProducts) {
-        await fetch('/api/admin/plans', {
+        await authenticatedFetch('/api/admin/plans', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: productId }),
@@ -177,7 +178,7 @@ export function MonetizationManager() {
 
     try {
       const method = editingPlan.id ? 'PUT' : 'POST';
-      const res = await fetch('/api/admin/plans', {
+      const res = await authenticatedFetch('/api/admin/plans', {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingPlan),
@@ -200,7 +201,7 @@ export function MonetizationManager() {
     if (!confirm('Are you sure you want to delete this plan?')) return;
 
     try {
-      await fetch('/api/admin/plans', {
+      await authenticatedFetch('/api/admin/plans', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
