@@ -38,7 +38,8 @@ export default function LoginPage() {
         const auth = getFirebaseAuth();
         
         if (auth && isSignInWithEmailLink(auth, window.location.href)) {
-             const emailForSignIn = window.localStorage.getItem('emailForSignIn');
+             // Try sessionStorage first (new approach), fallback to localStorage for existing users
+             const emailForSignIn = window.sessionStorage.getItem('emailForSignIn') || window.localStorage.getItem('emailForSignIn');
              if (!emailForSignIn) {
                  setIsEmailModalOpen(true);
              } else {
