@@ -50,17 +50,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import { getSettings } from "@/lib/db";
+import Clarity from "@/components/shared/Clarity";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
-        <GoogleAnalytics />
+        <GoogleAnalytics id={settings.tracking?.googleAnalyticsCode} />
+        <Clarity projectId={settings.tracking?.clarityCode} />
         <Providers>
           <Navbar />
           <ActivationBanner />
