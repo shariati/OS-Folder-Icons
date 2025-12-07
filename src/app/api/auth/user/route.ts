@@ -1,14 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getUser, createUser, updateUser, deleteUser } from '@/lib/db';
 import { UserProfile } from '@/types/user';
 import { verifyAuth } from '@/lib/auth-server';
 import { adminAuth as auth } from '@/lib/firebase/admin';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { handleApiError } from '@/lib/api-error';
+import { createLogger } from '@/lib/logger';
 
-export async function POST(request: Request) {
+const logger = createLogger('api-auth-user');
+
+export async function POST(request: NextRequest) {
+    // Rate limit check
+    const rateLimitResponse = checkRateLimit(request, 'auth');
+    if (rateLimitResponse) return rateLimitResponse;
+
     try {
         if (!auth) {
-            console.error('Firebase Admin Auth is not initialized. Missing FIREBASE_SERVICE_ACCOUNT_KEY?');
-            return NextResponse.json({ error: 'Server misconfiguration: Firebase Admin not initialized' }, { status: 500 });
+            logger.error('Firebase Admin Auth is not initialized');
+            return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         }
 
         const decodedToken = await verifyAuth(request);
@@ -83,8 +92,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json(profile);
     } catch (error) {
-        console.error('Error in /api/auth/user:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return handleApiError(error, 'Failed to process user request');
     }
 }
 
@@ -107,7 +115,6 @@ export async function DELETE(request: Request) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('Error deleting user:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return handleApiError(error, 'Failed to delete user');
     }
 }
