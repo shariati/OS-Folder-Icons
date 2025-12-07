@@ -6,6 +6,11 @@ import { DatabaseSchema } from '@/lib/db/types';
 
 export async function POST(request: Request) {
     try {
+        // Disable in production unless explicitly enabled
+        if (process.env.NODE_ENV === 'production' && process.env.ENABLE_SEED_ROUTE !== 'true') {
+            return NextResponse.json({ error: 'Seed route disabled in production' }, { status: 403 });
+        }
+
         const { searchParams } = new URL(request.url);
         const secret = searchParams.get('secret');
 

@@ -38,7 +38,42 @@ const nextConfig: NextConfig = {
 
   // Cache headers for static assets
   async headers() {
+    // Import CSP builder dynamically
+    const { buildCSPHeader } = await import('./src/lib/security/csp-config');
+    const cspHeader = buildCSPHeader();
+
     return [
+      // Security headers for all routes
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader,
+          },
+        ],
+      },
+      // Cache headers for images
       {
         source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
         headers: [
@@ -48,6 +83,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache headers for Next.js static files
       {
         source: '/_next/static/:path*',
         headers: [
