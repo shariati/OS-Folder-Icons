@@ -1,5 +1,7 @@
-import { getAuth } from 'firebase/auth';
 import { getFirebaseAuth } from './firebase/client';
+import { createLogger } from '@/lib/logger';
+
+const logger = createLogger('fetch-auth');
 
 export async function authenticatedFetch(url: string, options: RequestInit = {}) {
     // Ensure auth is initialized
@@ -7,7 +9,7 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
     const user = auth?.currentUser;
 
     if (!user) {
-        console.warn('authenticatedFetch: No user logged in');
+        logger.debug('No user logged in for authenticated fetch');
     }
 
     let token = null;
@@ -17,17 +19,18 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
             const forceRefresh = url.includes('/api/admin');
             token = await user.getIdToken(forceRefresh);
         } catch (err) {
-            console.error('authenticatedFetch: Failed to get ID token', err);
+            logger.error({ err }, 'Failed to get ID token');
         }
     }
 
     const headers = new Headers(options.headers);
     if (token) {
         headers.set('Authorization', `Bearer ${token}`);
-        console.log('authenticatedFetch: adding Authorization header', token.substring(0, 10) + '...');
+        logger.debug('Authorization header added for request');
     } else {
-        console.warn('authenticatedFetch: No token available for user', user?.uid);
+        logger.warn({ uid: user?.uid }, 'No token available for user');
     }
 
     return fetch(url, { ...options, headers });
 }
+
