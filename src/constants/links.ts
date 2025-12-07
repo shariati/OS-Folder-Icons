@@ -24,3 +24,20 @@ export const RESOURCE_LINKS = {
     FONTAWESOME: 'https://fontawesome.com',
     LUCIDE: 'https://lucide.dev',
 };
+
+// Firebase Storage CDN
+export const FIREBASE_STORAGE = {
+    BASE_URL: 'https://firebasestorage.googleapis.com/v0/b',
+    VIDEO_BACKGROUND: 'public/home-video-background-1.webm',
+};
+
+/**
+ * Constructs a Firebase Storage CDN URL for a given file path.
+ * @param path - The path to the file in Firebase Storage (e.g., 'public/file.webm')
+ * @returns The full Firebase Storage CDN URL
+ */
+export const getFirebaseStorageUrl = (path: string): string => {
+    const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+    const encodedPath = encodeURIComponent(path);
+    return `${FIREBASE_STORAGE.BASE_URL}/${bucket}/o/${encodedPath}?alt=media`;
+};

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { FolderOpen, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 function SignupContent() {
   const router = useRouter();
@@ -74,7 +75,7 @@ function SignupContent() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/home-video-background-1.webm?alt=media`} type="video/webm" />
+          <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
         </video>
       </div>
 

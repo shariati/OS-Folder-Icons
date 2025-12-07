@@ -26,6 +26,7 @@ import { StatsSection } from '@/components/features/StatsSection';
 import PricingSection from '@/components/subscription/PricingSection';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { FeaturedBlogs } from '@/components/features/FeaturedBlogs';
+import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 export default async function Home() {
   const db = await getDB();
@@ -45,7 +46,7 @@ export default async function Home() {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/home-video-background-1.webm?alt=media`} type="video/webm" />
+            <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
           </video>
         </div>
 

@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { FolderOpen, Mail, Lock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { InputModal } from '@/components/ui/InputModal';
+import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -116,7 +117,7 @@ export default function LoginPage() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/home-video-background-1.webm?alt=media`} type="video/webm" />
+          <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
         </video>
       </div>
 
