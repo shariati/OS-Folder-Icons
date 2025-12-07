@@ -1,8 +1,9 @@
 'use client';
 
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { useAuth } from '@/contexts/AuthContext';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity, Mail, Clock } from 'lucide-react';
@@ -22,19 +23,60 @@ export function UsersManager({ initialData }: UsersManagerProps) {
   const [filterPending, setFilterPending] = useState(false);
   const { showToast } = useToast();
 
+  const { user, loading: authLoading } = useAuth();
+
+  // useRef to verify successful initialization only once
+  const initialized = useRef(false);
+
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    const init = async () => {
+        if (!authLoading && user && !initialized.current) {
+            initialized.current = true;
+            
+            // If we already have initialData (from server), don't fetch immediately
+            if (users.length > 0) {
+                console.log('UsersManager: Initial data present, skipping auto-fetch.');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                // Must force refresh to get the latest claims (admin role) that might have just been set
+                await user.getIdToken(true);
+                const idTokenResult = await user.getIdTokenResult();
+                console.log('INIT DEBUG Verified Claims:', idTokenResult.claims);
+
+                if (idTokenResult.claims.role !== 'admin' && idTokenResult.claims.admin !== true) {
+                    console.error('CLIENT SECURITY CHECK: User is not recognized as admin by Firebase Client SDK.');
+                    showToast('Security Warning: You are not recognized as an admin. API access will fail.', 'error');
+                    // Do not fetch - save the 401
+                    return;
+                }
+                
+                // Always fetch fresh data on mount to ensure we have the latest
+                fetchUsers();
+            } catch (err) {
+                console.error('Error initializing user admin view:', err);
+            }
+        }
+    };
+
+    init();
+  }, [user, authLoading]);
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
-      const res = await fetch('/api/admin/users');
+      if (user) await user.getIdToken(true); // Ensure token is fresh before manual fetch
+        
+      const res = await authenticatedFetch('/api/admin/users');
       const data = await res.json();
       if (Array.isArray(data)) {
         setUsers(data);
+        showToast('Users list refreshed', 'success');
       } else {
         console.error('Fetched users data is not an array:', data);
-        showToast('Failed to refresh users list', 'error');
+        showToast(`Failed to refresh: ${data.error || 'Unknown error'}`, 'error');
       }
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -44,11 +86,18 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     }
   };
 
+  const debugClaims = async () => {
+      if (!user) return;
+      const res = await user.getIdTokenResult(true);
+      console.log('DEBUG CLAIMS:', res.claims);
+      alert(`Role: ${res.claims.role}, Admin: ${res.claims.admin}`);
+  };
+
   const handleDeleteUser = async (uid: string) => {
     if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
 
     try {
-      const res = await fetch(`/api/admin/users?uid=${uid}`, { method: 'DELETE' });
+      const res = await authenticatedFetch(`/api/admin/users?uid=${uid}`, { method: 'DELETE' });
       if (res.ok) {
         setUsers(users.filter(u => u.uid !== uid));
         showToast('User deleted successfully', 'success');
@@ -63,7 +112,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
 
   const handleUpdateRole = async (uid: string, role: string) => {
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await authenticatedFetch('/api/admin/users', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid, role })
@@ -80,7 +129,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
 
   const handleResetPassword = async (email: string) => {
     try {
-        const res = await fetch('/api/admin/users', {
+        const res = await authenticatedFetch('/api/admin/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'reset_password', email })
@@ -100,7 +149,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     if (!confirm('Manually activate this user\'s account?')) return;
     
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await authenticatedFetch('/api/admin/users', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -165,6 +214,15 @@ export function UsersManager({ initialData }: UsersManagerProps) {
           User Management
         </h3>
         <div className="flex gap-3 items-center w-full sm:w-auto">
+          <button onClick={debugClaims} className="text-xs text-gray-400 hover:text-gray-600 underline">Debug Auth</button>
+          <button 
+            onClick={fetchUsers}
+            disabled={loading}
+            className="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+            title="Refresh List"
+          >
+            <Activity size={20} className={loading ? "animate-spin" : ""} />
+          </button>
           <button
             onClick={() => setFilterPending(!filterPending)}
             className={clsx(
