@@ -83,6 +83,7 @@ export function buildCSPHeader(nonce?: string): string {
             'data:',
             'blob:',
             ...TRUSTED_FIREBASE_DOMAINS,
+            ...TRUSTED_ANALYTICS_DOMAINS,
             ...TRUSTED_AD_DOMAINS,
             '*.googleusercontent.com',
             '*.gstatic.com',
