@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/admin/EmptyState';
 import { BlogEditor } from './BlogEditor';
 import { getFullUrl } from '@/lib/url';
 import { socialStyleLargeNumbers } from '@/lib/format';
+import { formatDate } from '@/constants/locale';
 import clsx from 'clsx';
 
 interface BlogManagerProps {
@@ -122,14 +123,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
     }
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
+  const formatDateForAdmin = (dateString?: string) => formatDate(dateString, 'LONG_ABBR');
 
   const handleCreateTag = async (name: string): Promise<Tag> => {
     const slug = name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
@@ -270,10 +264,10 @@ export function BlogManager({ initialData }: BlogManagerProps) {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">
-                      {formatDate(post.createdAt)}
+                      {formatDateForAdmin(post.createdAt)}
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">
-                      {formatDate(post.publishedAt)}
+                      {formatDateForAdmin(post.publishedAt)}
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">
                       {socialStyleLargeNumbers(post.views)}

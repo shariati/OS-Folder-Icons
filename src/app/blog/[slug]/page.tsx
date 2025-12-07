@@ -9,6 +9,7 @@ import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 import { BlogPostCard } from '@/components/features/BlogPostCard';
 import { Footer } from '@/components/layout/Footer';
 import { ViewCounter } from '@/components/features/ViewCounter';
+import { formatDate } from '@/constants/locale';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -68,11 +69,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     .slice(0, 3);
 
   const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+    ? formatDate(post.publishedAt, 'LONG')
     : '';
 
   const readingTime = post.readingTime || 5;

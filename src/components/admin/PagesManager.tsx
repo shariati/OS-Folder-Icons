@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/admin/EmptyState';
 import { PageEditor } from './PageEditor';
 import { getFullUrl } from '@/lib/url';
 import { socialStyleLargeNumbers } from '@/lib/format';
+import { formatDate } from '@/constants/locale';
 import clsx from 'clsx';
 
 interface PagesManagerProps {
@@ -115,14 +116,7 @@ export function PagesManager({ initialData }: PagesManagerProps) {
     }
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
+  const formatDateForAdmin = (dateString?: string) => formatDate(dateString, 'LONG_ABBR');
 
   if (isEditing) {
     return (
@@ -242,7 +236,7 @@ export function PagesManager({ initialData }: PagesManagerProps) {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">
-                      {formatDate(page.createdAt)}
+                      {formatDateForAdmin(page.createdAt)}
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">
                       {socialStyleLargeNumbers(page.views)}

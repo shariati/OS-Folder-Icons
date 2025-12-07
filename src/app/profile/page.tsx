@@ -6,6 +6,7 @@ import SubscriptionManager from '@/components/subscription/SubscriptionManager';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { User, Mail, Calendar, Lock, Shield, Trash2, Camera, Loader2, AlertTriangle, Check, X } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { formatDate } from '@/constants/locale';
 
 export default function ProfilePage() {
   const { user, userProfile, loading, updateUserProfile, changePassword, linkWithProvider, unlinkProvider, deleteAccount } = useAuth();
@@ -222,7 +223,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
                   <Calendar size={16} className="text-blue-500" />
-                  <span>Joined {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}</span>
+                  <span>Joined {formatDate(userProfile?.createdAt, 'LONG', 'N/A')}</span>
                 </div>
               </div>
             </NeumorphBox>
@@ -352,14 +353,14 @@ export default function ProfilePage() {
                             <button 
                                 onClick={handleDeleteAccount}
                                 disabled={isDeleting}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 bg-transparent text-gray-600 dark:text-gray-400 font-medium hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-2"
                             >
                                 {isDeleting && <Loader2 size={16} className="animate-spin" />}
                                 Yes, Delete My Account
                             </button>
                              <button 
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="px-4 py-2 bg-transparent text-gray-600 dark:text-gray-400 font-medium hover:text-gray-800 dark:hover:text-gray-200"
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors disabled:opacity-50"
                             >
                                 Cancel
                             </button>

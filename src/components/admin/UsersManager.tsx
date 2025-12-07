@@ -9,6 +9,7 @@ import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity, Mail, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { formatDate } from '@/constants/locale';
 import clsx from 'clsx';
 
 interface UsersManagerProps {
@@ -197,14 +198,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
     return matchesSearch && matchesFilter;
   });
 
-  const formatDate = (dateString?: string) => {
-      if (!dateString) return 'N/A';
-      return new Date(dateString).toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-      });
-  };
+  const formatDateForAdmin = (dateString?: string) => formatDate(dateString, 'LONG_ABBR', 'N/A');
 
   return (
     <NeumorphBox className="p-6">
@@ -332,7 +326,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                             </span>
                         </td>
                         <td className="py-4 px-6 text-sm text-gray-500">
-                            {formatDate(user.lastLoginAt)}
+                            {formatDateForAdmin(user.lastLoginAt)}
                         </td>
                         <td className="py-4 px-6 text-right">
                             <div className="flex items-center justify-end gap-2">
@@ -421,7 +415,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Expires/Renews</span>
-                                    <span className="font-medium">{formatDate(selectedUser.currentPeriodEnd)}</span>
+                                    <span className="font-medium">{formatDateForAdmin(selectedUser.currentPeriodEnd)}</span>
                                 </div>
                                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                                     <span className="text-gray-500 block mb-1 text-xs">Stripe Customer ID</span>
@@ -440,11 +434,11 @@ export function UsersManager({ initialData }: UsersManagerProps) {
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Joined</span>
-                                    <span className="font-medium">{formatDate(selectedUser.createdAt)}</span>
+                                    <span className="font-medium">{formatDateForAdmin(selectedUser.createdAt)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Last Login</span>
-                                    <span className="font-medium">{formatDate(selectedUser.lastLoginAt)}</span>
+                                    <span className="font-medium">{formatDateForAdmin(selectedUser.lastLoginAt)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Folders Generated</span>

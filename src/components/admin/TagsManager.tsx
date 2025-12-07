@@ -99,15 +99,6 @@ export function TagsManager({ initialData }: TagsManagerProps) {
     setIsCreating(true);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
-
   return (
     <NeumorphBox className="p-6">
       {/* Header */}

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { X, Image as ImageIcon, Loader2, Check, ExternalLink } from 'lucide-react';
 import { ref, listAll, getMetadata, getDownloadURL, StorageReference } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
+import { formatDate, formatDateTime } from '@/constants/locale';
 import clsx from 'clsx';
 
 interface MediaLibraryModalProps {
@@ -108,7 +109,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 'uploads
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-    return date.toLocaleDateString();
+    return formatDate(date, 'LONG_ABBR');
   };
 
   const formatSize = (bytes: number) => {
@@ -253,7 +254,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 'uploads
                 <div>
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded</label>
                   <p className="text-sm text-gray-900 dark:text-gray-200">
-                    {selectedFile.timeCreated.toLocaleString()}
+                    {formatDateTime(selectedFile.timeCreated)}
                   </p>
                 </div>
 

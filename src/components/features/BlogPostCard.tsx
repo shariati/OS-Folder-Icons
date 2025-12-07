@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/lib/types';
 import { Calendar, Clock } from 'lucide-react';
+import { formatDate } from '@/constants/locale';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -12,11 +13,7 @@ interface BlogPostCardProps {
 
 export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
   const formattedDate = post.publishedAt 
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
-      })
+    ? formatDate(post.publishedAt, 'LONG')
     : 'Draft';
 
   const readingTime = post.readingTime || 5;

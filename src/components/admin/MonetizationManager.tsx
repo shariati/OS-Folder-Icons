@@ -6,6 +6,7 @@ import { Plan } from '@/types/plan';
 import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { formatDate } from '@/constants/locale';
 
 export function MonetizationManager() {
   const [activeTab, setActiveTab] = useState<'plans' | 'ads'>('plans');
@@ -225,7 +226,7 @@ export function MonetizationManager() {
     if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    return date.toLocaleDateString();
+    return formatDate(dateString, 'LONG_ABBR');
   };
 
   return (

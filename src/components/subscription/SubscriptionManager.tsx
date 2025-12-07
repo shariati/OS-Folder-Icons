@@ -73,6 +73,7 @@ const RenewalProgress = ({ end }: { end: string }) => {
 
 import { FileText, Download, CreditCard, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { formatDate } from '@/constants/locale';
 
 const SubscriptionManagerContent = () => {
     const { user, userProfile } = useAuth();
@@ -284,7 +285,7 @@ const SubscriptionManagerContent = () => {
                                         </p>
                                     ) : (
                                         <p className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                                            {new Date(userProfile.currentPeriodEnd!).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                                            {formatDate(userProfile.currentPeriodEnd, 'LONG')}
                                         </p>
                                     )}
                                 </div>
@@ -360,7 +361,7 @@ const SubscriptionManagerContent = () => {
                                             {invoices.map((inv) => (
                                                 <tr key={inv.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                                     <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
-                                                        {new Date(inv.date).toLocaleDateString()}
+                                                        {formatDate(inv.date, 'LONG')}
                                                     </td>
                                                     <td className="px-6 py-4 text-gray-900 dark:text-white font-medium">
                                                         {(inv.amount / 100).toLocaleString('en-US', { style: 'currency', currency: inv.currency.toUpperCase() })}
