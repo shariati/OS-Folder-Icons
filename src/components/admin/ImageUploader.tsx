@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
+import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 
 interface ImageUploaderProps {
@@ -54,10 +55,9 @@ export function ImageUploader({
     setIsUploading(true);
 
     try {
-      // Generate unique filename
-      const timestamp = Date.now();
-      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const filename = `${timestamp}-${safeName}`;
+      // Generate unique filename with UUID
+      const fileExtension = file.name.split('.').pop() || 'png';
+      const filename = `${uuidv4()}.${fileExtension}`;
       
       const storageRef = ref(storage, `${folder}/${filename}`);
       const snapshot = await uploadBytes(storageRef, file);
