@@ -116,6 +116,9 @@ export async function PUT(req: Request) {
 }
 
 export async function POST(req: Request) {
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorizedResponse();
+
     try {
         const body = await req.json();
         const { action, email } = body;
