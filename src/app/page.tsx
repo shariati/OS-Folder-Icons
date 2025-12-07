@@ -88,7 +88,24 @@ export default async function Home() {
       <section className="relative z-30 -mt-20 mb-12">
         <StatsSection />
       </section>
-
+      {/* CTA Section - Photo Frame */}
+      <section id="photo-frame-cta" className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-500">
+           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            Turn Your Memories Into Art
+          </h2>
+          <p className="text-xl text-pink-100 mb-12 max-w-2xl mx-auto">
+            Create stunning photo frames and desktop widgets from your favorite photos. Perfect for personalizing your workspace.
+          </p>
+          <Link href="/photo-frame" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-pink-600 bg-white hover:bg-pink-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+            <ImageIcon className="w-6 h-6 mr-3" />
+            Create Photo Frame
+          </Link>
+        </div>
+      </section>
       {/* Featured Section (Hero Slider) */}
       <section className="relative z-30">
         <HeroSlider slides={db.heroSlides || []} />
@@ -176,7 +193,7 @@ export default async function Home() {
       {/* CTA Section - Create Your Own */}
       <section id="create" className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-700">
-           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
+           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
@@ -188,25 +205,6 @@ export default async function Home() {
           <Link href="/create" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-blue-600 bg-white hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
             <Palette className="w-6 h-6 mr-3" />
             Open Icon Generator
-          </Link>
-        </div>
-      </section>
-
-      {/* CTA Section - Photo Frame */}
-      <section id="photo-frame-cta" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-500">
-           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Turn Your Memories Into Art
-          </h2>
-          <p className="text-xl text-pink-100 mb-12 max-w-2xl mx-auto">
-            Create stunning photo frames and desktop widgets from your favorite photos. Perfect for personalizing your workspace.
-          </p>
-          <Link href="/photo-frame" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-pink-600 bg-white hover:bg-pink-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-            <ImageIcon className="w-6 h-6 mr-3" />
-            Create Photo Frame
           </Link>
         </div>
       </section>
