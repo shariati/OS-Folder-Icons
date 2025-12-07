@@ -39,7 +39,7 @@ export const TRUSTED_FONT_DOMAINS = [
     'fonts.gstatic.com',
 ] as const;
 
-// Firebase domains
+// Firebase domains (and Google Auth)
 export const TRUSTED_FIREBASE_DOMAINS = [
     '*.firebaseapp.com',
     '*.firebase.com',
@@ -47,6 +47,8 @@ export const TRUSTED_FIREBASE_DOMAINS = [
     '*.googleapis.com',
     '*.cloudfunctions.net',
     'firebasestorage.googleapis.com',
+    'accounts.google.com',
+    'apis.google.com',
 ] as const;
 
 // Stripe domains
@@ -109,6 +111,7 @@ export function buildCSPHeader(nonce?: string): string {
             ...TRUSTED_EMBED_DOMAINS,
             ...TRUSTED_AD_DOMAINS,
             ...TRUSTED_STRIPE_DOMAINS,
+            ...TRUSTED_FIREBASE_DOMAINS,
         ],
         'connect-src': [
             "'self'",
