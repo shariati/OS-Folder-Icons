@@ -1277,29 +1277,30 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           editor={editor} 
           className="flex items-center gap-1 p-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
         >
-          <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 1">
-            <Heading1 size={16} />
-          </button>
-          <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 2">
-            <Heading2 size={16} />
-          </button>
-          <button onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Heading 3">
-            <Heading3 size={16} />
-          </button>
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
-          <button onClick={() => editor.chain().focus().toggleBulletList().run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Bullet List">
-            <List size={16} />
-          </button>
-          <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Numbered List">
-            <ListOrdered size={16} />
-          </button>
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
-          <button onClick={() => setIsImageModalOpen(true)} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Image">
-            <ImageIcon size={16} />
-          </button>
-          <button onClick={() => setIsYouTubeModalOpen(true)} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="YouTube">
-            <YoutubeIcon size={16} />
-          </button>
+          {[
+            { icon: Heading1, title: 'Heading 1', action: () => editor.chain().focus().toggleHeading({ level: 1 }).run() },
+            { icon: Heading2, title: 'Heading 2', action: () => editor.chain().focus().toggleHeading({ level: 2 }).run() },
+            { icon: Heading3, title: 'Heading 3', action: () => editor.chain().focus().toggleHeading({ level: 3 }).run() },
+            { type: 'divider' },
+            { icon: List, title: 'Bullet List', action: () => editor.chain().focus().toggleBulletList().run() },
+            { icon: ListOrdered, title: 'Numbered List', action: () => editor.chain().focus().toggleOrderedList().run() },
+            { type: 'divider' },
+            { icon: ImageIcon, title: 'Image', action: () => setIsImageModalOpen(true) },
+            { icon: YoutubeIcon, title: 'YouTube', action: () => setIsYouTubeModalOpen(true) },
+          ].map((item, index) => (
+            item.type === 'divider' ? (
+              <div key={index} className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
+            ) : (
+              <button 
+                key={index}
+                onClick={item.action} 
+                className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" 
+                title={item.title}
+              >
+                {item.icon && <item.icon size={16} />}
+              </button>
+            )
+          ))}
         </FloatingMenu>
       )}
 
