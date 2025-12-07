@@ -71,7 +71,9 @@ export const adminAdapter: DatabaseAdapter = {
     },
     async saveBlogPost(post: BlogPost): Promise<void> {
         if (!db) return;
-        await db.collection('blogPosts').doc(post.id).set(post);
+        // Remove undefined values as Firestore doesn't accept them
+        const cleanPost = JSON.parse(JSON.stringify(post));
+        await db.collection('blogPosts').doc(post.id).set(cleanPost);
     },
     async updateBlogPost(id: string, data: Partial<BlogPost>): Promise<void> {
         if (!db) return;
@@ -88,7 +90,9 @@ export const adminAdapter: DatabaseAdapter = {
     },
     async savePage(page: Page): Promise<void> {
         if (!db) return;
-        await db.collection('pages').doc(page.id).set(page);
+        // Remove undefined values as Firestore doesn't accept them
+        const cleanPage = JSON.parse(JSON.stringify(page));
+        await db.collection('pages').doc(page.id).set(cleanPage);
     },
     async deletePage(id: string): Promise<void> {
         if (!db) return;
