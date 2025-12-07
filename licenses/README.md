@@ -8,11 +8,14 @@ The following assets are **NOT** covered by the general open-source license of t
 
 **You may NOT use, redistribute, modify, or include these files in any commercial product or derivative work without purchasing a separate license from the original author.**
 
-| Asset Path | Description | License Source |
+| Asset | Description | License Source |
 | :--- | :--- | :--- |
-| `public/backgrounds/video/home-video-background-1.mp4` | 3D Rectangles White Background Video | [Envato Elements](https://elements.envato.com/paper-style-3d-rectangles-white-background-4BWHGTG) |
+| `home-video-background-1.webm` | 3D Rectangles White Background Video | [Envato Elements](https://elements.envato.com/paper-style-3d-rectangles-white-background-4BWHGTG) |
+
+> **Note:** This video file has been removed from the repository but is still available in the git history. The file is now hosted on **Firebase Storage**. This license remains valid and applies exclusively to **hdpick.com**.
 
 **License Certificate:** [license_certificate_RZV4XD6YQ2.txt](./license_certificate_RZV4XD6YQ2.txt)
+
 
 ## 2. Third-Party Open Source Libraries
 
