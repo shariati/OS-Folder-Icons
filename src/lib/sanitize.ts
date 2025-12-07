@@ -1,4 +1,5 @@
 import sanitizeHtmlLibrary from 'sanitize-html';
+import { getAllowedIframeDomains, isAllowedIframeSource } from '@/lib/security/csp-config';
 
 /**
  * Sanitize HTML content to prevent XSS attacks
@@ -20,11 +21,39 @@ const defaultOptions: sanitizeHtmlLibrary.IOptions = {
         '*': ['class', 'id', 'style'],
         'a': ['href', 'target', 'rel', 'title'],
         'img': ['src', 'alt', 'title', 'width', 'height'],
-        'iframe': ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'scrolling'],
+        'iframe': ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'scrolling', 'title'],
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
     allowedSchemesByTag: {
-        iframe: ['http', 'https']
+        iframe: ['https'] // Only allow HTTPS for iframes
+    },
+    // Transform iframes to only allow trusted sources
+    transformTags: {
+        'iframe': (tagName, attribs) => {
+            const src = attribs.src || '';
+
+            // Only allow iframes from trusted domains
+            if (!isAllowedIframeSource(src)) {
+                // Strip the iframe entirely if not from trusted source
+                return {
+                    tagName: 'p',
+                    attribs: {
+                        class: 'blocked-iframe-notice'
+                    },
+                    text: '[Embedded content from untrusted source removed]'
+                };
+            }
+
+            // Keep the iframe but ensure it has security attributes
+            return {
+                tagName,
+                attribs: {
+                    ...attribs,
+                    sandbox: 'allow-scripts allow-same-origin allow-presentation',
+                    loading: 'lazy',
+                } as sanitizeHtmlLibrary.Attributes
+            };
+        }
     }
 };
 
@@ -42,6 +71,7 @@ export function sanitizeHtmlWithLinks(html: string): string {
     return sanitizeHtmlLibrary(html, {
         ...defaultOptions,
         transformTags: {
+            ...defaultOptions.transformTags,
             'a': sanitizeHtmlLibrary.simpleTransform('a', { target: '_blank', rel: 'noopener noreferrer' })
         }
     });
@@ -56,3 +86,9 @@ export function stripHtml(html: string): string {
         allowedAttributes: {}
     });
 }
+
+/**
+ * Get list of allowed iframe domains for reference
+ */
+export { getAllowedIframeDomains };
+
