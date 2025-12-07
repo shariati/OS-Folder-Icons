@@ -3,14 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool, Banknote } from 'lucide-react';
+import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool, Banknote, Settings } from 'lucide-react';
 import clsx from 'clsx';
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads') => void;
+  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads' | 'settings') => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: SidebarProps) => {
@@ -196,6 +196,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                         )}
                       >
                         Hero Slides
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { setActiveTab('settings'); setSidebarOpen(false); }}
+                        className={clsx(
+                          "group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 w-full text-left text-sm",
+                          activeTab === 'settings' && "text-white"
+                        )}
+                      >
+                        Site Configuration
                       </button>
                     </li>
                   </ul>
