@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
+import { Footer } from '@/components/layout/Footer';
 
 // Reserved slugs that should not be matched by this dynamic route
 const RESERVED_SLUGS = [
@@ -55,24 +56,18 @@ export default async function DynamicPage({ params }: PageProps) {
   }
 
   const pages = await getPages();
-  
-  // Debug logging
-  console.log('[DEBUG /[slug]] Requested slug:', slug);
-  console.log('[DEBUG /[slug]] Total pages fetched:', pages.length);
-  console.log('[DEBUG /[slug]] All slugs:', pages.map(p => p.slug));
-  
+    
   const page = pages.find(p => p.slug === slug);
   
-  console.log('[DEBUG /[slug]] Found page:', page ? { id: page.id, title: page.title, status: page.status, slug: page.slug } : 'NOT FOUND');
 
   if (!page || page.status !== 'published') {
-    console.log('[DEBUG /[slug]] Returning 404 - reason:', !page ? 'page not found' : `status is ${page.status}`);
     notFound();
   }
 
   const sanitizedContent = sanitizeHtmlWithLinks(page.content);
 
   return (
+    <>
     <div className="min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
       {/* Page Header */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
@@ -115,5 +110,7 @@ export default async function DynamicPage({ params }: PageProps) {
         />
       </article>
     </div>
+    <Footer />
+    </>
   );
 }

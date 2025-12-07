@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
 import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 import { BlogPostCard } from '@/components/features/BlogPostCard';
+import { Footer } from '@/components/layout/Footer';
 import { ViewCounter } from '@/components/features/ViewCounter';
 
 interface BlogPostPageProps {
@@ -77,6 +78,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const sanitizedContent = sanitizeHtmlWithLinks(post.content);
 
   return (
+    <>
     <div className="min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
       <ViewCounter slug={post.slug} />
       {/* Back Button */}
@@ -191,5 +193,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </section>
       )}
     </div>
+    <Footer />
+    </>
   );
 }

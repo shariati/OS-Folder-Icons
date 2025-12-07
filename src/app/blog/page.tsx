@@ -1,5 +1,6 @@
 import { getBlogPosts } from '@/lib/db';
 import { BlogPostCard } from '@/components/features/BlogPostCard';
+import { Footer } from '@/components/layout/Footer';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default async function BlogPage() {
     });
 
   return (
+    <>
     <div className="min-h-screen bg-[#e0e5ec] dark:bg-gray-900 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
@@ -54,5 +56,7 @@ export default async function BlogPage() {
         )}
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
