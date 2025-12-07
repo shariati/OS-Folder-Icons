@@ -2,7 +2,7 @@ import { db } from '../firebase/client';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where, getCountFromServer, writeBatch } from 'firebase/firestore';
 import { DatabaseAdapter } from './types';
 import { UserProfile } from '../../types/user';
-import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
+import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, BlogPost, Page, Settings } from '../types';
 
 export const firestoreAdapter: DatabaseAdapter = {
     async getOperatingSystems(): Promise<OperatingSystem[]> {
@@ -57,16 +57,6 @@ export const firestoreAdapter: DatabaseAdapter = {
         // This only deletes the user profile document.
         if (!db) return;
         await deleteDoc(doc(db, 'users', uid));
-    },
-    async getAuditLogs(): Promise<AuditLog[]> {
-        if (!db) return [];
-        const snapshot = await getDocs(collection(db, 'auditLogs'));
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditLog));
-    },
-    async logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void> {
-        if (!db) return;
-        const docRef = doc(collection(db, 'auditLogs'));
-        await setDoc(docRef, { ...action, id: docRef.id });
     },
     async getBlogPosts(): Promise<BlogPost[]> {
         if (!db) return [];
@@ -124,24 +114,22 @@ export const firestoreAdapter: DatabaseAdapter = {
             tags: [],
             heroSlides: [],
             users: [],
-            auditLogs: [],
             blogPosts: [],
             pages: [],
             settings: {}
         };
-        const [operatingSystems, bundles, categories, tags, heroSlides, users, auditLogs, blogPosts, pages, settings] = await Promise.all([
+        const [operatingSystems, bundles, categories, tags, heroSlides, users, blogPosts, pages, settings] = await Promise.all([
             this.getOperatingSystems(),
             this.getBundles(),
             this.getCategories(),
             this.getTags(),
             this.getHeroSlides(),
             this.getUsers(),
-            this.getAuditLogs(),
             this.getBlogPosts(),
             this.getPages(),
             this.getSettings(),
         ]);
-        return { operatingSystems, bundles, categories, tags, heroSlides, users, auditLogs, blogPosts, pages, settings };
+        return { operatingSystems, bundles, categories, tags, heroSlides, users, blogPosts, pages, settings };
     },
     async saveDB(data: DB): Promise<void> {
         if (!db) return;
@@ -181,9 +169,6 @@ export const firestoreAdapter: DatabaseAdapter = {
         }
         for (const user of data.users) {
             await addToBatch(doc(db, 'users', user.uid), user);
-        }
-        for (const log of data.auditLogs) {
-            await addToBatch(doc(db, 'auditLogs', log.id), log);
         }
         for (const post of data.blogPosts) {
             await addToBatch(doc(db, 'blogPosts', post.id), post);
