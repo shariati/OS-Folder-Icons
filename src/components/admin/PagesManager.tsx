@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/admin/EmptyState';
 import { PageEditor } from './PageEditor';
 import { getFullUrl } from '@/lib/url';
 import { socialStyleLargeNumbers } from '@/lib/format';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 import clsx from 'clsx';
 
 interface PagesManagerProps {

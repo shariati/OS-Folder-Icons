@@ -9,7 +9,7 @@ import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 import { BlogPostCard } from '@/components/features/BlogPostCard';
 import { Footer } from '@/components/layout/Footer';
 import { ViewCounter } from '@/components/features/ViewCounter';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 
 interface BlogPostPageProps {
   params: Promise<{

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { X, Image as ImageIcon, Loader2, Check, ExternalLink } from 'lucide-react';
 import { ref, listAll, getMetadata, getDownloadURL, StorageReference } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
-import { formatDate, formatDateTime } from '@/constants/locale';
+import { formatDateTime, formatTimeAgo, formatSize } from '@/lib/format';
 import clsx from 'clsx';
 
 interface MediaLibraryModalProps {
@@ -101,23 +101,6 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 'uploads
       onSelect(selectedFile.url);
       onClose();
     }
-  };
-
-  const formatTimeAgo = (date: Date) => {
-    const diff = (new Date().getTime() - date.getTime()) / 1000;
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-    return formatDate(date, 'LONG_ABBR');
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
   if (!isOpen) return null;

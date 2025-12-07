@@ -6,7 +6,7 @@ import SubscriptionManager from '@/components/subscription/SubscriptionManager';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { User, Mail, Calendar, Lock, Shield, Trash2, Camera, Loader2, AlertTriangle, Check, X } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 
 export default function ProfilePage() {
   const { user, userProfile, loading, updateUserProfile, changePassword, linkWithProvider, unlinkProvider, deleteAccount } = useAuth();

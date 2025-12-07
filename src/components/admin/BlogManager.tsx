@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/admin/EmptyState';
 import { BlogEditor } from './BlogEditor';
 import { getFullUrl } from '@/lib/url';
 import { socialStyleLargeNumbers } from '@/lib/format';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 import clsx from 'clsx';
 
 interface BlogManagerProps {

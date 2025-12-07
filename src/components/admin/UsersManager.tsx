@@ -9,7 +9,7 @@ import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity, Mail, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 import clsx from 'clsx';
 
 interface UsersManagerProps {

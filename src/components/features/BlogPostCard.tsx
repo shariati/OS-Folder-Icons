@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/lib/types';
 import { Calendar, Clock } from 'lucide-react';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 
 interface BlogPostCardProps {
   post: BlogPost;

@@ -6,7 +6,7 @@ import { Plan } from '@/types/plan';
 import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 import { authenticatedFetch } from '@/lib/fetch-auth';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 
 export function MonetizationManager() {
   const [activeTab, setActiveTab] = useState<'plans' | 'ads'>('plans');

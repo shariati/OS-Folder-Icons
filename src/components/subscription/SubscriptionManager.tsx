@@ -73,7 +73,7 @@ const RenewalProgress = ({ end }: { end: string }) => {
 
 import { FileText, Download, CreditCard, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
-import { formatDate } from '@/constants/locale';
+import { formatDate } from '@/lib/format';
 
 const SubscriptionManagerContent = () => {
     const { user, userProfile } = useAuth();
