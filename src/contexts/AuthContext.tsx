@@ -57,20 +57,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    // Handle redirect results (from signInWithRedirect)
-    const handleRedirectResult = async () => {
-      try {
-        const { getRedirectResult } = await import('firebase/auth');
-        const result = await getRedirectResult(_auth);
-        if (result?.user) {
-          console.log('Redirect sign-in successful');
-          // The onAuthStateChanged listener will handle updating the user state
-        }
-      } catch (error) {
-        console.error('Error handling redirect result:', error);
-      }
-    };
-    handleRedirectResult();
+    // Note: We use signInWithPopup instead of signInWithRedirect because
+    // signInWithRedirect requires Firebase Hosting to be deployed to serve
+    // the auth helper files at /__/firebase/init.json
 
     const unsubscribe = onAuthStateChanged(_auth, async (firebaseUser) => {
       setUser(firebaseUser);
@@ -124,12 +113,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const _auth = getFirebaseAuth();
     if (!_auth) {
       console.error('Firebase Auth not initialized');
-      return;
+      throw new Error('Firebase Auth not initialized');
     }
-    const provider = new GoogleAuthProvider();
-    // Use redirect instead of popup to avoid COOP blocking
-    const { signInWithRedirect } = await import('firebase/auth');
-    await signInWithRedirect(_auth, provider);
+    
+    try {
+      const provider = new GoogleAuthProvider();
+      // Use popup for Google sign-in
+      const { signInWithPopup } = await import('firebase/auth');
+      const result = await signInWithPopup(_auth, provider);
+      console.log('Google sign-in successful:', result.user.email);
+    } catch (error: unknown) {
+      const firebaseError = error as { code?: string; message?: string };
+      console.error('Google sign-in error:', firebaseError.code, firebaseError.message);
+      
+      // Re-throw with a user-friendly message
+      if (firebaseError.code === 'auth/popup-blocked') {
+        throw new Error('Popup was blocked by your browser. Please allow popups for this site and try again.');
+      } else if (firebaseError.code === 'auth/popup-closed-by-user') {
+        throw new Error('Sign-in was cancelled.');
+      } else if (firebaseError.code === 'auth/cancelled-popup-request') {
+        // User clicked multiple times, ignore this error
+        return;
+      }
+      throw error;
+    }
   };
 
   const sendMagicLink = async (email: string) => {
@@ -283,7 +290,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        const { linkWithRedirect, GoogleAuthProvider } = await import('firebase/auth');
+        const { linkWithPopup, GoogleAuthProvider } = await import('firebase/auth');
         let provider;
         if (providerName === 'google') {
             provider = new GoogleAuthProvider();
@@ -291,8 +298,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
            throw new Error('Provider not supported');
         }
         
-        // Use redirect instead of popup to avoid COOP blocking
-        await linkWithRedirect(_auth.currentUser, provider);
+        // Use popup for linking (redirect requires Firebase Hosting to be deployed)
+        const result = await linkWithPopup(_auth.currentUser, provider);
+        
+        // Sync providers to DB
+        await syncProviders(result.user);
     } catch (error) {
         console.error('Error linking provider:', error);
         throw error;
