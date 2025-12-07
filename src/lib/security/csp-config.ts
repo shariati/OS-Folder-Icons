@@ -130,7 +130,11 @@ export function buildCSPHeader(nonce?: string): string {
         ],
         'object-src': ["'none'"],
         'base-uri': ["'self'"],
-        'form-action': ["'self'"],
+        'form-action': [
+            "'self'",
+            'accounts.google.com',
+            '*.firebaseapp.com',
+        ],
         'frame-ancestors': ["'self'"],
         'upgrade-insecure-requests': [],
     };
