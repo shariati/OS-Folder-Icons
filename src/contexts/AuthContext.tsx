@@ -49,6 +49,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Detect if running on a mobile device
+  const isMobileDevice = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  };
+
   useEffect(() => {
     const _auth = getFirebaseAuth();
     if (!_auth) {
@@ -57,9 +65,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    // Note: We use signInWithPopup instead of signInWithRedirect because
-    // signInWithRedirect requires Firebase Hosting to be deployed to serve
-    // the auth helper files at /__/firebase/init.json
+    // Handle redirect results (for mobile devices using signInWithRedirect)
+    const handleRedirectResult = async () => {
+      try {
+        const { getRedirectResult } = await import('firebase/auth');
+        const result = await getRedirectResult(_auth);
+        if (result?.user) {
+          console.log('Redirect sign-in successful:', result.user.email);
+        }
+      } catch (error) {
+        console.error('Error handling redirect result:', error);
+      }
+    };
+    
+    // Only check for redirect results on mobile (where redirect auth is used)
+    if (isMobileDevice()) {
+      handleRedirectResult();
+    }
 
     const unsubscribe = onAuthStateChanged(_auth, async (firebaseUser) => {
       setUser(firebaseUser);
@@ -116,26 +138,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error('Firebase Auth not initialized');
     }
     
-    try {
-      const provider = new GoogleAuthProvider();
-      // Use popup for Google sign-in
-      const { signInWithPopup } = await import('firebase/auth');
-      const result = await signInWithPopup(_auth, provider);
-      console.log('Google sign-in successful:', result.user.email);
-    } catch (error: unknown) {
-      const firebaseError = error as { code?: string; message?: string };
-      console.error('Google sign-in error:', firebaseError.code, firebaseError.message);
-      
-      // Re-throw with a user-friendly message
-      if (firebaseError.code === 'auth/popup-blocked') {
-        throw new Error('Popup was blocked by your browser. Please allow popups for this site and try again.');
-      } else if (firebaseError.code === 'auth/popup-closed-by-user') {
-        throw new Error('Sign-in was cancelled.');
-      } else if (firebaseError.code === 'auth/cancelled-popup-request') {
-        // User clicked multiple times, ignore this error
-        return;
+    const provider = new GoogleAuthProvider();
+    
+    // Use popup on desktop, redirect on mobile for best UX
+    if (isMobileDevice()) {
+      // Mobile: Use redirect (more reliable on mobile browsers)
+      const { signInWithRedirect } = await import('firebase/auth');
+      await signInWithRedirect(_auth, provider);
+    } else {
+      // Desktop: Use popup (keeps user on the page)
+      try {
+        const { signInWithPopup } = await import('firebase/auth');
+        const result = await signInWithPopup(_auth, provider);
+        console.log('Google sign-in successful:', result.user.email);
+      } catch (error: unknown) {
+        const firebaseError = error as { code?: string; message?: string };
+        console.error('Google sign-in error:', firebaseError.code, firebaseError.message);
+        
+        // Re-throw with a user-friendly message
+        if (firebaseError.code === 'auth/popup-blocked') {
+          throw new Error('Popup was blocked by your browser. Please allow popups for this site and try again.');
+        } else if (firebaseError.code === 'auth/popup-closed-by-user') {
+          throw new Error('Sign-in was cancelled.');
+        } else if (firebaseError.code === 'auth/cancelled-popup-request') {
+          // User clicked multiple times, ignore this error
+          return;
+        }
+        throw error;
       }
-      throw error;
     }
   };
 
@@ -289,23 +319,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const _auth = getFirebaseAuth();
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
-    try {
-        const { linkWithPopup, GoogleAuthProvider } = await import('firebase/auth');
-        let provider;
-        if (providerName === 'google') {
-            provider = new GoogleAuthProvider();
-        } else {
-           throw new Error('Provider not supported');
-        }
-        
-        // Use popup for linking (redirect requires Firebase Hosting to be deployed)
+    let provider;
+    if (providerName === 'google') {
+      provider = new GoogleAuthProvider();
+    } else {
+      throw new Error('Provider not supported');
+    }
+
+    // Use popup on desktop, redirect on mobile for best UX
+    if (isMobileDevice()) {
+      // Mobile: Use redirect (more reliable on mobile browsers)
+      const { linkWithRedirect } = await import('firebase/auth');
+      await linkWithRedirect(_auth.currentUser, provider);
+    } else {
+      // Desktop: Use popup (keeps user on the page)
+      try {
+        const { linkWithPopup } = await import('firebase/auth');
         const result = await linkWithPopup(_auth.currentUser, provider);
-        
         // Sync providers to DB
         await syncProviders(result.user);
-    } catch (error) {
+      } catch (error) {
         console.error('Error linking provider:', error);
         throw error;
+      }
     }
   };
 
