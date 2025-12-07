@@ -137,7 +137,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
     }
     // Save email locally to complete sign in on return
-    window.localStorage.setItem('emailForSignIn', email);
+    // Save email in sessionStorage (cleared when tab closes - more secure than localStorage)
+    window.sessionStorage.setItem('emailForSignIn', email);
   };
 
   const signInWithMagicLink = async (email: string, href: string) => {
@@ -146,7 +147,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { signInWithEmailLink } = await import('firebase/auth');
     await signInWithEmailLink(_auth, email, href);
-    window.localStorage.removeItem('emailForSignIn');
+    window.sessionStorage.removeItem('emailForSignIn');
   };
 
   const signInWithEmail = async (email: string, password: string) => {
