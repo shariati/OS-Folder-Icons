@@ -1,7 +1,7 @@
 import { adminDb as db } from '../firebase/admin';
 import { DatabaseAdapter } from './types';
 import { UserProfile } from '../../types/user';
-import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
+import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, BlogPost, Page, Settings } from '../types';
 
 export const adminAdapter: DatabaseAdapter = {
     async getOperatingSystems(): Promise<OperatingSystem[]> {
@@ -53,16 +53,6 @@ export const adminAdapter: DatabaseAdapter = {
     async deleteUser(uid: string): Promise<void> {
         if (!db) return;
         await db.collection('users').doc(uid).delete();
-    },
-    async getAuditLogs(): Promise<AuditLog[]> {
-        if (!db) return [];
-        const snapshot = await db.collection('auditLogs').get();
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditLog));
-    },
-    async logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void> {
-        if (!db) return;
-        const docRef = db.collection('auditLogs').doc();
-        await docRef.set({ ...action, id: docRef.id });
     },
     async getBlogPosts(): Promise<BlogPost[]> {
         if (!db) return [];
@@ -123,24 +113,22 @@ export const adminAdapter: DatabaseAdapter = {
             tags: [],
             heroSlides: [],
             users: [],
-            auditLogs: [],
             blogPosts: [],
             pages: [],
             settings: {}
         };
-        const [operatingSystems, bundles, categories, tags, heroSlides, users, auditLogs, blogPosts, pages, settings] = await Promise.all([
+        const [operatingSystems, bundles, categories, tags, heroSlides, users, blogPosts, pages, settings] = await Promise.all([
             this.getOperatingSystems(),
             this.getBundles(),
             this.getCategories(),
             this.getTags(),
             this.getHeroSlides(),
             this.getUsers(),
-            this.getAuditLogs(),
             this.getBlogPosts(),
             this.getPages(),
             this.getSettings(),
         ]);
-        return { operatingSystems, bundles, categories, tags, heroSlides, users, auditLogs, blogPosts, pages, settings };
+        return { operatingSystems, bundles, categories, tags, heroSlides, users, blogPosts, pages, settings };
     },
     async saveDB(data: DB): Promise<void> {
         if (!db) return;
@@ -181,9 +169,6 @@ export const adminAdapter: DatabaseAdapter = {
             }
             for (const user of data.users) {
                 await addToBatch(db.collection('users').doc(user.uid), user);
-            }
-            for (const log of data.auditLogs) {
-                await addToBatch(db.collection('auditLogs').doc(log.id), log);
             }
             for (const post of data.blogPosts) {
                 await addToBatch(db.collection('blogPosts').doc(post.id), post);

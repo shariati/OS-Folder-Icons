@@ -71,7 +71,6 @@ export interface DB {
   tags: Tag[];
   heroSlides: HeroSlide[];
   users: UserProfile[];
-  auditLogs: AuditLog[];
   blogPosts: BlogPost[];
   pages: Page[];
   settings: Settings;
@@ -97,14 +96,7 @@ export interface Settings {
   adConfig?: AdConfig;
 }
 
-export interface AuditLog {
-  id: string;
-  action: string;
-  details: string;
-  userId: string;
-  userEmail: string;
-  timestamp: string;
-}
+
 
 export interface BlogPost {
   id: string;

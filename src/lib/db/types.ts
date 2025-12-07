@@ -1,4 +1,4 @@
-import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, AuditLog, BlogPost, Page, Settings } from '../types';
+import { DB, OperatingSystem, Bundle, Category, Tag, HeroSlide, BlogPost, Page, Settings } from '../types';
 import { UserProfile } from '../../types/user';
 
 export interface DatabaseSchema {
@@ -8,7 +8,6 @@ export interface DatabaseSchema {
     tags: Tag[];
     heroSlides: HeroSlide[];
     users?: UserProfile[];
-    auditLogs?: AuditLog[];
     blogPosts?: BlogPost[];
     pages?: Page[];
     settings?: Settings;
@@ -25,8 +24,6 @@ export interface DatabaseAdapter {
     updateUser(uid: string, data: Partial<UserProfile>): Promise<void>;
     getUsers(): Promise<UserProfile[]>;
     deleteUser(uid: string): Promise<void>;
-    getAuditLogs(): Promise<AuditLog[]>;
-    logAuditAction(action: Omit<AuditLog, 'id'>): Promise<void>;
     getBlogPosts(): Promise<BlogPost[]>;
     saveBlogPost(post: BlogPost): Promise<void>;
     updateBlogPost(id: string, data: Partial<BlogPost>): Promise<void>;

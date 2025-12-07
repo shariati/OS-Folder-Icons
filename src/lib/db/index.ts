@@ -26,9 +26,6 @@ export const updateUser = async (uid: string, data: any) => (await getAdapter())
 export const getUsers = async () => (await getAdapter()).getUsers();
 export const deleteUser = async (uid: string) => (await getAdapter()).deleteUser(uid);
 
-export const getAuditLogs = async () => (await getAdapter()).getAuditLogs();
-export const logAuditAction = async (action: any) => (await getAdapter()).logAuditAction(action);
-
 export const getBlogPosts = async () => (await getAdapter()).getBlogPosts();
 export const saveBlogPost = async (post: any) => (await getAdapter()).saveBlogPost(post);
 export const updateBlogPost = async (id: string, data: any) => (await getAdapter()).updateBlogPost(id, data);
