@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { Mail, X, RefreshCw } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
 
 export function ActivationBanner() {
@@ -10,6 +10,16 @@ export function ActivationBanner() {
   const { showToast } = useToast();
   const [isResending, setIsResending] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  
+  // Prevent hydration mismatch by waiting for mount
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render anything during SSR to prevent hydration mismatch
+  if (!mounted) return null;
 
   // Only show banner if user is logged in with email/password and email is not verified
   const shouldShow = user && 
@@ -65,3 +75,4 @@ export function ActivationBanner() {
     </div>
   );
 }
+
