@@ -513,6 +513,29 @@ const FAVICON_SIZES = [
   { key: 'android512' as const, size: 512, label: '512×512', description: 'PWA Splash' },
 ];
 
+// App background shapes for favicons
+const APP_BACKGROUND_SHAPES = [
+  { id: 'circle' as const, label: 'Circle', className: 'rounded-full' },
+  { id: 'rounded' as const, label: 'Rounded', className: 'rounded-xl' },
+  { id: 'square' as const, label: 'Square', className: 'rounded-none' },
+];
+
+// Predefined background colors suitable for favicons (high contrast, modern palette)
+const APP_BACKGROUND_COLORS = [
+  { id: 'blue', color: '#3B82F6', label: 'Blue' },        // Vibrant blue - trustworthy, professional
+  { id: 'indigo', color: '#6366F1', label: 'Indigo' },    // Deep indigo - creative, premium
+  { id: 'violet', color: '#8B5CF6', label: 'Violet' },    // Purple - innovative, luxurious
+  { id: 'pink', color: '#EC4899', label: 'Pink' },        // Hot pink - bold, energetic
+  { id: 'red', color: '#EF4444', label: 'Red' },          // Vibrant red - urgent, passionate
+  { id: 'orange', color: '#F97316', label: 'Orange' },    // Orange - friendly, enthusiastic
+  { id: 'emerald', color: '#10B981', label: 'Emerald' },  // Green - growth, success
+  { id: 'teal', color: '#14B8A6', label: 'Teal' },        // Teal - calm, sophisticated
+  { id: 'cyan', color: '#06B6D4', label: 'Cyan' },        // Cyan - fresh, modern
+  { id: 'slate', color: '#475569', label: 'Slate' },      // Dark slate - minimal, elegant
+  { id: 'black', color: '#18181B', label: 'Black' },      // Near black - premium, sleek
+  { id: 'white', color: '#FFFFFF', label: 'White' },      // White - clean, minimal
+];
+
 // FaviconTab component with auto-generation
 function FaviconTab({
   settings,
@@ -804,17 +827,105 @@ function FaviconTab({
         </div>
       )}
 
-      {/* ICO File Upload */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          .ICO File (Multi-size, Legacy Support)
-        </label>
-        <ImageUploader
-          value={settings.favicon?.faviconIco}
-          onChange={(url) => updateFavicon('faviconIco', url)}
-          folder="favicon"
-          aspectRatio="square"
-        />
+      {/* App Background Shape & Color */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
+          App Icon Background
+        </h4>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Choose a background shape and color for your app icons (used in mobile home screens)
+        </p>
+
+        {/* Shape Selector */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Background Shape
+          </label>
+          <div className="flex gap-4">
+            {APP_BACKGROUND_SHAPES.map(({ id, label, className }) => (
+              <button
+                key={id}
+                onClick={() => updateFavicon('appBackgroundShape', id)}
+                className={clsx(
+                  "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all",
+                  settings.favicon?.appBackgroundShape === id
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                )}
+              >
+                <div 
+                  className={clsx(
+                    "w-12 h-12 bg-gray-300 dark:bg-gray-600",
+                    className
+                  )}
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Color Selector */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Background Color
+          </label>
+          <div className="flex flex-wrap gap-3">
+            {APP_BACKGROUND_COLORS.map(({ id, color, label }) => (
+              <button
+                key={id}
+                onClick={() => updateFavicon('appBackgroundColor', color)}
+                title={label}
+                className={clsx(
+                  "relative w-10 h-10 transition-all",
+                  settings.favicon?.appBackgroundShape === 'circle' ? "rounded-full" :
+                  settings.favicon?.appBackgroundShape === 'rounded' ? "rounded-xl" : "rounded-none",
+                  settings.favicon?.appBackgroundColor === color
+                    ? "ring-2 ring-offset-2 ring-blue-500 scale-110"
+                    : "hover:scale-105"
+                )}
+                style={{ backgroundColor: color }}
+              >
+                {settings.favicon?.appBackgroundColor === color && (
+                  <Check className="absolute inset-0 m-auto text-white drop-shadow-md" size={18} />
+                )}
+              </button>
+            ))}
+          </div>
+          
+          {/* Preview */}
+          {(settings.favicon?.appBackgroundShape || settings.favicon?.appBackgroundColor) && (
+            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Preview</label>
+              <div className="flex items-center gap-4">
+                {[64, 48, 32].map(size => (
+                  <div
+                    key={size}
+                    className={clsx(
+                      "flex items-center justify-center",
+                      settings.favicon?.appBackgroundShape === 'circle' ? "rounded-full" :
+                      settings.favicon?.appBackgroundShape === 'rounded' ? "rounded-xl" : "rounded-none"
+                    )}
+                    style={{ 
+                      width: size, 
+                      height: size, 
+                      backgroundColor: settings.favicon?.appBackgroundColor || '#3B82F6'
+                    }}
+                  >
+                    {settings.favicon?.android512 && (
+                      <img 
+                        src={settings.favicon.android512} 
+                        alt="Preview"
+                        className="w-3/4 h-3/4 object-contain"
+                      />
+                    )}
+                  </div>
+                ))}
+                <span className="text-xs text-gray-400">64px / 48px / 32px</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Save Button */}
