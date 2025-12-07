@@ -57,6 +57,13 @@ export const TRUSTED_STRIPE_DOMAINS = [
     'checkout.stripe.com',
 ] as const;
 
+// Vercel domains (for preview deployments)
+export const TRUSTED_VERCEL_DOMAINS = [
+    '*.vercel.live',
+    'vercel.live',
+    '*.vercel.app',
+] as const;
+
 // Build the CSP header value
 export function buildCSPHeader(nonce?: string): string {
     const isDevelopment = process.env.NODE_ENV === 'development';
@@ -73,6 +80,7 @@ export function buildCSPHeader(nonce?: string): string {
             ...TRUSTED_ANALYTICS_DOMAINS,
             ...TRUSTED_AD_DOMAINS,
             ...TRUSTED_STRIPE_DOMAINS,
+            ...TRUSTED_VERCEL_DOMAINS,
         ],
         'style-src': [
             "'self'",
@@ -108,6 +116,7 @@ export function buildCSPHeader(nonce?: string): string {
             ...TRUSTED_ANALYTICS_DOMAINS,
             ...TRUSTED_AD_DOMAINS,
             ...TRUSTED_STRIPE_DOMAINS,
+            ...TRUSTED_VERCEL_DOMAINS,
             'wss://*.firebaseio.com',
             ...(isDevelopment ? ['ws://localhost:*', 'http://localhost:*'] : []),
         ],
