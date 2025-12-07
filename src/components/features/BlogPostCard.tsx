@@ -35,6 +35,7 @@ export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
                 alt={post.title}
                 fill
                 className="object-cover"
+                sizes="96px"
               />
             </div>
           )}
@@ -64,6 +65,7 @@ export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
             alt={post.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600" />

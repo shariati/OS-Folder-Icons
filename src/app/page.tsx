@@ -125,7 +125,7 @@ export default async function Home() {
                    {/* 3D Pop-out Image */}
                    <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-4 z-10 drop-shadow-2xl">
                       {cat.imageUrl ? (
-                        <Image src={cat.imageUrl} alt={cat.name} fill className="object-contain" />
+                        <Image src={cat.imageUrl} alt={cat.name} fill className="object-contain" sizes="(max-width: 768px) 192px, 192px" />
                       ) : (
                         // Fallback if no image
                         <div className="w-full h-full flex items-center justify-center">
@@ -164,7 +164,7 @@ export default async function Home() {
               <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group hover:-translate-y-1 transition-all duration-300">
                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
                    {bundle.previewImage ? (
-                    <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" />
+                    <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
                   ) : (
                     <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400">No Preview</div>
                   )}

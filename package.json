@@ -67,6 +67,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.0.7",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.2.0",

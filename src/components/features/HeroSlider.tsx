@@ -65,6 +65,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               fill
               className="object-cover"
               priority
+              sizes="100vw"
             />
           )}
         </motion.div>
@@ -125,6 +126,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                     alt={slide.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="192px"
                   />
                 )}
                 <div className="absolute bottom-0 left-0 w-full p-4 z-20 bg-gradient-to-t from-black/80 to-transparent">
