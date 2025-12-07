@@ -21,17 +21,10 @@ export async function verifyAdmin(req: Request) {
             // Fallback: check email if you have hardcoded admins (temporary)
             // or fetch user from DB. 
             // For production readiness, we should rely on Custom Claims 'role' === 'admin'.
-
-            // If your app stores role in Firestore but hasn't set custom claims yet, 
-            // you might need to read Firestore here. 
-            // However, reading Firestore on every admin request is slow. 
             // Best practice: Set Custom Claims on login/update.
 
-            // For this audit fix, let's return the token if valid, 
-            // and let the route decide or enforce strict 'admin' claim if possible.
-
-            // Strict Mode:
-            // if (decodedToken.role !== 'admin') return null;
+            // STRICT ENFORCEMENT for Security Audit Fix
+            return null;
         }
 
         return decodedToken;
