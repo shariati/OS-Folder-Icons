@@ -9,15 +9,14 @@ import { CategoriesManager } from '@/components/admin/CategoriesManager';
 import { TagsManager } from '@/components/admin/TagsManager';
 import { HeroManager } from '@/components/admin/HeroManager';
 import { UsersManager } from '@/components/admin/UsersManager';
-
-
 import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { MonetizationManager } from '@/components/admin/MonetizationManager';
+import { SiteConfigManager } from '@/components/admin/SiteConfigManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads'>('os');
+  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads' | 'settings'>('os');
 
   return (
     <ToastProvider>
@@ -34,6 +33,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'blog' && 'Site Manager / Blog Posts'}
             {activeTab === 'pages' && 'Site Manager / Pages'}
             {activeTab === 'ads' && 'Monetization'}
+            {activeTab === 'settings' && 'Site Manager / Site Configuration'}
           </h2>
 
           <nav>
@@ -55,6 +55,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'blog' && 'Site Manager / Blog'}
                 {activeTab === 'pages' && 'Site Manager / Pages'}
                 {activeTab === 'ads' && 'Ads'}
+                {activeTab === 'settings' && 'Site Manager / Settings'}
               </li>
             </ol>
           </nav>
@@ -72,6 +73,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
           {activeTab === 'ads' && <MonetizationManager />}
+          {activeTab === 'settings' && <SiteConfigManager />}
         </div>
       </AdminLayout>
     </ToastProvider>

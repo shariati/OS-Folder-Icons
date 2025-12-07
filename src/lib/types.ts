@@ -92,8 +92,56 @@ export interface AdConfig {
   };
 }
 
+// Favicon configuration for all device sizes and formats
+export interface FaviconConfig {
+  // Standard browser favicons
+  favicon16?: string;   // 16x16 - browser tabs
+  favicon32?: string;   // 32x32 - new tab page, Windows desktop
+  favicon48?: string;   // 48x48 - Windows taskbar
+  faviconIco?: string;  // Multi-size .ico file
+
+  // App icons
+  appleTouch180?: string;  // 180x180 - Apple touch icon
+  android192?: string;     // 192x192 - Android Chrome
+  android512?: string;     // 512x512 - PWA splash
+
+  // Animated favicon (GIF/APNG/WebP)
+  animatedFavicon?: string;
+  useAnimated?: boolean;
+}
+
+// Third-party tracking code configuration
+export interface TrackingConfig {
+  clarityCode?: string;
+  googleAnalyticsCode?: string;
+  googleAdsenseCode?: string;
+}
+
+// Default SEO settings for pages without custom SEO
+export interface DefaultSeoConfig {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  ogImage?: string;
+  twitterCard?: 'summary' | 'summary_large_image';
+}
+
+// Site identity (branding)
+export interface SiteIdentity {
+  siteName?: string;
+  headline?: string;
+  tagline?: string;
+  logo?: string;
+  darkLogo?: string;  // For dark mode
+}
+
 export interface Settings {
   adConfig?: AdConfig;
+  favicon?: FaviconConfig;
+  tracking?: TrackingConfig;
+  defaultSeo?: DefaultSeoConfig;
+  defaultSocial?: SocialMetadata;
+  siteIdentity?: SiteIdentity;
 }
 
 // Social Metadata for Open Graph and Twitter Cards
