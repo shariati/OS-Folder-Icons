@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ImageUploader } from './ImageUploader';
 
 export function HeroManager({ initialData }: { initialData: DB }) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialData.heroSlides || []);
@@ -61,28 +62,7 @@ export function HeroManager({ initialData }: { initialData: DB }) {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, slide: HeroSlide) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const data = await response.json();
-      setEditingSlide({ ...slide, imageUrl: data.url });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      showToast('Failed to upload image', 'error');
-    }
-  };
+  // handleImageUpload removed - now using ImageUploader component directly
 
   const startCreate = () => {
     setEditingSlide({
@@ -173,19 +153,13 @@ export function HeroManager({ initialData }: { initialData: DB }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Background Image</label>
-                <div className="flex items-center gap-4">
-                  {editingSlide.imageUrl && (
-                    <div className="relative w-32 h-20 rounded-xl bg-gray-100 dark:bg-gray-700 overflow-hidden border border-gray-200 dark:border-gray-600">
-                      <Image src={editingSlide.imageUrl} alt="Preview" fill className="object-cover" />
-                    </div>
-                  )}
-                  <label className="cursor-pointer px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl flex items-center gap-2 transition-colors">
-                    <Upload size={18} />
-                    <span>Upload Image</span>
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, editingSlide)} />
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Background Image</label>
+                <ImageUploader
+                  value={editingSlide.imageUrl}
+                  onChange={(url) => setEditingSlide({ ...editingSlide, imageUrl: url })}
+                  folder="hero"
+                  aspectRatio="video"
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-4">

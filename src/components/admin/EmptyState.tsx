@@ -6,8 +6,8 @@ import Image from 'next/image';
 interface EmptyStateProps {
   title: string;
   description: string;
-  actionLabel: string;
-  onAction: () => void;
+  actionLabel?: string;
+  onAction?: () => void;
   imageSrc?: string; // Optional custom image
 }
 
@@ -25,7 +25,7 @@ export function EmptyState({ title, description, actionLabel, onAction, imageSrc
         ) : (
            // Placeholder generic empty state illustration if no image provided
            <div className="w-full h-full bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-             <span className="text-4xl">??</span>
+             <span className="text-4xl">📄</span>
            </div>
         )}
       </div>
@@ -39,13 +39,15 @@ export function EmptyState({ title, description, actionLabel, onAction, imageSrc
         </p>
       </div>
 
-      <button
-        onClick={onAction}
-        className="px-8 py-3 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all shadow-lg shadow-primary/30 flex items-center gap-2"
-      >
-        <Plus size={20} />
-        {actionLabel}
-      </button>
+      {actionLabel && onAction && (
+        <button
+          onClick={onAction}
+          className="px-8 py-3 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all shadow-lg shadow-primary/30 flex items-center gap-2"
+        >
+          <Plus size={20} />
+          {actionLabel}
+        </button>
+      )}
     </NeumorphBox>
   );
 }

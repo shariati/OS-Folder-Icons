@@ -1,21 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BlogPost, UserProfile } from '@/lib/types';
+import { Page } from '@/lib/types';
 import { RichTextEditor } from './RichTextEditor';
+import { ImageUploader } from './ImageUploader';
 import { 
-  Save, Globe, Calendar, User as UserIcon, 
-  Image as ImageIcon, Tag, Eye, Settings, 
-  Layout, Search, CheckCircle, Smartphone, Monitor
+  Save, Globe, Search, Smartphone, Monitor
 } from 'lucide-react';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { getFullUrl } from '@/lib/url';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ImageUploader } from './ImageUploader';
 
-interface BlogEditorProps {
-  post: Partial<BlogPost>;
-  onChange: (post: Partial<BlogPost>) => void;
+interface PageEditorProps {
+  page: Partial<Page>;
+  onChange: (page: Partial<Page>) => void;
   onSave: () => void;
   isLoading?: boolean;
 }
@@ -23,25 +20,25 @@ interface BlogEditorProps {
 type Tab = 'write' | 'seo' | 'preview';
 type PreviewDevice = 'desktop' | 'mobile';
 
-export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProps) {
+export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProps) {
   const [activeTab, setActiveTab] = useState<Tab>('write');
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('desktop');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
   // Auto-generate slug from title
   useEffect(() => {
-    if (!slugManuallyEdited && post.title && !post.id) {
-      const slug = post.title
+    if (!slugManuallyEdited && page.title && !page.id) {
+      const slug = page.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
-      onChange({ ...post, slug });
+      onChange({ ...page, slug });
     }
-  }, [post.title, slugManuallyEdited, post.id, onChange, post]);
+  }, [page.title, slugManuallyEdited, page.id, onChange, page]);
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSlugManuallyEdited(true);
-    onChange({ ...post, slug: e.target.value });
+    onChange({ ...page, slug: e.target.value });
   };
 
   return (
@@ -82,7 +79,7 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
             </button>
           </div>
           <span className="text-sm text-gray-400">
-            {post.status === 'published' ? 'Published' : 'Draft'}
+            {page.status === 'published' ? 'Published' : 'Draft'}
           </span>
         </div>
 
@@ -104,18 +101,18 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
             <div className="max-w-4xl mx-auto px-8 py-12">
               <input
                 type="text"
-                placeholder="Post Title"
-                value={post.title || ''}
-                onChange={(e) => onChange({ ...post, title: e.target.value })}
+                placeholder="Page Title"
+                value={page.title || ''}
+                onChange={(e) => onChange({ ...page, title: e.target.value })}
                 className="w-full text-4xl md:text-5xl font-bold bg-transparent border-none outline-none placeholder-gray-300 dark:placeholder-gray-600 text-gray-900 dark:text-white mb-4"
               />
               
               <div className="flex items-center gap-2 text-gray-400 mb-8 font-mono text-sm bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800 w-fit">
                 <Globe size={14} />
-                <span>/blog/</span>
+                <span>/</span>
                 <input
                   type="text"
-                  value={post.slug || ''}
+                  value={page.slug || ''}
                   onChange={handleSlugChange}
                   className="bg-transparent border-none outline-none text-gray-500 dark:text-gray-400 focus:text-blue-500 min-w-[200px]"
                 />
@@ -123,9 +120,9 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
 
               <div className="prose-editor min-h-[500px]">
                 <RichTextEditor
-                  value={post.content || ''}
-                  onChange={(content) => onChange({ ...post, content })}
-                  placeholder="Tell your story..."
+                  value={page.content || ''}
+                  onChange={(content) => onChange({ ...page, content })}
+                  placeholder="Write your page content..."
                 />
               </div>
             </div>
@@ -141,33 +138,20 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Focus Keyword
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                      placeholder="e.g. UX Design"
-                      value={post.focusKeyword || ''}
-                      onChange={(e) => onChange({ ...post, focusKeyword: e.target.value })}
-                    />
-                  </div>
-
-                  <div>
                     <div className="flex justify-between mb-1">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Meta Title
                       </label>
-                      <span className={`text-xs ${(post.seoTitle?.length || 0) > 60 ? 'text-red-500' : 'text-gray-400'}`}>
-                        {post.seoTitle?.length || 0}/60
+                      <span className={`text-xs ${(page.seoTitle?.length || 0) > 60 ? 'text-red-500' : 'text-gray-400'}`}>
+                        {page.seoTitle?.length || 0}/60
                       </span>
                     </div>
                     <input
                       type="text"
                       className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                       placeholder="Title | Site Name"
-                      value={post.seoTitle || ''}
-                      onChange={(e) => onChange({ ...post, seoTitle: e.target.value })}
+                      value={page.seoTitle || ''}
+                      onChange={(e) => onChange({ ...page, seoTitle: e.target.value })}
                     />
                   </div>
 
@@ -176,16 +160,16 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Meta Description
                       </label>
-                      <span className={`text-xs ${(post.seoDescription?.length || 0) > 160 ? 'text-red-500' : 'text-gray-400'}`}>
-                        {post.seoDescription?.length || 0}/160
+                      <span className={`text-xs ${(page.seoDescription?.length || 0) > 160 ? 'text-red-500' : 'text-gray-400'}`}>
+                        {page.seoDescription?.length || 0}/160
                       </span>
                     </div>
                     <textarea
                       rows={3}
                       className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-                      placeholder="A short summary of your post..."
-                      value={post.seoDescription || ''}
-                      onChange={(e) => onChange({ ...post, seoDescription: e.target.value })}
+                      placeholder="A short summary of your page..."
+                      value={page.seoDescription || ''}
+                      onChange={(e) => onChange({ ...page, seoDescription: e.target.value })}
                     />
                   </div>
                 </div>
@@ -199,14 +183,14 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
                     <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs">Fav</div>
                     <div className="flex flex-col">
                       <span className="text-sm text-[#202124] dark:text-[#dadce0]">My Site Name</span>
-                      <span className="text-xs text-[#5f6368] dark:text-[#bdc1c6]">https://mysite.com › blog › {post.slug || 'slug'}</span>
+                      <span className="text-xs text-[#5f6368] dark:text-[#bdc1c6]">https://mysite.com › {page.slug || 'slug'}</span>
                     </div>
                   </div>
-                  <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer mb-1 truncated">
-                    {post.seoTitle || post.title || 'Post Title'}
+                  <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer mb-1">
+                    {page.seoTitle || page.title || 'Page Title'}
                   </h3>
                   <p className="text-sm text-[#4d5156] dark:text-[#bdc1c6] line-clamp-2">
-                    {post.seoDescription || post.excerpt || 'Focus keyword description...'}
+                    {page.seoDescription || 'Page description...'}
                   </p>
                 </div>
               </div>
@@ -234,8 +218,8 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
                     previewDevice === 'mobile' ? 'w-[375px] h-[667px] rounded-3xl border-8 border-gray-800' : 'w-full max-w-5xl rounded-lg min-h-screen'
                   }`}>
                     <div className="h-full overflow-y-auto p-8 prose dark:prose-invert max-w-none">
-                      <h1>{post.title}</h1>
-                      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content || '') }} />
+                      <h1>{page.title}</h1>
+                      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }} />
                     </div>
                   </div>
                </div>
@@ -246,7 +230,7 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
         {/* Sidebar Settings Panel */}
         <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto p-6 hidden xl:block">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">
-            Post Settings
+            Page Settings
           </h3>
 
           <div className="space-y-6">
@@ -257,75 +241,23 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
               </label>
               <select
                 className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-                value={post.status || 'draft'}
-                onChange={(e) => onChange({ ...post, status: e.target.value as any })}
+                value={page.status || 'draft'}
+                onChange={(e) => onChange({ ...page, status: e.target.value as any })}
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
-                <option value="scheduled">Scheduled</option>
               </select>
-            </div>
-
-            {/* Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Publish Date
-              </label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                <input
-                  type="date"
-                  className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-                  value={post.publishedAt ? post.publishedAt.split('T')[0] : ''}
-                  onChange={(e) => onChange({ ...post, publishedAt: new Date(e.target.value).toISOString() })}
-                />
-              </div>
-            </div>
-
-            {/* Author */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Author
-              </label>
-              <div className="relative">
-                <UserIcon className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                <select
-                    className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-                    value={post.authorId || 'admin'}
-                    onChange={(e) => onChange({ ...post, authorId: e.target.value })}
-                >
-                    <option value="admin">Admin</option>
-                    {/* Add other users here later */}
-                </select>
-              </div>
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Tags
-              </label>
-              <div className="relative">
-                <Tag className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                <input
-                  type="text"
-                  placeholder="Design, Tech, Tutorial"
-                  className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-                  value={post.tags?.join(', ') || ''}
-                  onChange={(e) => onChange({ ...post, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
-                />
-              </div>
             </div>
 
              {/* Cover Image */}
              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Featured Image
+                Cover Image
               </label>
               <ImageUploader
-                value={post.coverImage}
-                onChange={(url) => onChange({ ...post, coverImage: url })}
-                folder="blogs"
+                value={page.coverImage}
+                onChange={(url) => onChange({ ...page, coverImage: url })}
+                folder="pages"
                 aspectRatio="video"
               />
             </div>
