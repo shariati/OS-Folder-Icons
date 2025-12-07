@@ -1,29 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BlogPost, UserProfile } from '@/lib/types';
+import { BlogPost, Tag } from '@/lib/types';
 import { RichTextEditor } from './RichTextEditor';
 import { 
   Save, Globe, Calendar, User as UserIcon, 
-  Image as ImageIcon, Tag, Eye, Settings, 
+  Image as ImageIcon, Tag as TagIcon, Eye, Settings, 
   Layout, Search, CheckCircle, Smartphone, Monitor
 } from 'lucide-react';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { getFullUrl } from '@/lib/url';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ImageUploader } from './ImageUploader';
+import { TagAutocomplete } from './TagAutocomplete';
 
 interface BlogEditorProps {
   post: Partial<BlogPost>;
   onChange: (post: Partial<BlogPost>) => void;
   onSave: () => void;
   isLoading?: boolean;
+  availableTags?: Tag[];
+  onCreateTag?: (name: string) => Promise<Tag>;
 }
 
 type Tab = 'write' | 'seo' | 'preview';
 type PreviewDevice = 'desktop' | 'mobile';
 
-export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProps) {
+export function BlogEditor({ post, onChange, onSave, isLoading, availableTags = [], onCreateTag }: BlogEditorProps) {
   const [activeTab, setActiveTab] = useState<Tab>('write');
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('desktop');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
@@ -305,16 +308,12 @@ export function BlogEditor({ post, onChange, onSave, isLoading }: BlogEditorProp
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Tags
               </label>
-              <div className="relative">
-                <Tag className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                <input
-                  type="text"
-                  placeholder="Design, Tech, Tutorial"
-                  className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-                  value={post.tags?.join(', ') || ''}
-                  onChange={(e) => onChange({ ...post, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
-                />
-              </div>
+              <TagAutocomplete
+                selectedTags={post.tags || []}
+                availableTags={availableTags}
+                onChange={(tags) => onChange({ ...post, tags })}
+                onCreateTag={onCreateTag}
+              />
             </div>
 
              {/* Cover Image */}

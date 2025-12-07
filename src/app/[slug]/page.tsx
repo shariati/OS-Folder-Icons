@@ -12,19 +12,21 @@ const RESERVED_SLUGS = [
 ];
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  
   // Check for reserved slugs
-  if (RESERVED_SLUGS.includes(params.slug)) {
+  if (RESERVED_SLUGS.includes(slug)) {
     return {};
   }
 
   const pages = await getPages();
-  const page = pages.find(p => p.slug === params.slug);
+  const page = pages.find(p => p.slug === slug);
 
   if (!page || page.status !== 'published') {
     return {
@@ -45,15 +47,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function DynamicPage({ params }: PageProps) {
+  const { slug } = await params;
+  
   // Check for reserved slugs - let Next.js handle those routes
-  if (RESERVED_SLUGS.includes(params.slug)) {
+  if (RESERVED_SLUGS.includes(slug)) {
     notFound();
   }
 
   const pages = await getPages();
-  const page = pages.find(p => p.slug === params.slug);
+  
+  // Debug logging
+  console.log('[DEBUG /[slug]] Requested slug:', slug);
+  console.log('[DEBUG /[slug]] Total pages fetched:', pages.length);
+  console.log('[DEBUG /[slug]] All slugs:', pages.map(p => p.slug));
+  
+  const page = pages.find(p => p.slug === slug);
+  
+  console.log('[DEBUG /[slug]] Found page:', page ? { id: page.id, title: page.title, status: page.status, slug: page.slug } : 'NOT FOUND');
 
   if (!page || page.status !== 'published') {
+    console.log('[DEBUG /[slug]] Returning 404 - reason:', !page ? 'page not found' : `status is ${page.status}`);
     notFound();
   }
 

@@ -9,14 +9,15 @@ import { BlogPostCard } from '@/components/features/BlogPostCard';
 import { ViewCounter } from '@/components/features/ViewCounter';
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
   const posts = await getBlogPosts();
-  const post = posts.find(p => p.slug === params.slug);
+  const post = posts.find(p => p.slug === slug);
 
   if (!post || !post.published) {
     return {
@@ -45,8 +46,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
   const posts = await getBlogPosts();
-  const post = posts.find(p => p.slug === params.slug);
+  const post = posts.find(p => p.slug === slug);
 
   const now = new Date().getTime();
   if (!post || !post.published || (post.publishedAt && new Date(post.publishedAt).getTime() > now)) {

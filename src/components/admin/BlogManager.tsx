@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { DB, BlogPost } from '@/lib/types';
+import { DB, BlogPost, Tag } from '@/lib/types';
 import { saveBlogPostAction, deleteBlogPostAction } from '@/app/admin/actions';
 import { useToast } from '@/components/ui/Toast';
 import { Plus, Search, Newspaper, Edit2, Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -20,6 +20,7 @@ const ITEMS_PER_PAGE = 10;
 
 export function BlogManager({ initialData }: BlogManagerProps) {
   const [posts, setPosts] = useState<BlogPost[]>(initialData.blogPosts || []);
+  const [tags, setTags] = useState<Tag[]>(initialData.tags || []);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<Partial<BlogPost>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -130,6 +131,22 @@ export function BlogManager({ initialData }: BlogManagerProps) {
     });
   };
 
+  const handleCreateTag = async (name: string): Promise<Tag> => {
+    const slug = name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+    const newTag: Tag = { id: Date.now().toString(), name, slug };
+    
+    const response = await fetch('/api/admin/tags', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTag),
+    });
+    
+    if (!response.ok) throw new Error('Failed to create tag');
+    const savedTag = await response.json();
+    setTags([...tags, savedTag]);
+    return savedTag;
+  };
+
   if (isEditing) {
     return (
       <div className="h-full flex flex-col">
@@ -147,6 +164,8 @@ export function BlogManager({ initialData }: BlogManagerProps) {
               onChange={setCurrentPost}
               onSave={handleSave}
               isLoading={isLoading}
+              availableTags={tags}
+              onCreateTag={handleCreateTag}
             />
         </div>
       </div>
