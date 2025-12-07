@@ -108,6 +108,10 @@ export interface FaviconConfig {
   // Animated favicon (GIF/APNG/WebP)
   animatedFavicon?: string;
   useAnimated?: boolean;
+
+  // App background styling
+  appBackgroundShape?: 'circle' | 'rounded' | 'square';
+  appBackgroundColor?: string;
 }
 
 // Third-party tracking code configuration
