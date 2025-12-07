@@ -1022,7 +1022,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       )}
 
       {/* Static Toolbar */}
-      <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="sticky top-0 z-50 flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 shadow-sm">
         <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Bold (Ctrl+B)">
           <Bold size={18} />
         </ToolbarButton>
@@ -1088,111 +1088,155 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       </div>
 
       {/* Bubble Menu */}
-      <BubbleMenu 
-        editor={editor} 
-        className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
-      >
-        <button onClick={() => editor.chain().focus().toggleBold().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('bold') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Bold">
-          <Bold size={16} />
-        </button>
-        <button onClick={() => editor.chain().focus().toggleItalic().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('italic') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Italic">
-          <Italic size={16} />
-        </button>
-        <button onClick={() => editor.chain().focus().toggleStrike().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('strike') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Strikethrough">
-          <Strikethrough size={16} />
-        </button>
-        <button onClick={() => editor.chain().focus().toggleCode().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('code') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Code">
-          <Code size={16} />
-        </button>
-        <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
-        <button onClick={openLinkModal} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('link') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Link">
-          <LinkIcon size={16} />
-        </button>
-      </BubbleMenu>
+      {/* Bubble Menu - Text Formatting (Hidden for Images/YouTube/Links) */}
+      {editor && (
+        <BubbleMenu 
+          editor={editor} 
+          pluginKey="text-menu"
+          shouldShow={({ editor, view, state, from, to }) => {
+            // Default check from Tiptap (has selection and not empty)
+            const { doc, selection } = state;
+            const { empty } = selection;
+            const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && !editor.isActive('image') && !editor.isActive('youtube');
+            const hasEditorFocus = view.hasFocus();
 
-      {/* Image Bubble Menu - Shows when image is selected */}
-      {editor.isActive('image') && (
-        <BubbleMenu
-          editor={editor}
+            if (!hasEditorFocus || empty || isEmptyTextBlock || editor.isActive('image') || editor.isActive('youtube') || editor.isActive('link')) {
+              return false;
+            }
+            return true;
+          }}
           className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
         >
-          <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
-            <ImageIcon size={14} />
-            Image
-          </span>
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
-          <button 
-            onClick={() => {
-              const currentSrc = editor.getAttributes('image').src;
-              const newSrc = window.prompt('Enter new image URL:', currentSrc);
-              if (newSrc) {
-                editor.chain().focus().setImage({ src: newSrc }).run();
-              }
-            }}
-            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300"
-            title="Change Image URL"
-          >
-            Change
+          <button onClick={() => editor.chain().focus().toggleBold().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('bold') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Bold">
+            <Bold size={16} />
           </button>
-          <button 
-            onClick={() => {
-              const currentAlt = editor.getAttributes('image').alt || '';
-              const newAlt = window.prompt('Enter alt text:', currentAlt);
-              if (newAlt !== null) {
-                editor.chain().focus().updateAttributes('image', { alt: newAlt }).run();
-              }
-            }}
-            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300"
-            title="Edit Alt Text"
-          >
-            Alt Text
+          <button onClick={() => editor.chain().focus().toggleItalic().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('italic') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Italic">
+            <Italic size={16} />
           </button>
-          <button 
-            onClick={() => editor.chain().focus().deleteSelection().run()}
-            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-red-500"
-            title="Delete Image"
-          >
-            <X size={14} />
+          <button onClick={() => editor.chain().focus().toggleStrike().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('strike') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Strikethrough">
+            <Strikethrough size={16} />
+          </button>
+          <button onClick={() => editor.chain().focus().toggleCode().run()} className={clsx("p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", editor.isActive('code') && "bg-blue-100 dark:bg-blue-900/50 text-blue-600")} title="Code">
+            <Code size={16} />
           </button>
         </BubbleMenu>
       )}
 
-      {/* YouTube Bubble Menu - Shows when YouTube video is selected */}
-      {editor.isActive('youtube') && (
-        <BubbleMenu
-          editor={editor}
-          className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+      {/* Image Bubble Menu */}
+      {editor && (
+        <BubbleMenu 
+          editor={editor} 
+          pluginKey="image-menu"
+          shouldShow={({ editor }) => editor.isActive('image')}
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col min-w-[300px]"
         >
-          <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
-            <YoutubeIcon size={14} className="text-red-500" />
-            YouTube
-          </span>
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5" />
-          <button 
-            onClick={() => {
-              const currentSrc = editor.getAttributes('youtube').src;
-              window.open(currentSrc, '_blank');
-            }}
-            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1"
-            title="Open in YouTube"
+          {/* Alignment controls */}
+          <div className="flex items-center gap-1 p-2 border-b border-gray-100 dark:border-gray-700">
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'float: left; margin-right: 1rem;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Left"
+            >
+              <AlignLeft size={16} />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'display: block; margin: 0 auto;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Center"
+            >
+              <AlignCenter size={16} />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { style: 'float: right; margin-left: 1rem;' }).run()}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+              title="Align Right"
+            >
+              <AlignRight size={16} />
+            </button>
+            <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1" />
+            
+            {/* Size controls */}
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '25%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              S
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '50%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              M
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '75%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              L
+            </button>
+            <button
+              onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
+              className="px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-medium"
+            >
+              Full
+            </button>
+          </div>
+
+          {/* Alt/Title controls and Swap */}
+          <div className="flex items-center gap-1 p-2">
+            <button
+              onClick={() => {
+                const url = window.prompt('Enter image URL:', editor.getAttributes('image').src);
+                if (url) editor.chain().focus().setImage({ src: url }).run();
+              }}
+              className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
+            >
+              <ImageIcon size={14} /> Change Image
+            </button>
+            <button
+              onClick={() => {
+                const alt = window.prompt('Enter alt text:', editor.getAttributes('image').alt);
+                if (alt !== null) editor.chain().focus().updateAttributes('image', { alt }).run();
+              }}
+              className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
+            >
+              <Type size={14} /> Alt Text
+            </button>
+          </div>
+        </BubbleMenu>
+      )}
+
+      {/* YouTube Bubble Menu */}
+      {editor && (
+        <BubbleMenu 
+          editor={editor} 
+          pluginKey="youtube-menu"
+          shouldShow={({ editor }) => editor.isActive('youtube')}
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex divide-x divide-gray-200 dark:divide-gray-700"
+        >
+          <button
+            onClick={openYoutubeEdit}
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
           >
-            <ExternalLink size={14} />
-            Open
+            <YoutubeIcon size={16} />
+            Edit Settings
           </button>
           <button 
             onClick={() => editor.chain().focus().deleteSelection().run()}
-            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-red-500"
-            title="Delete Video"
+            className="flex items-center gap-2 px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium text-red-600 transition-colors"
           >
-            <X size={14} />
+            <X size={16} />
+            Remove
           </button>
         </BubbleMenu>
       )}
 
-      {/* Link Bubble Menu - Shows when link is selected */}
-      {editor.isActive('link') && (
+      {/* Link Bubble Menu */}
+      {editor && (
         <BubbleMenu
           editor={editor}
+          pluginKey="link-menu"
+          shouldShow={({ editor }) => editor.isActive('link')}
           className="flex items-center gap-1 p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
         >
           <span className="text-xs text-gray-500 px-2 flex items-center gap-1">
