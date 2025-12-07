@@ -1,5 +1,30 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { buildCSPHeader } from '@/lib/security/csp-config';
+
+/**
+ * Add security headers to a response
+ */
+function addSecurityHeaders(response: NextResponse): NextResponse {
+    const cspHeader = buildCSPHeader();
+
+    // Security Headers
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
+    // Content Security Policy
+    response.headers.set('Content-Security-Policy', cspHeader);
+
+    // Additional security for production
+    if (process.env.NODE_ENV === 'production') {
+        response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+
+    return response;
+}
 
 export function proxy(req: NextRequest) {
     const hostname = req.nextUrl.hostname;
@@ -29,7 +54,7 @@ export function proxy(req: NextRequest) {
             const [authUser, authPwd] = atob(authValue).split(':');
 
             if (authUser === user && authPwd === pwd) {
-                return response;
+                return addSecurityHeaders(response);
             }
         }
 
@@ -42,9 +67,21 @@ export function proxy(req: NextRequest) {
         });
     }
 
-    return NextResponse.next();
+    // Apply security headers to all responses
+    const response = NextResponse.next();
+    return addSecurityHeaders(response);
 }
 
 export const config = {
-    matcher: '/:path*',
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         * - public folder assets (images, video, etc.)
+         */
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|webm|mp4)$).*)',
+    ],
 };
+
