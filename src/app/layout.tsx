@@ -17,24 +17,26 @@
  */
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Recursive } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Providers } from "@/components/shared/Providers";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
 import { ActivationBanner } from "@/components/ui/ActivationBanner";
+import { getSettings } from "@/lib/db";
+import Clarity from "@/components/shared/Clarity";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap", // Faster text rendering
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
-
-import { Recursive } from "next/font/google";
 
 const recursive = Recursive({
   subsets: ["latin"],
@@ -50,9 +52,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { getSettings } from "@/lib/db";
-import Clarity from "@/components/shared/Clarity";
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -62,6 +61,16 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Preconnect to critical origins for faster resource loading */}
+        <link rel="preconnect" href="https://apis.google.com" />
+        <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* DNS prefetch for analytics (loaded lazily but good to prefetch) */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
@@ -78,3 +87,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
