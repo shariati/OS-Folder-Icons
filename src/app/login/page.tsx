@@ -116,7 +116,7 @@ export default function LoginPage() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/backgrounds/video/home-video-background-1.webm" type="video/webm" />
+          <source src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/home-video-background-1.webm?alt=media`} type="video/webm" />
         </video>
       </div>
 
