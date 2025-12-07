@@ -1,30 +1,12 @@
-import pino from 'pino';
+/**
+ * Logger utility - uses pino on server, console on client
+ * Safe for both server and client environments
+ */
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isServer = typeof window === 'undefined';
 
-// Server-side logger configuration
-const serverLogger = pino({
-    level: isDevelopment ? 'debug' : 'info',
-    ...(isDevelopment && {
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true,
-                translateTime: 'SYS:standard',
-                ignore: 'pid,hostname',
-            },
-        },
-    }),
-    // In production, output JSON for log aggregation services
-    ...(!isDevelopment && {
-        formatters: {
-            level: (label) => ({ level: label }),
-        },
-    }),
-});
-
-// Logger interface that matches pino's API
+// Logger interface
 interface Logger {
     debug: (objOrMsg: object | string, msg?: string) => void;
     info: (objOrMsg: object | string, msg?: string) => void;
@@ -33,87 +15,112 @@ interface Logger {
     child: (bindings: object) => Logger;
 }
 
-// Client-side logger - uses console with structured output
-const clientLogger: Logger = {
-    debug: (objOrMsg, msg) => {
-        if (isDevelopment) {
-            if (typeof objOrMsg === 'string') {
-                console.debug('[DEBUG]', objOrMsg);
-            } else {
-                console.debug('[DEBUG]', msg || '', objOrMsg);
-            }
-        }
-    },
-    info: (objOrMsg, msg) => {
-        if (isDevelopment) {
-            if (typeof objOrMsg === 'string') {
-                console.info('[INFO]', objOrMsg);
-            } else {
-                console.info('[INFO]', msg || '', objOrMsg);
-            }
-        }
-    },
-    warn: (objOrMsg, msg) => {
-        if (typeof objOrMsg === 'string') {
-            console.warn('[WARN]', objOrMsg);
-        } else {
-            console.warn('[WARN]', msg || '', objOrMsg);
-        }
-    },
-    error: (objOrMsg, msg) => {
-        if (typeof objOrMsg === 'string') {
-            console.error('[ERROR]', objOrMsg);
-        } else {
-            console.error('[ERROR]', msg || '', objOrMsg);
-        }
-    },
-    child: () => clientLogger,
-};
+// Simple console-based logger for client side
+function createConsoleLogger(name?: string): Logger {
+    const prefix = name ? `[${name}]` : '';
 
-// Export the appropriate logger based on environment
-export const logger = isServer ? serverLogger : clientLogger;
+    const formatArgs = (objOrMsg: object | string, msg?: string): string[] => {
+        if (typeof objOrMsg === 'string') {
+            return [prefix, objOrMsg].filter(Boolean);
+        }
+        return msg
+            ? [prefix, msg, JSON.stringify(objOrMsg)].filter(Boolean)
+            : [prefix, JSON.stringify(objOrMsg)].filter(Boolean);
+    };
 
-// Named exports for specific use cases
-export const createLogger = (name: string): Logger => {
-    if (isServer) {
-        return serverLogger.child({ module: name }) as unknown as Logger;
-    }
     return {
         debug: (objOrMsg, msg) => {
-            if (isDevelopment) {
-                if (typeof objOrMsg === 'string') {
-                    console.debug(`[DEBUG][${name}]`, objOrMsg);
-                } else {
-                    console.debug(`[DEBUG][${name}]`, msg || '', objOrMsg);
-                }
-            }
+            if (isDevelopment) console.debug('[DEBUG]', ...formatArgs(objOrMsg, msg));
         },
         info: (objOrMsg, msg) => {
-            if (isDevelopment) {
-                if (typeof objOrMsg === 'string') {
-                    console.info(`[INFO][${name}]`, objOrMsg);
-                } else {
-                    console.info(`[INFO][${name}]`, msg || '', objOrMsg);
-                }
-            }
+            if (isDevelopment) console.info('[INFO]', ...formatArgs(objOrMsg, msg));
         },
         warn: (objOrMsg, msg) => {
-            if (typeof objOrMsg === 'string') {
-                console.warn(`[WARN][${name}]`, objOrMsg);
-            } else {
-                console.warn(`[WARN][${name}]`, msg || '', objOrMsg);
-            }
+            console.warn('[WARN]', ...formatArgs(objOrMsg, msg));
         },
         error: (objOrMsg, msg) => {
-            if (typeof objOrMsg === 'string') {
-                console.error(`[ERROR][${name}]`, objOrMsg);
-            } else {
-                console.error(`[ERROR][${name}]`, msg || '', objOrMsg);
-            }
+            console.error('[ERROR]', ...formatArgs(objOrMsg, msg));
         },
-        child: () => createLogger(name),
+        child: (bindings) => createConsoleLogger(name || Object.values(bindings)[0]?.toString()),
     };
+}
+
+// Server-side pino logger (lazy loaded)
+let serverLoggerPromise: Promise<Logger> | null = null;
+
+async function getServerLogger(): Promise<Logger> {
+    if (!serverLoggerPromise) {
+        serverLoggerPromise = (async () => {
+            const pino = (await import('pino')).default;
+
+            const pinoLogger = pino({
+                level: isDevelopment ? 'debug' : 'info',
+                ...(isDevelopment && {
+                    transport: {
+                        target: 'pino-pretty',
+                        options: {
+                            colorize: true,
+                            translateTime: 'SYS:standard',
+                            ignore: 'pid,hostname',
+                        },
+                    },
+                }),
+                ...(!isDevelopment && {
+                    formatters: {
+                        level: (label) => ({ level: label }),
+                    },
+                }),
+            });
+
+            return pinoLogger as unknown as Logger;
+        })();
+    }
+    return serverLoggerPromise;
+}
+
+// Synchronous server logger that queues messages until pino is ready
+function createServerLoggerSync(name?: string): Logger {
+    let pinoLoggerReady: Logger | null = null;
+    const pendingLogs: Array<{ level: keyof Logger; args: [object | string, string?] }> = [];
+
+    // Initialize pino logger
+    getServerLogger().then(logger => {
+        pinoLoggerReady = name ? logger.child({ module: name }) : logger;
+        // Flush pending logs
+        for (const log of pendingLogs) {
+            if (log.level !== 'child') {
+                (pinoLoggerReady[log.level] as Function)(...log.args);
+            }
+        }
+        pendingLogs.length = 0;
+    });
+
+    const logOrQueue = (level: 'debug' | 'info' | 'warn' | 'error') =>
+        (objOrMsg: object | string, msg?: string) => {
+            if (pinoLoggerReady) {
+                (pinoLoggerReady[level] as Function)(objOrMsg, msg);
+            } else {
+                pendingLogs.push({ level, args: [objOrMsg, msg] });
+            }
+        };
+
+    return {
+        debug: logOrQueue('debug'),
+        info: logOrQueue('info'),
+        warn: logOrQueue('warn'),
+        error: logOrQueue('error'),
+        child: (bindings) => createServerLoggerSync(name || Object.values(bindings)[0]?.toString()),
+    };
+}
+
+// Export the appropriate logger based on environment
+export const logger: Logger = isServer ? createServerLoggerSync() : createConsoleLogger();
+
+// Named export for creating module-specific loggers
+export const createLogger = (name: string): Logger => {
+    return isServer ? createServerLoggerSync(name) : createConsoleLogger(name);
 };
 
 export default logger;
+
 
