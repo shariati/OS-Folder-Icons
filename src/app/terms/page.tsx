@@ -58,6 +58,16 @@ export default function TermsPage() {
                   <li>You can cancel at any time, and your access continues until the end of the current billing period.</li>
                 </ul>
 
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mt-4 mb-2">Free Account Downloads</h3>
+                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 mb-4">
+                  <p className="text-amber-800 dark:text-amber-200">
+                    <strong>Important:</strong> Free account users may download items from HD Pick by viewing a brief advertisement. 
+                    This requires advertising cookies to be enabled in your <a href="/cookies" className="underline">cookie preferences</a>. 
+                    If you disable advertising cookies, you will not be able to download items on a free account. 
+                    Paid subscribers (Pro and Lifetime) can download without viewing advertisements.
+                  </p>
+                </div>
+
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mt-4 mb-2">Lifetime Subscription</h3>
                 <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 mb-4">
                   <p className="font-semibold text-blue-800 dark:text-blue-200 mb-2">

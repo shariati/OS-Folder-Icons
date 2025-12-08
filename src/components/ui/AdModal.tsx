@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, ExternalLink } from 'lucide-react';
+import { X, ExternalLink, AlertTriangle, Settings } from 'lucide-react';
 import { AdConfig } from '@/lib/types';
 import Link from 'next/link';
+import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -15,20 +16,24 @@ export function AdModal({ isOpen, onClose, onComplete }: AdModalProps) {
   const [timeLeft, setTimeLeft] = useState(10);
   const [adConfig, setAdConfig] = useState<AdConfig | null>(null);
   const adContainerRef = useRef<HTMLDivElement>(null);
+  const { preferences, isLoaded } = useCookieConsent();
+
+  // Check if ads are blocked by user preference
+  const adsBlocked = isLoaded && !preferences.advertising;
 
   // Fetch Ad Config
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !adsBlocked) {
       fetch('/api/admin/ads')
         .then(res => res.json())
         .then(data => setAdConfig(data))
         .catch(err => console.error('Failed to load ad config', err));
     }
-  }, [isOpen]);
+  }, [isOpen, adsBlocked]);
 
-  // Timer Logic
+  // Timer Logic - only runs if ads are not blocked
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !adsBlocked) {
       setTimeLeft(10);
       const timer = setInterval(() => {
         setTimeLeft((prev) => {
@@ -41,21 +46,16 @@ export function AdModal({ isOpen, onClose, onComplete }: AdModalProps) {
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, adsBlocked]);
 
   // Render Ad Script
   useEffect(() => {
-    if (isOpen && adConfig && adConfig.enabled && adContainerRef.current) {
+    if (isOpen && !adsBlocked && adConfig && adConfig.enabled && adContainerRef.current) {
       const container = adContainerRef.current;
       container.innerHTML = ''; // Clear previous
 
       if (adConfig.provider === 'adsterra' && adConfig.adsterra.script) {
         // Safe script injection for Adsterra
-        const script = document.createElement('script');
-        // Extract src if it's a script tag, or just innerHTML
-        // This is a simplified handler. Real-world might need more robust parsing.
-        // For now, assuming user pastes raw HTML/JS. 
-        // Using a sandboxed iframe is safer for raw HTML.
         const iframe = document.createElement('iframe');
         iframe.style.width = '100%';
         iframe.style.height = '300px';
@@ -103,16 +103,69 @@ export function AdModal({ isOpen, onClose, onComplete }: AdModalProps) {
           }
       }
     }
-  }, [isOpen, adConfig]);
+  }, [isOpen, adsBlocked, adConfig]);
 
   if (!isOpen) return null;
 
   const handleComplete = () => {
-    if (timeLeft === 0) {
+    if (timeLeft === 0 && !adsBlocked) {
       onComplete();
     }
   };
 
+  // Ads Blocked State - Show warning instead of ad
+  if (adsBlocked) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl max-w-lg w-full relative shadow-2xl border border-gray-200 dark:border-gray-800">
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 z-10"
+          >
+            <X size={24} />
+          </button>
+          
+          <div className="text-center py-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <AlertTriangle size={32} className="text-amber-500" />
+            </div>
+            
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Download Unavailable
+            </h3>
+            
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Free downloads require advertising cookies to be enabled. 
+              You've disabled advertising cookies in your privacy settings.
+            </p>
+            
+            <div className="space-y-3">
+              <Link 
+                href="/cookies"
+                className="w-full py-3 px-6 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 transition-all"
+              >
+                <Settings size={18} />
+                Enable in Cookie Settings
+              </Link>
+              
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Or upgrade to Pro for ad-free downloads
+              </p>
+              
+              <Link 
+                href="/#pricing" 
+                className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-1"
+              >
+                View Plans <ExternalLink size={12} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Normal Ad State
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl max-w-lg w-full relative shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">

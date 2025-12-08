@@ -91,6 +91,7 @@ export default function CookiesPage() {
       description:
         'These cookies are used to deliver personalized advertisements based on your browsing behavior. We use Google AdSense which may track your activity across websites to show relevant ads.',
       required: false,
+      warning: 'Important: Free accounts require advertising cookies to be enabled. If you disable this, you will not be able to download items until you upgrade to a paid plan.',
     },
   ];
 
@@ -173,6 +174,13 @@ export default function CookiesPage() {
                     </button>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300">{category.description}</p>
+                  {(category as any).warning && (
+                    <div className="mt-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                      <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                        ⚠️ {(category as any).warning}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
