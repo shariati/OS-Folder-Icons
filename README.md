@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://firebasestorage.googleapis.com/v0/b/hdpick-customisation.firebasestorage.app/o/public%2FHDPick-logo.svg?alt=media" alt="HDPick Logo" width="120" height="120" />
+</p>
+
 # Hand Picked
   
 Hand Picked (HDPick) `/ˌhan(d)ˈpɪkt/` is a modern web application for creating and downloading customised Folder Icon, Polaroid Photo Frame, and other premium assets.
