@@ -146,7 +146,8 @@ export default function LoginPage() {
               />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h1>
-            <p className="text-gray-500 dark:text-gray-400">Sign in to access your icons</p>
+            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">Personalize every pixel</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Sign in to access your icons</p>
           </div>
 
           {error && (

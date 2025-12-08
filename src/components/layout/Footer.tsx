@@ -18,7 +18,10 @@ export function Footer() {
                 className="w-32 h-32"
               />
             </Link>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+            <p className="mt-2 text-sm font-semibold text-blue-600 dark:text-blue-400">
+              Personalize every pixel
+            </p>
+            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
               Beautiful, customizable folder icons for your digital workspace. Designed with love and pixel-perfect precision.
             </p>
             <div className="mt-6 flex space-x-4">

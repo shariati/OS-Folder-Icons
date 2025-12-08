@@ -103,7 +103,8 @@ function SignupContent() {
               />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
-            <p className="text-gray-500 dark:text-gray-400">Join thousands of users customizing their desktops</p>
+            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">Personalize every pixel</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Join thousands of users customizing their desktops</p>
           </div>
 
           {error && (

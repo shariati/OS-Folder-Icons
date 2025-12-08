@@ -51,6 +51,11 @@ export default async function Home() {
         </div>
 
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
+           <div className="animate-fade-in-up animation-delay-100">
+              <span className="text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase text-sm mb-4 block">
+                Personalize every pixel
+              </span>
+           </div>
            <div className="animate-fade-in-up animation-delay-200">
               <span className="inline-block py-1 px-3 rounded-full bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 text-sm font-medium mb-6">
                 v3.0 is now live
