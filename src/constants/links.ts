@@ -1,12 +1,12 @@
 export const SOCIAL_LINKS = {
-    GITHUB: 'https://github.com/shariati/OS-Folder-Icons',
+    GITHUB: 'https://github.com/shariati/Hand-Picked',
     LINKEDIN: 'https://www.linkedin.com/in/aminshariati',
     BEHANCE: 'https://www.behance.net/aminshariati?',
     MEDIUM: 'https://medium.com/@shariati',
 };
 
 export const PROJECT_LINKS = {
-    GITHUB_DISCUSSIONS: 'https://github.com/shariati/OS-Folder-Icons/discussions/categories/q-a',
+    GITHUB_DISCUSSIONS: `${SOCIAL_LINKS.GITHUB}/discussions`,
 };
 
 export const EXTERNAL_LINKS = {

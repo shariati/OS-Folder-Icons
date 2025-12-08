@@ -9,15 +9,14 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-gray-700 dark:text-white">
+            <Link href="/" className="flex items-center text-xl font-bold text-gray-700 dark:text-white">
               <Image
                 src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
-                alt="HDPick Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8"
+                alt="HD Pick"
+                width={56}
+                height={56}
+                className="w-32 h-32"
               />
-              <span>HDPick</span>
             </Link>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
               Beautiful, customizable folder icons for your digital workspace. Designed with love and pixel-perfect precision.
@@ -96,9 +95,32 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8">
-          <p className="text-base text-gray-400 text-center">
-            &copy; {new Date().getFullYear()} HDPick. All rights reserved. | Icons provided by <a href={RESOURCE_LINKS.FONTAWESOME} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Font Awesome</a> & <a href={RESOURCE_LINKS.LUCIDE} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Lucide</a>
-          </p>
+          <div className="flex flex-col items-center space-y-4">
+            <p className="text-base text-gray-400 text-center">
+              &copy;{new Date().getFullYear()} HDPick. All rights reserved.
+            </p>
+            <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+              <Link href="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <Link href="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Terms of Use
+              </Link>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <Link href="/sitemap" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Site Map
+              </Link>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <Link href="/cookies" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Manage Cookies
+              </Link>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <Link href="/do-not-sell" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Do Not Sell My Personal Information
+              </Link>
+            </nav>
+          </div>
         </div>
       </div>
     </footer>

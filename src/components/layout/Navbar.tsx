@@ -135,20 +135,23 @@ export function Navbar() {
   return (
     <nav className="fixed top-4 left-4 right-4 z-50 rounded-2xl border border-white/20 bg-white/70 dark:bg-black/70 backdrop-blur-3xl shadow-xl transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo - Left */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-gray-700 dark:text-white hover:opacity-80 transition-opacity">
+            <Link href="/" className="flex items-center text-xl font-bold text-gray-700 dark:text-white hover:opacity-80 transition-opacity">
               <Image
                 src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
                 alt="HDPick Logo"
-                width={40}
-                height={40}
-                className="w-10 h-10"
+                width={50}
+                height={50}
+                className="w-20 h-20"
                 priority
               />
-              <span className="hidden sm:block">HDPick</span>
             </Link>
-            <div className="hidden sm:ml-10 sm:flex sm:space-x-8 items-center">
+          </div>
+          
+          {/* Menu - Center */}
+          <div className="hidden sm:flex sm:space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
               {/* Custom Folders Dropdown */}
               <div className="relative" ref={productsDropdownRef}>
                 <button
@@ -187,7 +190,8 @@ export function Navbar() {
                 Blog
               </Link>
             </div>
-          </div>
+          
+          {/* User Section - Right */}
           <div className="flex items-center space-x-4">
             {renderUserSection()}
           </div>

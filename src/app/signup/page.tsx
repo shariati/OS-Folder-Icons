@@ -15,6 +15,7 @@ function SignupContent() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const { signInWithGoogle, signUpWithEmail } = useAuth();
   
   const searchParams = useSearchParams();
@@ -29,6 +30,10 @@ function SignupContent() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!ageConfirmed) {
+      setError('You must confirm that you are at least 16 years old.');
+      return;
+    }
     try {
       setError('');
       setLoading(true);
@@ -44,6 +49,10 @@ function SignupContent() {
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!ageConfirmed) {
+      setError('You must confirm that you are at least 16 years old.');
+      return;
+    }
     setError('');
     setLoading(true);
 
@@ -180,9 +189,26 @@ function SignupContent() {
               </div>
             </div>
 
+            {/* Age Confirmation Checkbox */}
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="ageConfirmation"
+                checked={ageConfirmed}
+                onChange={(e) => setAgeConfirmed(e.target.checked)}
+                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+              />
+              <label htmlFor="ageConfirmation" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                I confirm that I am at least <strong>16 years old</strong> and agree to the{' '}
+                <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>{' '}
+                and{' '}
+                <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
+              </label>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !ageConfirmed}
               className="w-full py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center border border-gray-200 dark:border-gray-600"
             >
               Create Account with Email <ArrowRight className="ml-2 w-4 h-4" />
