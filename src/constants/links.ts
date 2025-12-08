@@ -29,6 +29,7 @@ export const RESOURCE_LINKS = {
 export const FIREBASE_STORAGE = {
     BASE_URL: 'https://firebasestorage.googleapis.com/v0/b',
     VIDEO_BACKGROUND: 'public/home-video-background-1.webm',
+    LOGO: 'public/HDPick-logo.svg',
 };
 
 /**

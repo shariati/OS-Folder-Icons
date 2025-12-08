@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { FolderOpen, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { User, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useRef, useEffect } from 'react';
+import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -136,9 +138,14 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-gray-700 dark:text-white hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <FolderOpen className="w-6 h-6 text-white" />
-              </div>
+              <Image
+                src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
+                alt="HDPick Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10"
+                priority
+              />
               <span className="hidden sm:block">HDPick</span>
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8 items-center">

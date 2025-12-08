@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { FolderOpen, Twitter, Github, Linkedin, Palette, BookOpen } from 'lucide-react';
-import { SOCIAL_LINKS, RESOURCE_LINKS } from '@/constants/links';
+import Image from 'next/image';
+import { Twitter, Github, Linkedin, Palette, BookOpen } from 'lucide-react';
+import { SOCIAL_LINKS, RESOURCE_LINKS, getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 export function Footer() {
   return (
@@ -9,9 +10,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-gray-700 dark:text-white">
-              <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center shadow-md shadow-blue-500/20">
-                <FolderOpen className="w-5 h-5 text-white" />
-              </div>
+              <Image
+                src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
+                alt="HDPick Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
               <span>HDPick</span>
             </Link>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">

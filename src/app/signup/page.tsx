@@ -4,7 +4,8 @@ import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { FolderOpen, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 function SignupContent() {
@@ -82,8 +83,15 @@ function SignupContent() {
       <div className="relative z-20 w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
         <div className="p-8 sm:p-10">
           <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-500 text-white mb-6 shadow-lg shadow-blue-500/30">
-              <FolderOpen className="w-8 h-8" />
+            <Link href="/" className="inline-flex items-center justify-center mb-6">
+              <Image
+                src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
+                alt="HDPick Logo"
+                width={64}
+                height={64}
+                className="w-16 h-16"
+                priority
+              />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
             <p className="text-gray-500 dark:text-gray-400">Join thousands of users customizing their desktops</p>

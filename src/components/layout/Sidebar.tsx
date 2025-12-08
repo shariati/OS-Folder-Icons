@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Package, Grid, Tags, Image as ImageIcon, ArrowLeft, FolderOpen, Users, BarChart2, Activity, FileText, Layout, ChevronDown, Globe, Layers, PenTool, Banknote, Settings } from 'lucide-react';
 import clsx from 'clsx';
+import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -58,9 +60,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
         <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-white">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
-             <FolderOpen className="h-6 w-6" />
-          </div>
+          <Image
+            src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
+            alt="HDPick Logo"
+            width={40}
+            height={40}
+            className="w-10 h-10"
+            priority
+          />
           Admin
         </Link>
 
