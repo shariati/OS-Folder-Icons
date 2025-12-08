@@ -4,24 +4,37 @@ import { useState, useEffect } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { Check, RefreshCw } from 'lucide-react';
-import { useCookieConsent, CookiePreferences } from '@/components/shared/CookieConsentProvider';
+import { useCookieConsent, CookiePreferences, getDefaultPreferences } from '@/components/shared/CookieConsentProvider';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function CookiesPage() {
   const { preferences: savedPreferences, isLoaded, updatePreferences } = useCookieConsent();
-  const [preferences, setPreferences] = useState<CookiePreferences>({
-    essential: true,
-    analytics: true,
-    advertising: true,
-  });
+  const { userProfile } = useAuth();
+  
+  // Check if user has a paid subscription (no ad requirements)
+  const isPaidUser = userProfile?.role === 'paid' || userProfile?.role === 'lifetime';
+  
+  const [preferences, setPreferences] = useState<CookiePreferences>(() => 
+    getDefaultPreferences(isPaidUser)
+  );
   const [saved, setSaved] = useState(false);
   const [showReloadPrompt, setShowReloadPrompt] = useState(false);
 
-  // Sync local state with context when loaded
+  // Sync local state with context when loaded, or use role-based defaults for new users
   useEffect(() => {
     if (isLoaded) {
-      setPreferences(savedPreferences);
+      // Check if user has any saved preferences
+      const hasSavedPrefs = localStorage.getItem('hdpick_cookie_preferences');
+      if (hasSavedPrefs) {
+        setPreferences(savedPreferences);
+      } else {
+        // First visit - use role-based defaults
+        const defaults = getDefaultPreferences(isPaidUser);
+        setPreferences(defaults);
+        updatePreferences(defaults);
+      }
     }
-  }, [isLoaded, savedPreferences]);
+  }, [isLoaded, savedPreferences, isPaidUser, updatePreferences]);
 
   const handleToggle = (key: keyof CookiePreferences) => {
     if (key === 'essential') return; // Cannot disable essential cookies
@@ -91,7 +104,14 @@ export default function CookiesPage() {
       description:
         'These cookies are used to deliver personalized advertisements based on your browsing behavior. We use Google AdSense which may track your activity across websites to show relevant ads.',
       required: false,
-      warning: 'Important: Free accounts require advertising cookies to be enabled. If you disable this, you will not be able to download items until you upgrade to a paid plan.',
+      // Only show warning for non-paid users
+      warning: isPaidUser 
+        ? undefined 
+        : 'Important: Free accounts require advertising cookies to be enabled. If you disable this, you will not be able to download items until you upgrade to a paid plan.',
+      // Show benefit message for paid users
+      premiumBenefit: isPaidUser 
+        ? 'As a premium subscriber, you can disable advertising tracking without any restrictions. Your downloads are ad-free!' 
+        : undefined,
     },
   ];
 
@@ -178,6 +198,13 @@ export default function CookiesPage() {
                     <div className="mt-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
                       <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
                         ⚠️ {(category as any).warning}
+                      </p>
+                    </div>
+                  )}
+                  {(category as any).premiumBenefit && (
+                    <div className="mt-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                      <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+                        ✨ {(category as any).premiumBenefit}
                       </p>
                     </div>
                   )}

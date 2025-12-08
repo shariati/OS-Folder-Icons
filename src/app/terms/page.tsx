@@ -63,8 +63,13 @@ export default function TermsPage() {
                   <p className="text-amber-800 dark:text-amber-200">
                     <strong>Important:</strong> Free account users may download items from HD Pick by viewing a brief advertisement. 
                     This requires advertising cookies to be enabled in your <a href="/cookies" className="underline">cookie preferences</a>. 
-                    If you disable advertising cookies, you will not be able to download items on a free account. 
-                    Paid subscribers (Pro and Lifetime) can download without viewing advertisements.
+                    If you disable advertising cookies, you will not be able to download items on a free account.
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 mb-4">
+                  <p className="text-green-800 dark:text-green-200">
+                    <strong>Premium Benefit:</strong> Paid subscribers (Pro and Lifetime) can download without viewing advertisements 
+                    and may disable advertising cookies in their <a href="/cookies" className="underline">privacy preferences</a> without affecting their download capabilities.
                   </p>
                 </div>
 

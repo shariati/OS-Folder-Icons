@@ -116,7 +116,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc pl-6 space-y-2 mb-4">
                   <li><strong>Essential Cookies:</strong> Required for the website to function properly (authentication, security, preferences).</li>
                   <li><strong>Analytics Cookies:</strong> Help us understand how visitors use our site (Google Analytics, Microsoft Clarity).</li>
-                  <li><strong>Advertising Cookies:</strong> Used to deliver relevant advertisements (Google AdSense).</li>
+                  <li><strong>Advertising Cookies:</strong> Used to deliver relevant advertisements (Google AdSense). <em>Note: Paid subscribers (Pro and Lifetime) may disable advertising cookies without affecting their download capabilities.</em></li>
                 </ul>
                 <p>You can manage your cookie preferences at any time on our <a href="/cookies" className="text-blue-600 hover:underline">Manage Cookies</a> page.</p>
               </section>

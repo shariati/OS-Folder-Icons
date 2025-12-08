@@ -22,6 +22,22 @@ const defaultPreferences: CookiePreferences = {
   advertising: true,
 };
 
+/**
+ * Get default cookie preferences based on user subscription status.
+ * - Free/Guest users: All cookies enabled (ads required for free downloads)
+ * - Paid/Lifetime users: Ads disabled by default (they can download without ads)
+ */
+export function getDefaultPreferences(isPaidUser: boolean): CookiePreferences {
+  if (isPaidUser) {
+    return {
+      essential: true,
+      analytics: true,
+      advertising: false, // Paid users don't need ad tracking
+    };
+  }
+  return { ...defaultPreferences };
+}
+
 const CookieConsentContext = createContext<CookieConsentContextType>({
   preferences: defaultPreferences,
   isLoaded: false,
