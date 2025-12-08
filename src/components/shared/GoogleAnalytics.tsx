@@ -1,10 +1,18 @@
 'use client';
 
 import Script from 'next/script';
-
+import { useCookieConsent } from './CookieConsentProvider';
 
 export default function GoogleAnalytics({ id }: { id?: string }) {
-  if (!id) return null;
+  const { preferences, isLoaded } = useCookieConsent();
+
+  // Don't render if:
+  // - No ID provided
+  // - Preferences haven't loaded yet (avoid flash of tracking)
+  // - User has opted out of analytics
+  if (!id || !isLoaded || !preferences.analytics) {
+    return null;
+  }
 
   return (
     <>
@@ -17,8 +25,9 @@ export default function GoogleAnalytics({ id }: { id?: string }) {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-
-          gtag('config', '${id}');
+          gtag('config', '${id}', {
+            'anonymize_ip': true
+          });
         `}
       </Script>
     </>

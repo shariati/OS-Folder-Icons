@@ -3,37 +3,25 @@
 import { useState, useEffect } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { Check, X } from 'lucide-react';
-
-interface CookiePreferences {
-  essential: boolean;
-  analytics: boolean;
-  advertising: boolean;
-}
-
-const COOKIE_PREFERENCES_KEY = 'hdpick_cookie_preferences';
-
-const defaultPreferences: CookiePreferences = {
-  essential: true, // Always required
-  analytics: true,
-  advertising: true,
-};
+import { Check, RefreshCw } from 'lucide-react';
+import { useCookieConsent, CookiePreferences } from '@/components/shared/CookieConsentProvider';
 
 export default function CookiesPage() {
-  const [preferences, setPreferences] = useState<CookiePreferences>(defaultPreferences);
+  const { preferences: savedPreferences, isLoaded, updatePreferences } = useCookieConsent();
+  const [preferences, setPreferences] = useState<CookiePreferences>({
+    essential: true,
+    analytics: true,
+    advertising: true,
+  });
   const [saved, setSaved] = useState(false);
+  const [showReloadPrompt, setShowReloadPrompt] = useState(false);
 
+  // Sync local state with context when loaded
   useEffect(() => {
-    // Load saved preferences
-    const savedPrefs = localStorage.getItem(COOKIE_PREFERENCES_KEY);
-    if (savedPrefs) {
-      try {
-        setPreferences(JSON.parse(savedPrefs));
-      } catch {
-        // Use defaults if parsing fails
-      }
+    if (isLoaded) {
+      setPreferences(savedPreferences);
     }
-  }, []);
+  }, [isLoaded, savedPreferences]);
 
   const handleToggle = (key: keyof CookiePreferences) => {
     if (key === 'essential') return; // Cannot disable essential cookies
@@ -42,30 +30,13 @@ export default function CookiesPage() {
       [key]: !prev[key],
     }));
     setSaved(false);
+    setShowReloadPrompt(false);
   };
 
   const handleSave = () => {
-    localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(preferences));
+    updatePreferences(preferences);
     setSaved(true);
-
-    // Apply preferences (in a real implementation, this would communicate with analytics/ad scripts)
-    if (!preferences.analytics) {
-      // Disable analytics tracking
-      window.localStorage.setItem('ga_disabled', 'true');
-      window.localStorage.setItem('clarity_disabled', 'true');
-    } else {
-      window.localStorage.removeItem('ga_disabled');
-      window.localStorage.removeItem('clarity_disabled');
-    }
-
-    if (!preferences.advertising) {
-      // Disable personalized advertising
-      window.localStorage.setItem('adsense_personalization_disabled', 'true');
-    } else {
-      window.localStorage.removeItem('adsense_personalization_disabled');
-    }
-
-    // Show confirmation
+    setShowReloadPrompt(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
@@ -76,8 +47,9 @@ export default function CookiesPage() {
       advertising: true,
     };
     setPreferences(allEnabled);
-    localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(allEnabled));
+    updatePreferences(allEnabled);
     setSaved(true);
+    setShowReloadPrompt(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
@@ -88,12 +60,14 @@ export default function CookiesPage() {
       advertising: false,
     };
     setPreferences(onlyEssential);
-    localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(onlyEssential));
-    localStorage.setItem('ga_disabled', 'true');
-    localStorage.setItem('clarity_disabled', 'true');
-    localStorage.setItem('adsense_personalization_disabled', 'true');
+    updatePreferences(onlyEssential);
     setSaved(true);
+    setShowReloadPrompt(true);
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const handleReload = () => {
+    window.location.reload();
   };
 
   const cookieCategories = [
@@ -132,6 +106,24 @@ export default function CookiesPage() {
               We use cookies to enhance your experience on HD Pick. You can customize your preferences below.
             </p>
 
+            {/* Reload Prompt */}
+            {showReloadPrompt && (
+              <div className="mb-8 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-amber-800 dark:text-amber-200 text-sm">
+                    <strong>Important:</strong> For your new preferences to take full effect, please reload the page.
+                  </p>
+                  <button
+                    onClick={handleReload}
+                    className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium whitespace-nowrap"
+                  >
+                    <RefreshCw size={16} />
+                    Reload Now
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-4 mb-8">
               <button
@@ -167,14 +159,14 @@ export default function CookiesPage() {
                     <button
                       onClick={() => handleToggle(category.key)}
                       disabled={category.required}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
                         preferences[category.key]
                           ? 'bg-blue-600'
                           : 'bg-gray-300 dark:bg-gray-600'
                       } ${category.required ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform ${
                           preferences[category.key] ? 'translate-x-6' : 'translate-x-1'
                         }`}
                       />
@@ -213,9 +205,9 @@ export default function CookiesPage() {
                   experience.
                 </p>
                 <p>
-                  <strong>How long do cookies last?</strong> Session cookies are deleted when you close
-                  your browser. Persistent cookies remain on your device for a set period or until you
-                  delete them.
+                  <strong>How do your preferences work?</strong> When you disable analytics or advertising cookies,
+                  the corresponding tracking scripts will not be loaded on your next page visit. This gives you
+                  real control over your privacy.
                 </p>
                 <p>
                   <strong>Third-party cookies:</strong> Some cookies are set by third-party services we

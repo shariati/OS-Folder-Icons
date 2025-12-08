@@ -74,9 +74,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
-        <GoogleAnalytics id={settings.tracking?.googleAnalyticsCode} />
-        <Clarity projectId={settings.tracking?.clarityCode} />
         <Providers>
+          <GoogleAnalytics id={settings.tracking?.googleAnalyticsCode} />
+          <Clarity projectId={settings.tracking?.clarityCode} />
           <Navbar />
           <ActivationBanner />
           <main>

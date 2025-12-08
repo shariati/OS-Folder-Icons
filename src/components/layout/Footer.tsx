@@ -99,24 +99,24 @@ export function Footer() {
             <p className="text-base text-gray-400 text-center">
               &copy;{new Date().getFullYear()} HDPick. All rights reserved.
             </p>
-            <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
-              <Link href="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <nav className="flex flex-wrap justify-center gap-x-2 gap-y-3 text-sm text-gray-500 dark:text-gray-400">
+              <Link href="/privacy" className="px-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 Privacy Policy
               </Link>
               <span className="text-gray-300 dark:text-gray-600">|</span>
-              <Link href="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/terms" className="px-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 Terms of Use
               </Link>
               <span className="text-gray-300 dark:text-gray-600">|</span>
-              <Link href="/sitemap" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/sitemap" className="px-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 Site Map
               </Link>
               <span className="text-gray-300 dark:text-gray-600">|</span>
-              <Link href="/cookies" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/cookies" className="px-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 Manage Cookies
               </Link>
               <span className="text-gray-300 dark:text-gray-600">|</span>
-              <Link href="/do-not-sell" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/do-not-sell" className="px-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 Do Not Sell My Personal Information
               </Link>
             </nav>

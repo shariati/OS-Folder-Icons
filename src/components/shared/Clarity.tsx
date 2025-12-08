@@ -1,9 +1,18 @@
 'use client';
 
 import Script from 'next/script';
+import { useCookieConsent } from './CookieConsentProvider';
 
 export default function Clarity({ projectId }: { projectId?: string }) {
-  if (!projectId) return null;
+  const { preferences, isLoaded } = useCookieConsent();
+
+  // Don't render if:
+  // - No project ID provided
+  // - Preferences haven't loaded yet
+  // - User has opted out of analytics
+  if (!projectId || !isLoaded || !preferences.analytics) {
+    return null;
+  }
 
   return (
     <Script id="clarity-script" strategy="lazyOnload">

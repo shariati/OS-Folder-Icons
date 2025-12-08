@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import SubscriptionManager from '@/components/subscription/SubscriptionManager';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { User, Mail, Calendar, Lock, Shield, Trash2, Camera, Loader2, AlertTriangle, Check, X } from 'lucide-react';
+import { User, Mail, Calendar, Lock, Shield, Trash2, Camera, Loader2, AlertTriangle, Check, X, Download } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { formatDate } from '@/lib/format';
 
@@ -27,6 +27,9 @@ export default function ProfilePage() {
   // Danger Zone State
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Data Export State
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
@@ -109,6 +112,47 @@ export default function ProfilePage() {
       showToast(error.message || 'Failed to delete account', 'error');
       setIsDeleting(false);
       setShowDeleteConfirm(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const token = await user?.getIdToken();
+      if (!token) {
+        showToast('Please log in again to export data', 'error');
+        return;
+      }
+      
+      const response = await fetch('/api/user/export', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to export data');
+      }
+      
+      const data = await response.json();
+      
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hdpick-my-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showToast('Your data has been downloaded', 'success');
+    } catch (error: any) {
+      console.error(error);
+      showToast(error.message || 'Failed to export data', 'error');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -322,6 +366,38 @@ export default function ProfilePage() {
                     </form>
                 </NeumorphBox>
             )}
+
+            {/* Download My Data */}
+            <NeumorphBox className="p-8 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                    <Download size={24} className="text-blue-500" /> Download My Data
+                </h3>
+                
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    You have the right to access all personal data we store about you. Click the button below to download 
+                    a copy of your data in JSON format. This includes your profile information, saved configurations, and preferences.
+                </p>
+                
+                <button 
+                    onClick={handleExportData}
+                    disabled={isExporting}
+                    className="px-6 py-3 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-lg font-bold border border-blue-200 dark:border-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/20 transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                    {isExporting ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Preparing Download...
+                      </>
+                    ) : (
+                      <>
+                        <Download size={18} />
+                        Download My Data
+                      </>
+                    )}
+                </button>
+            </NeumorphBox>
 
             {/* Danger Zone */}
             <NeumorphBox className="p-8 border border-red-100 dark:border-red-900/30 relative overflow-hidden">
