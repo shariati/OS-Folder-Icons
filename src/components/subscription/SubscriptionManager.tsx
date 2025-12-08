@@ -393,6 +393,28 @@ const SubscriptionManagerContent = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* CO2 Contribution Summary */}
+                        {invoices.length > 0 && (
+                            <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-800/50 flex items-center justify-center">
+                                        <span className="text-lg">🌱</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                                            Your CO₂ Removal Contribution
+                                        </p>
+                                        <p className="text-lg font-bold text-green-700 dark:text-green-300">
+                                            ${(invoices.filter((inv: any) => inv.status === 'paid').reduce((sum: number, inv: any) => sum + inv.amount, 0) / 100 * 0.005).toFixed(2)} USD
+                                        </p>
+                                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                                            0.5% of your payments help remove CO₂ from the atmosphere
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

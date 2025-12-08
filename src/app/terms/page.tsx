@@ -76,7 +76,23 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">5. Intellectual Property</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">5. Carbon Initiative</h2>
+                <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 mb-4">
+                  <p className="flex items-center gap-2 font-semibold text-green-800 dark:text-green-200">
+                    <span>🌱</span>
+                    <span>HD Pick contributes 0.5% of all subscription and payment revenues toward carbon dioxide removal.</span>
+                  </p>
+                </div>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li><strong>Voluntary Initiative:</strong> This is a voluntary commitment by HD Pick and does not affect the pricing or terms of your subscription.</li>
+                  <li><strong>Carbon Removal:</strong> Contributions are made through verified carbon removal programs and initiatives.</li>
+                  <li><strong>Transparency:</strong> Your contribution amount is visible in your profile under Billing &amp; Invoices.</li>
+                  <li><strong>No Additional Cost:</strong> This contribution is funded by HD Pick from existing revenues—you are not charged extra.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">6. Intellectual Property</h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Our Content:</strong> All content provided by HD Pick, including the icon generator tool, designs, logos, and code, is the property of HD Pick or its licensors and is protected by copyright and other intellectual property laws.</li>
                   <li><strong>User-Generated Content:</strong> By creating icons using our tools, you retain rights to your specific customizations, but you grant us a license to display and use them for the purpose of providing the service.</li>
@@ -93,7 +109,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">6. Usage Rights</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">7. Usage Rights</h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Personal Use:</strong> You may use the icons generated or downloaded for personal and non-commercial purposes freely.</li>
                   <li><strong>Commercial Use:</strong> Commercial use of the icons may require a separate license or attribution, as specified in the specific bundle details.</li>
@@ -101,7 +117,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">7. Third-Party Services</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">8. Third-Party Services</h2>
                 <p className="mb-2">Our service integrates with third-party tools to provide functionality, analytics, and advertising:</p>
                 <ul className="list-disc pl-6 space-y-2 mb-4">
                   <li><strong>Infrastructure:</strong> Hosted on <strong>Vercel</strong> with backend services provided by <strong>Firebase</strong> (Google).</li>
@@ -115,7 +131,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">8. Photo Frame Feature Usage</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">9. Photo Frame Feature Usage</h2>
                 <p className="mb-2">
                   We are committed to your privacy when using our tools.
                 </p>
@@ -127,7 +143,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">9. Prohibited Conduct</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">10. Prohibited Conduct</h2>
                 <p className="mb-2">You agree not to:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Use the service for any illegal purpose.</li>
@@ -140,35 +156,35 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">10. Disclaimer of Warranties</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">11. Disclaimer of Warranties</h2>
                 <p>
                   The service is provided &quot;as is&quot; without warranties of any kind, whether express or implied. We do not guarantee that the service will be uninterrupted or error-free.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">11. Limitation of Liability</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">12. Limitation of Liability</h2>
                 <p>
                   HD Pick shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the service.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">12. Changes to Terms</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">13. Changes to Terms</h2>
                 <p>
                   We reserve the right to modify these Terms at any time. We will notify users of significant changes by posting a notice on our website or sending an email. Your continued use of the service constitutes acceptance of the updated Terms.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">13. Governing Law</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">14. Governing Law</h2>
                 <p>
                   These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which HD Pick operates, without regard to its conflict of law provisions.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">14. Contact Us</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">15. Contact Us</h2>
                 <p>
                   If you have any questions about these Terms, please contact us at <a href={PROJECT_LINKS.GITHUB_DISCUSSIONS} className="text-blue-600 hover:underline">GitHub Discussions</a>.
                 </p>

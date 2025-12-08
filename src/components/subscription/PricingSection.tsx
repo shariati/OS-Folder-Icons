@@ -144,6 +144,14 @@ const PricingSection = () => {
                 </button>
             </div>
           </div>
+
+          {/* CO2 Contribution Banner */}
+          <div className="mt-8 flex justify-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-full text-green-700 dark:text-green-300 text-sm font-medium">
+              <span>🌱</span>
+              <span>0.5% of your purchase goes toward removing CO₂ from the atmosphere</span>
+            </div>
+          </div>
         </div>
 
         <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
