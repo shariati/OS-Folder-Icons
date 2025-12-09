@@ -13,12 +13,15 @@ export interface OSVersion {
   id: string;
   name: string;
   folderIcons: FolderIcon[];
+  // Default template for this version
+  defaultFolderUrl?: string;
+  defaultOffsetX?: number;
+  defaultOffsetY?: number;
 }
 
 export interface OperatingSystem {
   id: string;
   name: string;
-  image?: string; // Icon for the OS itself
   brandIcon?: string; // FontAwesome icon class (e.g. "fa-brands fa-apple")
   format?: 'png' | 'ico' | 'icns'; // Default to png if undefined
   versions: OSVersion[];

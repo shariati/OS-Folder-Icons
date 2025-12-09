@@ -9,6 +9,22 @@ export const adminAdapter: DatabaseAdapter = {
         const snapshot = await db.collection('operatingSystems').get();
         return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as OperatingSystem));
     },
+    async getOperatingSystem(id: string): Promise<OperatingSystem | null> {
+        if (!db) return null;
+        const doc = await db.collection('operatingSystems').doc(id).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() } as OperatingSystem;
+    },
+    async saveOperatingSystem(os: OperatingSystem): Promise<void> {
+        if (!db) return;
+        // Remove undefined values
+        const cleanOS = JSON.parse(JSON.stringify(os));
+        await db.collection('operatingSystems').doc(os.id).set(cleanOS);
+    },
+    async deleteOperatingSystem(id: string): Promise<void> {
+        if (!db) return;
+        await db.collection('operatingSystems').doc(id).delete();
+    },
     async getBundles(): Promise<Bundle[]> {
         if (!db) return [];
         const snapshot = await db.collection('bundles').get();
@@ -143,7 +159,8 @@ export const adminAdapter: DatabaseAdapter = {
             let count = 0;
 
             const addToBatch = async (docRef: FirebaseFirestore.DocumentReference, data: any) => {
-                currentBatch.set(docRef, data);
+                const cleanData = JSON.parse(JSON.stringify(data));
+                currentBatch.set(docRef, cleanData);
                 count++;
                 if (count >= BATCH_LIMIT) {
                     await currentBatch.commit();

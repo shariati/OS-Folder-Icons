@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { getDB, saveOperatingSystem } from '@/lib/db';
 import { OperatingSystem } from '@/lib/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,12 +20,12 @@ export async function POST(request: Request) {
     const newOS: OperatingSystem = {
         id: body.id || uuidv4(),
         name: body.name,
-        image: body.image,
-        versions: body.versions || []
+        versions: body.versions || [],
+        brandIcon: body.brandIcon,
+        format: body.format || 'png'
     };
 
-    db.operatingSystems.push(newOS);
-    await saveDB(db);
+    await saveOperatingSystem(newOS);
 
     return NextResponse.json(newOS);
 }

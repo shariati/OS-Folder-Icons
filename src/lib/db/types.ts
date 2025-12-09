@@ -15,6 +15,9 @@ export interface DatabaseSchema {
 
 export interface DatabaseAdapter {
     getOperatingSystems(): Promise<OperatingSystem[]>;
+    getOperatingSystem(id: string): Promise<OperatingSystem | null>;
+    saveOperatingSystem(os: OperatingSystem): Promise<void>;
+    deleteOperatingSystem(id: string): Promise<void>;
     getBundles(): Promise<Bundle[]>;
     getCategories(): Promise<Category[]>;
     getTags(): Promise<Tag[]>;

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { getOperatingSystem, saveOperatingSystem, deleteOperatingSystem } from '@/lib/db';
 import { OperatingSystem } from '@/lib/types';
 
 export async function PUT(
@@ -7,19 +7,21 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const db = await getDB();
     const body = await request.json();
 
-    const osIndex = db.operatingSystems.findIndex(os => os.id === id);
-    if (osIndex === -1) {
+    // Fetch only the specific OS
+    const currentOS = await getOperatingSystem(id);
+    if (!currentOS) {
         return NextResponse.json({ error: 'OS not found' }, { status: 404 });
     }
 
-    // Update fields
-    const updatedOS = { ...db.operatingSystems[osIndex], ...body };
-    db.operatingSystems[osIndex] = updatedOS;
+    // Merge updates
+    const updatedOS: OperatingSystem = { ...currentOS, ...body, id }; // Ensure ID matches
 
-    await saveDB(db);
+    // Clean up potential undefined values (though saveOperatingSystem handles this too now)
+    if ((updatedOS as any).image === undefined) delete (updatedOS as any).image;
+
+    await saveOperatingSystem(updatedOS);
 
     return NextResponse.json(updatedOS);
 }
@@ -29,15 +31,10 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const db = await getDB();
 
-    const osIndex = db.operatingSystems.findIndex(os => os.id === id);
-    if (osIndex === -1) {
-        return NextResponse.json({ error: 'OS not found' }, { status: 404 });
-    }
-
-    db.operatingSystems.splice(osIndex, 1);
-    await saveDB(db);
+    // Direct delete without pre-fetching entire DB. 
+    // Firestore delete is successful even if doc doesn't exist.
+    await deleteOperatingSystem(id);
 
     return NextResponse.json({ success: true });
 }

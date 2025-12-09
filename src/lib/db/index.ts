@@ -15,6 +15,9 @@ const getAdapter = async (): Promise<DatabaseAdapter> => {
 };
 
 export const getOperatingSystems = async () => (await getAdapter()).getOperatingSystems();
+export const getOperatingSystem = async (id: string) => (await getAdapter()).getOperatingSystem(id);
+export const saveOperatingSystem = async (os: any) => (await getAdapter()).saveOperatingSystem(os);
+export const deleteOperatingSystem = async (id: string) => (await getAdapter()).deleteOperatingSystem(id);
 export const getBundles = async () => (await getAdapter()).getBundles();
 export const getCategories = async () => (await getAdapter()).getCategories();
 export const getTags = async () => (await getAdapter()).getTags();

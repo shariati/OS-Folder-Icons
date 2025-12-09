@@ -412,7 +412,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
       {/* Right Column: Preview */}
       <div className="lg:col-span-8">
-        <div className="sticky top-24">
+        <div className="sticky top-24 space-y-8">
           <PreviewPanel
             actions={
               <button
@@ -430,20 +430,93 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
               </p>
             }
           >
-            <CanvasPreview
-              folderImage={selectedFolder?.imageUrl}
-              iconName={selectedIcon}
-              iconType={iconType}
-              iconColor={iconColor}
-              iconSize={iconSize}
-              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-              format={selectedOS?.format}
-              iconEffect={iconEffect}
-              iconTransparency={iconTransparency}
-              folderHue={folderHue}
-            />
+            {/* Main Preview */}
+            <div className="relative flex items-center justify-center overflow-hidden rounded-xl">
+               {/* 
+                  Scenario A: Desktop Background exists. 
+                  Render a container with the background, and place the Icon inside.
+               */}
+               {selectedOS?.desktopBackground ? (
+                 <div className="relative w-full aspect-[16/10] bg-cover bg-center rounded-xl overflow-hidden group shadow-2xl border-4 border-gray-900/10 dark:border-white/10"
+                      style={{ backgroundImage: `url(${selectedOS.desktopBackground})` }}
+                 >
+                    {/* The Icon Wrapper - animated */}
+                    <div className="absolute top-8 right-8 transition-all duration-500 ease-in-out transform origin-top-right
+                                    w-[512px] h-[512px] scale-[0.15]
+                                    group-hover:scale-[0.6] group-hover:top-1/2 group-hover:right-1/2 group-hover:translate-x-1/2 group-hover:-translate-y-1/2
+                                    cursor-pointer"
+                    >
+                         <CanvasPreview
+                            folderImage={selectedFolder?.imageUrl}
+                            iconName={selectedIcon}
+                            iconType={iconType}
+                            iconColor={iconColor}
+                            iconSize={iconSize}
+                            offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                            offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                            format={selectedOS?.format}
+                            iconEffect={iconEffect}
+                            iconTransparency={iconTransparency}
+                            folderHue={folderHue}
+                          />
+                    </div>
+                 </div>
+               ) : (
+                 /* Scenario B: No Background - Standard Preview */
+                 <CanvasPreview
+                    folderImage={selectedFolder?.imageUrl}
+                    iconName={selectedIcon}
+                    iconType={iconType}
+                    iconColor={iconColor}
+                    iconSize={iconSize}
+                    offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                    offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                    format={selectedOS?.format}
+                    iconEffect={iconEffect}
+                    iconTransparency={iconTransparency}
+                    folderHue={folderHue}
+                  />
+               )}
+            </div>
           </PreviewPanel>
+
+          {/* Icon Sizes Section */}
+          <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
+            <div className="flex flex-wrap items-end justify-center gap-8 p-6 bg-gray-50 dark:bg-gray-900/20 rounded-2xl">
+              {[16, 32, 48, 96, 256].map((size) => {
+                 // Calculate scale based on 512px base
+                 const scale = size / 512;
+                 return (
+                   <div key={size} className="flex flex-col items-center gap-3">
+                     <div 
+                        className="relative overflow-hidden shadow-sm transition-transform hover:scale-110"
+                        style={{ width: size, height: size }}
+                     >
+                       <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+                           <CanvasPreview
+                              folderImage={selectedFolder?.imageUrl}
+                              iconName={selectedIcon}
+                              iconType={iconType}
+                              iconColor={iconColor}
+                              iconSize={iconSize}
+                              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                              format={selectedOS?.format}
+                              iconEffect={iconEffect}
+                              iconTransparency={iconTransparency}
+                              folderHue={folderHue}
+                              // Important: Prevent this instance from capturing download events
+                              disableDownloadCapture
+                            />
+                       </div>
+                     </div>
+                     <span className="text-xs font-mono text-gray-500 font-bold">{size}x{size}</span>
+                   </div>
+                 );
+              })}
+            </div>
+          </NeumorphBox>
+
         </div>
       </div>
     <AdModal 

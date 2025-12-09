@@ -10,6 +10,21 @@ export const firestoreAdapter: DatabaseAdapter = {
         const snapshot = await getDocs(collection(db, 'operatingSystems'));
         return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as OperatingSystem));
     },
+    async getOperatingSystem(id: string): Promise<OperatingSystem | null> {
+        if (!db) return null;
+        const docSnap = await getDoc(doc(db, 'operatingSystems', id));
+        if (!docSnap.exists()) return null;
+        return { id: docSnap.id, ...docSnap.data() } as OperatingSystem;
+    },
+    async saveOperatingSystem(os: OperatingSystem): Promise<void> {
+        if (!db) return;
+        const cleanOS = JSON.parse(JSON.stringify(os));
+        await setDoc(doc(db, 'operatingSystems', os.id), cleanOS);
+    },
+    async deleteOperatingSystem(id: string): Promise<void> {
+        if (!db) return;
+        await deleteDoc(doc(db, 'operatingSystems', id));
+    },
     async getBundles(): Promise<Bundle[]> {
         if (!db) return [];
         const snapshot = await getDocs(collection(db, 'bundles'));

@@ -20,6 +20,7 @@ interface CanvasPreviewProps {
   iconEffect?: 'none' | 'carved' | 'emboss' | 'glassy';
   iconTransparency?: number;
   folderHue?: number;
+  disableDownloadCapture?: boolean;
 }
 
 export function CanvasPreview({ 
@@ -33,7 +34,8 @@ export function CanvasPreview({
   format = 'png',
   iconEffect = 'none',
   iconTransparency = 1,
-  folderHue = 0
+  folderHue = 0,
+  disableDownloadCapture = false
 }: CanvasPreviewProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -67,10 +69,11 @@ export function CanvasPreview({
 
   // Expose download trigger via a hidden button that parent can click
   useEffect(() => {
+    if (disableDownloadCapture) return;
     const handleDownloadTrigger = () => download();
     window.addEventListener('trigger-download', handleDownloadTrigger);
     return () => window.removeEventListener('trigger-download', handleDownloadTrigger);
-  }, [download]);
+  }, [download, disableDownloadCapture]);
 
   const getIconComponent = () => {
     if (!iconName) return null;

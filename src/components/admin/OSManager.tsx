@@ -10,67 +10,59 @@ import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
 import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
+import { useAuth } from '@/contexts/AuthContext';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { OSForm } from './OSForm';
+import { uploadToFirebase } from '@/lib/client-upload';
 
 import { EmptyState } from '@/components/admin/EmptyState';
 
 export function OSManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
   const { showToast } = useToast();
-  const [isUploading, setIsUploading] = useState(false);
-  const [isAddingOS, setIsAddingOS] = useState(false);
+  const { user } = useAuth();
   
-  // New OS State
-  const [newOSName, setNewOSName] = useState('');
-  const [newOSFormat, setNewOSFormat] = useState<'png' | 'ico' | 'icns'>('png');
-  const [newOSBrandIcon, setNewOSBrandIcon] = useState('');
-  const [newOSImage, setNewOSImage] = useState<File | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingOS, setEditingOS] = useState<OperatingSystem | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const uploadFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-    if (!res.ok) throw new Error('Upload failed');
-    const data = await res.json();
-    return data.url;
+  // Close form handler
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingOS(null);
   };
 
-  const handleAddOS = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newOSName) return;
-    setIsUploading(true);
+  // Create or Update Handler
+  const handleSaveOS = async (data: Partial<OperatingSystem>) => {
+    setIsSubmitting(true);
     try {
-      let imageUrl = '';
-      if (newOSImage) {
-        imageUrl = await uploadFile(newOSImage);
-      }
-
-      const res = await fetch('/api/os', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: newOSName, 
-          image: imageUrl, 
-          format: newOSFormat,
-          brandIcon: newOSBrandIcon 
-        })
-      });
-
-      if (res.ok) {
-        setNewOSName('');
-        setNewOSImage(null);
-        setNewOSFormat('png');
-        setNewOSBrandIcon('');
-        setIsAddingOS(false);
-        showToast('Operating System added successfully', 'success');
-        router.refresh();
+      if (editingOS) {
+        // Update existing
+        const res = await fetch(`/api/os/${editingOS.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Failed to update OS');
+        showToast('Operating System updated successfully', 'success');
       } else {
-        throw new Error('Failed to add OS');
+        // Create new
+        const res = await fetch('/api/os', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Failed to create OS');
+        showToast('Operating System created successfully', 'success');
       }
+      
+      router.refresh();
+      closeForm();
     } catch (error) {
-      showToast('Failed to add OS', 'error');
+      console.error(error);
+      showToast('Operation failed', 'error');
     } finally {
-      setIsUploading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -89,152 +81,60 @@ export function OSManager({ initialData }: { initialData: DB }) {
     }
   };
 
-  const updateOS = async (os: OperatingSystem) => {
-    try {
-      const res = await fetch(`/api/os/${os.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(os)
-      });
-      if (res.ok) {
-        router.refresh();
-        return true;
-      }
-      throw new Error('Failed to update OS');
-    } catch (error) {
-      showToast('Failed to update OS', 'error');
-      return false;
-    }
+  // Helper to trigger edit from item
+  const startEdit = (os: OperatingSystem) => {
+    setEditingOS(os);
+    setIsFormOpen(true);
   };
 
   const hasItems = initialData.operatingSystems.length > 0;
 
   return (
     <div className="space-y-8">
-      {/* Header - Only if items exist */}
-      {hasItems && (
+      {/* Header */}
+      {!isFormOpen && (
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <h2 className="text-2xl font-bold text-black dark:text-white">Operating Systems</h2>
-            {!isAddingOS && (
-                <button 
-                    onClick={() => setIsAddingOS(true)} 
-                    className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2"
-                >
-                <Plus size={20} /> Add Operating System
-                </button>
-            )}
+            <button 
+                onClick={() => setIsFormOpen(true)} 
+                className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2"
+            >
+            <Plus size={20} /> Add Operating System
+            </button>
         </div>
       )}
 
-      {/* Empty State - Only if no items and not adding */}
-      {!hasItems && !isAddingOS && (
+      {/* Form Overlay/Mode */}
+      {isFormOpen && (
+        <OSForm 
+            title={editingOS ? 'Edit Operating System' : 'Add New Operating System'}
+            initialData={editingOS || {}}
+            onSubmit={handleSaveOS}
+            onCancel={closeForm}
+            isSubmitting={isSubmitting}
+        />
+      )}
+
+      {/* Empty State */}
+      {!hasItems && !isFormOpen && (
         <EmptyState 
             title="No Operating Systems Found"
             description="Get started by adding your first operating system."
             actionLabel="Add Operating System"
-            onAction={() => setIsAddingOS(true)}
+            onAction={() => setIsFormOpen(true)}
         />
       )}
 
-      {/* Add OS Form */}
-      {isAddingOS && (
-        <NeumorphBox 
-          className="animate-in fade-in slide-in-from-top-4"
-          title="Add New Operating System"
-          badge={
-            <button onClick={() => setIsAddingOS(false)} className="text-gray-400 hover:text-red-500 transition-colors">
-              <X size={24} />
-            </button>
-          }
-        >
-          <form onSubmit={handleAddOS} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
-                <NeumorphBox
-                  as="input"
-                  variant="pressed"
-                  type="text"
-                  value={newOSName}
-                  onChange={(e: any) => {
-                    const name = e.target.value;
-                    setNewOSName(name);
-                    if (OS_KEYWORD_MATCHERS.ICNS.some(k => name.toLowerCase().includes(k))) {
-                      setNewOSFormat(OS_FORMATS.ICNS);
-                    } else if (OS_KEYWORD_MATCHERS.ICO.some(k => name.toLowerCase().includes(k))) {
-                      setNewOSFormat(OS_FORMATS.ICO);
-                    }
-                  }}
-                  className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-                  placeholder="e.g. Ubuntu"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Format</label>
-                <div className="relative">
-                  <NeumorphBox
-                    as="select"
-                    variant="pressed"
-                    value={newOSFormat}
-                    onChange={(e: any) => setNewOSFormat(e.target.value as any)}
-                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent appearance-none"
-                  >
-                    <option value={OS_FORMATS.PNG}>PNG</option>
-                    <option value={OS_FORMATS.ICO}>ICO</option>
-                    <option value={OS_FORMATS.ICNS}>ICNS</option>
-                  </NeumorphBox>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Brand Icon</label>
-                <div className="flex gap-3">
-                  {BRAND_ICONS.map((icon) => (
-                    <button
-                      key={icon.name}
-                      type="button"
-                      onClick={() => setNewOSBrandIcon(icon.class)}
-                      className={clsx(
-                        "flex-1 py-3 px-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2",
-                        newOSBrandIcon === icon.class
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600"
-                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500"
-                      )}
-                    >
-                      <i className={clsx(icon.class, "text-2xl")} />
-                      <span className="text-xs font-bold">{icon.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Icon (Optional)</label>
-                <input
-                  type="file"
-                  onChange={(e) => setNewOSImage(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end pt-4">
-              <button
-                type="submit"
-                disabled={isUploading}
-                className="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1"
-              >
-                {isUploading ? 'Adding...' : 'Add OS'}
-              </button>
-            </div>
-          </form>
-        </NeumorphBox>
-      )}
-
       {/* OS List */}
-      {hasItems && (
+      {!isFormOpen && hasItems && (
         <div className="space-y-6">
             {initialData.operatingSystems.map((os) => (
-            <OSItem key={os.id} os={os} onUpdate={updateOS} onDelete={() => handleDeleteOS(os.id)} />
+            <OSItem 
+                key={os.id} 
+                os={os} 
+                onEdit={() => startEdit(os)} 
+                onDelete={() => handleDeleteOS(os.id)} 
+            />
             ))}
         </div>
       )}
@@ -242,27 +142,29 @@ export function OSManager({ initialData }: { initialData: DB }) {
   );
 }
 
-function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os: OperatingSystem) => Promise<boolean>, onDelete: () => void }) {
+// Updated OSItem to support prop-drilled updates and new structure
+function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => void, onDelete: () => void }) {
+  const router = useRouter();
   const { showToast } = useToast();
+  const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  
-  // Edit State
-  const [editName, setEditName] = useState(os.name);
-  const [editFormat, setEditFormat] = useState(os.format || 'png');
-  const [editBrandIcon, setEditBrandIcon] = useState(os.brandIcon || '');
 
-  const handleSave = async () => {
-    const success = await onUpdate({ 
-      ...os, 
-      name: editName, 
-      format: editFormat, 
-      brandIcon: editBrandIcon 
-    });
-    if (success) {
-      setIsEditing(false);
-      showToast('OS updated successfully', 'success');
-    }
+  // Allow direct updates for versions/folders inside the item context
+  const onUpdate = async (updatedOS: OperatingSystem) => {
+      try {
+        const res = await fetch(`/api/os/${updatedOS.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedOS)
+        });
+        if (res.ok) {
+            router.refresh();
+            return true;
+        }
+        return false;
+      } catch (e) {
+          return false;
+      }
   };
 
   const addVersion = async () => {
@@ -285,19 +187,39 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
     const success = await onUpdate({ ...os, versions: updatedVersions });
     if (success) showToast('Version renamed', 'success');
   };
+  
+  // Upload Default Folder Image for a Version
+  const uploadDefaultFolder = async (versionId: string, file: File) => {
+     try {
+        const url = await uploadToFirebase(file, user);
+        const updatedVersions = os.versions.map(v => {
+            if (v.id === versionId) {
+                return { ...v, defaultFolderUrl: url };
+            }
+            return v;
+        });
+        await onUpdate({ ...os, versions: updatedVersions });
+        showToast('Default folder image updated', 'success');
+     } catch (e) {
+         showToast('Upload failed', 'error');
+     }
+  };
 
   const addFolder = async (versionId: string, file: File) => {
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
+      if (!user) {
+         showToast('You must be logged in to upload files', 'error');
+         return;
+      }
+      
+      const url = await uploadToFirebase(file, user);
 
       const newFolder: FolderIcon = {
         id: uuidv4(),
         name: file.name.split('.')[0],
-        imageUrl: data.url
+        imageUrl: url,
+        offsetX: os.versions.find(v => v.id === versionId)?.defaultOffsetX || 0,
+        offsetY: os.versions.find(v => v.id === versionId)?.defaultOffsetY || 0
       };
 
       const updatedVersions = os.versions.map(v => {
@@ -339,72 +261,11 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
     await onUpdate({ ...os, versions: updatedVersions });
   };
 
-  if (isEditing) {
-    return (
-      <NeumorphBox className="p-6 rounded-2xl space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Name</label>
-            <NeumorphBox
-              as="input"
-              variant="pressed"
-              value={editName} 
-              onChange={(e: any) => setEditName(e.target.value)} 
-              className="w-full px-3 py-2 rounded-lg outline-none bg-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Format</label>
-            <div className="relative">
-              <NeumorphBox
-                as="select"
-                variant="pressed"
-                value={editFormat} 
-                onChange={(e: any) => setEditFormat(e.target.value as any)} 
-                className="w-full px-3 py-2 rounded-lg outline-none bg-transparent appearance-none"
-              >
-                <option value={OS_FORMATS.PNG}>PNG</option>
-                <option value={OS_FORMATS.ICO}>ICO</option>
-                <option value={OS_FORMATS.ICNS}>ICNS</option>
-              </NeumorphBox>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-3 h-3" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Brand Icon</label>
-            <div className="flex gap-2">
-              {BRAND_ICONS.map((icon) => (
-                <button
-                  key={icon.name}
-                  type="button"
-                  onClick={() => setEditBrandIcon(icon.class)}
-                  className={clsx(
-                    "flex-1 py-2 px-2 rounded-lg border-2 transition-all flex items-center justify-center gap-2",
-                    editBrandIcon === icon.class
-                      ? "border-blue-500 bg-blue-50 text-blue-600"
-                      : "border-gray-200 hover:border-gray-300 text-gray-500"
-                  )}
-                  title={icon.name}
-                >
-                  <i className={clsx(icon.class, "text-lg")} />
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-end gap-3">
-          <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium">Cancel</button>
-          <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30">Save Changes</button>
-        </div>
-      </NeumorphBox>
-    );
-  }
-
   return (
     <NeumorphBox 
       className="overflow-hidden transition-all duration-300"
       showActions
-      onEdit={() => setIsEditing(true)}
+      onEdit={onEdit}
       onDelete={onDelete}
       customActions={
         <button 
@@ -421,16 +282,13 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
             <ChevronRight size={20} className="text-gray-400" />
           </NeumorphBox>
-          {os.image ? (
-            <Image src={os.image} alt={os.name} width={48} height={48} className="rounded-xl shadow-sm" />
-          ) : (
-            <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 font-bold text-xl">?</div>
-          )}
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+             {os.brandIcon ? <i className={os.brandIcon} /> : os.name.charAt(0)}
+          </div>
           <div>
             <h3 className="font-bold text-xl flex items-center gap-3 text-gray-800 dark:text-white">
               {os.name}
               {os.brandIcon && <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-md font-mono">{os.brandIcon}</span>}
-              <span className="text-[10px] border border-gray-300 dark:border-gray-600 px-2 py-1 rounded-md text-gray-500 uppercase font-bold tracking-wider">{os.format || 'png'}</span>
             </h3>
             <p className="text-sm text-gray-500 font-medium mt-1">{os.versions.length} versions</p>
           </div>
@@ -448,44 +306,101 @@ function OSItem({ os, onUpdate, onDelete }: { os: OperatingSystem, onUpdate: (os
           
           {os.versions.map(version => (
             <NeumorphBox key={version.id} className="rounded-2xl overflow-hidden">
-              <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200/50 dark:border-gray-700/50">
-                <div className="flex items-center gap-3">
-                  <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
-                  <button 
-                    onClick={() => {
-                      const newName = prompt('Rename version:', version.name);
-                      if (newName && newName !== version.name) updateVersionName(version.id, newName);
-                    }}
-                    className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    <Edit2 size={14} />
-                  </button>
+              <div className="px-6 py-4 flex flex-col gap-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                  {/* Version Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
+                        <button 
+                            onClick={() => {
+                            const newName = prompt('Rename version:', version.name);
+                            if (newName && newName !== version.name) updateVersionName(version.id, newName);
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
+                            <Edit2 size={14} />
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                         <button 
+                            onClick={() => deleteVersion(version.id)}
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                        >
+                            <Trash2 size={18} />
+                        </button>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <label className="cursor-pointer px-4 py-2 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm border border-blue-100 dark:border-blue-900/30">
-                    <Upload size={16} />
-                    <span>Upload Folder</span>
-                    <input 
-                      type="file" 
-                      className="hidden" 
-                      accept="image/*"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) addFolder(version.id, e.target.files[0]);
-                      }}
-                    />
-                  </label>
-                  <button 
-                    onClick={() => deleteVersion(version.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+
+                {/* Default Template Configuration */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border border-dotted border-gray-300 dark:border-gray-600">
+                    <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden relative flex-shrink-0">
+                         {version.defaultFolderUrl ? (
+                             <Image src={version.defaultFolderUrl} alt="Template" fill className="object-contain" />
+                         ) : (
+                             <span className="text-[10px] text-gray-400 text-center p-1">No Template</span>
+                         )}
+                    </div>
+                    <div className="flex-1 space-y-3 w-full">
+                        <div>
+                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200">Default Folder Template</p>
+                            <p className="text-xs text-gray-500">Used as the base for all icons in this version (512x512 recommended).</p>
+                        </div>
+                        
+                        <div className="flex gap-3">
+                             <div>
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Def Offset X</label>
+                                <input 
+                                  type="number" 
+                                  value={version.defaultOffsetX || 0} 
+                                  onChange={(e) => {
+                                      const updatedVersions = os.versions.map(v => v.id === version.id ? { ...v, defaultOffsetX: parseInt(e.target.value) || 0 } : v);
+                                      onUpdate({ ...os, versions: updatedVersions });
+                                  }}
+                                  className="w-20 px-2 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Def Offset Y</label>
+                                <input 
+                                  type="number" 
+                                  value={version.defaultOffsetY || 0} 
+                                  onChange={(e) => {
+                                      const updatedVersions = os.versions.map(v => v.id === version.id ? { ...v, defaultOffsetY: parseInt(e.target.value) || 0 } : v);
+                                      onUpdate({ ...os, versions: updatedVersions });
+                                  }}
+                                  className="w-20 px-2 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
+                                />
+                             </div>
+                        </div>
+                    </div>
+                    <label className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-xs font-bold transition-colors whitespace-nowrap self-start sm:self-center">
+                        Upload Template
+                        <input type="file" className="hidden" onChange={(e) => {
+                            if (e.target.files?.[0]) uploadDefaultFolder(version.id, e.target.files[0]);
+                        }} />
+                    </label>
                 </div>
               </div>
+
+               {/* Folder Icons Actions */}
+               <div className="px-6 py-3 bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-end">
+                    <label className="cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-md shadow-blue-500/20">
+                        <Upload size={16} />
+                        <span>Add Icon Variant</span>
+                        <input 
+                        type="file" 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={(e) => {
+                            if (e.target.files?.[0]) addFolder(version.id, e.target.files[0]);
+                        }}
+                        />
+                    </label>
+               </div>
               
               <div className="p-6">
                 {version.folderIcons.length === 0 ? (
-                   <p className="text-sm text-gray-400 italic text-center py-8">No folder icons uploaded for this version.</p>
+                   <p className="text-sm text-gray-400 italic text-center py-4">No icon variants added yet.</p>
                 ) : (
                   <div className="space-y-6">
                     {version.folderIcons.map(folder => (

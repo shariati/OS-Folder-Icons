@@ -9,12 +9,15 @@ import { Trash2, Plus, Upload, Search, X, Edit2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
+import { useAuth } from '@/contexts/AuthContext';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { uploadToFirebase } from '@/lib/client-upload';
 
 export function BundlesManager({ initialData }: { initialData: DB }) {
   const router = useRouter();
   const { showToast } = useToast();
+  const { user } = useAuth();
   const [isCreating, setIsCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [editingBundleId, setEditingBundleId] = useState<string | null>(null);
@@ -39,12 +42,7 @@ export function BundlesManager({ initialData }: { initialData: DB }) {
   }, [iconNames, iconSearch]);
 
   const uploadFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-    if (!res.ok) throw new Error('Upload failed');
-    const data = await res.json();
-    return data.url;
+    return uploadToFirebase(file, user);
   };
 
   const handleSave = async (e: React.FormEvent) => {
