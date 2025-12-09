@@ -298,24 +298,24 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
               title="Folder Color"
               subtitle="Colorize your folder"
             >
-               <div className="flex flex-wrap gap-3">
-                 {[0, 140, 180, 240, 300].map(hue => (
-                   <button
-                     key={hue}
-                     onClick={() => setFolderHue(hue)}
-                     className={clsx(
-                       "w-12 h-12 rounded-xl transition-all shadow-sm border-2",
-                       folderHue === hue 
-                         ? "border-blue-500 scale-110 shadow-md" 
-                         : "border-transparent hover:scale-105"
-                     )}
-                     style={{ 
-                       backgroundColor: '#3b82f6', // Base blue color
-                       filter: `hue-rotate(${hue}deg)` 
-                     }}
-                     title={`Hue: ${hue}°`}
-                   />
-                 ))}
+                 <div className="flex flex-wrap gap-3">
+                   {[0, 140, 180, 240, 300].map(hue => (
+                     <button
+                       key={hue}
+                       onClick={() => setFolderHue(hue)}
+                       className={clsx(
+                         "w-12 h-12 rounded-xl transition-all shadow-sm border-2",
+                         folderHue === hue 
+                           ? "border-blue-500 scale-110 shadow-md" 
+                           : "border-transparent hover:scale-105"
+                       )}
+                       style={{ 
+                         backgroundColor: '#3b82f6', // Base blue color
+                         filter: `hue-rotate(${hue}deg)` 
+                       }}
+                       title={`Hue: ${hue}°`}
+                     />
+                   ))}
                </div>
             </NeumorphBox>
           </>
@@ -344,7 +344,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             
             {/* Folder Color */}
             <div>
-              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
+             <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
               <div className="flex items-center gap-4 mt-4">
                 <input
                   type="range"
@@ -462,7 +462,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             cover={true}
           >
             {/* Main Preview */}
-            {/* Main Preview */}
             <div className="w-full">
                {isMounted ? (
                  <div className={clsx(
@@ -517,14 +516,17 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
           {/* Icon Sizes Section */}
           <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
-            <div className="flex flex-wrap items-end justify-center gap-8 p-6 bg-gray-50 dark:bg-gray-900/20 rounded-2xl">
+            <div 
+              className="flex flex-wrap items-end justify-center gap-8 p-6 rounded-2xl bg-cover bg-center"
+              style={selectedVersion?.wallpaperUrl ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : { backgroundColor: '#f9fafb' }}
+            >
               {[16, 32, 48, 96, 256].map((size) => {
                  // Calculate scale based on 512px base
                  const scale = size / 512;
                  return (
                    <div key={size} className="flex flex-col items-center gap-3">
                      <div 
-                        className="relative overflow-hidden shadow-sm transition-transform hover:scale-110"
+                        className="relative transition-transform hover:scale-110"
                         style={{ width: size, height: size }}
                      >
                        <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
@@ -542,11 +544,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                               folderHue={folderHue}
                               // Important: Prevent this instance from capturing download events
                               disableDownloadCapture
-                              enableCors={false}
+                              enableCors={true}
                             />
                        </div>
                      </div>
-                     <span className="text-xs font-mono text-gray-500 font-bold">{size}x{size}</span>
+                     <span className="text-xs font-mono text-white font-bold drop-shadow-md">{size}x{size}</span>
                    </div>
                  );
               })}

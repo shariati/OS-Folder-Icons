@@ -47,10 +47,16 @@ export function CanvasPreview({
       const dataUrl = await toPng(ref.current, { cacheBust: true });
       
       if (format === 'ico') {
-        // Simple PNG to ICO conversion (wrapping PNG in ICO container)
-        // This works for modern Windows (Vista+)
-        const res = await fetch(dataUrl);
-        const blob = await res.blob();
+        // Convert PNG DataURL to Blob manually to avoid fetch errors
+        const byteString = atob(dataUrl.split(',')[1]);
+        const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+        
         const file = new File([blob], 'custom-folder-icon.ico', { type: 'image/x-icon' });
         const url = URL.createObjectURL(file);
         const link = document.createElement('a');
