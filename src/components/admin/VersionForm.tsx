@@ -41,14 +41,14 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
   // Validation State
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateImage = async (file: File, requiredSize?: number): Promise<boolean> => {
+  const validateImage = async (file: File, allowedSizes: number[] = []): Promise<boolean> => {
     return new Promise((resolve) => {
       const img = new window.Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         URL.revokeObjectURL(img.src);
-        if (requiredSize) {
-          if (img.width !== requiredSize || img.height !== requiredSize) {
+        if (allowedSizes.length > 0) {
+          if (img.width !== img.height || !allowedSizes.includes(img.width)) {
             resolve(false);
             return;
           }
@@ -69,9 +69,9 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
   };
 
   const handleDefaultFolderUpload = async (file: File) => {
-    const isValid = await validateImage(file, 1024);
+    const isValid = await validateImage(file, [1024, 512]);
     if (!isValid) {
-      showToast('Default folder image must be exactly 1024x1024 pixels.', 'error');
+      showToast('Default folder image must be exactly 1024x1024 or 512x512 pixels.', 'error');
       return;
     }
     setDefaultFolderFile(file);
@@ -79,9 +79,9 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
   };
 
   const handleAddFolderIcon = async (file: File) => {
-    const isValid = await validateImage(file, 1024);
+    const isValid = await validateImage(file, [1024, 512]);
     if (!isValid) {
-      showToast('Folder icon must be exactly 1024x1024 pixels.', 'error');
+      showToast('Folder icon must be 1024x1024 or 512x512 pixels.', 'error');
       return;
     }
 
@@ -179,15 +179,14 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <NeumorphBox variant="pressed" className="w-full max-w-5xl max-h-[90vh] flex flex-col p-0 overflow-hidden animate-fade-in-up">
+    <NeumorphBox variant="pressed" className="w-full flex flex-col p-0 overflow-hidden animate-fade-in-up">
         {/* Header */}
         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               {initialData?.id ? 'Edit Version' : 'Add New Version'}
             </h2>
-            <p className="text-gray-500 text-sm">Configure version details, templates, and icon variants.</p>
+            <p className="text-gray-500 text-sm">Configure version details and icon variants.</p>
           </div>
           <button 
             onClick={onCancel}
@@ -226,56 +225,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
                 {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name}</p>}
               </div>
 
-               {/* Default Template & Offsets */}
-               <NeumorphBox variant="pressed" className="p-4 space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex-shrink-0 relative group">
-                      {defaultFolderUrl ? (
-                        <Image src={defaultFolderUrl} alt="Template" fill className="object-contain" />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                           <Upload size={24} />
-                           <span className="text-[10px] uppercase font-bold mt-1">1024px</span>
-                        </div>
-                      )}
-                      
-                      <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white font-bold text-xs">
-                         {defaultFolderUrl ? 'Change' : 'Upload'}
-                         <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                           if (e.target.files?.[0]) handleDefaultFolderUpload(e.target.files[0]);
-                         }} />
-                      </label>
-                    </div>
-                    
-                    <div className="flex-1 space-y-3">
-                       <div>
-                         <h4 className="font-bold text-sm text-gray-700 dark:text-gray-200">Default Template</h4>
-                         <p className="text-xs text-gray-500">Base image for all folders (1024x1024 req).</p>
-                       </div>
-                       
-                       <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-[10px] uppercase font-bold text-gray-500">Def Offset X</label>
-                            <input 
-                              type="number" 
-                              value={defaultOffsetX}
-                              onChange={(e) => setDefaultOffsetX(Number(e.target.value))}
-                              className="w-full px-2 py-1 text-sm border rounded bg-white dark:bg-gray-800"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-[10px] uppercase font-bold text-gray-500">Def Offset Y</label>
-                            <input 
-                              type="number" 
-                              value={defaultOffsetY}
-                              onChange={(e) => setDefaultOffsetY(Number(e.target.value))}
-                              className="w-full px-2 py-1 text-sm border rounded bg-white dark:bg-gray-800"
-                            />
-                          </div>
-                       </div>
-                    </div>
-                  </div>
-               </NeumorphBox>
+            {/* Default Template Section Removed as requested */}
             </div>
 
             {/* Wallpaper Section */}
@@ -316,7 +266,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
             <div className="flex items-center justify-between mb-6">
               <div>
                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">Folder Icons</h3>
-                 <p className="text-sm text-gray-500">Add variants for this version (e.g. Empty, Full, Open). All must be 1024x1024.</p>
+                 <p className="text-sm text-gray-500">Add variants for this version (e.g. Empty, Full, Open). Supported: 1024x1024 or 512x512.</p>
               </div>
               <label className="cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg shadow-blue-500/20">
                  <Upload size={18} />
@@ -408,8 +358,8 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
                          </div>
                       </div>
 
-                      {/* Live Canvas Preview (Mini) */}
-                      <div className="w-48 h-48 bg-gray-900 rounded-xl overflow-hidden relative border border-gray-700 flex-shrink-0 hidden xl:block">
+                      {/* Live Canvas Preview (Enlarged) */}
+                      <div className="w-[300px] h-[300px] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-700 flex-shrink-0 hidden xl:block">
                          <div className="absolute inset-0 opacity-50" style={{ backgroundImage: wallpaperUrl ? `url(${wallpaperUrl})` : undefined, backgroundSize: 'cover' }} />
                          <div className="relative w-full h-full transform scale-[0.4] origin-top-left ml-[14%] mt-[14%]">
                             <CanvasPreview
@@ -421,6 +371,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
                               offsetX={icon.offsetX || 0}
                               offsetY={icon.offsetY || 0}
                               format={osFormat}
+                              enableCors={false}
                             />
                          </div>
                          <div className="absolute bottom-2 right-2 text-[10px] text-white/50 font-mono">Preview</div>
@@ -461,8 +412,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
             )}
           </button>
         </div>
-      </NeumorphBox>
-    </div>
+    </NeumorphBox>
   );
 }
 

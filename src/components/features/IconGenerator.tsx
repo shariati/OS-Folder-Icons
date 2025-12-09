@@ -448,8 +448,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                  >
                     {/* The Icon Wrapper - animated */}
                     <div className="absolute top-8 right-8 transition-all duration-500 ease-in-out transform origin-top-right
-                                    w-[512px] h-[512px] scale-[0.15]
-                                    group-hover:scale-[0.6] group-hover:top-1/2 group-hover:right-1/2 group-hover:translate-x-1/2 group-hover:-translate-y-1/2
+                                    w-[512px] h-[512px] scale-[0.35]
+                                    group-hover:scale-[0.7] group-hover:top-1/2 group-hover:right-1/2 group-hover:translate-x-1/2 group-hover:-translate-y-1/2
                                     cursor-pointer"
                     >
                          <CanvasPreview

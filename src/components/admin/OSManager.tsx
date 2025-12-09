@@ -242,32 +242,41 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
         </button>
       }
     >
-      {/* Version Form Overlay */}
-      {isVersionFormOpen && (
-        <VersionForm
-          initialData={editingVersion || {}}
-          osFormat={os.format}
-          onSubmit={handleSaveVersion}
-          onCancel={() => {
-            setIsVersionFormOpen(false);
-            setEditingVersion(null);
-          }}
-          isSubmitting={isSubmittingVersion}
-        />
+      {/* Version Form (ADD MODE) - Inline at the top */}
+      {isVersionFormOpen && !editingVersion && (
+        <div className="p-6 border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/30 dark:bg-gray-900/10">
+          <VersionForm
+            initialData={{}}
+            osFormat={os.format}
+            onSubmit={handleSaveVersion}
+            onCancel={() => {
+              setIsVersionFormOpen(false);
+              setEditingVersion(null);
+            }}
+            isSubmitting={isSubmittingVersion}
+          />
+        </div>
       )}
-      
+
+      {/* OS Summary Row */}
       <div className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-6 flex-1">
           <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
             <ChevronRight size={20} className="text-gray-400" />
           </NeumorphBox>
+          
+          {/* OS Logo */}
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
              {os.brandIcon ? <i className={os.brandIcon} /> : os.name.charAt(0)}
           </div>
+          
           <div>
             <h3 className="font-bold text-xl flex items-center gap-3 text-gray-800 dark:text-white">
               {os.name}
-              {os.brandIcon && <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-md font-mono">{os.brandIcon}</span>}
+              {/* Format Badge */}
+              <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md font-mono font-bold uppercase">
+                {os.format || 'PNG'}
+              </span>
             </h3>
             <p className="text-sm text-gray-500 font-medium mt-1">{(os.versions || []).length} versions</p>
           </div>
@@ -276,63 +285,82 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
 
       {expanded && (
         <div className="p-6 space-y-6 border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/30 dark:bg-gray-900/10">
-          {(os.versions || []).length === 0 && (
+          {(os.versions || []).length === 0 && !isVersionFormOpen && (
             <div className="text-center py-12 text-gray-500 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
               <p className="font-medium">No versions defined yet.</p>
               <button onClick={openAddVersion} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
             </div>
           )}
           
-          {/* Read-Only View of Versions (since editing is done in the modal now) */}
-          {(os.versions || []).map(version => (
-            <NeumorphBox key={version.id} variant="pressed" className="rounded-2xl overflow-hidden">
-              <div className="px-6 py-4 flex flex-col gap-4">
-                  {/* Version Header */}
-                  <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
-                    <div className="flex items-center gap-3">
-                        <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
-                        <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md text-gray-500">
-                          {version.folderIcons?.length || 0} variants
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                         <button 
-                            onClick={() => openEditVersion(version)}
-                            className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-bold text-sm flex items-center gap-1"
-                        >
-                            <Edit2 size={16} /> Edit Version
-                        </button>
-                         <button 
-                            onClick={(e) => { e.stopPropagation(); deleteVersion(version.id); }}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                        >
-                            <Trash2 size={18} />
-                        </button>
-                    </div>
-                </div>
+          {/* Version List */}
+          {(os.versions || []).map(version => {
+            // Check if we are editing THIS version
+            if (editingVersion && editingVersion.id === version.id) {
+              return (
+                <VersionForm
+                  key={`edit-${version.id}`}
+                  initialData={version}
+                  osFormat={os.format}
+                  onSubmit={handleSaveVersion}
+                  onCancel={() => {
+                    setIsVersionFormOpen(false);
+                    setEditingVersion(null);
+                  }}
+                  isSubmitting={isSubmittingVersion}
+                />
+              );
+            }
 
-                {/* Quick Grid Preview of Icons */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 py-2">
-                   {version.folderIcons?.map(icon => (
-                     <div key={icon.id} className="relative aspect-square rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 p-2 flex items-center justify-center group">
-                        <Image src={icon.imageUrl} alt={icon.name} width={64} height={64} className="object-contain" />
-                        {icon.isDefault && (
-                          <div className="absolute top-1 right-1 text-[10px] bg-amber-400 text-amber-900 px-1 rounded font-bold">★</div>
-                        )}
-                        <div className="absolute inset-x-0 bottom-0 bg-black/50 text-white text-[10px] text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity truncate px-1">
-                          {icon.name}
-                        </div>
-                     </div>
-                   ))}
-                   {(!version.folderIcons || version.folderIcons.length === 0) && (
-                     <div className="col-span-full text-center text-sm text-gray-400 italic py-2">
-                       No icons configured.
-                     </div>
-                   )}
+            // Normal matching view
+            return (
+              <NeumorphBox key={version.id} variant="pressed" className="rounded-2xl overflow-hidden">
+                <div className="px-6 py-4 flex flex-col gap-4">
+                    {/* Version Header */}
+                    <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
+                      <div className="flex items-center gap-3">
+                          <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
+                          <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md text-gray-500">
+                            {version.folderIcons?.length || 0} variants
+                          </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                           <button 
+                              onClick={() => openEditVersion(version)}
+                              className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-bold text-sm flex items-center gap-1"
+                          >
+                              <Edit2 size={16} /> Edit Version
+                          </button>
+                           <button 
+                              onClick={(e) => { e.stopPropagation(); deleteVersion(version.id); }}
+                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                          >
+                              <Trash2 size={18} />
+                          </button>
+                      </div>
+                  </div>
+
+                  {/* Quick Grid Preview of Icons */}
+                  <div className="flex flex-wrap gap-6 py-2">
+                     {version.folderIcons?.map(icon => (
+                       <div key={icon.id} className="flex flex-col items-center gap-2" title={icon.name}>
+                          <div className="relative w-12 h-12">
+                            <Image src={icon.imageUrl} alt={icon.name} fill className="object-contain" />
+                          </div>
+                          {icon.isDefault && (
+                            <span className="text-[10px] uppercase font-bold text-gray-400">Default Folder</span>
+                          )}
+                       </div>
+                     ))}
+                     {(!version.folderIcons || version.folderIcons.length === 0) && (
+                       <div className="w-full text-center text-sm text-gray-400 italic py-2">
+                         No icons configured.
+                       </div>
+                     )}
+                  </div>
                 </div>
-              </div>
-            </NeumorphBox>
-          ))}
+              </NeumorphBox>
+            );
+          })}
         </div>
       )}
     </NeumorphBox>

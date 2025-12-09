@@ -21,6 +21,7 @@ interface CanvasPreviewProps {
   iconTransparency?: number;
   folderHue?: number;
   disableDownloadCapture?: boolean;
+  enableCors?: boolean;
 }
 
 export function CanvasPreview({ 
@@ -35,7 +36,8 @@ export function CanvasPreview({
   iconEffect = 'none',
   iconTransparency = 1,
   folderHue = 0,
-  disableDownloadCapture = false
+  disableDownloadCapture = false,
+  enableCors = true
 }: CanvasPreviewProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -152,7 +154,7 @@ export function CanvasPreview({
           src={folderImage} 
           alt="Folder" 
           className="absolute inset-0 w-full h-full object-contain"
-          crossOrigin="anonymous"
+          {...(enableCors ? { crossOrigin: "anonymous" } : {})}
           style={{ 
             filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' 
           }}
