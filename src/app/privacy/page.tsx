@@ -1,11 +1,12 @@
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { PROJECT_LINKS, EXTERNAL_LINKS } from '@/constants/links';
+import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
 
 export default function PrivacyPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
-      <div className="flex-grow pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+      <MainSiteWrapper>
         <div className="max-w-4xl mx-auto">
           <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Privacy Policy</h1>
@@ -160,7 +161,7 @@ export default function PrivacyPage() {
             </div>
           </NeumorphBox>
         </div>
-      </div>
+      </MainSiteWrapper>
       <Footer />
     </div>
   );

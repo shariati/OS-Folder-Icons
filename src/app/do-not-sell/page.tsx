@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
 import { ShieldCheck, Check } from 'lucide-react';
 import { PROJECT_LINKS } from '@/constants/links';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,9 +25,10 @@ export default function DoNotSellPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
-      <div className="flex-grow pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+      <MainSiteWrapper>
         <div className="max-w-4xl mx-auto">
           <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
+            {/* ... content ... */}
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 rounded-2xl bg-blue-100 dark:bg-blue-900/30">
                 <ShieldCheck className="h-8 w-8 text-blue-600 dark:text-blue-400" />
@@ -184,7 +186,7 @@ export default function DoNotSellPage() {
             </div>
           </NeumorphBox>
         </div>
-      </div>
+      </MainSiteWrapper>
       <Footer />
     </div>
   );
