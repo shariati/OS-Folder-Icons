@@ -8,6 +8,7 @@ import { DB } from '@/lib/types';
 import { UserProfile } from '@/types/user';
 import { Trash2, Shield, User, Check, X, Eye, AlertTriangle, Network, Search, Key, Users as UsersIcon, Activity, Mail, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { CopyModal } from '@/components/ui/CopyModal';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { formatDate } from '@/lib/format';
 import clsx from 'clsx';
@@ -23,6 +24,10 @@ export function UsersManager({ initialData }: UsersManagerProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPending, setFilterPending] = useState(false);
   const { showToast } = useToast();
+  
+  // Copy Modal state for password reset link
+  const [isResetLinkModalOpen, setIsResetLinkModalOpen] = useState(false);
+  const [resetLink, setResetLink] = useState('');
 
   const { user, loading: authLoading } = useAuth();
 
@@ -137,7 +142,8 @@ export function UsersManager({ initialData }: UsersManagerProps) {
         });
         const data = await res.json();
         if (data.success) {
-            prompt('Password reset link generated (copy it):', data.link);
+            setResetLink(data.link);
+            setIsResetLinkModalOpen(true);
         } else {
             throw new Error(data.error);
         }
@@ -202,6 +208,14 @@ export function UsersManager({ initialData }: UsersManagerProps) {
 
   return (
     <NeumorphBox className="p-6">
+      {/* Password Reset Link Modal */}
+      <CopyModal
+        isOpen={isResetLinkModalOpen}
+        onClose={() => { setIsResetLinkModalOpen(false); setResetLink(''); }}
+        title="Password Reset Link"
+        label="Copy this link and send it to the user:"
+        value={resetLink}
+      />
        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
         <h3 className="font-bold text-xl text-black dark:text-white flex items-center gap-2">
           <UsersIcon size={24} className="text-primary" />

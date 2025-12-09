@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Trash2, Plus, Upload, ChevronDown, ChevronRight, Edit2, X, Check } from 'lucide-react';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { useToast } from '@/components/ui/Toast';
+import { InputModal } from '@/components/ui/InputModal';
 import { clsx } from 'clsx';
 import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
 import { useAuth } from '@/contexts/AuthContext';
@@ -148,6 +149,11 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
   const { showToast } = useToast();
   const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
+  
+  // Modal states for version name input
+  const [isAddVersionModalOpen, setIsAddVersionModalOpen] = useState(false);
+  const [isRenameVersionModalOpen, setIsRenameVersionModalOpen] = useState(false);
+  const [renamingVersion, setRenamingVersion] = useState<{ id: string; name: string } | null>(null);
 
   // Allow direct updates for versions/folders inside the item context
   const onUpdate = async (updatedOS: OperatingSystem) => {
@@ -174,23 +180,23 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       }
   };
 
-  const addVersion = async () => {
-    const name = prompt('Version Name (e.g. "11" or "Sequoia"):');
+  const addVersion = async (name: string) => {
     if (!name) return;
     const newVersion: OSVersion = { id: uuidv4(), name, folderIcons: [] };
-    const success = await onUpdate({ ...os, versions: [...os.versions, newVersion] });
+    const currentVersions = os.versions || [];
+    const success = await onUpdate({ ...os, versions: [...currentVersions, newVersion] });
     if (success) showToast('Version added', 'success');
   };
 
   const deleteVersion = async (versionId: string) => {
     if (!confirm('Delete this version and all its icons?')) return;
-    const updatedVersions = os.versions.filter(v => v.id !== versionId);
+    const updatedVersions = (os.versions || []).filter(v => v.id !== versionId);
     const success = await onUpdate({ ...os, versions: updatedVersions });
     if (success) showToast('Version deleted', 'success');
   };
 
   const updateVersionName = async (versionId: string, newName: string) => {
-    const updatedVersions = os.versions.map(v => v.id === versionId ? { ...v, name: newName } : v);
+    const updatedVersions = (os.versions || []).map(v => v.id === versionId ? { ...v, name: newName } : v);
     const success = await onUpdate({ ...os, versions: updatedVersions });
     if (success) showToast('Version renamed', 'success');
   };
@@ -199,7 +205,7 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
   const uploadDefaultFolder = async (versionId: string, file: File) => {
      try {
         const url = await uploadToFirebase(file, user);
-        const updatedVersions = os.versions.map(v => {
+        const updatedVersions = (os.versions || []).map(v => {
             if (v.id === versionId) {
                 return { ...v, defaultFolderUrl: url };
             }
@@ -220,18 +226,23 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       }
       
       const url = await uploadToFirebase(file, user);
+      
+      // Safe find with defaults
+      const targetVersion = (os.versions || []).find(v => v.id === versionId);
+      const defaultX = targetVersion?.defaultOffsetX || 0;
+      const defaultY = targetVersion?.defaultOffsetY || 0;
 
       const newFolder: FolderIcon = {
         id: uuidv4(),
         name: file.name.split('.')[0],
         imageUrl: url,
-        offsetX: os.versions.find(v => v.id === versionId)?.defaultOffsetX || 0,
-        offsetY: os.versions.find(v => v.id === versionId)?.defaultOffsetY || 0
+        offsetX: defaultX,
+        offsetY: defaultY
       };
 
-      const updatedVersions = os.versions.map(v => {
+      const updatedVersions = (os.versions || []).map(v => {
         if (v.id === versionId) {
-          return { ...v, folderIcons: [...v.folderIcons, newFolder] };
+          return { ...v, folderIcons: [...(v.folderIcons || []), newFolder] };
         }
         return v;
       });
@@ -245,9 +256,9 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
 
   const deleteFolder = async (versionId: string, folderId: string) => {
     if (!confirm('Delete this folder icon?')) return;
-    const updatedVersions = os.versions.map(v => {
+    const updatedVersions = (os.versions || []).map(v => {
       if (v.id === versionId) {
-        return { ...v, folderIcons: v.folderIcons.filter(f => f.id !== folderId) };
+        return { ...v, folderIcons: (v.folderIcons || []).filter(f => f.id !== folderId) };
       }
       return v;
     });
@@ -256,11 +267,11 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
   };
 
   const updateFolder = async (versionId: string, folderId: string, updates: Partial<FolderIcon>) => {
-    const updatedVersions = os.versions.map(v => {
+    const updatedVersions = (os.versions || []).map(v => {
       if (v.id === versionId) {
         return {
           ...v,
-          folderIcons: v.folderIcons.map(f => f.id === folderId ? { ...f, ...updates } : f)
+          folderIcons: (v.folderIcons || []).map(f => f.id === folderId ? { ...f, ...updates } : f)
         };
       }
       return v;
@@ -276,7 +287,7 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       onDelete={onDelete}
       customActions={
         <button 
-          onClick={(e) => { e.stopPropagation(); addVersion(); }}
+          onClick={(e) => { e.stopPropagation(); setIsAddVersionModalOpen(true); }}
           className="text-green-500 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-lg"
           title="Add Version"
         >
@@ -284,6 +295,32 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
         </button>
       }
     >
+      {/* Add Version Modal */}
+      <InputModal
+        isOpen={isAddVersionModalOpen}
+        onClose={() => setIsAddVersionModalOpen(false)}
+        onSubmit={addVersion}
+        title="Add Version"
+        label="Version Name"
+        placeholder='e.g. "11" or "Sequoia"'
+        confirmLabel="Add Version"
+      />
+      
+      {/* Rename Version Modal */}
+      <InputModal
+        isOpen={isRenameVersionModalOpen}
+        onClose={() => { setIsRenameVersionModalOpen(false); setRenamingVersion(null); }}
+        onSubmit={(newName) => {
+          if (renamingVersion && newName && newName !== renamingVersion.name) {
+            updateVersionName(renamingVersion.id, newName);
+          }
+        }}
+        title="Rename Version"
+        label="Version Name"
+        initialValue={renamingVersion?.name || ''}
+        placeholder="Enter new name"
+        confirmLabel="Rename"
+      />
       <div className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-6 flex-1">
           <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
@@ -297,21 +334,21 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
               {os.name}
               {os.brandIcon && <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-md font-mono">{os.brandIcon}</span>}
             </h3>
-            <p className="text-sm text-gray-500 font-medium mt-1">{os.versions.length} versions</p>
+            <p className="text-sm text-gray-500 font-medium mt-1">{(os.versions || []).length} versions</p>
           </div>
         </div>
       </div>
 
       {expanded && (
         <div className="p-6 space-y-6 border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/30 dark:bg-gray-900/10">
-          {os.versions.length === 0 && (
+          {(os.versions || []).length === 0 && (
             <div className="text-center py-12 text-gray-500 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
               <p className="font-medium">No versions defined yet.</p>
-              <button onClick={addVersion} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
+              <button onClick={() => setIsAddVersionModalOpen(true)} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
             </div>
           )}
           
-          {os.versions.map(version => (
+          {(os.versions || []).map(version => (
             <NeumorphBox key={version.id} className="rounded-2xl overflow-hidden">
               <div className="px-6 py-4 flex flex-col gap-4 border-b border-gray-200/50 dark:border-gray-700/50">
                   {/* Version Header */}
@@ -320,8 +357,8 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
                         <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
                         <button 
                             onClick={() => {
-                            const newName = prompt('Rename version:', version.name);
-                            if (newName && newName !== version.name) updateVersionName(version.id, newName);
+                              setRenamingVersion({ id: version.id, name: version.name });
+                              setIsRenameVersionModalOpen(true);
                             }}
                             className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
                         >

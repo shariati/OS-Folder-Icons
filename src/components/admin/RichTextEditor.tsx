@@ -1194,8 +1194,8 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
             </button>
             <button
               onClick={() => {
-                const alt = window.prompt('Enter alt text:', editor.getAttributes('image').alt);
-                if (alt !== null) editor.chain().focus().updateAttributes('image', { alt }).run();
+                setCurrentAltText(editor.getAttributes('image').alt || '');
+                setIsAltTextModalOpen(true);
               }}
               className="flex-1 px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1"
             >
