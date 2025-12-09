@@ -193,7 +193,6 @@ export function PhotoFrameGenerator() {
         <NeumorphBox 
           title="Upload Photo"
           subtitle="Choose your memory"
-          icon={<Upload size={20} />}
         >
           <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -208,7 +207,6 @@ export function PhotoFrameGenerator() {
         <NeumorphBox 
           title="Details"
           subtitle="Add context to your frame"
-          icon={<Type size={20} />}
         >
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Title</label>
@@ -304,7 +302,6 @@ export function PhotoFrameGenerator() {
         <NeumorphBox 
           title="Frame Color"
           subtitle="Match your aesthetic"
-          icon={<div className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: frameColor.value }}></div>}
         >
           <div className="flex gap-3">
             {FRAME_COLORS.map((color) => (

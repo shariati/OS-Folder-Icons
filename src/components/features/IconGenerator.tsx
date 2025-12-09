@@ -150,11 +150,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         <NeumorphBox 
           title="Operating System"
           subtitle="Select your platform"
-          icon={
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-              <Monitor size={16} />
-            </div>
-          }
+
         >
           <div className="grid grid-cols-2 gap-4">
             {initialData.operatingSystems.map(os => (
