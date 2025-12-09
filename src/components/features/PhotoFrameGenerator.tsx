@@ -106,7 +106,7 @@ export function PhotoFrameGenerator() {
       link.click();
     } catch (err) {
       console.error('Failed to download image', err);
-      alert(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      showToast(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`, 'error');
     }
   };
 
@@ -154,7 +154,7 @@ export function PhotoFrameGenerator() {
       link.click();
     } catch (err) {
       console.error('Failed to download image', err);
-      alert(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      showToast(`Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`, 'error');
     }
   };
 

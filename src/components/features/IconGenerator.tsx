@@ -91,7 +91,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     
     // Feature Gating: Advanced Mode is for Pro/Lifetime/Admin only
     if (mode === 'advanced' && isFreeUser) {
-        alert('Advanced mode is available for Pro and Lifetime users only. Please upgrade to use this feature.');
+        showToast('Advanced mode is available for Pro and Lifetime users only. Please upgrade to use this feature.', 'info');
         return;
     }
 

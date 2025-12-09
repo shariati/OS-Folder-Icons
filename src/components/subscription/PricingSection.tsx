@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Check } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 const PricingSection = () => {
   const { user, userProfile } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const { showToast } = useToast();
 
   const [plans, setPlans] = useState<any[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
@@ -46,7 +48,7 @@ const PricingSection = () => {
   const handleSubscribe = async (priceId: string, mode: 'subscription' | 'payment') => {
     if (!user) {
       // Redirect to login or show login modal
-      alert('Please log in to subscribe.');
+      showToast('Please log in to subscribe.', 'info');
       return;
     }
 
@@ -76,7 +78,7 @@ const PricingSection = () => {
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to start checkout.');
+      showToast('Failed to start checkout.', 'error');
     } finally {
       setLoading(null);
     }

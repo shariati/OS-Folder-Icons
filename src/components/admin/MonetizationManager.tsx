@@ -7,12 +7,14 @@ import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
 import { AdSettings } from './AdSettings';
 import { authenticatedFetch } from '@/lib/fetch-auth';
 import { formatDate } from '@/lib/format';
+import { useToast } from '@/components/ui/Toast';
 
 export function MonetizationManager() {
   const [activeTab, setActiveTab] = useState<'plans' | 'ads'>('plans');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingPlan, setEditingPlan] = useState<Partial<Plan> | null>(null);
+  const { showToast } = useToast();
 
   const [syncing, setSyncing] = useState(false);
   const [lastSyncDate, setLastSyncDate] = useState<string | null>(null);
@@ -86,7 +88,7 @@ export function MonetizationManager() {
       const hasMissingProducts = missingData.missingPlans && missingData.missingPlans.length > 0;
 
       if (!hasNewProducts && !hasMissingProducts) {
-        alert('All synced! No changes detected.');
+        showToast('All synced! No changes detected.', 'success');
         await updateLastSyncDate();
         return;
       }
@@ -101,7 +103,7 @@ export function MonetizationManager() {
     } catch (error) {
       console.error('Sync failed', error);
       setSyncing(false);
-      alert('Sync check failed.');
+      showToast('Sync check failed.', 'error');
     }
   };
 
@@ -147,10 +149,10 @@ export function MonetizationManager() {
       
       const importedCount = selectedNewProducts.size;
       const deletedCount = selectedMissingProducts.size;
-      alert(`Sync complete! Imported: ${importedCount}, Deleted: ${deletedCount}`);
+      showToast(`Sync complete! Imported: ${importedCount}, Deleted: ${deletedCount}`, 'success');
     } catch (error) {
       console.error('Failed to apply sync', error);
-      alert('Failed to apply sync changes.');
+      showToast('Failed to apply sync changes.', 'error');
     }
   };
 
@@ -190,11 +192,11 @@ export function MonetizationManager() {
         fetchPlans();
       } else {
         const err = await res.json();
-        alert('Error saving plan: ' + err.error);
+        showToast('Error saving plan: ' + err.error, 'error');
       }
     } catch (error) {
       console.error('Failed to save plan', error);
-      alert('Failed to save plan');
+      showToast('Failed to save plan', 'error');
     }
   };
 

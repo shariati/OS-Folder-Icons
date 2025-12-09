@@ -91,7 +91,7 @@ export function UsersManager({ initialData }: UsersManagerProps) {
       if (!user) return;
       const res = await user.getIdTokenResult(true);
       console.log('DEBUG CLAIMS:', res.claims);
-      alert(`Role: ${res.claims.role}, Admin: ${res.claims.admin}`);
+      showToast(`Role: ${res.claims.role}, Admin: ${res.claims.admin}`, 'info');
   };
 
   const handleDeleteUser = async (uid: string) => {

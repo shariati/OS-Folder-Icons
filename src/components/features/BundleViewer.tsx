@@ -9,12 +9,14 @@ import JSZip from 'jszip';
 import { toPng } from 'html-to-image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import * as LucideIcons from 'lucide-react';
 
 export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
   const [selectedOS, setSelectedOS] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const { showToast } = useToast();
   
   // Hidden container for generation
   const generatorRef = useRef<HTMLDivElement>(null);
@@ -111,7 +113,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
     } catch (error) {
       console.error('Generation failed', error);
-      alert('Failed to generate bundle');
+      showToast('Failed to generate bundle', 'error');
     } finally {
       setIsGenerating(false);
       setGenState(null);
@@ -120,7 +122,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
+    showToast('Link copied to clipboard!', 'success');
   };
 
   return (
