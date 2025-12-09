@@ -5,10 +5,14 @@ import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ShieldCheck, Check } from 'lucide-react';
 import { PROJECT_LINKS } from '@/constants/links';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DoNotSellPage() {
   const [optedOut, setOptedOut] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { userProfile } = useAuth();
+  
+  const isPaidUser = userProfile?.role === 'paid' || userProfile?.role === 'lifetime';
 
   const handleOptOut = () => {
     // Store opt-out preference
@@ -109,12 +113,25 @@ export default function DoNotSellPage() {
                     </span>
                   </div>
                 ) : (
-                  <button
-                    onClick={handleOptOut}
-                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium text-lg"
-                  >
-                    Opt Out of Data Sharing
-                  </button>
+                  <>
+                    {!isPaidUser && (
+                        <div className="mb-6 p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-sm">
+                            <p className="font-bold mb-1">Feature Restricted</p>
+                            <p>Opting out of data sharing is available for Pro and Lifetime members. Free accounts support our platform through personalized advertising.</p>
+                        </div>
+                    )}
+                    <button
+                        onClick={handleOptOut}
+                        disabled={!isPaidUser}
+                        className={`px-8 py-4 rounded-xl font-medium text-lg transition-all ${
+                            isPaidUser 
+                            ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:-translate-y-0.5" 
+                            : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                        }`}
+                    >
+                        Opt Out of Data Sharing
+                    </button>
+                  </>
                 )}
               </section>
 

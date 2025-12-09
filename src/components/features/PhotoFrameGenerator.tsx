@@ -12,6 +12,7 @@ import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -162,14 +163,20 @@ export function PhotoFrameGenerator() {
 
   // We are removing saveStateAndRedirect, so just empty or remove. To be safe with chunks, I'll remove the block.
 
+  const { preferences } = useCookieConsent();
+
   const handleDownloadClick = (format: 'png' | 'jpg') => {
     if (loading) return;
-
     
     // Check if user is free tier
     const isFreeUser = !userProfile || userProfile.role === 'free';
 
     if (isFreeUser) {
+       // Extra check: If they somehow disabled ads (e.g. via browser or hack), block them.
+       if (!preferences.advertising) {
+           showToast("Please enable Advertising cookies to use this free tool, or upgrade to Pro to remove ads.", "error");
+           return;
+       }
       setPendingDownload(format);
       setIsAdOpen(true);
     } else {

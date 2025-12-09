@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/Toast';
 
 export interface CookiePreferences {
   essential: boolean;
@@ -52,6 +54,9 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<CookiePreferences>(defaultPreferences);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const { userProfile, loading } = useAuth();
+  const { showToast } = useToast();
+
   // Load preferences from localStorage on mount
   useEffect(() => {
     const savedPrefs = localStorage.getItem(COOKIE_PREFERENCES_KEY);
@@ -70,7 +75,30 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     setIsLoaded(true);
   }, []);
 
-  const updatePreferences = (newPrefs: CookiePreferences) => {
+  // Enforce ads for free users whenever their profile loads or preferences change
+  useEffect(() => {
+    if (loading || !isLoaded) return;
+
+    const isFreeUser = !userProfile || userProfile.role === 'free';
+    
+    // If user is free but advertising is disabled
+    if (isFreeUser && !preferences.advertising) {
+       // Force enable
+       updatePreferences({ ...preferences, advertising: true }, true);
+    }
+  }, [userProfile, loading, isLoaded, preferences.advertising]);
+
+
+  const updatePreferences = (newPrefs: CookiePreferences, force: boolean = false) => {
+    const isFreeUser = !userProfile || userProfile.role === 'free';
+    
+    // If user is free and trying to disable ads (and it's not a forced update)
+    if (isFreeUser && !newPrefs.advertising && !force) {
+        showToast("Free users cannot disable advertising cookies. Please upgrade to Pro.", "error");
+        // Keep advertising true
+        newPrefs.advertising = true;
+    }
+
     const updatedPrefs = { ...newPrefs, essential: true };
     setPreferences(updatedPrefs);
     localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(updatedPrefs));

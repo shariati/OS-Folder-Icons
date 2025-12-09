@@ -6,12 +6,12 @@ import { CookieConsentProvider } from './CookieConsentProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <CookieConsentProvider>
-      <AuthProvider>
-          <ToastProvider>
-              {children}
-          </ToastProvider>
-      </AuthProvider>
-    </CookieConsentProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <CookieConsentProvider>
+            {children}
+        </CookieConsentProvider>
+      </ToastProvider>
+    </AuthProvider>
   );
 }

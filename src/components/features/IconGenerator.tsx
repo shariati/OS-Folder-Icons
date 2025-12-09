@@ -13,6 +13,7 @@ import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AdModal } from '@/components/ui/AdModal';
 import { useToast } from '@/components/ui/Toast';
+import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 
 interface IconGeneratorProps {
   initialData: DB;
@@ -80,10 +81,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   };
 
+  const { preferences } = useCookieConsent();
+
   const handleDownloadClick = () => {
     if (loading) return;
-
-
 
     // Check if user is free or not logged in
     const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
@@ -95,6 +96,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
 
     if (isFreeUser) {
+       // Extra check: If they somehow disabled ads (e.g. via browser or hack), block them.
+       if (!preferences.advertising) {
+           showToast("Please enable Advertising cookies to use this free tool, or upgrade to Pro to remove ads.", "error");
+           return;
+       }
       setShowAd(true);
     } else {
       triggerDownload();
