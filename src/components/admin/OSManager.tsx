@@ -157,12 +157,19 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedOS)
         });
-        if (res.ok) {
-            router.refresh();
-            return true;
+        
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+            console.error('Update failed:', errorData);
+            showToast(errorData.error || 'Failed to update OS', 'error');
+            return false;
         }
-        return false;
+
+        router.refresh();
+        return true;
       } catch (e) {
+          console.error('Update OS error:', e);
+          showToast('Network error while updating OS', 'error');
           return false;
       }
   };
