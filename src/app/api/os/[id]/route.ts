@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getOperatingSystem, saveOperatingSystem, deleteOperatingSystem } from '@/lib/db';
 import { OperatingSystem } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -18,10 +20,12 @@ export async function PUT(
     // Merge updates
     const updatedOS: OperatingSystem = { ...currentOS, ...body, id }; // Ensure ID matches
 
-    // Clean up potential undefined values (though saveOperatingSystem handles this too now)
-    if ((updatedOS as any).image === undefined) delete (updatedOS as any).image;
-
-    await saveOperatingSystem(updatedOS);
+    try {
+        await saveOperatingSystem(updatedOS);
+    } catch (error) {
+        console.error('Error saving OS:', error);
+        return NextResponse.json({ error: 'Failed to save OS to database' }, { status: 500 });
+    }
 
     return NextResponse.json(updatedOS);
 }

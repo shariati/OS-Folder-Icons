@@ -8,13 +8,25 @@ export const firestoreAdapter: DatabaseAdapter = {
     async getOperatingSystems(): Promise<OperatingSystem[]> {
         if (!db) return [];
         const snapshot = await getDocs(collection(db, 'operatingSystems'));
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as OperatingSystem));
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                versions: data.versions || []
+            } as OperatingSystem;
+        });
     },
     async getOperatingSystem(id: string): Promise<OperatingSystem | null> {
         if (!db) return null;
         const docSnap = await getDoc(doc(db, 'operatingSystems', id));
         if (!docSnap.exists()) return null;
-        return { id: docSnap.id, ...docSnap.data() } as OperatingSystem;
+        const data = docSnap.data();
+        return {
+            id: docSnap.id,
+            ...data,
+            versions: data.versions || []
+        } as OperatingSystem;
     },
     async saveOperatingSystem(os: OperatingSystem): Promise<void> {
         if (!db) return;

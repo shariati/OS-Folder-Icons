@@ -7,13 +7,25 @@ export const adminAdapter: DatabaseAdapter = {
     async getOperatingSystems(): Promise<OperatingSystem[]> {
         if (!db) return [];
         const snapshot = await db.collection('operatingSystems').get();
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as OperatingSystem));
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                versions: data.versions || []
+            } as OperatingSystem;
+        });
     },
     async getOperatingSystem(id: string): Promise<OperatingSystem | null> {
         if (!db) return null;
         const doc = await db.collection('operatingSystems').doc(id).get();
         if (!doc.exists) return null;
-        return { id: doc.id, ...doc.data() } as OperatingSystem;
+        const data = doc.data()!;
+        return {
+            id: doc.id,
+            ...data,
+            versions: data.versions || []
+        } as OperatingSystem;
     },
     async saveOperatingSystem(os: OperatingSystem): Promise<void> {
         if (!db) return;
