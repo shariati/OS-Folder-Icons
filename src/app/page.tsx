@@ -23,6 +23,7 @@ import { ArrowRight, Palette, Layers, ImageIcon } from 'lucide-react';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
+import { VideoBackground } from '@/components/features/VideoBackground';
 import PricingSection from '@/components/subscription/PricingSection';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { FeaturedBlogs } from '@/components/features/FeaturedBlogs';
@@ -37,18 +38,7 @@ export default async function Home() {
       {/* Main Hero Section */}
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          <div className="absolute inset-0 bg-white/60 z-10" /> {/* Overlay */}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
-          </video>
-        </div>
+        <VideoBackground />
 
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
            <div className="animate-fade-in-up animation-delay-100">
