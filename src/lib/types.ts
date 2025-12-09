@@ -7,6 +7,7 @@ export interface FolderIcon {
   imageUrl: string;
   offsetX?: number;
   offsetY?: number;
+  isDefault?: boolean; // Marks this icon as the default for the version
 }
 
 export interface OSVersion {
@@ -17,6 +18,10 @@ export interface OSVersion {
   defaultFolderUrl?: string;
   defaultOffsetX?: number;
   defaultOffsetY?: number;
+  // Wallpaper for preview background
+  wallpaperUrl?: string;
+  // Reference to the default folder icon ID
+  defaultFolderIconId?: string;
 }
 
 export interface OperatingSystem {

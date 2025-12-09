@@ -194,7 +194,13 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    {os.image && <Image src={os.image} alt={os.name} width={24} height={24} className="rounded-full shadow-sm" />}
+                    {os.brandIcon ? (
+                      <i className={clsx(os.brandIcon, "text-lg")} />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                        {os.name.charAt(0)}
+                      </div>
+                    )}
                     <span className="font-semibold text-sm">{os.name}</span>
                   </div>
                   {selectedOS.includes(osId) && <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center"><Check size={12} className="text-white" /></div>}

@@ -25,7 +25,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [customOffsetX, setCustomOffsetX] = useState(0);
   const [customOffsetY, setCustomOffsetY] = useState(0);
 
-  const [selectedOSId, setSelectedOSId] = useState<string>(initialData.operatingSystems[0]?.id || '');
+  const [selectedOSId, setSelectedOSId] = useState<string>('');
   const [selectedVersionId, setSelectedVersionId] = useState<string>('');
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
   const [selectedIcon, setSelectedIcon] = useState<string | null>('Star');
@@ -160,13 +160,19 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 onClick={() => setSelectedOSId(os.id)}
                 variant={selectedOSId === os.id ? 'pressed' : 'flat'}
                 className={clsx(
-                  "flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
+                  "space-y-0 flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
                   selectedOSId === os.id
                     ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800"
-                    : "hover:-translate-y-1"
+                    : "hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
                 )}
               >
-                {os.image && <Image src={os.image} alt={os.name} width={32} height={32} className="rounded-full shadow-sm" />}
+                {os.brandIcon ? (
+                  <i className={clsx(os.brandIcon, "text-4xl")} />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
+                    {os.name.charAt(0)}
+                  </div>
+                )}
                 <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">{os.name}</span>
               </NeumorphBox>
             ))}
@@ -436,9 +442,9 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                   Scenario A: Desktop Background exists. 
                   Render a container with the background, and place the Icon inside.
                */}
-               {selectedOS?.desktopBackground ? (
+               {selectedVersion?.wallpaperUrl ? (
                  <div className="relative w-full aspect-[16/10] bg-cover bg-center rounded-xl overflow-hidden group shadow-2xl border-4 border-gray-900/10 dark:border-white/10"
-                      style={{ backgroundImage: `url(${selectedOS.desktopBackground})` }}
+                      style={{ backgroundImage: `url(${selectedVersion.wallpaperUrl})` }}
                  >
                     {/* The Icon Wrapper - animated */}
                     <div className="absolute top-8 right-8 transition-all duration-500 ease-in-out transform origin-top-right

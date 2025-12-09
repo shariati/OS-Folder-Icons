@@ -14,6 +14,7 @@ import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
 import { useAuth } from '@/contexts/AuthContext';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { OSForm } from './OSForm';
+import { VersionForm } from '@/components/admin/VersionForm';
 import { uploadToFirebase } from '@/lib/client-upload';
 
 import { EmptyState } from '@/components/admin/EmptyState';
@@ -150,10 +151,10 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
   const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
   
-  // Modal states for version name input
-  const [isAddVersionModalOpen, setIsAddVersionModalOpen] = useState(false);
-  const [isRenameVersionModalOpen, setIsRenameVersionModalOpen] = useState(false);
-  const [renamingVersion, setRenamingVersion] = useState<{ id: string; name: string } | null>(null);
+  // New Version Form State
+  const [isVersionFormOpen, setIsVersionFormOpen] = useState(false);
+  const [editingVersion, setEditingVersion] = useState<OSVersion | null>(null);
+  const [isSubmittingVersion, setIsSubmittingVersion] = useState(false);
 
   // Allow direct updates for versions/folders inside the item context
   const onUpdate = async (updatedOS: OperatingSystem) => {
@@ -180,12 +181,31 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       }
   };
 
-  const addVersion = async (name: string) => {
-    if (!name) return;
-    const newVersion: OSVersion = { id: uuidv4(), name, folderIcons: [] };
-    const currentVersions = os.versions || [];
-    const success = await onUpdate({ ...os, versions: [...currentVersions, newVersion] });
-    if (success) showToast('Version added', 'success');
+  const handleSaveVersion = async (versionData: OSVersion) => {
+    setIsSubmittingVersion(true);
+    try {
+      const currentVersions = os.versions || [];
+      let updatedVersions;
+      
+      if (editingVersion) {
+        // Update existing
+        updatedVersions = currentVersions.map(v => v.id === editingVersion.id ? versionData : v);
+      } else {
+        // Add new
+        updatedVersions = [...currentVersions, versionData];
+      }
+
+      const success = await onUpdate({ ...os, versions: updatedVersions });
+      if (success) {
+        showToast(`Version ${editingVersion ? 'updated' : 'added'} successfully`, 'success');
+        setIsVersionFormOpen(false);
+        setEditingVersion(null);
+      }
+    } catch (e) {
+      showToast('Failed to save version', 'error');
+    } finally {
+      setIsSubmittingVersion(false);
+    }
   };
 
   const deleteVersion = async (versionId: string) => {
@@ -195,88 +215,15 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
     if (success) showToast('Version deleted', 'success');
   };
 
-  const updateVersionName = async (versionId: string, newName: string) => {
-    const updatedVersions = (os.versions || []).map(v => v.id === versionId ? { ...v, name: newName } : v);
-    const success = await onUpdate({ ...os, versions: updatedVersions });
-    if (success) showToast('Version renamed', 'success');
-  };
-  
-  // Upload Default Folder Image for a Version
-  const uploadDefaultFolder = async (versionId: string, file: File) => {
-     try {
-        const url = await uploadToFirebase(file, user);
-        const updatedVersions = (os.versions || []).map(v => {
-            if (v.id === versionId) {
-                return { ...v, defaultFolderUrl: url };
-            }
-            return v;
-        });
-        await onUpdate({ ...os, versions: updatedVersions });
-        showToast('Default folder image updated', 'success');
-     } catch (e) {
-         showToast('Upload failed', 'error');
-     }
+  const openAddVersion = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingVersion(null);
+    setIsVersionFormOpen(true);
   };
 
-  const addFolder = async (versionId: string, file: File) => {
-    try {
-      if (!user) {
-         showToast('You must be logged in to upload files', 'error');
-         return;
-      }
-      
-      const url = await uploadToFirebase(file, user);
-      
-      // Safe find with defaults
-      const targetVersion = (os.versions || []).find(v => v.id === versionId);
-      const defaultX = targetVersion?.defaultOffsetX || 0;
-      const defaultY = targetVersion?.defaultOffsetY || 0;
-
-      const newFolder: FolderIcon = {
-        id: uuidv4(),
-        name: file.name.split('.')[0],
-        imageUrl: url,
-        offsetX: defaultX,
-        offsetY: defaultY
-      };
-
-      const updatedVersions = (os.versions || []).map(v => {
-        if (v.id === versionId) {
-          return { ...v, folderIcons: [...(v.folderIcons || []), newFolder] };
-        }
-        return v;
-      });
-
-      const success = await onUpdate({ ...os, versions: updatedVersions });
-      if (success) showToast('Folder icon added', 'success');
-    } catch (e) {
-      showToast('Error uploading folder icon', 'error');
-    }
-  };
-
-  const deleteFolder = async (versionId: string, folderId: string) => {
-    if (!confirm('Delete this folder icon?')) return;
-    const updatedVersions = (os.versions || []).map(v => {
-      if (v.id === versionId) {
-        return { ...v, folderIcons: (v.folderIcons || []).filter(f => f.id !== folderId) };
-      }
-      return v;
-    });
-    const success = await onUpdate({ ...os, versions: updatedVersions });
-    if (success) showToast('Folder icon deleted', 'success');
-  };
-
-  const updateFolder = async (versionId: string, folderId: string, updates: Partial<FolderIcon>) => {
-    const updatedVersions = (os.versions || []).map(v => {
-      if (v.id === versionId) {
-        return {
-          ...v,
-          folderIcons: (v.folderIcons || []).map(f => f.id === folderId ? { ...f, ...updates } : f)
-        };
-      }
-      return v;
-    });
-    await onUpdate({ ...os, versions: updatedVersions });
+  const openEditVersion = (version: OSVersion) => {
+    setEditingVersion(version);
+    setIsVersionFormOpen(true);
   };
 
   return (
@@ -287,7 +234,7 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       onDelete={onDelete}
       customActions={
         <button 
-          onClick={(e) => { e.stopPropagation(); setIsAddVersionModalOpen(true); }}
+          onClick={openAddVersion}
           className="text-green-500 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-lg"
           title="Add Version"
         >
@@ -295,32 +242,20 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
         </button>
       }
     >
-      {/* Add Version Modal */}
-      <InputModal
-        isOpen={isAddVersionModalOpen}
-        onClose={() => setIsAddVersionModalOpen(false)}
-        onSubmit={addVersion}
-        title="Add Version"
-        label="Version Name"
-        placeholder='e.g. "11" or "Sequoia"'
-        confirmLabel="Add Version"
-      />
+      {/* Version Form Overlay */}
+      {isVersionFormOpen && (
+        <VersionForm
+          initialData={editingVersion || {}}
+          osFormat={os.format}
+          onSubmit={handleSaveVersion}
+          onCancel={() => {
+            setIsVersionFormOpen(false);
+            setEditingVersion(null);
+          }}
+          isSubmitting={isSubmittingVersion}
+        />
+      )}
       
-      {/* Rename Version Modal */}
-      <InputModal
-        isOpen={isRenameVersionModalOpen}
-        onClose={() => { setIsRenameVersionModalOpen(false); setRenamingVersion(null); }}
-        onSubmit={(newName) => {
-          if (renamingVersion && newName && newName !== renamingVersion.name) {
-            updateVersionName(renamingVersion.id, newName);
-          }
-        }}
-        title="Rename Version"
-        label="Version Name"
-        initialValue={renamingVersion?.name || ''}
-        placeholder="Enter new name"
-        confirmLabel="Rename"
-      />
       <div className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-6 flex-1">
           <NeumorphBox variant="pressed" className={clsx("transition-transform duration-200 p-2 rounded-full", expanded && "rotate-90")}>
@@ -344,30 +279,31 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
           {(os.versions || []).length === 0 && (
             <div className="text-center py-12 text-gray-500 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
               <p className="font-medium">No versions defined yet.</p>
-              <button onClick={() => setIsAddVersionModalOpen(true)} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
+              <button onClick={openAddVersion} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
             </div>
           )}
           
+          {/* Read-Only View of Versions (since editing is done in the modal now) */}
           {(os.versions || []).map(version => (
-            <NeumorphBox key={version.id} className="rounded-2xl overflow-hidden">
-              <div className="px-6 py-4 flex flex-col gap-4 border-b border-gray-200/50 dark:border-gray-700/50">
+            <NeumorphBox key={version.id} variant="pressed" className="rounded-2xl overflow-hidden">
+              <div className="px-6 py-4 flex flex-col gap-4">
                   {/* Version Header */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
                     <div className="flex items-center gap-3">
                         <h4 className="font-bold text-gray-800 dark:text-white text-lg">{version.name}</h4>
-                        <button 
-                            onClick={() => {
-                              setRenamingVersion({ id: version.id, name: version.name });
-                              setIsRenameVersionModalOpen(true);
-                            }}
-                            className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                        >
-                            <Edit2 size={14} />
-                        </button>
+                        <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md text-gray-500">
+                          {version.folderIcons?.length || 0} variants
+                        </span>
                     </div>
                     <div className="flex items-center gap-2">
                          <button 
-                            onClick={() => deleteVersion(version.id)}
+                            onClick={() => openEditVersion(version)}
+                            className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-bold text-sm flex items-center gap-1"
+                        >
+                            <Edit2 size={16} /> Edit Version
+                        </button>
+                         <button 
+                            onClick={(e) => { e.stopPropagation(); deleteVersion(version.id); }}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
                         >
                             <Trash2 size={18} />
@@ -375,146 +311,25 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
                     </div>
                 </div>
 
-                {/* Default Template Configuration */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border border-dotted border-gray-300 dark:border-gray-600">
-                    <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden relative flex-shrink-0">
-                         {version.defaultFolderUrl ? (
-                             <Image src={version.defaultFolderUrl} alt="Template" fill className="object-contain" />
-                         ) : (
-                             <span className="text-[10px] text-gray-400 text-center p-1">No Template</span>
-                         )}
-                    </div>
-                    <div className="flex-1 space-y-3 w-full">
-                        <div>
-                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200">Default Folder Template</p>
-                            <p className="text-xs text-gray-500">Used as the base for all icons in this version (512x512 recommended).</p>
+                {/* Quick Grid Preview of Icons */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 py-2">
+                   {version.folderIcons?.map(icon => (
+                     <div key={icon.id} className="relative aspect-square rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 p-2 flex items-center justify-center group">
+                        <Image src={icon.imageUrl} alt={icon.name} width={64} height={64} className="object-contain" />
+                        {icon.isDefault && (
+                          <div className="absolute top-1 right-1 text-[10px] bg-amber-400 text-amber-900 px-1 rounded font-bold">★</div>
+                        )}
+                        <div className="absolute inset-x-0 bottom-0 bg-black/50 text-white text-[10px] text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity truncate px-1">
+                          {icon.name}
                         </div>
-                        
-                        <div className="flex gap-3">
-                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Def Offset X</label>
-                                <input 
-                                  type="number" 
-                                  value={version.defaultOffsetX || 0} 
-                                  onChange={(e) => {
-                                      const updatedVersions = os.versions.map(v => v.id === version.id ? { ...v, defaultOffsetX: parseInt(e.target.value) || 0 } : v);
-                                      onUpdate({ ...os, versions: updatedVersions });
-                                  }}
-                                  className="w-20 px-2 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
-                                />
-                             </div>
-                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Def Offset Y</label>
-                                <input 
-                                  type="number" 
-                                  value={version.defaultOffsetY || 0} 
-                                  onChange={(e) => {
-                                      const updatedVersions = os.versions.map(v => v.id === version.id ? { ...v, defaultOffsetY: parseInt(e.target.value) || 0 } : v);
-                                      onUpdate({ ...os, versions: updatedVersions });
-                                  }}
-                                  className="w-20 px-2 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
-                                />
-                             </div>
-                        </div>
-                    </div>
-                    <label className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-xs font-bold transition-colors whitespace-nowrap self-start sm:self-center">
-                        Upload Template
-                        <input type="file" className="hidden" onChange={(e) => {
-                            if (e.target.files?.[0]) uploadDefaultFolder(version.id, e.target.files[0]);
-                        }} />
-                    </label>
+                     </div>
+                   ))}
+                   {(!version.folderIcons || version.folderIcons.length === 0) && (
+                     <div className="col-span-full text-center text-sm text-gray-400 italic py-2">
+                       No icons configured.
+                     </div>
+                   )}
                 </div>
-              </div>
-
-               {/* Folder Icons Actions */}
-               <div className="px-6 py-3 bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-end">
-                    <label className="cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-md shadow-blue-500/20">
-                        <Upload size={16} />
-                        <span>Add Icon Variant</span>
-                        <input 
-                        type="file" 
-                        className="hidden" 
-                        accept="image/*"
-                        onChange={(e) => {
-                            if (e.target.files?.[0]) addFolder(version.id, e.target.files[0]);
-                        }}
-                        />
-                    </label>
-               </div>
-              
-              <div className="p-6">
-                {version.folderIcons.length === 0 ? (
-                   <p className="text-sm text-gray-400 italic text-center py-4">No icon variants added yet.</p>
-                ) : (
-                  <div className="space-y-6">
-                    {version.folderIcons.map(folder => (
-                      <NeumorphBox key={folder.id} variant="pressed" className="rounded-2xl p-6 transition-all">
-                        <div className="flex flex-col xl:flex-row items-start gap-8">
-                          {/* Controls */}
-                          <div className="w-full xl:w-72 flex-shrink-0 space-y-5">
-                            <div className="aspect-square relative bg-gray-100 dark:bg-gray-800/50 rounded-2xl mb-2 p-6 border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                               <Image src={folder.imageUrl} alt={folder.name} width={128} height={128} className="object-contain max-h-full" />
-                               <button 
-                                 onClick={() => deleteFolder(version.id, folder.id)}
-                                 className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm shadow-sm rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all"
-                               >
-                                 <Trash2 size={16} />
-                               </button>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl">
-                              <input 
-                                value={folder.name}
-                                onChange={(e) => updateFolder(version.id, folder.id, { name: e.target.value })}
-                                className="w-full px-3 py-2 text-sm font-bold text-center bg-transparent focus:outline-none text-gray-700 dark:text-gray-200"
-                              />
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-gray-100 dark:bg-gray-800/50">
-                              <div>
-                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">Offset X</label>
-                                <input 
-                                  type="number" 
-                                  value={folder.offsetX || 0} 
-                                  onChange={(e) => updateFolder(version.id, folder.id, { offsetX: parseInt(e.target.value) || 0 })}
-                                  className="w-full px-2 py-1.5 border-none rounded-lg text-sm font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">Offset Y</label>
-                                <input 
-                                  type="number" 
-                                  value={folder.offsetY || 0} 
-                                  onChange={(e) => updateFolder(version.id, folder.id, { offsetY: parseInt(e.target.value) || 0 })}
-                                  className="w-full px-2 py-1.5 border-none rounded-lg text-sm font-medium bg-white dark:bg-gray-700 shadow-sm text-center"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Live Preview */}
-                          <div className="flex-1 w-full">
-                            <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 ml-1">Live Preview</h5>
-                            <div className="glass-panel rounded-2xl checkerboard flex items-center justify-center p-12 h-[400px]">
-                              <div className="relative transform scale-75 origin-center">
-                                 <CanvasPreview
-                                   folderImage={folder.imageUrl}
-                                   iconName="Star"
-                                   iconType="lucide"
-                                   iconColor="#000000"
-                                   iconSize="medium"
-                                   offsetX={folder.offsetX}
-                                   offsetY={folder.offsetY}
-                                   format={os.format}
-                                 />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </NeumorphBox>
-                    ))}
-                  </div>
-                )}
               </div>
             </NeumorphBox>
           ))}
