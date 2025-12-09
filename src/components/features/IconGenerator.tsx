@@ -45,6 +45,30 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const selectedVersion = selectedOS?.versions.find(v => v.id === selectedVersionId);
   const selectedFolder = selectedVersion?.folderIcons.find(f => f.id === selectedFolderId);
 
+  // Hydration fix
+  const [isMounted, setIsMounted] = useState(false);
+  const [isWallpaperLoaded, setIsWallpaperLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (initialData.operatingSystems.length > 0 && !selectedOSId) {
+      setSelectedOSId(initialData.operatingSystems[0].id);
+    }
+  }, [initialData.operatingSystems, selectedOSId]);
+
+  // Handle Wallpaper Loading
+  useEffect(() => {
+    if (selectedVersion?.wallpaperUrl) {
+      setIsWallpaperLoaded(false);
+      const img = new window.Image();
+      img.src = selectedVersion.wallpaperUrl;
+      img.onload = () => setIsWallpaperLoaded(true);
+    } else {
+      setIsWallpaperLoaded(true);
+    }
+  }, [selectedVersion?.wallpaperUrl]);
+
+  // Initialize selection
   // Set default version and folder when OS or version changes
   useEffect(() => {
     if (selectedOS && selectedOS.versions.length > 0) {
@@ -435,23 +459,40 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 Downloaded as {selectedOS?.format?.toUpperCase() || 'PNG'} for {selectedOS?.name}
               </p>
             }
+            cover={true}
           >
             {/* Main Preview */}
-            <div className="relative flex items-center justify-center overflow-hidden rounded-xl">
-               {/* 
-                  Scenario A: Desktop Background exists. 
-                  Render a container with the background, and place the Icon inside.
-               */}
-               {selectedVersion?.wallpaperUrl ? (
-                 <div className="relative w-full aspect-[16/10] bg-cover bg-center rounded-xl overflow-hidden group shadow-2xl border-4 border-gray-900/10 dark:border-white/10"
-                      style={{ backgroundImage: `url(${selectedVersion.wallpaperUrl})` }}
+            {/* Main Preview */}
+            <div className="w-full">
+               {isMounted ? (
+                 <div className={clsx(
+                   "relative w-full min-h-[400px] bg-cover bg-center overflow-hidden",
+                   !selectedVersion?.wallpaperUrl && "bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-900"
+                 )}
+                      style={selectedVersion?.wallpaperUrl && isWallpaperLoaded ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : undefined}
                  >
-                    {/* The Icon Wrapper - animated */}
-                    <div className="absolute top-8 right-8 transition-all duration-500 ease-in-out transform origin-top-right
-                                    w-[512px] h-[512px] scale-[0.35]
-                                    group-hover:scale-[0.7] group-hover:top-1/2 group-hover:right-1/2 group-hover:translate-x-1/2 group-hover:-translate-y-1/2
-                                    cursor-pointer"
-                    >
+                    {/* Wallpaper Loading State */}
+                    {!isWallpaperLoaded && selectedVersion?.wallpaperUrl && (
+                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Preview...</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fallback Text if no wallpaper */}
+                    {!selectedVersion?.wallpaperUrl && (
+                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
+                         <span className="text-4xl font-bold uppercase tracking-widest">Preview</span>
+                       </div>
+                    )}
+
+                    {/* The Icon Wrapper - static, centered, large */}
+                    <div className={clsx(
+                      "flex items-center justify-center w-full h-full transform scale-[0.6] absolute inset-0 transition-opacity duration-300",
+                      isWallpaperLoaded ? "opacity-100" : "opacity-0"
+                    )}>
                          <CanvasPreview
                             folderImage={selectedFolder?.imageUrl}
                             iconName={selectedIcon}
@@ -464,24 +505,12 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                             iconEffect={iconEffect}
                             iconTransparency={iconTransparency}
                             folderHue={folderHue}
+                            enableCors={true}
                           />
                     </div>
                  </div>
                ) : (
-                 /* Scenario B: No Background - Standard Preview */
-                 <CanvasPreview
-                    folderImage={selectedFolder?.imageUrl}
-                    iconName={selectedIcon}
-                    iconType={iconType}
-                    iconColor={iconColor}
-                    iconSize={iconSize}
-                    offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-                    offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-                    format={selectedOS?.format}
-                    iconEffect={iconEffect}
-                    iconTransparency={iconTransparency}
-                    folderHue={folderHue}
-                  />
+                 <div className="w-full min-h-[400px] bg-gray-100 dark:bg-gray-800 animate-pulse" />
                )}
             </div>
           </PreviewPanel>
@@ -513,6 +542,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                               folderHue={folderHue}
                               // Important: Prevent this instance from capturing download events
                               disableDownloadCapture
+                              enableCors={false}
                             />
                        </div>
                      </div>

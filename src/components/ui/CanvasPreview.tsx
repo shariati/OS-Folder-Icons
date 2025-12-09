@@ -151,10 +151,9 @@ export function CanvasPreview({
       {/* Folder Base */}
       {folderImage && (
         <img 
-          src={folderImage} 
+          src={enableCors ? `/api/proxy?url=${encodeURIComponent(folderImage)}` : folderImage}
           alt="Folder" 
           className="absolute inset-0 w-full h-full object-contain"
-          {...(enableCors ? { crossOrigin: "anonymous" } : {})}
           style={{ 
             filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' 
           }}

@@ -9,6 +9,7 @@ interface PreviewPanelProps {
   footerText?: ReactNode;
   minHeight?: string;
   title?: string;
+  cover?: boolean;
 }
 
 export function PreviewPanel({
@@ -17,7 +18,8 @@ export function PreviewPanel({
   actions,
   footerText,
   minHeight = "min-h-[400px]",
-  title = "Preview"
+  title = "Preview",
+  cover = false
 }: PreviewPanelProps) {
   return (
     <div className="glass-panel p-8 relative overflow-hidden">
@@ -35,7 +37,8 @@ export function PreviewPanel({
       <NeumorphBox 
         variant="pressed"
         className={clsx(
-          "flex justify-center mb-10 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl p-12 checkerboard flex items-center overflow-auto",
+          "flex justify-center mb-6 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl checkerboard flex items-center overflow-auto",
+          cover ? "p-0" : "p-4",
           minHeight
         )}
       >
