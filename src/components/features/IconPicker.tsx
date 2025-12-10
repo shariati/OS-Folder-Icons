@@ -9,8 +9,10 @@ import { HexColorPicker } from 'react-colorful';
 import { Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { NeumorphIconGrid } from '@/components/ui/NeumorphIconGrid';
 import { ColorSelector } from '@/components/ui/ColorSelector';
 import { ToggleGroup } from '@/components/ui/ToggleGroup';
+import { NeumorphInput } from '@/components/ui/NeumorphInput';
 
 interface IconPickerProps {
   selectedIcon: string | null;
@@ -115,9 +117,7 @@ export function IconPicker({
         </span>
       }
     >
-      {/* Icon Source & Search - Only in Advanced Mode */}
       <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-2">
-        {/* Simple mode tabs for libraries */}
         {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(
           (type) => (
             <button
@@ -137,117 +137,44 @@ export function IconPicker({
       </div>
 
       <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <NeumorphBox
-            as="input"
-            variant="pressed"
-            type="text"
-            placeholder="Search icons..."
-            value={search}
-            onChange={(e: any) => setSearch(e.target.value)}
-            className="w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-gray-700 outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white"
-          />
-        </div>
+        <NeumorphInput
+          type="text"
+          placeholder="Search icons..."
+          value={search}
+          onChange={(e: any) => setSearch(e.target.value)}
+          icon={<Search className="h-4 w-4" />}
+          iconPosition="left"
+          className="w-full bg-transparent focus:ring-2 focus:ring-blue-500/50"
+        />
       </div>
       {/* Icon Grid */}
-      <NeumorphBox
+      {/* Icon Grid */}
+      <NeumorphIconGrid
         variant="pressed"
-        className="custom-scrollbar grid h-64 grid-cols-6 gap-2 overflow-y-auto rounded-xl bg-gray-50/50 p-2 sm:grid-cols-6 dark:bg-gray-900/30"
-      >
-        {filteredIcons.map((name) => {
+        icons={filteredIcons}
+        selectedIcon={selectedIcon}
+        onSelect={onSelectIcon}
+        gridSize={6}
+        gridSizeSm={6}
+        renderIcon={(name) => {
           if (iconType === 'lucide') {
             const Icon = (LucideIcons as any)[name];
-            if (!Icon) return null;
-            return (
-              <button
-                key={name}
-                onClick={() => onSelectIcon(name)}
-                className={clsx(
-                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
-                  selectedIcon === name
-                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
-                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
-                )}
-                title={name}
-              >
-                <Icon className="h-6 w-6" />
-              </button>
-            );
+            return Icon ? <Icon className="h-6 w-6" /> : null;
           } else if (iconType === 'fontawesome') {
-            return (
-              <button
-                key={name}
-                onClick={() => onSelectIcon(name)}
-                className={clsx(
-                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
-                  selectedIcon === name
-                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
-                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
-                )}
-                title={name}
-              >
-                <i className={clsx(name, 'text-xl')} />
-              </button>
-            );
+            return <i className={clsx(name, 'text-xl')} />;
           } else if (iconType === 'heroicons') {
             const Icon = (HeroIcons as any)[name];
-            if (!Icon) return null;
-            return (
-              <button
-                key={name}
-                onClick={() => onSelectIcon(name)}
-                className={clsx(
-                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
-                  selectedIcon === name
-                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
-                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
-                )}
-                title={name}
-              >
-                <Icon className="h-6 w-6" />
-              </button>
-            );
+            return Icon ? <Icon className="h-6 w-6" /> : null;
           } else if (iconType === 'unicons') {
             const Icon = (Unicons as any)[name];
-            if (!Icon) return null;
-            return (
-              <button
-                key={name}
-                onClick={() => onSelectIcon(name)}
-                className={clsx(
-                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
-                  selectedIcon === name
-                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
-                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
-                )}
-                title={name}
-              >
-                <Icon className="h-6 w-6" />
-              </button>
-            );
+            return Icon ? <Icon className="h-6 w-6" /> : null;
           } else if (iconType === 'grommet-icons') {
             const Icon = (GrommetIcons as any)[name];
-            if (!Icon) return null;
-            return (
-              <button
-                key={name}
-                onClick={() => onSelectIcon(name)}
-                className={clsx(
-                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
-                  selectedIcon === name
-                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
-                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
-                )}
-                title={name}
-              >
-                <Icon className="h-6 w-6" />
-              </button>
-            );
+            return Icon ? <Icon className="h-6 w-6" /> : null;
           }
           return null;
-        })}
-      </NeumorphBox>
+        }}
+      />
 
       {/* Customization Controls */}
       <div className="grid grid-cols-1 gap-6">
