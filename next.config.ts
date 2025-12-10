@@ -118,6 +118,8 @@ function buildCSPHeader(): string {
     ],
     'connect-src': [
       "'self'",
+      'blob:',
+      'data:',
       ...TRUSTED_FIREBASE_DOMAINS,
       ...TRUSTED_ANALYTICS_DOMAINS,
       ...TRUSTED_AD_DOMAINS,
