@@ -15,7 +15,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx,css}\""
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.12",
@@ -79,6 +80,8 @@
     "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "0.6.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
