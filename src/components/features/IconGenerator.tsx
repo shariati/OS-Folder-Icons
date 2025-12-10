@@ -11,7 +11,12 @@ import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { IconPicker } from './IconPicker';
-import { Download, Sliders, Layout, Monitor, Folder } from 'lucide-react';
+import { OSSelection } from './controls/OSSelection';
+import { Configuration } from './controls/Configuration';
+import { IconStylePresets } from './controls/IconStylePresets';
+import { FolderColorPicker } from './controls/FolderColorPicker';
+import { AdvancedCustomization } from './controls/AdvancedCustomization';
+import { Download, Sliders, Layout } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AdModal } from '@/components/ui/AdModal';
 import { useToast } from '@/components/ui/Toast';
@@ -292,176 +297,53 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         </NeumorphBox>
 
         {/* OS Selection */}
-        <NeumorphBox 
-          title="Operating System"
-          subtitle="Select your platform"
-
-        >
-          <div className="grid grid-cols-2 gap-4">
-            {initialData.operatingSystems.map(os => (
-              <NeumorphBox
-                as="button"
-                key={os.id}
-                onClick={() => {
-                  setSelectedOSId(os.id);
-                  // Cascade selection
-                  if (os.versions.length > 0) {
-                    const firstVersion = os.versions[0];
-                    setSelectedVersionId(firstVersion.id);
-                    if (firstVersion.folderIcons.length > 0) {
-                      setSelectedFolderId(firstVersion.folderIcons[0].id);
-                    } else {
-                      setSelectedFolderId('');
-                    }
-                  } else {
-                    setSelectedVersionId('');
-                    setSelectedFolderId('');
-                  }
-                }}
-                variant={selectedOSId === os.id ? 'pressed' : 'flat'}
-                className={clsx(
-                  "space-y-0 flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
-                  selectedOSId === os.id
-                    ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800"
-                    : "hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
-                )}
-              >
-                {os.brandIcon ? (
-                  <i className={clsx(os.brandIcon, "text-4xl")} />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
-                    {os.name.charAt(0)}
-                  </div>
-                )}
-                <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">{os.name}</span>
-              </NeumorphBox>
-            ))}
-          </div>
-        </NeumorphBox>
+        <OSSelection 
+          operatingSystems={initialData.operatingSystems}
+          selectedOSId={selectedOSId}
+          onSelectOS={(id) => {
+             setSelectedOSId(id);
+             // Cascade selection
+             const selectedOS = initialData.operatingSystems.find(os => os.id === id);
+             if (selectedOS && selectedOS.versions.length > 0) {
+                const firstVersion = selectedOS.versions[0];
+                setSelectedVersionId(firstVersion.id);
+                if (firstVersion.folderIcons.length > 0) {
+                   setSelectedFolderId(firstVersion.folderIcons[0].id);
+                } else {
+                   setSelectedFolderId('');
+                }
+             } else {
+                setSelectedVersionId('');
+                setSelectedFolderId('');
+             }
+          }}
+        />
 
         {/* Version & Folder Style */}
-        {selectedOS && (
-          <NeumorphBox 
-            title="Configuration"
-            subtitle="Choose your style"
-          >
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Version</label>
-                <div className="relative">
-                  <NeumorphBox
-                    as="select"
-                    variant="pressed"
-                    value={selectedVersionId}
-                    onChange={(e: any) => {
-                      const newVersionId = e.target.value;
-                      setSelectedVersionId(newVersionId);
-                      // Cascade to folder
-                      const newVersion = selectedOS.versions.find(v => v.id === newVersionId);
-                      if (newVersion && newVersion.folderIcons.length > 0) {
-                        setSelectedFolderId(newVersion.folderIcons[0].id);
-                      } else {
-                        setSelectedFolderId('');
-                      }
-                    }}
-                    className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  >
-                    {selectedOS.versions.map(v => (
-                      <option key={v.id} value={v.id}>{v.name}</option>
-                    ))}
-                  </NeumorphBox>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-3 flex items-center gap-2">
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">Folder Style</label>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  {selectedVersion?.folderIcons.map(folder => (
-                    <NeumorphBox
-                      as="button"
-                      key={folder.id}
-                      onClick={() => setSelectedFolderId(folder.id)}
-                      variant={selectedFolderId === folder.id ? 'pressed' : 'flat'}
-                      className={clsx(
-                        "relative aspect-square rounded-xl overflow-hidden transition-all duration-200 p-2",
-                        selectedFolderId === folder.id
-                          ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-transparent"
-                          : "hover:-translate-y-1"
-                      )}
-                    >
-                      <Image 
-                        src={folder.imageUrl} 
-                        alt={folder.name} 
-                        fill
-                        sizes="(max-width: 768px) 33vw, 15vw"
-                        className="object-contain p-2" 
-                        style={{ filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' }}
-                      />
-                    </NeumorphBox>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </NeumorphBox>
-        )}
+        <Configuration
+           selectedOS={selectedOS}
+           selectedVersionId={selectedVersionId}
+           onSelectVersion={(newVersionId) => {
+              setSelectedVersionId(newVersionId);
+              // Cascade to folder
+              const newVersion = selectedOS?.versions.find(v => v.id === newVersionId);
+              if (newVersion && newVersion.folderIcons.length > 0) {
+                setSelectedFolderId(newVersion.folderIcons[0].id);
+              } else {
+                setSelectedFolderId('');
+              }
+           }}
+           selectedVersion={selectedVersion}
+           selectedFolderId={selectedFolderId}
+           onSelectFolder={setSelectedFolderId}
+           folderHue={folderHue}
+        />
 
         {/* Simple Mode Style Presets */}
         {mode === 'simple' && (
           <>
-            <NeumorphBox 
-              title="Icon Style"
-              subtitle="Choose a preset style"
-            >
-              <div className="grid grid-cols-3 gap-3">
-                {(['carved', 'glassy', 'none'] as const).map(effect => (
-                  <NeumorphBox
-                    as="button"
-                    key={effect}
-                    onClick={() => setIconEffect(effect)}
-                    variant={iconEffect === effect ? 'pressed' : 'flat'}
-                    className={clsx(
-                      "py-3 px-2 rounded-xl text-sm font-bold transition-all",
-                      iconEffect === effect
-                        ? "text-blue-600"
-                        : "text-gray-600 dark:text-gray-300 hover:-translate-y-0.5"
-                    )}
-                  >
-                    {effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
-                  </NeumorphBox>
-                ))}
-              </div>
-            </NeumorphBox>
-
-            {/* Simple Mode Folder Color */}
-            <NeumorphBox 
-              title="Folder Color"
-              subtitle="Colorize your folder"
-            >
-                 <div className="flex flex-wrap gap-3">
-                   {[0, 140, 180, 240, 300].map(hue => (
-                     <button
-                       key={hue}
-                       onClick={() => setFolderHue(hue)}
-                       className={clsx(
-                         "w-12 h-12 rounded-xl transition-all shadow-sm border-2",
-                         folderHue === hue 
-                           ? "border-blue-500 scale-110 shadow-md" 
-                           : "border-transparent hover:scale-105"
-                       )}
-                       style={{ 
-                         backgroundColor: '#3b82f6', // Base blue color
-                         filter: `hue-rotate(${hue}deg)` 
-                       }}
-                       title={`Hue: ${hue}°`}
-                     />
-                   ))}
-               </div>
-            </NeumorphBox>
+            <IconStylePresets iconEffect={iconEffect} onSelectEffect={setIconEffect} />
+            <FolderColorPicker folderHue={folderHue} onSelectHue={setFolderHue} />
           </>
         )}
 
@@ -480,106 +362,18 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* Advanced Controls */}
         {mode === 'advanced' && (
-          <NeumorphBox 
-            className="p-6 rounded-3xl space-y-6"
-            title="Advanced Customization"
-            subtitle="Fine-tune your icon"
-          >
-            
-            {/* Folder Color */}
-            <div>
-             <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Folder Color</h3>
-              <div className="flex items-center gap-4 mt-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  value={folderHue}
-                  onChange={(e) => setFolderHue(parseInt(e.target.value))}
-                  className="w-full h-4 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-full appearance-none cursor-pointer shadow-inner"
-                />
-                <span className="text-xs font-mono w-12 text-right text-gray-500">{folderHue}°</span>
-              </div>
-            </div>
-
-            {/* Icon Effect */}
-            <div>
-              <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Icon Effect</h3>
-              <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
-                {(['none', 'carved', 'emboss', 'glassy'] as const).map(effect => (
-                  <button
-                    key={effect}
-                    onClick={() => setIconEffect(effect)}
-                    className={clsx(
-                      "flex-1 py-2 px-2 rounded-lg text-xs font-bold transition-all capitalize",
-                      iconEffect === effect
-                        ? "bg-white dark:bg-gray-700 text-blue-600 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-                    )}
-                  >
-                    {effect}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Transparency */}
-            <div>
-              <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">Icon Transparency</h3>
-              <div className="flex items-center gap-4 mt-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={iconTransparency * 100}
-                  onChange={(e) => setIconTransparency(parseInt(e.target.value) / 100)}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                />
-                <span className="text-xs font-mono w-12 text-right text-gray-500">{Math.round(iconTransparency * 100)}%</span>
-              </div>
-            </div>
-
-            {/* Position Adjustment */}
-            <div>
-              <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Position</h3>
-              <NeumorphBox variant="pressed" className="space-y-4 p-4 rounded-xl">
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <label className="text-xs font-bold text-gray-500">Horizontal (X)</label>
-                    <span className="text-xs text-gray-400">{customOffsetX}px</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="-100"
-                    max="100"
-                    value={customOffsetX}
-                    onChange={(e) => setCustomOffsetX(parseInt(e.target.value))}
-                    className="w-full h-1 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
-                </div>
-                <div>
-                   <div className="flex justify-between mb-1">
-                    <label className="text-xs font-bold text-gray-500">Vertical (Y)</label>
-                    <span className="text-xs text-gray-400">{customOffsetY}px</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="-100"
-                    max="100"
-                    value={customOffsetY}
-                    onChange={(e) => setCustomOffsetY(parseInt(e.target.value))}
-                    className="w-full h-1 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
-                </div>
-                <button 
-                  onClick={() => { setCustomOffsetX(0); setCustomOffsetY(0); }}
-                  className="text-xs text-blue-500 hover:text-blue-600 font-bold w-full text-center mt-2"
-                >
-                  Reset Position
-                </button>
-              </NeumorphBox>
-            </div>
-          </NeumorphBox>
+          <AdvancedCustomization
+            folderHue={folderHue}
+            onFolderHueChange={setFolderHue}
+            iconEffect={iconEffect}
+            onIconEffectChange={setIconEffect}
+            iconTransparency={iconTransparency}
+            onIconTransparencyChange={setIconTransparency}
+            customOffsetX={customOffsetX}
+            onCustomOffsetXChange={setCustomOffsetX}
+            customOffsetY={customOffsetY}
+            onCustomOffsetYChange={setCustomOffsetY}
+          />
         )}
 
       </div>
@@ -661,7 +455,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                             iconTransparency={iconTransparency}
                             folderHue={folderHue}
                             enableCors={true}
-                            key={selectedFolder?.imageUrl} // Force remount on image change
+                            key={selectedFolder?.imageUrl}
                           />
                     </div>
                  </div>
@@ -724,9 +518,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                               iconEffect={iconEffect}
                               iconTransparency={iconTransparency}
                               folderHue={folderHue}
-                              // Important: Prevent this instance from capturing download events
                               enableCors={true}
-                              key={selectedFolder?.imageUrl} // Force remount on image change
+                              key={selectedFolder?.imageUrl}
                             />
                        </div>
                      </div>
