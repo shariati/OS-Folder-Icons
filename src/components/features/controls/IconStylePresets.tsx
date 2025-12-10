@@ -15,7 +15,7 @@ export function IconStylePresets({ iconEffect, onSelectEffect }: IconStylePreset
       subtitle="Choose a preset style"
     >
       <div className="grid grid-cols-3 gap-3">
-        {(['raised', 'sunken', 'glass', 'flat'] as const).map(effect => (
+        {(['sunken', 'raised', 'glass', 'flat'] as const).map(effect => (
             <NeumorphButton
               key={effect}
               onClick={() => onSelectEffect(effect)}

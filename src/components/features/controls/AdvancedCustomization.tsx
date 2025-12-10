@@ -53,7 +53,7 @@ export function AdvancedCustomization({
       <div>
         <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Icon Effect</h3>
         <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
-          {(['raised', 'sunken', 'glass', 'flat'] as const).map(effect => (
+          {(['sunken', 'raised', 'glass', 'flat'] as const).map(effect => (
             <button
               key={effect}
               onClick={() => onIconEffectChange(effect)}

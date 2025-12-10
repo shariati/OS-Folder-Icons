@@ -41,7 +41,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [iconType, setIconType] = useState<'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons'>('lucide');
   const [iconColor, setIconColor] = useState('#000000');
   const [iconSize, setIconSize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [iconEffect, setIconEffect] = useState<'raised' | 'sunken' | 'glass' | 'flat'>('raised');
+  const [iconEffect, setIconEffect] = useState<'raised' | 'sunken' | 'glass' | 'flat'>('sunken');
   const [iconTransparency, setIconTransparency] = useState(0.75); // 0 to 1
   const [folderHue, setFolderHue] = useState(0); // 0 to 360
 
@@ -128,7 +128,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     setMode(newMode);
     if (newMode === 'simple') {
       // Reset to Simple Mode defaults
-      setIconEffect('raised');
+      setIconEffect('sunken');
       setIconTransparency(0.75);
       setCustomOffsetX(0);
       setCustomOffsetY(0);
