@@ -25,6 +25,7 @@ interface CanvasPreviewProps {
   disableDownloadCapture?: boolean;
   enableCors?: boolean;
   downloadTriggerEvent?: string;
+  fileName?: string;
 }
 
 export function CanvasPreview({ 
@@ -41,12 +42,16 @@ export function CanvasPreview({
   folderHue = 0,
   disableDownloadCapture = false,
   enableCors = true,
-  downloadTriggerEvent = 'trigger-download'
+  downloadTriggerEvent = 'trigger-download',
+  fileName = 'custom-folder-icon'
 }: CanvasPreviewProps) {
   const ref = useRef<HTMLDivElement>(null);
 
+  const timestamp = useRef(Date.now()).current;
+
   const download = useCallback(async () => {
     if (!ref.current) return;
+    console.log('Starting Download Capture:', { fileName, folderImage, format, timestamp });
     try {
       // Determine sizes to generate based on format
       let sizes: number[] = [512];
@@ -87,7 +92,7 @@ export function CanvasPreview({
       }
 
       let finalBlob: Blob;
-      let filename = `custom-folder-icon.${format}`;
+      let finalFilename = `${fileName}.${format}`;
 
       if (format === 'ico') {
         finalBlob = await generateICO(images);
@@ -101,7 +106,7 @@ export function CanvasPreview({
       // Trigger download
       const url = URL.createObjectURL(finalBlob);
       const link = document.createElement('a');
-      link.download = filename;
+      link.download = finalFilename;
       link.href = url;
       link.click();
       URL.revokeObjectURL(url);
@@ -109,7 +114,7 @@ export function CanvasPreview({
     } catch (err) {
       console.error('Failed to generate image', err);
     }
-  }, [format]);
+  }, [format, fileName, folderImage, iconName, iconType, iconColor, iconSize, offsetX, offsetY, iconEffect, iconTransparency, folderHue, timestamp]);
 
   // Expose download trigger via a hidden button that parent can click
   useEffect(() => {
@@ -199,7 +204,7 @@ export function CanvasPreview({
       {/* Folder Base */}
       {folderImage && (
         <img 
-          src={enableCors ? `/api/proxy?url=${encodeURIComponent(folderImage)}` : folderImage}
+          src={enableCors ? `/api/proxy?url=${encodeURIComponent(folderImage)}&t=${timestamp}` : folderImage}
           alt="Folder" 
           className="absolute inset-0 w-full h-full object-contain"
           style={{ 

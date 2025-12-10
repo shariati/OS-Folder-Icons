@@ -42,15 +42,22 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const { showToast } = useToast();
   const [showAd, setShowAd] = useState(false);
 
+  // Hydration fix
+  const [isMounted, setIsMounted] = useState(false);
+  const [loadedWallpaperUrl, setLoadedWallpaperUrl] = useState<string | null>(null);
+  const [loadedFolderUrl, setLoadedFolderUrl] = useState<string | null>(null);
+  const [loadingVideoUrl, setLoadingVideoUrl] = useState<string>('');
+
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
   const selectedVersion = selectedOS?.versions.find(v => v.id === selectedVersionId);
   const selectedFolder = selectedVersion?.folderIcons.find(f => f.id === selectedFolderId);
 
-  // Hydration fix
-  const [isMounted, setIsMounted] = useState(false);
-  const [isWallpaperLoaded, setIsWallpaperLoaded] = useState(false);
-  const [loadingVideoUrl, setLoadingVideoUrl] = useState<string>('');
+  // Loading status helpers
+  // Check if current selection matches loaded state
+  const isWallpaperReady = !selectedVersion?.wallpaperUrl || selectedVersion.wallpaperUrl === loadedWallpaperUrl;
+  const isFolderReady = !selectedFolder?.imageUrl || selectedFolder.imageUrl === loadedFolderUrl;
+  const isPreviewReady = isWallpaperReady && isFolderReady;
 
   useEffect(() => {
     setIsMounted(true);
@@ -69,14 +76,31 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   // Handle Wallpaper Loading
   useEffect(() => {
     if (selectedVersion?.wallpaperUrl) {
-      setIsWallpaperLoaded(false);
-      const img = new window.Image();
-      img.src = selectedVersion.wallpaperUrl;
-      img.onload = () => setIsWallpaperLoaded(true);
+      // If URLs match, we are already loaded (or in process of loading same url, but here we want to reset if changed)
+      if (selectedVersion.wallpaperUrl !== loadedWallpaperUrl) {
+          const img = new window.Image();
+          img.src = selectedVersion.wallpaperUrl;
+          img.onload = () => setLoadedWallpaperUrl(selectedVersion.wallpaperUrl || null);
+          img.onerror = () => setLoadedWallpaperUrl(selectedVersion.wallpaperUrl || null); // Fail open or handle error? Fail open to show something.
+      }
     } else {
-      setIsWallpaperLoaded(true);
+      setLoadedWallpaperUrl(null);
     }
-  }, [selectedVersion?.wallpaperUrl]);
+  }, [selectedVersion?.wallpaperUrl, loadedWallpaperUrl]);
+
+  // Handle Folder Image Loading
+  useEffect(() => {
+    if (selectedFolder?.imageUrl) {
+      if (selectedFolder.imageUrl !== loadedFolderUrl) {
+          const img = new window.Image();
+          img.src = selectedFolder.imageUrl;
+          img.onload = () => setLoadedFolderUrl(selectedFolder.imageUrl || null);
+          img.onerror = () => setLoadedFolderUrl(selectedFolder.imageUrl || null);
+      }
+    } else {
+      setLoadedFolderUrl(null);
+    }
+  }, [selectedFolder?.imageUrl, loadedFolderUrl]);
 
   // Initialize selection
   // Set default version and folder when OS or version changes
@@ -142,7 +166,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   };
 
   const triggerDownload = () => {
-    const event = new CustomEvent('trigger-download');
+    const event = new CustomEvent('trigger-download-user');
     window.dispatchEvent(event);
     setShowAd(false);
   };
@@ -475,11 +499,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                    "relative w-full min-h-[400px] bg-cover bg-center overflow-hidden",
                    !selectedVersion?.wallpaperUrl && "bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-900"
                  )}
-                      style={selectedVersion?.wallpaperUrl && isWallpaperLoaded ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : undefined}
+                      style={selectedVersion?.wallpaperUrl && isWallpaperReady ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : undefined}
                  >
                     {/* Wallpaper Loading State */}
-                    {!isWallpaperLoaded && selectedVersion?.wallpaperUrl && (
-                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
+                    {!isPreviewReady && (
+                      <div className="absolute inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
                         <div className="flex flex-col items-center gap-3">
                           {loadingVideoUrl ? (
                               <video 
@@ -508,7 +532,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                     {/* The Icon Wrapper - static, centered, large */}
                     <div className={clsx(
                       "flex items-center justify-center w-full h-full transform scale-[0.6] absolute inset-0 transition-opacity duration-300",
-                      isWallpaperLoaded ? "opacity-100" : "opacity-0"
+                      isPreviewReady ? "opacity-100" : "opacity-0"
                     )}>
                          <CanvasPreview
                             folderImage={selectedFolder?.imageUrl}
@@ -523,6 +547,9 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                             iconTransparency={iconTransparency}
                             folderHue={folderHue}
                             enableCors={true}
+                            downloadTriggerEvent="trigger-download-user"
+                            fileName={`${selectedOS?.name || 'Custom'} - ${selectedFolder?.name || 'Icon'}`}
+                            key={selectedFolder?.imageUrl} // Force remount on image change
                           />
                     </div>
                  </div>
@@ -533,63 +560,69 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           </PreviewPanel>
 
           {/* Icon Sizes Section */}
-          <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
+          <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions" >
             <div 
-              className="relative flex flex-wrap items-end justify-center gap-8 p-6 rounded-2xl bg-cover bg-center overflow-hidden min-h-[200px]"
-              style={selectedVersion?.wallpaperUrl && isWallpaperLoaded ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : { backgroundColor: '#f9fafb' }}
+              className={clsx(
+                "relative flex flex-wrap items-end justify-center gap-8 p-6 rounded-2xl bg-cover bg-center overflow-hidden min-h-[200px] transition-all",
+                (!selectedVersion?.wallpaperUrl || !isWallpaperReady) && "bg-gray-100 dark:bg-gray-800",
+                !isPreviewReady && "animate-pulse"
+              )}
+              style={selectedVersion?.wallpaperUrl && isWallpaperReady ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : undefined}
             >
                {/* Loading Overlay */}
-               {!isWallpaperLoaded && selectedVersion?.wallpaperUrl && (
-                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
-                    {loadingVideoUrl ? (
-                         <video 
-                           src={loadingVideoUrl} 
-                           autoPlay 
-                           loop 
-                           muted 
-                           playsInline 
-                           className="w-16 h-16 object-contain"
-                         />
-                     ) : (
-                        <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                     )}
+               {!isPreviewReady && (
+                  <div className="absolute inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
+                    <div className="flex flex-col items-center gap-3">
+                       {loadingVideoUrl ? (
+                           <video 
+                             src={loadingVideoUrl} 
+                             autoPlay 
+                             loop 
+                             muted 
+                             playsInline 
+                             className="w-16 h-16 object-contain"
+                           />
+                       ) : (
+                          <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                       )}
+                       <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading...</span>
+                    </div>
                   </div>
                )}
 
-              <div className={clsx("contents transition-opacity duration-300", isWallpaperLoaded ? "opacity-100" : "opacity-0")}>
-                {[16, 32, 48, 96, 256].map((size) => {
-                   // Calculate scale based on 512px base
-                   const scale = size / 512;
-                   return (
-                     <div key={size} className="flex flex-col items-center gap-3">
-                       <div 
-                          className="relative transition-transform hover:scale-110"
-                          style={{ width: size, height: size }}
-                       >
-                         <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
-                             <CanvasPreview
-                                folderImage={selectedFolder?.imageUrl}
-                                iconName={selectedIcon}
-                                iconType={iconType}
-                                iconColor={iconColor}
-                                iconSize={iconSize}
-                                offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-                                offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-                                format={selectedOS?.format}
-                                iconEffect={iconEffect}
-                                iconTransparency={iconTransparency}
-                                folderHue={folderHue}
-                                // Important: Prevent this instance from capturing download events
-                                disableDownloadCapture
-                                enableCors={true}
-                              />
-                         </div>
+              {[16, 32, 48, 96, 256].map((size) => {
+                 // Calculate scale based on 512px base
+                 const scale = size / 512;
+                 return (
+                   <div key={size} className={clsx("flex flex-col items-center gap-3 transition-opacity duration-300", isPreviewReady ? "opacity-100" : "opacity-0")}>
+                     <div 
+                        className="relative transition-transform hover:scale-110"
+                        style={{ width: size, height: size }}
+                     >
+                       <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+                           <CanvasPreview
+                              folderImage={selectedFolder?.imageUrl}
+                              iconName={selectedIcon}
+                              iconType={iconType}
+                              iconColor={iconColor}
+                              iconSize={iconSize}
+                              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                              format={selectedOS?.format}
+                              iconEffect={iconEffect}
+                              iconTransparency={iconTransparency}
+                              folderHue={folderHue}
+                              // Important: Prevent this instance from capturing download events
+                              disableDownloadCapture
+                              enableCors={true}
+                              key={selectedFolder?.imageUrl} // Force remount on image change
+                            />
                        </div>
-                       <span className="text-xs font-mono text-white font-bold drop-shadow-md">{size}x{size}</span>
                      </div>
-                   );
-                })}
-              </div>
+                     <span className="text-xs font-mono text-white font-bold drop-shadow-md">{size}x{size}</span>
+                   </div>
+                 );
+              })}
             </div>
           </NeumorphBox>
 

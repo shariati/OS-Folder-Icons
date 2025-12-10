@@ -152,35 +152,9 @@ export function Navbar() {
           
           {/* Menu - Center */}
           <div className="hidden sm:flex sm:space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
-              {/* Custom Folders Dropdown */}
-              <div className="relative" ref={productsDropdownRef}>
-                <button
-                  onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
-                  className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all gap-1 outline-none"
-                >
-                  Custom Folders
-                  <ChevronDown size={16} className={`transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                
-                {productsDropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 rounded-xl bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 py-1 focus:outline-none transform opacity-100 scale-100 transition-all duration-200">
-                    <Link
-                      href="/bundles"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setProductsDropdownOpen(false)}
-                    >
-                      Bundles
-                    </Link>
-                    <Link
-                      href="/create"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setProductsDropdownOpen(false)}
-                    >
-                      Custom Folders
-                    </Link>
-                  </div>
-                )}
-              </div>
+              <Link href="/create" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
+                Custom Folders
+              </Link>
 
               <Link href="/photo-frame" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
                 Photo Frame
