@@ -12,6 +12,7 @@ export interface NeumorphButtonProps extends ButtonHTMLAttributes<HTMLButtonElem
   iconSize?: 'sm' | 'md' | 'lg';
   imageSrc?: string | StaticImageData;
   imageAlt?: string;
+  imageStyle?: React.CSSProperties;
   isActive?: boolean;
   label?: string;
 }
@@ -27,6 +28,7 @@ export function NeumorphButton({
   iconSize,
   imageSrc,
   imageAlt,
+  imageStyle,
   isActive,
   label,
   ...props
@@ -84,7 +86,13 @@ export function NeumorphButton({
       }
       return (
         <div className={clsx('relative shrink-0', iconSizeClasses[effectiveIconSize])}>
-          <Image src={imageSrc} alt={imageAlt || 'button icon'} fill className="object-contain" />
+          <Image
+            src={imageSrc}
+            alt={imageAlt || 'button icon'}
+            fill
+            className="object-contain"
+            style={imageStyle}
+          />
         </div>
       );
     }

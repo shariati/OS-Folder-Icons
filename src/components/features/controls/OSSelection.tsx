@@ -1,5 +1,5 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { NeumorphButton } from '@/components/ui/NeumorphButton';
+import { ToggleGroup } from '@/components/ui/ToggleGroup';
 import { OperatingSystem } from '@/lib/types';
 import { clsx } from 'clsx';
 
@@ -12,28 +12,25 @@ interface OSSelectionProps {
 export function OSSelection({ operatingSystems, selectedOSId, onSelectOS }: OSSelectionProps) {
   return (
     <NeumorphBox title="Operating System" subtitle="Select your platform">
-      <div className="grid grid-cols-2 gap-4">
-        {operatingSystems.map((os) => (
-          <NeumorphButton
-            key={os.id}
-            onClick={() => onSelectOS(os.id)}
-            variant={selectedOSId === os.id ? 'pressed' : 'neumorph'}
-            isActive={selectedOSId === os.id}
-            orientation="vertical"
-            className="p-8"
-            label={os.name}
-            icon={
-              os.brandIcon ? (
-                <i className={clsx(os.brandIcon, 'mb-2 text-4xl')} />
-              ) : (
-                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white">
-                  {os.name.charAt(0)}
-                </div>
-              )
-            }
-          />
-        ))}
-      </div>
+      <ToggleGroup
+        items={operatingSystems.map((os) => ({
+          value: os.id,
+          label: os.name,
+          icon: os.brandIcon ? (
+            <i className={clsx(os.brandIcon, 'text-2xl')} />
+          ) : (
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
+              {os.name.charAt(0)}
+            </div>
+          ),
+        }))}
+        value={selectedOSId}
+        onChange={onSelectOS}
+        variant="none"
+        gridSize={2}
+        className="gap-4"
+        size="lg"
+      />
     </NeumorphBox>
   );
 }

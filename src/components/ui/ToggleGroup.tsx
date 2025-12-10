@@ -3,10 +3,15 @@ import { NeumorphBox } from './NeumorphBox';
 import { NeumorphButton } from './NeumorphButton';
 import { clsx } from 'clsx';
 
+import { StaticImageData } from 'next/image';
+
 export interface ToggleGroupItem {
   value: string;
   label: string;
   icon?: ReactNode;
+  imageSrc?: string | StaticImageData;
+  imageAlt?: string;
+  imageStyle?: React.CSSProperties;
 }
 
 interface ToggleGroupProps {
@@ -49,6 +54,14 @@ interface ToggleGroupProps {
    * @default 'p-2'
    */
   padding?: string;
+  /**
+   * Grid size for desktop/default.
+   * If provided, switches layout to grid.
+   * @default 5
+   */
+  gridSize?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  gridSizeSm?: number;
+  gridSizeMd?: number;
 }
 
 export function ToggleGroup({
@@ -60,7 +73,22 @@ export function ToggleGroup({
   title,
   variant = 'flat',
   padding = 'p-2',
+  gridSize,
+  gridSizeSm,
+  gridSizeMd,
 }: ToggleGroupProps) {
+  const gridClasses = {
+    2: 'grid-cols-2',
+    3: 'grid-cols-3',
+    4: 'grid-cols-4',
+    5: 'grid-cols-5',
+    6: 'grid-cols-6',
+    7: 'grid-cols-7',
+    8: 'grid-cols-8',
+  } as const;
+
+  const isGrid = gridSize !== undefined || gridSizeSm !== undefined || gridSizeMd !== undefined;
+  const baseGridClass = gridSize ? gridClasses[gridSize] : 'grid-cols-5';
   const content = items.map((item) => {
     const isActive = value === item.value;
     return (
@@ -73,13 +101,29 @@ export function ToggleGroup({
         size={size}
         icon={item.icon}
         label={item.label}
+        imageSrc={item.imageSrc}
+        imageAlt={item.imageAlt}
+        imageStyle={item.imageStyle}
       />
     );
   });
 
   const containerClasses = clsx(
     padding,
-    'flex items-center justify-between gap-2 space-y-0',
+    !isGrid && 'flex items-center justify-between gap-2 space-y-0',
+    isGrid && [
+      'grid gap-2',
+      gridSizeSm ? gridClasses[gridSizeSm as keyof typeof gridClasses] : 'grid-cols-2',
+      // Actually, mimic NeumorphIconGrid logic:
+      gridSizeSm && gridClasses[gridSizeSm as keyof typeof gridClasses],
+      gridSizeMd &&
+        `md:${gridClasses[gridSizeMd as keyof typeof gridClasses].replace('grid-cols-', 'grid-cols-')}`,
+      gridSize && `lg:${gridClasses[gridSize]}`,
+    ],
+    isGrid && gridSize && !gridSizeSm && !gridSizeMd ? gridClasses[gridSize] : '',
+
+    isGrid && [],
+
     !title && className
   );
 
