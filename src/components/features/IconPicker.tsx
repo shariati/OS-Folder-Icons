@@ -9,6 +9,7 @@ import { HexColorPicker } from 'react-colorful';
 import { Search, Grid, Type, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { ColorSelector } from '@/components/ui/ColorSelector';
 
 interface IconPickerProps {
   selectedIcon: string | null;
@@ -310,23 +311,16 @@ export function IconPicker({
       <div className="grid grid-cols-1 gap-6">
         {/* Color Picker */}
         <div className="space-y-3">
-          <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Icon Color</label>
-          
           {mode === 'simple' ? (
-            <div className="flex flex-wrap gap-3">
-              {PRESET_COLORS.map(preset => (
-                <button
-                  key={preset}
-                  onClick={() => onColorChange(preset)}
-                  className={clsx(
-                    "w-8 h-8 rounded-full shadow-sm transition-transform hover:scale-110 border-2",
-                    color === preset ? "border-blue-500 scale-110" : "border-transparent"
-                  )}
-                  style={{ backgroundColor: preset }}
-                  title={preset}
-                />
-              ))}
-            </div>
+            <ColorSelector
+            title='Icon Color'
+              mode="palette"
+              colors={PRESET_COLORS}
+              value={color}
+              onChange={onColorChange}
+              shape="circle"
+              animation="grow"
+            />
           ) : (
             <div className="flex flex-col gap-4">
               <div className="p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">

@@ -23,7 +23,7 @@ export function OSSelection({ operatingSystems, selectedOSId, onSelectOS }: OSSe
             variant={selectedOSId === os.id ? 'pressed' : 'neumorph'}
             isActive={selectedOSId === os.id}
             orientation="vertical"
-            className="p-4"
+            className="p-8"
             label={os.name}
             icon={os.brandIcon ? (
               <i className={clsx(os.brandIcon, "text-4xl mb-2")} />

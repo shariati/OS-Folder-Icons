@@ -1,5 +1,5 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { clsx } from 'clsx';
+import { ColorSelector } from '@/components/ui/ColorSelector';
 
 interface FolderColorPickerProps {
   folderHue: number;
@@ -12,25 +12,15 @@ export function FolderColorPicker({ folderHue, onSelectHue }: FolderColorPickerP
       title="Folder Color"
       subtitle="Colorize your folder"
     >
-        <div className="flex flex-wrap gap-3">
-          {[0, 140, 180, 240, 300].map(hue => (
-            <button
-              key={hue}
-              onClick={() => onSelectHue(hue)}
-              className={clsx(
-                "w-12 h-12 rounded-xl transition-all shadow-sm border-2",
-                folderHue === hue 
-                  ? "border-blue-500 scale-110 shadow-md" 
-                  : "border-transparent hover:scale-105"
-              )}
-              style={{ 
-                backgroundColor: '#3b82f6', // Base blue color
-                filter: `hue-rotate(${hue}deg)` 
-              }}
-              title={`Hue: ${hue}°`}
-            />
-          ))}
-      </div>
+        <ColorSelector
+          mode="hue"
+          colors={[0, 140, 180, 240, 300]}
+          value={folderHue}
+          onChange={onSelectHue}
+          shape="rounded"
+          animation="grow"
+          baseColor="#3b82f6"
+        />
     </NeumorphBox>
   );
 }
