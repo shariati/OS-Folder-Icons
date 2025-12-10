@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
+import { toPng } from 'html-to-image';
+import { generateICO, generateICNS } from '@/lib/utils/icon-generator';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
@@ -47,6 +49,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [loadedWallpaperUrl, setLoadedWallpaperUrl] = useState<string | null>(null);
   const [loadedFolderUrl, setLoadedFolderUrl] = useState<string | null>(null);
   const [loadingVideoUrl, setLoadingVideoUrl] = useState<string>('');
+
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
@@ -165,10 +169,98 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   };
 
-  const triggerDownload = () => {
-    const event = new CustomEvent('trigger-download-user');
-    window.dispatchEvent(event);
-    setShowAd(false);
+  const triggerDownload = async () => {
+    if (!previewRef.current) return;
+    
+    // Allow UI to update if needed
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    try {
+      showToast('Generating icon package...', 'info');
+
+      const format = selectedOS?.format || 'png';
+      const fileName = `${selectedOS?.name || 'Custom'} - ${selectedFolder?.name || 'Icon'}`;
+
+      // Determine sizes based on format (Same logic as before)
+      let sizes: number[] = [512];
+      if (format === 'ico') {
+        sizes = [16, 32, 48, 64, 256];
+      } else if (format === 'icns') {
+        sizes = [16, 32, 64, 128, 256, 512, 1024];
+      }
+
+      const images: { width: number, height: number, data: Blob }[] = [];
+
+      for (const size of sizes) {
+        // debug log for capture
+        console.log(`Capturing DOM for size ${size}x${size}`, {
+             folderName: selectedFolder?.name,
+             folderImage: selectedFolder?.imageUrl,
+             osName: selectedOS?.name,
+             format
+        });
+
+        // Capture the DOM element directly
+        const dataUrl = await toPng(previewRef.current, { 
+          canvasWidth: size, 
+          canvasHeight: size,
+          pixelRatio: 1,
+          cacheBust: true 
+        });
+
+        console.log(`Captured DataURL length: ${dataUrl.length}`, dataUrl.substring(0, 50) + "...");
+
+        // Convert Base64 to Blob manually (CSP-safe)
+        const byteString = atob(dataUrl.split(',')[1]);
+        const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+        
+        images.push({ width: size, height: size, data: blob });
+      }
+
+      let finalBlob: Blob;
+      let finalFilename = `${fileName}.${format}`;
+
+      if (format === 'ico') {
+        finalBlob = await generateICO(images);
+      } else if (format === 'icns') {
+        finalBlob = await generateICNS(images);
+      } else {
+        finalBlob = images[0].data;
+      }
+
+      // Trigger download
+      const url = URL.createObjectURL(finalBlob);
+      console.log('Final Generated Blob URL (Click to view):', url);
+      
+      const link = document.createElement('a');
+      link.download = finalFilename;
+      link.href = url;
+      link.click();
+
+      // Debug: Log the first raw capture to verify base content
+      if (images.length > 0) {
+        const debugUrl = URL.createObjectURL(images[0].data);
+        console.log('DEBUG: First Raw Capture PNG (Click to view):', debugUrl);
+        // Clean up debug URL after 1 min
+        setTimeout(() => URL.revokeObjectURL(debugUrl), 60000);
+      }
+
+      // Delay revocation to allow inspection
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      
+      showToast('Download started!', 'success');
+      setShowAd(false);
+
+    } catch (err) {
+      console.error('Failed to generate icon:', err);
+      showToast('Failed to generate icon package', 'error');
+    }
   };
 
   return (
@@ -285,7 +377,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                       <Image 
                         src={folder.imageUrl} 
                         alt={folder.name} 
-                        fill 
+                        fill
+                        sizes="(max-width: 768px) 33vw, 15vw"
                         className="object-contain p-2" 
                         style={{ filter: folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none' }}
                       />
@@ -534,7 +627,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                       "flex items-center justify-center w-full h-full transform scale-[0.6] absolute inset-0 transition-opacity duration-300",
                       isPreviewReady ? "opacity-100" : "opacity-0"
                     )}>
-                         <CanvasPreview
+                          <CanvasPreview
+                            ref={previewRef}
                             folderImage={selectedFolder?.imageUrl}
                             iconName={selectedIcon}
                             iconType={iconType}
@@ -547,8 +641,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                             iconTransparency={iconTransparency}
                             folderHue={folderHue}
                             enableCors={true}
-                            downloadTriggerEvent="trigger-download-user"
-                            fileName={`${selectedOS?.name || 'Custom'} - ${selectedFolder?.name || 'Icon'}`}
                             key={selectedFolder?.imageUrl} // Force remount on image change
                           />
                     </div>
@@ -613,7 +705,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                               iconTransparency={iconTransparency}
                               folderHue={folderHue}
                               // Important: Prevent this instance from capturing download events
-                              disableDownloadCapture
                               enableCors={true}
                               key={selectedFolder?.imageUrl} // Force remount on image change
                             />

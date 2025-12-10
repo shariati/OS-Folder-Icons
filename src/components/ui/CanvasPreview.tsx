@@ -1,16 +1,13 @@
 'use client';
 
-import { useRef, useCallback, useEffect } from 'react';
-import { toPng } from 'html-to-image';
+import { forwardRef } from 'react';
 import * as LucideIcons from 'lucide-react';
 import * as HeroIcons from '@heroicons/react/24/solid';
 import * as Unicons from '@iconscout/react-unicons';
 import * as GrommetIcons from 'grommet-icons';
 import { clsx } from 'clsx';
 
-import { generateICO, generateICNS } from '@/lib/utils/icon-generator';
-
-interface CanvasPreviewProps {
+export interface CanvasPreviewProps {
   folderImage?: string;
   iconName?: string | null;
   iconType: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
@@ -22,13 +19,10 @@ interface CanvasPreviewProps {
   iconEffect?: 'none' | 'carved' | 'emboss' | 'glassy';
   iconTransparency?: number;
   folderHue?: number;
-  disableDownloadCapture?: boolean;
   enableCors?: boolean;
-  downloadTriggerEvent?: string;
-  fileName?: string;
 }
 
-export function CanvasPreview({ 
+export const CanvasPreview = forwardRef<HTMLDivElement, CanvasPreviewProps>(({ 
   folderImage, 
   iconName, 
   iconType, 
@@ -40,96 +34,9 @@ export function CanvasPreview({
   iconEffect = 'none',
   iconTransparency = 1,
   folderHue = 0,
-  disableDownloadCapture = false,
   enableCors = true,
-  downloadTriggerEvent = 'trigger-download',
-  fileName = 'custom-folder-icon'
-}: CanvasPreviewProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const timestamp = useRef(Date.now()).current;
-
-  const download = useCallback(async () => {
-    if (!ref.current) return;
-    console.log('Starting Download Capture:', { fileName, folderImage, format, timestamp });
-    try {
-      // Determine sizes to generate based on format
-      let sizes: number[] = [512];
-
-      if (format === 'ico') {
-        // Microsoft UX Guide for Windows Icons
-        // Required: 16, 32, 48, 256. 
-        // Recommended/Optional: 64.
-        sizes = [16, 32, 48, 64, 256];
-      } else if (format === 'icns') {
-        // Apple Icon Image Format Standard Sizes (Mac OS X 10.7+)
-        sizes = [16, 32, 64, 128, 256, 512, 1024];
-      }
-
-      const images: { width: number, height: number, data: Blob }[] = [];
-
-      for (const size of sizes) {
-        // Generate PNG for each size
-        // We use canvasWidth/canvasHeight to force the output dimension
-        const dataUrl = await toPng(ref.current, { 
-          canvasWidth: size, 
-          canvasHeight: size,
-          pixelRatio: 1, // 1:1 pixel mapping
-          cacheBust: true 
-        });
-
-        // Convert DataURL to Blob manually (safest way)
-        const byteString = atob(dataUrl.split(',')[1]);
-        const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i++) {
-          ia[i] = byteString.charCodeAt(i);
-        }
-        const blob = new Blob([ab], { type: mimeString });
-        
-        images.push({ width: size, height: size, data: blob });
-      }
-
-      let finalBlob: Blob;
-      let finalFilename = `${fileName}.${format}`;
-
-      if (format === 'ico') {
-        finalBlob = await generateICO(images);
-      } else if (format === 'icns') {
-        finalBlob = await generateICNS(images);
-      } else {
-        // PNG - just take the generated blob
-        finalBlob = images[0].data;
-      }
-
-      // Trigger download
-      const url = URL.createObjectURL(finalBlob);
-      const link = document.createElement('a');
-      link.download = finalFilename;
-      link.href = url;
-      link.click();
-      URL.revokeObjectURL(url);
-
-    } catch (err) {
-      console.error('Failed to generate image', err);
-    }
-  }, [format, fileName, folderImage, iconName, iconType, iconColor, iconSize, offsetX, offsetY, iconEffect, iconTransparency, folderHue, timestamp]);
-
-  // Expose download trigger via a hidden button that parent can click
-  useEffect(() => {
-    if (disableDownloadCapture) return;
-
-    const handleDownloadTrigger = () => {
-      download();
-    };
-
-    window.addEventListener(downloadTriggerEvent, handleDownloadTrigger);
-    return () => {
-      window.removeEventListener(downloadTriggerEvent, handleDownloadTrigger);
-    };
-  }, [download, disableDownloadCapture, downloadTriggerEvent]);
-
+}, ref) => {
+  
   const getIconComponent = () => {
     if (!iconName) return null;
     
@@ -198,13 +105,13 @@ export function CanvasPreview({
   };
 
   const effectStyle = getEffectStyle();
-
+  
   return (
     <div ref={ref} className="relative w-[512px] h-[512px] flex items-center justify-center bg-transparent">
       {/* Folder Base */}
       {folderImage && (
         <img 
-          src={enableCors ? `/api/proxy?url=${encodeURIComponent(folderImage)}&t=${timestamp}` : folderImage}
+          src={enableCors ? `/api/proxy?url=${encodeURIComponent(folderImage)}` : folderImage}
           alt="Folder" 
           className="absolute inset-0 w-full h-full object-contain"
           style={{ 
@@ -224,9 +131,9 @@ export function CanvasPreview({
           }}
         >
           {iconType === 'grommet-icons' ? (
-             <IconComponent size="100%" className="w-full h-full" color={iconColor} />
+            <IconComponent size="100%" className="w-full h-full" color={iconColor} />
           ) : (
-             <IconComponent size={400} className="w-full h-full" color={iconColor} />
+            <IconComponent size={400} className="w-full h-full" color={iconColor} />
           )}
         </div>
       )}
@@ -247,4 +154,6 @@ export function CanvasPreview({
       )}
     </div>
   );
-}
+});
+
+CanvasPreview.displayName = 'CanvasPreview';
