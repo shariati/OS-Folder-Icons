@@ -1,10 +1,11 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphButton } from '@/components/ui/NeumorphButton';
+import { toCapitalCase } from '@/lib/format';
 import { clsx } from 'clsx';
 
 interface IconStylePresetsProps {
-  iconEffect: 'none' | 'pressed' | 'emboss' | 'glassy';
-  onSelectEffect: (effect: 'none' | 'pressed' | 'emboss' | 'glassy') => void;
+  iconEffect: 'raised' | 'sunken' | 'glass' | 'flat';
+  onSelectEffect: (effect: 'raised' | 'sunken' | 'glass' | 'flat') => void;
 }
 
 export function IconStylePresets({ iconEffect, onSelectEffect }: IconStylePresetsProps) {
@@ -14,15 +15,14 @@ export function IconStylePresets({ iconEffect, onSelectEffect }: IconStylePreset
       subtitle="Choose a preset style"
     >
       <div className="grid grid-cols-3 gap-3">
-        {(['pressed', 'glassy', 'none', 'emboss'] as const).map(effect => (
+        {(['raised', 'sunken', 'glass', 'flat'] as const).map(effect => (
             <NeumorphButton
               key={effect}
               onClick={() => onSelectEffect(effect)}
-              variant={iconEffect === effect ? 'pressed' : 'neumorph'}
               isActive={iconEffect === effect}
               className="py-3 px-2 text-sm"
               size="sm"
-              label={effect === 'none' ? 'Flat' : effect.charAt(0).toUpperCase() + effect.slice(1)}
+              label={toCapitalCase(effect)}
             />
         ))}
       </div>

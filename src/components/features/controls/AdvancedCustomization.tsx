@@ -4,8 +4,8 @@ import { clsx } from 'clsx';
 interface AdvancedCustomizationProps {
   folderHue: number;
   onFolderHueChange: (hue: number) => void;
-  iconEffect: 'none' | 'carved' | 'emboss' | 'glassy';
-  onIconEffectChange: (effect: 'none' | 'carved' | 'emboss' | 'glassy') => void;
+  iconEffect: 'raised' | 'sunken' | 'glass' | 'flat';
+  onIconEffectChange: (effect: 'raised' | 'sunken' | 'glass' | 'flat') => void;
   iconTransparency: number;
   onIconTransparencyChange: (transparency: number) => void;
   customOffsetX: number;
@@ -53,7 +53,7 @@ export function AdvancedCustomization({
       <div>
         <h3 className="text-lg font-bold mb-3 text-gray-700 dark:text-white">Icon Effect</h3>
         <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
-          {(['none', 'carved', 'emboss', 'glassy'] as const).map(effect => (
+          {(['raised', 'sunken', 'glass', 'flat'] as const).map(effect => (
             <button
               key={effect}
               onClick={() => onIconEffectChange(effect)}

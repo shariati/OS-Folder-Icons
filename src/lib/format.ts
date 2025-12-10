@@ -138,3 +138,62 @@ export function socialStyleLargeNumbers(num?: number): string {
     }
     return formatWithPrecision(num / 1_000_000_000, 'b');
 }
+
+/**
+ * Converts a string to kebab-case.
+ * Example: "Choose a preset style" -> "choose-a-preset-style"
+ */
+export function toKebabCase(str: string): string {
+    return str
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '');
+}
+
+/**
+ * Converts a string to Sentence case.
+ * Example: "Choose a preset style" -> "Choose a preset style"
+ */
+export function toSentenceCase(str: string): string {
+    const trimmed = str.trim();
+    if (!trimmed) return '';
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+}
+
+/**
+ * Converts a string to Capital Case (Start Case).
+ * Example: "Choose a preset style" -> "Choose A Preset Style"
+ */
+export function toCapitalCase(str: string): string {
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+/**
+ * Converts a string to Title Case.
+ * Capitalizes all words except minor words (articles, conjunctions, prepositions),
+ * unless they are the first word.
+ * Example: "Choose a preset style" -> "Choose a Preset Style"
+ */
+export function toTitleCase(str: string): string {
+    const minorWords = new Set([
+        'a', 'an', 'the',
+        'and', 'but', 'or', 'nor', 'for', 'yet', 'so',
+        'at', 'by', 'for', 'in', 'of', 'on', 'to', 'up', 'with', 'from'
+    ]);
+
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map((word, index) => {
+            if (index === 0 || !minorWords.has(word)) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }
+            return word;
+        })
+        .join(' ');
+}

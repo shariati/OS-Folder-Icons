@@ -18,7 +18,7 @@ export interface CanvasPreviewProps {
   offsetX?: number;
   offsetY?: number;
   format?: 'png' | 'ico' | 'icns';
-  iconEffect?: 'none' | 'carved' | 'emboss' | 'glassy';
+  iconEffect?: 'raised' | 'sunken' | 'glass' | 'flat';
   iconTransparency?: number;
   folderHue?: number;
   enableCors?: boolean;
@@ -275,7 +275,7 @@ export const CanvasPreview = memo(forwardRef<HTMLDivElement, CanvasPreviewProps>
       filter: 'none'
     };
 
-    if (iconEffect === 'carved') {
+    if (iconEffect === 'sunken') {
       return {
         ...baseStyle,
         filter: 'drop-shadow(0px 2px 0px rgba(255, 255, 255, 0.3)) drop-shadow(0px -1px 0px rgba(0, 0, 0, 0.2))',
@@ -284,14 +284,14 @@ export const CanvasPreview = memo(forwardRef<HTMLDivElement, CanvasPreviewProps>
       };
     }
 
-    if (iconEffect === 'emboss') {
+    if (iconEffect === 'raised') {
       return {
         ...baseStyle,
         filter: 'drop-shadow(-1px -1px 0px rgba(255, 255, 255, 0.5)) drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3))',
       };
     }
 
-    if (iconEffect === 'glassy') {
+    if (iconEffect === 'glass') {
       return {
         ...baseStyle,
         filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1)) drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
