@@ -14,6 +14,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AdModal } from '@/components/ui/AdModal';
 import { useToast } from '@/components/ui/Toast';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { storage } from '@/lib/firebase/client';
+import { ref, getDownloadURL } from 'firebase/storage';
 
 interface IconGeneratorProps {
   initialData: DB;
@@ -48,11 +50,19 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   // Hydration fix
   const [isMounted, setIsMounted] = useState(false);
   const [isWallpaperLoaded, setIsWallpaperLoaded] = useState(false);
+  const [loadingVideoUrl, setLoadingVideoUrl] = useState<string>('');
 
   useEffect(() => {
     setIsMounted(true);
     if (initialData.operatingSystems.length > 0 && !selectedOSId) {
       setSelectedOSId(initialData.operatingSystems[0].id);
+    }
+    
+    // Fetch loading video
+    if (storage) {
+        getDownloadURL(ref(storage, 'public/Sandy Loading.webm'))
+            .then(url => setLoadingVideoUrl(url))
+            .catch(err => console.error('Failed to load loading video:', err));
     }
   }, [initialData.operatingSystems, selectedOSId]);
 
@@ -232,9 +242,6 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
               <div>
                 <div className="mb-3 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
-                    <Folder size={16} />
-                  </div>
                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">Folder Style</label>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
@@ -474,7 +481,18 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                     {!isWallpaperLoaded && selectedVersion?.wallpaperUrl && (
                       <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
                         <div className="flex flex-col items-center gap-3">
-                          <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                          {loadingVideoUrl ? (
+                              <video 
+                                src={loadingVideoUrl} 
+                                autoPlay 
+                                loop 
+                                muted 
+                                playsInline 
+                                className="w-32 h-32 object-contain"
+                              />
+                          ) : (
+                              <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                          )}
                           <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Preview...</span>
                         </div>
                       </div>
@@ -517,41 +535,61 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           {/* Icon Sizes Section */}
           <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
             <div 
-              className="flex flex-wrap items-end justify-center gap-8 p-6 rounded-2xl bg-cover bg-center"
-              style={selectedVersion?.wallpaperUrl ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : { backgroundColor: '#f9fafb' }}
+              className="relative flex flex-wrap items-end justify-center gap-8 p-6 rounded-2xl bg-cover bg-center overflow-hidden min-h-[200px]"
+              style={selectedVersion?.wallpaperUrl && isWallpaperLoaded ? { backgroundImage: `url(${selectedVersion.wallpaperUrl})` } : { backgroundColor: '#f9fafb' }}
             >
-              {[16, 32, 48, 96, 256].map((size) => {
-                 // Calculate scale based on 512px base
-                 const scale = size / 512;
-                 return (
-                   <div key={size} className="flex flex-col items-center gap-3">
-                     <div 
-                        className="relative transition-transform hover:scale-110"
-                        style={{ width: size, height: size }}
-                     >
-                       <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
-                           <CanvasPreview
-                              folderImage={selectedFolder?.imageUrl}
-                              iconName={selectedIcon}
-                              iconType={iconType}
-                              iconColor={iconColor}
-                              iconSize={iconSize}
-                              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-                              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-                              format={selectedOS?.format}
-                              iconEffect={iconEffect}
-                              iconTransparency={iconTransparency}
-                              folderHue={folderHue}
-                              // Important: Prevent this instance from capturing download events
-                              disableDownloadCapture
-                              enableCors={true}
-                            />
+               {/* Loading Overlay */}
+               {!isWallpaperLoaded && selectedVersion?.wallpaperUrl && (
+                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse">
+                    {loadingVideoUrl ? (
+                         <video 
+                           src={loadingVideoUrl} 
+                           autoPlay 
+                           loop 
+                           muted 
+                           playsInline 
+                           className="w-16 h-16 object-contain"
+                         />
+                     ) : (
+                        <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                     )}
+                  </div>
+               )}
+
+              <div className={clsx("contents transition-opacity duration-300", isWallpaperLoaded ? "opacity-100" : "opacity-0")}>
+                {[16, 32, 48, 96, 256].map((size) => {
+                   // Calculate scale based on 512px base
+                   const scale = size / 512;
+                   return (
+                     <div key={size} className="flex flex-col items-center gap-3">
+                       <div 
+                          className="relative transition-transform hover:scale-110"
+                          style={{ width: size, height: size }}
+                       >
+                         <div className="absolute top-0 left-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+                             <CanvasPreview
+                                folderImage={selectedFolder?.imageUrl}
+                                iconName={selectedIcon}
+                                iconType={iconType}
+                                iconColor={iconColor}
+                                iconSize={iconSize}
+                                offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                                offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                                format={selectedOS?.format}
+                                iconEffect={iconEffect}
+                                iconTransparency={iconTransparency}
+                                folderHue={folderHue}
+                                // Important: Prevent this instance from capturing download events
+                                disableDownloadCapture
+                                enableCors={true}
+                              />
+                         </div>
                        </div>
+                       <span className="text-xs font-mono text-white font-bold drop-shadow-md">{size}x{size}</span>
                      </div>
-                     <span className="text-xs font-mono text-white font-bold drop-shadow-md">{size}x{size}</span>
-                   </div>
-                 );
-              })}
+                   );
+                })}
+              </div>
             </div>
           </NeumorphBox>
 

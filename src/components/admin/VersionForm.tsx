@@ -372,6 +372,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
                               offsetY={icon.offsetY || 0}
                               format={osFormat}
                               enableCors={false}
+                              disableDownloadCapture
                             />
                          </div>
                          <div className="absolute bottom-2 right-2 text-[10px] text-white/50 font-mono">Preview</div>
