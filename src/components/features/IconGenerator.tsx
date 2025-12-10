@@ -8,8 +8,10 @@ import Image from 'next/image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { NeumorphButton } from '@/components/ui/NeumorphButton';
 import { IconPicker } from './IconPicker';
 import { OSSelection } from './controls/OSSelection';
+
 import { Configuration } from './controls/Configuration';
 import { IconStylePresets } from './controls/IconStylePresets';
 import { FolderColorPicker } from './controls/FolderColorPicker';
@@ -173,31 +175,23 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <div className="lg:col-span-4 space-y-8">
         
         {/* Mode Toggle */}
-        <NeumorphBox className="p-2 space-y-0 flex items-center justify-between">
-          <button
+        <NeumorphBox className="p-2 space-y-0 flex items-center justify-between gap-2">
+          <NeumorphButton
             onClick={() => handleModeChange('simple')}
-            className={clsx(
-              "flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2",
-              mode === 'simple'
-                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-            )}
-          >
-            <Layout size={16} />
-            Simple
-          </button>
-          <button
+            variant={mode === 'simple' ? 'pressed' : 'neumorph'}
+            isActive={mode === 'simple'}
+            className="flex-1 py-3 text-sm"
+            icon={<Layout size={16} />}
+            label="Simple"
+          />
+          <NeumorphButton
             onClick={() => handleModeChange('advanced')}
-            className={clsx(
-              "flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2",
-              mode === 'advanced'
-                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-            )}
-          >
-            <Sliders size={16} />
-            Advanced
-          </button>
+            variant={mode === 'advanced' ? 'pressed' : 'neumorph'}
+            isActive={mode === 'advanced'}
+            className="flex-1 py-3 text-sm"
+            icon={<Sliders size={16} />}
+            label="Advanced"
+          />
         </NeumorphBox>
 
         {/* OS Selection */}
@@ -287,14 +281,15 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         <div className="sticky top-24 space-y-8">
           <PreviewPanel
             actions={
-              <button
+              <NeumorphButton
                 id="download-btn"
                 onClick={handleDownloadClick}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 text-lg"
+                variant="flat"
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg shadow-blue-500/30 hover:-translate-y-0 active:scale-[0.98] text-lg gap-3"
+                icon={<Download size={24} />}
               >
-                <Download size={24} />
                 Download Icon
-              </button>
+              </NeumorphButton>
             }
             footerText={
               <p>

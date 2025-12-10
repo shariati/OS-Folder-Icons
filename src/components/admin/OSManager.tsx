@@ -13,6 +13,7 @@ import { clsx } from 'clsx';
 import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
 import { useAuth } from '@/contexts/AuthContext';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { NeumorphButton } from '@/components/ui/NeumorphButton';
 import { OSForm } from './OSForm';
 import { VersionForm } from '@/components/admin/VersionForm';
 import { uploadToFirebase } from '@/lib/client-upload';
@@ -97,12 +98,13 @@ export function OSManager({ initialData }: { initialData: DB }) {
       {!isFormOpen && (
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <h2 className="text-2xl font-bold text-black dark:text-white">Operating Systems</h2>
-            <button 
+            <NeumorphButton 
                 onClick={() => setIsFormOpen(true)} 
-                className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2"
-            >
-            <Plus size={20} /> Add Operating System
-            </button>
+                variant="flat"
+                className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 flex items-center gap-2"
+                icon={<Plus size={20} />}
+                label="Add Operating System"
+            />
         </div>
       )}
 
@@ -233,13 +235,13 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
       onEdit={onEdit}
       onDelete={onDelete}
       customActions={
-        <button 
+        <NeumorphButton 
           onClick={openAddVersion}
-          className="text-green-500 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-lg"
+          variant="flat"
+          className="text-green-500 hover:text-green-600 hover:bg-green-50 rounded-lg p-1.5"
           title="Add Version"
-        >
-          <Plus size={18} />
-        </button>
+          icon={<Plus size={18} />}
+        />
       }
     >
       {/* Version Form (ADD MODE) - Inline at the top */}
@@ -288,7 +290,12 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
           {(os.versions || []).length === 0 && !isVersionFormOpen && (
             <div className="text-center py-12 text-gray-500 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
               <p className="font-medium">No versions defined yet.</p>
-              <button onClick={openAddVersion} className="text-blue-600 hover:underline mt-2 text-sm font-bold">Add your first version</button>
+              <NeumorphButton 
+                  onClick={openAddVersion} 
+                  variant="flat"
+                  className="text-blue-600 hover:underline mt-2 text-sm font-bold bg-transparent shadow-none hover:bg-transparent"
+                  label="Add your first version"
+              />
             </div>
           )}
           
@@ -324,18 +331,19 @@ function OSItem({ os, onEdit, onDelete }: { os: OperatingSystem, onEdit: () => v
                           </span>
                       </div>
                       <div className="flex items-center gap-2">
-                           <button 
+                           <NeumorphButton 
                               onClick={() => openEditVersion(version)}
-                              className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-bold text-sm flex items-center gap-1"
-                          >
-                              <Edit2 size={16} /> Edit Version
-                          </button>
-                           <button 
+                              variant="flat"
+                              className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl font-bold text-sm gap-1"
+                              icon={<Edit2 size={16} />}
+                              label="Edit Version"
+                          />
+                           <NeumorphButton 
                               onClick={(e) => { e.stopPropagation(); deleteVersion(version.id); }}
-                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                          >
-                              <Trash2 size={18} />
-                          </button>
+                              variant="flat"
+                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
+                              icon={<Trash2 size={18} />}
+                          />
                       </div>
                   </div>
 
