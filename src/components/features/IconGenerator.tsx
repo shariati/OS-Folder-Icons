@@ -49,8 +49,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   const [loadedWallpaperUrl, setLoadedWallpaperUrl] = useState<string | null>(null);
   const [loadedFolderUrl, setLoadedFolderUrl] = useState<string | null>(null);
   const [loadingVideoUrl, setLoadingVideoUrl] = useState<string>('');
+  const [downloadTs, setDownloadTs] = useState<number>(0);
 
   const previewRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   // Derived state
   const selectedOS = initialData.operatingSystems.find(os => os.id === selectedOSId);
@@ -65,15 +67,19 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
   useEffect(() => {
     setIsMounted(true);
+    // Initialize default selection if none exists
     if (initialData.operatingSystems.length > 0 && !selectedOSId) {
-      setSelectedOSId(initialData.operatingSystems[0].id);
-    }
-    
-    // Fetch loading video
-    if (storage) {
-        getDownloadURL(ref(storage, 'public/Sandy Loading.webm'))
-            .then(url => setLoadingVideoUrl(url))
-            .catch(err => console.error('Failed to load loading video:', err));
+      const defaultOS = initialData.operatingSystems[0];
+      setSelectedOSId(defaultOS.id);
+      
+      if (defaultOS.versions.length > 0) {
+        const defaultVersion = defaultOS.versions[0];
+        setSelectedVersionId(defaultVersion.id);
+        
+        if (defaultVersion.folderIcons.length > 0) {
+          setSelectedFolderId(defaultVersion.folderIcons[0].id);
+        }
+      }
     }
   }, [initialData.operatingSystems, selectedOSId]);
 
@@ -85,7 +91,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           const img = new window.Image();
           img.src = selectedVersion.wallpaperUrl;
           img.onload = () => setLoadedWallpaperUrl(selectedVersion.wallpaperUrl || null);
-          img.onerror = () => setLoadedWallpaperUrl(selectedVersion.wallpaperUrl || null); // Fail open or handle error? Fail open to show something.
+          img.onerror = () => setLoadedWallpaperUrl(selectedVersion.wallpaperUrl || null);
       }
     } else {
       setLoadedWallpaperUrl(null);
@@ -106,28 +112,14 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     }
   }, [selectedFolder?.imageUrl, loadedFolderUrl]);
 
-  // Initialize selection
-  // Set default version and folder when OS or version changes
+  // Fetch loading video
   useEffect(() => {
-    if (selectedOS && selectedOS.versions.length > 0) {
-      if (!selectedVersionId || !selectedOS.versions.some(v => v.id === selectedVersionId)) {
-        setSelectedVersionId(selectedOS.versions[0].id);
-      }
-    } else {
-      setSelectedVersionId('');
+    if (storage) {
+        getDownloadURL(ref(storage, 'public/Sandy Loading.webm'))
+            .then(url => setLoadingVideoUrl(url))
+            .catch(err => console.error('Failed to load loading video:', err));
     }
-  }, [selectedOS, selectedVersionId]);
-
-  useEffect(() => {
-    if (selectedVersion && selectedVersion.folderIcons.length > 0) {
-      if (!selectedFolderId || !selectedVersion.folderIcons.some(f => f.id === selectedFolderId)) {
-        setSelectedFolderId(selectedVersion.folderIcons[0].id);
-      }
-    } else {
-      setSelectedFolderId('');
-    }
-  }, [selectedVersion, selectedFolderId]);
-
+  }, []);
 
 
   // Handle Mode Switching
@@ -170,10 +162,14 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   };
 
   const triggerDownload = async () => {
-    if (!previewRef.current) return;
+    if (!exportRef.current) return;
     
-    // Allow UI to update if needed
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Force a fresh render for the hidden export node with new URL
+    const ts = Date.now();
+    setDownloadTs(ts);
+    
+    // Wait for state update and image load
+    await new Promise(resolve => setTimeout(resolve, 200));
 
     try {
       showToast('Generating icon package...', 'info');
@@ -200,12 +196,11 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
              format
         });
 
-        // Capture the DOM element directly
-        const dataUrl = await toPng(previewRef.current, { 
+        const dataUrl = await toPng(exportRef.current, { 
           canvasWidth: size, 
           canvasHeight: size,
           pixelRatio: 1,
-          cacheBust: true 
+          cacheBust: true,
         });
 
         console.log(`Captured DataURL length: ${dataUrl.length}`, dataUrl.substring(0, 50) + "...");
@@ -307,7 +302,22 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
               <NeumorphBox
                 as="button"
                 key={os.id}
-                onClick={() => setSelectedOSId(os.id)}
+                onClick={() => {
+                  setSelectedOSId(os.id);
+                  // Cascade selection
+                  if (os.versions.length > 0) {
+                    const firstVersion = os.versions[0];
+                    setSelectedVersionId(firstVersion.id);
+                    if (firstVersion.folderIcons.length > 0) {
+                      setSelectedFolderId(firstVersion.folderIcons[0].id);
+                    } else {
+                      setSelectedFolderId('');
+                    }
+                  } else {
+                    setSelectedVersionId('');
+                    setSelectedFolderId('');
+                  }
+                }}
                 variant={selectedOSId === os.id ? 'pressed' : 'flat'}
                 className={clsx(
                   "space-y-0 flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-200",
@@ -343,7 +353,17 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                     as="select"
                     variant="pressed"
                     value={selectedVersionId}
-                    onChange={(e: any) => setSelectedVersionId(e.target.value)}
+                    onChange={(e: any) => {
+                      const newVersionId = e.target.value;
+                      setSelectedVersionId(newVersionId);
+                      // Cascade to folder
+                      const newVersion = selectedOS.versions.find(v => v.id === newVersionId);
+                      if (newVersion && newVersion.folderIcons.length > 0) {
+                        setSelectedFolderId(newVersion.folderIcons[0].id);
+                      } else {
+                        setSelectedFolderId('');
+                      }
+                    }}
                     className="w-full px-4 py-3 rounded-xl text-gray-700 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                   >
                     {selectedOS.versions.map(v => (
@@ -677,7 +697,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                        ) : (
                           <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
                        )}
-                       <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading...</span>
+                       <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Preview...</span>
                     </div>
                   </div>
                )}
@@ -719,7 +739,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         </div>
       </div>
-    <AdModal 
+      <AdModal 
         isOpen={showAd} 
         onClose={() => setShowAd(false)} 
         onComplete={() => {
@@ -727,6 +747,27 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
             triggerDownload();
         }} 
       />
+
+      {/* Hidden Export Node - Always pure, native size, no effects/opacity */}
+      <div style={{ position: 'absolute', top: -9999, left: -9999, width: 512, height: 512, overflow: 'hidden' }}>
+        <CanvasPreview
+          ref={exportRef}
+          folderImage={selectedFolder?.imageUrl ? `${selectedFolder.imageUrl}${selectedFolder.imageUrl.includes('?') ? '&' : '?'}t=${downloadTs}` : undefined}
+          iconName={selectedIcon}
+          iconType={iconType}
+          iconColor={iconColor}
+          iconSize={iconSize}
+          offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+          offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+          format={selectedOS?.format}
+          iconEffect={iconEffect}
+          iconTransparency={iconTransparency}
+          folderHue={folderHue}
+          enableCors={true}
+          // Important: Key ensures fresh mount on any hierarchy change AND new timestamp
+          key={`export-${selectedOSId}-${selectedVersionId}-${selectedFolderId}-${selectedIcon}-${downloadTs}`}
+        />
+      </div>
     </div>
   );
 }
