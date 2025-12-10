@@ -96,11 +96,11 @@ export function NeumorphDropdownList({
         hint={hint}
         disabled={disabled}
         autoComplete="off"
-        className="pr-10" // Make room for chevron
+        className="pr-10"
       />
 
       {/* Chevron indicator always visible */}
-      <div className="pointer-events-none absolute right-4 top-[calc(50%+2px)] -translate-y-1/2 text-gray-400">
+      <div className="pointer-events-none absolute bottom-4 right-4 ml-2 h-4 w-4 text-gray-400">
         <ChevronDown size={16} />
       </div>
 
@@ -111,7 +111,7 @@ export function NeumorphDropdownList({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl bg-white p-1 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/10"
+            className="absolute bottom-0 z-50 mt-2 w-full overflow-hidden rounded-xl bg-white p-1 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/10"
           >
             <ul className="custom-scrollbar max-h-60 overflow-y-auto">
               {filteredItems.length === 0 ? (

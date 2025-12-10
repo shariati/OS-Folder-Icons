@@ -43,7 +43,7 @@ interface ToggleGroupProps {
    * Visual variant of the container box.
    * @default 'flat'
    */
-  variant?: 'flat' | 'pressed';
+  variant?: 'flat' | 'pressed' | 'none';
   /**
    * Tailwind padding class for the container.
    * @default 'p-2'
@@ -61,32 +61,36 @@ export function ToggleGroup({
   variant = 'flat',
   padding = 'p-2',
 }: ToggleGroupProps) {
-  const box = (
-    <NeumorphBox
-      variant={variant}
-      className={clsx(
-        padding,
-        'flex items-center justify-between gap-2 space-y-0',
-        !title && className
-      )}
-    >
-      {items.map((item) => {
-        const isActive = value === item.value;
-        return (
-          <NeumorphButton
-            key={item.value}
-            onClick={() => onChange(item.value)}
-            variant={isActive ? 'pressed' : 'neumorph'}
-            isActive={isActive}
-            className="flex-1 py-3 text-sm"
-            size={size}
-            icon={item.icon}
-            label={item.label}
-          />
-        );
-      })}
-    </NeumorphBox>
+  const content = items.map((item) => {
+    const isActive = value === item.value;
+    return (
+      <NeumorphButton
+        key={item.value}
+        onClick={() => onChange(item.value)}
+        variant={isActive ? 'pressed' : 'neumorph'}
+        isActive={isActive}
+        className="flex-1 py-3 text-sm"
+        size={size}
+        icon={item.icon}
+        label={item.label}
+      />
+    );
+  });
+
+  const containerClasses = clsx(
+    padding,
+    'flex items-center justify-between gap-2 space-y-0',
+    !title && className
   );
+
+  const group =
+    variant === 'none' ? (
+      <div className={containerClasses}>{content}</div>
+    ) : (
+      <NeumorphBox variant={variant as 'flat' | 'pressed'} className={containerClasses}>
+        {content}
+      </NeumorphBox>
+    );
 
   if (title) {
     return (
@@ -94,10 +98,10 @@ export function ToggleGroup({
         <label className="mb-3 block text-sm font-bold text-gray-700 dark:text-gray-300">
           {title}
         </label>
-        {box}
+        {group}
       </div>
     );
   }
 
-  return box;
+  return group;
 }

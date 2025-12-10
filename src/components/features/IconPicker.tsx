@@ -223,8 +223,7 @@ export function IconPicker({
         {/* Size Control */}
         <ToggleGroup
           title="Icon Size"
-          variant="pressed"
-          padding="p-4"
+          variant="none"
           items={[
             { value: 'small', label: 'Small' },
             { value: 'medium', label: 'Medium' },
