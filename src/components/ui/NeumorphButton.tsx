@@ -33,28 +33,31 @@ export function NeumorphButton({
 }: NeumorphButtonProps) {
   // Determine effective icon position based on orientation if not explicitly provided
   const effectiveIconPosition = iconPosition || (orientation === 'vertical' ? 'top' : 'left');
-  
+
   // Default icon size to match button size if not provided
   const effectiveIconSize = iconSize || size;
 
   // Base classes mapping
-  const baseClasses = "relative transition-all duration-200 outline-none flex items-center justify-center font-bold disabled:opacity-50 disabled:cursor-not-allowed";
-  
+  const baseClasses =
+    'relative transition-all duration-200 outline-none flex items-center justify-center font-bold disabled:opacity-50 disabled:cursor-not-allowed';
+
   // Variant classes
   const variantClasses = {
-    neumorph: "neu-flat text-gray-700 dark:text-gray-200 active:shadow-inner",
-    pressed: "neu-pressed text-blue-600 dark:text-blue-400",
-    flat: "bg-transparent border-2 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-none",
+    neumorph: 'neu-flat text-gray-700 dark:text-gray-200 active:shadow-inner',
+    pressed: 'neu-pressed text-blue-600 dark:text-blue-400',
+    flat: 'bg-transparent border-2 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-none',
   };
 
   // If active is true, override variant to pressed style visually (though keep logic distinct if needed)
-  const activeClasses = isActive ? "neu-pressed text-blue-600 dark:text-blue-400" : variantClasses[variant];
+  const activeClasses = isActive
+    ? 'neu-pressed text-blue-600 dark:text-blue-400'
+    : variantClasses[variant];
 
   // Size classes
   const sizeClasses = {
-    sm: "text-xs py-2 px-3 rounded-lg gap-2",
-    md: "text-sm py-3 px-5 rounded-xl gap-3",
-    lg: "text-base py-4 px-8 rounded-2xl gap-4",
+    sm: 'text-xs py-2 px-3 rounded-lg gap-2',
+    md: 'text-sm py-3 px-5 rounded-xl gap-3',
+    lg: 'text-base py-4 px-8 rounded-2xl gap-4',
   };
 
   // Orientation classes
@@ -62,11 +65,11 @@ export function NeumorphButton({
 
   // Icon Size styling (for wrapper)
   const iconSizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-5 h-5",
-    lg: "w-6 h-6",
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
+    lg: 'w-6 h-6',
   };
-  
+
   // Image sizing to match icon sizing intent approximately, or fixed logic
   const imageSizePx = {
     sm: 16,
@@ -77,28 +80,28 @@ export function NeumorphButton({
   const renderIconOrImage = () => {
     if (imageSrc) {
       if (!imageAlt) {
-        console.warn("NeumorphButton: imageAlt is required when imageSrc is provided.");
+        console.warn('NeumorphButton: imageAlt is required when imageSrc is provided.');
       }
       return (
-        <div className={clsx("relative shrink-0", iconSizeClasses[effectiveIconSize])}>
-          <Image 
-            src={imageSrc} 
-            alt={imageAlt || "button icon"} 
-            fill 
-            className="object-contain"
-          />
+        <div className={clsx('relative shrink-0', iconSizeClasses[effectiveIconSize])}>
+          <Image src={imageSrc} alt={imageAlt || 'button icon'} fill className="object-contain" />
         </div>
       );
     }
-    
+
     if (icon) {
       return (
-        <span className={clsx("flex items-center justify-center shrink-0", iconSizeClasses[effectiveIconSize])}>
+        <span
+          className={clsx(
+            'flex shrink-0 items-center justify-center',
+            iconSizeClasses[effectiveIconSize]
+          )}
+        >
           {icon}
         </span>
       );
     }
-    
+
     return null;
   };
 
@@ -106,7 +109,7 @@ export function NeumorphButton({
     <>
       {/* Icon/Image if position is left or top */}
       {(effectiveIconPosition === 'left' || effectiveIconPosition === 'top') && renderIconOrImage()}
-      
+
       {/* Text Content */}
 
       {label ? (
@@ -117,9 +120,10 @@ export function NeumorphButton({
       ) : (
         children
       )}
-      
+
       {/* Icon/Image if position is right or bottom */}
-      {(effectiveIconPosition === 'right' || effectiveIconPosition === 'bottom') && renderIconOrImage()}
+      {(effectiveIconPosition === 'right' || effectiveIconPosition === 'bottom') &&
+        renderIconOrImage()}
     </>
   );
 

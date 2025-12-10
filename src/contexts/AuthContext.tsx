@@ -1,7 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, GoogleAuthProvider, signOut as firebaseSignOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import {
+  User,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signOut as firebaseSignOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import { auth, getFirebaseAuth } from '@/lib/firebase/client';
 import config from '@/lib/config';
 import { UserProfile } from '@/types/user';
@@ -77,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Error handling redirect result:', error);
       }
     };
-    
+
     // Only check for redirect results on mobile (where redirect auth is used)
     if (isMobileDevice()) {
       handleRedirectResult();
@@ -94,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               uid: firebaseUser.uid,
@@ -102,12 +110,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
               emailVerified: firebaseUser.emailVerified,
-              providers: firebaseUser.providerData.map(p => ({
+              providers: firebaseUser.providerData.map((p) => ({
                 providerId: p.providerId,
                 uid: p.uid,
                 displayName: p.displayName,
-                email: p.email
-              }))
+                email: p.email,
+              })),
             }),
           });
 
@@ -116,7 +124,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUserProfile(profile);
           } else {
             const errorData = await response.json().catch(() => ({}));
-            console.error('Failed to fetch user profile:', response.status, errorData.error || response.statusText);
+            console.error(
+              'Failed to fetch user profile:',
+              response.status,
+              errorData.error || response.statusText
+            );
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
@@ -137,9 +149,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Firebase Auth not initialized');
       throw new Error('Firebase Auth not initialized');
     }
-    
+
     const provider = new GoogleAuthProvider();
-    
+
     // Use popup on desktop, redirect on mobile for best UX
     if (isMobileDevice()) {
       // Mobile: Use redirect (more reliable on mobile browsers)
@@ -154,10 +166,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (error: unknown) {
         const firebaseError = error as { code?: string; message?: string };
         console.error('Google sign-in error:', firebaseError.code, firebaseError.message);
-        
+
         // Re-throw with a user-friendly message
         if (firebaseError.code === 'auth/popup-blocked') {
-          throw new Error('Popup was blocked by your browser. Please allow popups for this site and try again.');
+          throw new Error(
+            'Popup was blocked by your browser. Please allow popups for this site and try again.'
+          );
         } else if (firebaseError.code === 'auth/popup-closed-by-user') {
           throw new Error('Sign-in was cancelled.');
         } else if (firebaseError.code === 'auth/cancelled-popup-request') {
@@ -172,23 +186,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const sendMagicLink = async (email: string) => {
     const _auth = getFirebaseAuth();
     if (!_auth) return;
-    
+
     const { sendSignInLinkToEmail } = await import('firebase/auth');
     const actionCodeSettings = {
       url: `${window.location.origin}/login?finishSignUp=true`,
       handleCodeInApp: true,
     };
-    
+
     console.log('--- Sending Magic Link ---');
     console.log('Target Email:', email);
     console.log('Action Code Settings:', actionCodeSettings);
-    
+
     try {
-        await sendSignInLinkToEmail(_auth, email, actionCodeSettings);
-        console.log('Magic Link sent successfully!');
+      await sendSignInLinkToEmail(_auth, email, actionCodeSettings);
+      console.log('Magic Link sent successfully!');
     } catch (error) {
-        console.error('Error sending magic link:', error);
-        throw error;
+      console.error('Error sending magic link:', error);
+      throw error;
     }
     // Save email locally to complete sign in on return
     // Save email in sessionStorage (cleared when tab closes - more secure than localStorage)
@@ -220,7 +234,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     const userCredential = await createUserWithEmailAndPassword(_auth, email, password);
-    
+
     // Send email verification
     try {
       await sendEmailVerification(userCredential.user, {
@@ -228,14 +242,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         handleCodeInApp: false,
       });
       console.log('Verification email sent successfully');
-      
+
       // Update activation email sent timestamp
       const token = await userCredential.user.getIdToken();
       await fetch('/api/auth/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           uid: userCredential.user.uid,
@@ -261,41 +275,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        // Update Firebase Auth Profile
-        if (data.displayName || data.photoURL) {
-            await import('firebase/auth').then(({ updateProfile }) => 
-                updateProfile(_auth.currentUser!, {
-                    displayName: data.displayName,
-                    photoURL: data.photoURL
-                })
-            );
-        }
+      // Update Firebase Auth Profile
+      if (data.displayName || data.photoURL) {
+        await import('firebase/auth').then(({ updateProfile }) =>
+          updateProfile(_auth.currentUser!, {
+            displayName: data.displayName,
+            photoURL: data.photoURL,
+          })
+        );
+      }
 
-        // Update Database Profile
-        const token = await _auth.currentUser.getIdToken();
-        const response = await fetch('/api/auth/user', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                uid: _auth.currentUser.uid,
-                ...data
-            }),
-        });
+      // Update Database Profile
+      const token = await _auth.currentUser.getIdToken();
+      const response = await fetch('/api/auth/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          uid: _auth.currentUser.uid,
+          ...data,
+        }),
+      });
 
-        if (response.ok) {
-            const updatedProfile = await response.json();
-            setUserProfile(updatedProfile);
-            // Force refresh user object to reflect changes
-            setUser({ ..._auth.currentUser }); 
-        } else {
-            throw new Error('Failed to update database profile');
-        }
+      if (response.ok) {
+        const updatedProfile = await response.json();
+        setUserProfile(updatedProfile);
+        // Force refresh user object to reflect changes
+        setUser({ ..._auth.currentUser });
+      } else {
+        throw new Error('Failed to update database profile');
+      }
     } catch (error) {
-        console.error('Error updating profile:', error);
-        throw error;
+      console.error('Error updating profile:', error);
+      throw error;
     }
   };
 
@@ -304,14 +318,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        const { updatePassword, EmailAuthProvider, reauthenticateWithCredential } = await import('firebase/auth');
-        const credential = EmailAuthProvider.credential(_auth.currentUser.email!, currentPassword);
-        
-        await reauthenticateWithCredential(_auth.currentUser, credential);
-        await updatePassword(_auth.currentUser, newPassword);
+      const { updatePassword, EmailAuthProvider, reauthenticateWithCredential } =
+        await import('firebase/auth');
+      const credential = EmailAuthProvider.credential(_auth.currentUser.email!, currentPassword);
+
+      await reauthenticateWithCredential(_auth.currentUser, credential);
+      await updatePassword(_auth.currentUser, newPassword);
     } catch (error) {
-        console.error('Error changing password:', error);
-        throw error;
+      console.error('Error changing password:', error);
+      throw error;
     }
   };
 
@@ -350,23 +365,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     try {
-        const { unlink } = await import('firebase/auth');
-        const result = await unlink(_auth.currentUser, providerId);
-        
-        // Sync providers to DB
-        await syncProviders(result);
+      const { unlink } = await import('firebase/auth');
+      const result = await unlink(_auth.currentUser, providerId);
+
+      // Sync providers to DB
+      await syncProviders(result);
     } catch (error) {
-        console.error('Error unlinking provider:', error);
-        throw error;
+      console.error('Error unlinking provider:', error);
+      throw error;
     }
   };
 
   const syncProviders = async (firebaseUser: User) => {
-    const providers = firebaseUser.providerData.map(p => ({
-        providerId: p.providerId,
-        uid: p.uid,
-        displayName: p.displayName,
-        email: p.email
+    const providers = firebaseUser.providerData.map((p) => ({
+      providerId: p.providerId,
+      uid: p.uid,
+      displayName: p.displayName,
+      email: p.email,
     }));
 
     await updateUserProfile({ providers });
@@ -377,31 +392,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!_auth || !_auth.currentUser) throw new Error('No user logged in');
 
     // Check subscription status
-    if (userProfile?.subscriptionStatus === 'active' || userProfile?.subscriptionStatus === 'trialing') {
-         throw new Error('Please cancel your active subscription before deleting your account.');
+    if (
+      userProfile?.subscriptionStatus === 'active' ||
+      userProfile?.subscriptionStatus === 'trialing'
+    ) {
+      throw new Error('Please cancel your active subscription before deleting your account.');
     }
 
     try {
-        const { deleteUser: firebaseDeleteUser } = await import('firebase/auth');
-        const uid = _auth.currentUser.uid;
-        
-        // Delete from DB (via API)
-        const token = await _auth.currentUser.getIdToken();
-        const response = await fetch(`/api/auth/user?uid=${uid}`, {
-             method: 'DELETE',
-             headers: {
-                 'Authorization': `Bearer ${token}`
-             }
-        });
+      const { deleteUser: firebaseDeleteUser } = await import('firebase/auth');
+      const uid = _auth.currentUser.uid;
 
-        if (!response.ok) {
-            console.error('Failed to delete user data from database, but proceeding with Auth deletion.');
-        }
-        
-        await firebaseDeleteUser(_auth.currentUser);
+      // Delete from DB (via API)
+      const token = await _auth.currentUser.getIdToken();
+      const response = await fetch(`/api/auth/user?uid=${uid}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(
+          'Failed to delete user data from database, but proceeding with Auth deletion.'
+        );
+      }
+
+      await firebaseDeleteUser(_auth.currentUser);
     } catch (error) {
-        console.error('Error deleting account:', error);
-        throw error;
+      console.error('Error deleting account:', error);
+      throw error;
     }
   };
 
@@ -414,14 +434,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         url: `${window.location.origin}/profile`,
         handleCodeInApp: false,
       });
-      
+
       // Update activation email sent timestamp
       const token = await _auth.currentUser.getIdToken();
       await fetch('/api/auth/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           uid: _auth.currentUser.uid,
@@ -435,23 +455,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ 
-        user, 
-        userProfile, 
-        loading, 
-        signInWithGoogle, 
+    <AuthContext.Provider
+      value={{
+        user,
+        userProfile,
+        loading,
+        signInWithGoogle,
         sendMagicLink,
         signInWithMagicLink,
-        signInWithEmail, 
-        signUpWithEmail, 
+        signInWithEmail,
+        signUpWithEmail,
         signOut,
         updateUserProfile,
         changePassword,
         linkWithProvider,
         unlinkProvider,
         deleteAccount,
-        resendActivationEmail
-    }}>
+        resendActivationEmail,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

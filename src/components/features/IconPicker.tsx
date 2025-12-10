@@ -16,7 +16,9 @@ interface IconPickerProps {
   selectedIcon: string | null;
   onSelectIcon: (icon: string) => void;
   iconType: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
-  onTypeChange: (type: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons') => void;
+  onTypeChange: (
+    type: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons'
+  ) => void;
   color: string;
   onColorChange: (color: string) => void;
   size: 'small' | 'medium' | 'large';
@@ -27,7 +29,19 @@ interface IconPickerProps {
 import { fontAwesomeIcons } from '@/data/fontAwesomeIcons';
 
 const PRESET_COLORS = [
-  '#000000', '#FFFFFF', '#EF4444', '#F97316', '#F59E0B', '#84CC16', '#10B981', '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#D946EF', '#F43F5E'
+  '#000000',
+  '#FFFFFF',
+  '#EF4444',
+  '#F97316',
+  '#F59E0B',
+  '#84CC16',
+  '#10B981',
+  '#06B6D4',
+  '#3B82F6',
+  '#6366F1',
+  '#8B5CF6',
+  '#D946EF',
+  '#F43F5E',
 ];
 
 export function IconPicker({
@@ -39,28 +53,32 @@ export function IconPicker({
   onColorChange,
   size,
   onSizeChange,
-  mode = 'simple'
+  mode = 'simple',
 }: IconPickerProps) {
   const [search, setSearch] = useState('');
 
   // Get all Lucide icon names
   const lucideIconNames = useMemo(() => {
-    return Object.keys(LucideIcons).filter(key => key !== 'icons' && key !== 'createLucideIcon' && isNaN(Number(key)));
+    return Object.keys(LucideIcons).filter(
+      (key) => key !== 'icons' && key !== 'createLucideIcon' && isNaN(Number(key))
+    );
   }, []);
 
   // Get all Heroicons names
   const heroIconNames = useMemo(() => {
-    return Object.keys(HeroIcons).filter(key => isNaN(Number(key)));
+    return Object.keys(HeroIcons).filter((key) => isNaN(Number(key)));
   }, []);
 
   // Get all Unicons names
   const uniconsIconNames = useMemo(() => {
-    return Object.keys(Unicons).filter(key => isNaN(Number(key)));
+    return Object.keys(Unicons).filter((key) => isNaN(Number(key)));
   }, []);
 
   // Get all Grommet Icons names
   const grommetIconNames = useMemo(() => {
-    return Object.keys(GrommetIcons).filter(key => isNaN(Number(key)) && key !== 'default' && key !== 'ThemeContext');
+    return Object.keys(GrommetIcons).filter(
+      (key) => isNaN(Number(key)) && key !== 'default' && key !== 'ThemeContext'
+    );
   }, []);
 
   const filteredIcons = useMemo(() => {
@@ -84,55 +102,59 @@ export function IconPicker({
     }
 
     if (!search) return source.slice(0, 100); // Limit initial display
-    return source.filter(name => name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
+    return source.filter((name) => name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
   }, [lucideIconNames, heroIconNames, uniconsIconNames, grommetIconNames, search, iconType]);
 
   return (
-    <NeumorphBox 
+    <NeumorphBox
       title="Icon Selection"
       subtitle="Pick your symbol"
       badge={
-        <span className="text-xs font-medium px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500">
+        <span className="rounded-lg bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500 dark:bg-gray-700">
           {filteredIcons.length} icons
         </span>
       }
     >
-
       {/* Icon Source & Search - Only in Advanced Mode */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-               {/* Simple mode tabs for libraries */}
-               {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(type => (
-                 <button
-                   key={type}
-                   onClick={() => onTypeChange(type)}
-                   className={clsx(
-                     "px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all",
-                     iconType === type
-                       ? "bg-blue-600 text-white shadow-md"
-                       : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200"
-                   )}
-                 >
-                   {type === 'grommet-icons' ? 'Grommet' : type.charAt(0).toUpperCase() + type.slice(1)}
-                 </button>
-               ))}
-            </div>
+      <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-2">
+        {/* Simple mode tabs for libraries */}
+        {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(
+          (type) => (
+            <button
+              key={type}
+              onClick={() => onTypeChange(type)}
+              className={clsx(
+                'whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold transition-all',
+                iconType === type
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400'
+              )}
+            >
+              {type === 'grommet-icons' ? 'Grommet' : type.charAt(0).toUpperCase() + type.slice(1)}
+            </button>
+          )
+        )}
+      </div>
 
-<div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <NeumorphBox
-              as="input"
-              variant="pressed"
-              type="text"
-              placeholder="Search icons..."
-              value={search}
-              onChange={(e: any) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-            />
-          </div>
+      <div className="space-y-4">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <NeumorphBox
+            as="input"
+            variant="pressed"
+            type="text"
+            placeholder="Search icons..."
+            value={search}
+            onChange={(e: any) => setSearch(e.target.value)}
+            className="w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-gray-700 outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white"
+          />
         </div>
+      </div>
       {/* Icon Grid */}
-      <NeumorphBox variant="pressed" className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-6 gap-2 p-2 rounded-xl bg-gray-50/50 dark:bg-gray-900/30 custom-scrollbar">
+      <NeumorphBox
+        variant="pressed"
+        className="custom-scrollbar grid h-64 grid-cols-6 gap-2 overflow-y-auto rounded-xl bg-gray-50/50 p-2 sm:grid-cols-6 dark:bg-gray-900/30"
+      >
         {filteredIcons.map((name) => {
           if (iconType === 'lucide') {
             const Icon = (LucideIcons as any)[name];
@@ -142,14 +164,14 @@ export function IconPicker({
                 key={name}
                 onClick={() => onSelectIcon(name)}
                 className={clsx(
-                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
-                  selectedIcon === name 
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
-                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
+                  selectedIcon === name
+                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
+                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
                 )}
                 title={name}
               >
-                <Icon className="w-6 h-6" />
+                <Icon className="h-6 w-6" />
               </button>
             );
           } else if (iconType === 'fontawesome') {
@@ -158,14 +180,14 @@ export function IconPicker({
                 key={name}
                 onClick={() => onSelectIcon(name)}
                 className={clsx(
-                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
-                  selectedIcon === name 
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
-                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
+                  selectedIcon === name
+                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
+                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
                 )}
                 title={name}
               >
-                <i className={clsx(name, "text-xl")} />
+                <i className={clsx(name, 'text-xl')} />
               </button>
             );
           } else if (iconType === 'heroicons') {
@@ -176,14 +198,14 @@ export function IconPicker({
                 key={name}
                 onClick={() => onSelectIcon(name)}
                 className={clsx(
-                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
-                  selectedIcon === name 
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
-                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
+                  selectedIcon === name
+                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
+                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
                 )}
                 title={name}
               >
-                <Icon className="w-6 h-6" />
+                <Icon className="h-6 w-6" />
               </button>
             );
           } else if (iconType === 'unicons') {
@@ -194,14 +216,14 @@ export function IconPicker({
                 key={name}
                 onClick={() => onSelectIcon(name)}
                 className={clsx(
-                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
-                  selectedIcon === name 
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
-                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
+                  selectedIcon === name
+                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
+                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
                 )}
                 title={name}
               >
-                <Icon className="w-6 h-6" />
+                <Icon className="h-6 w-6" />
               </button>
             );
           } else if (iconType === 'grommet-icons') {
@@ -212,14 +234,14 @@ export function IconPicker({
                 key={name}
                 onClick={() => onSelectIcon(name)}
                 className={clsx(
-                  "p-2 rounded-xl flex items-center justify-center transition-all aspect-square",
-                  selectedIcon === name 
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/40 transform scale-105" 
-                    : "text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm"
+                  'flex aspect-square items-center justify-center rounded-xl p-2 transition-all',
+                  selectedIcon === name
+                    ? 'scale-105 transform bg-blue-500 text-white shadow-lg shadow-blue-500/40'
+                    : 'text-gray-500 hover:bg-white hover:shadow-sm dark:hover:bg-gray-700'
                 )}
                 title={name}
               >
-                <Icon className="w-6 h-6" />
+                <Icon className="h-6 w-6" />
               </button>
             );
           }
@@ -233,7 +255,7 @@ export function IconPicker({
         <div className="space-y-3">
           {mode === 'simple' ? (
             <ColorSelector
-            title='Icon Color'
+              title="Icon Color"
               mode="palette"
               colors={PRESET_COLORS}
               value={color}
@@ -243,23 +265,29 @@ export function IconPicker({
             />
           ) : (
             <div className="flex flex-col gap-4">
-              <div className="p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                <HexColorPicker color={color} onChange={onColorChange} style={{ width: '100%', height: '150px' }} />
+              <div className="rounded-xl border border-gray-100 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <HexColorPicker
+                  color={color}
+                  onChange={onColorChange}
+                  style={{ width: '100%', height: '150px' }}
+                />
               </div>
               <div className="flex items-center gap-3">
-                 <div 
-                   className="w-10 h-10 rounded-xl border border-gray-200 shadow-sm"
-                   style={{ backgroundColor: color }}
-                 />
-                 <div className="flex-1 relative">
-                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">HEX</span>
-                   <input 
-                     type="text" 
-                     value={color} 
-                     onChange={(e) => onColorChange(e.target.value)}
-                     className="w-full pl-10 pr-3 py-2 text-sm border rounded-lg bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   />
-                 </div>
+                <div
+                  className="h-10 w-10 rounded-xl border border-gray-200 shadow-sm"
+                  style={{ backgroundColor: color }}
+                />
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                    HEX
+                  </span>
+                  <input
+                    type="text"
+                    value={color}
+                    onChange={(e) => onColorChange(e.target.value)}
+                    className="w-full rounded-lg border bg-gray-50 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -273,7 +301,7 @@ export function IconPicker({
           items={[
             { value: 'small', label: 'Small' },
             { value: 'medium', label: 'Medium' },
-            { value: 'large', label: 'Large' }
+            { value: 'large', label: 'Large' },
           ]}
           value={size}
           onChange={(val) => onSizeChange(val as 'small' | 'medium' | 'large')}

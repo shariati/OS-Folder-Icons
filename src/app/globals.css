@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "@tailwindcss/typography";
-@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 :root {
   --background: #e0e5ec;
   --foreground: #4a5568;
-  
+
   /* Neumorphism Colors */
   --neu-bg: #e0e5ec;
   --neu-shadow-light: #ffffff;
   --neu-shadow-dark: #a3b1c6;
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.25);
   --glass-border: rgba(255, 255, 255, 0.5);
@@ -22,23 +22,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   --color-neu-bg: var(--neu-bg);
   --color-neu-shadow-light: var(--neu-shadow-light);
   --color-neu-shadow-dark: var(--neu-shadow-dark);
 
   /* TailAdmin Colors */
-  --color-boxdark: #24303F;
-  --color-boxdark-2: #1A222C;
-  --color-bodydark: #AEB7C0;
-  --color-bodydark1: #DEE4EE;
-  --color-bodydark2: #8A99AF;
-  --color-primary: #3C50E0;
-  --color-stroke: #E2E8F0;
-  --color-strokedark: #2E3A47;
-  --color-graydark: #333A48;
-  --color-whiten: #F1F5F9;
-  --color-meta-4: #313D4A;
+  --color-boxdark: #24303f;
+  --color-boxdark-2: #1a222c;
+  --color-bodydark: #aeb7c0;
+  --color-bodydark1: #dee4ee;
+  --color-bodydark2: #8a99af;
+  --color-primary: #3c50e0;
+  --color-stroke: #e2e8f0;
+  --color-strokedark: #2e3a47;
+  --color-graydark: #333a48;
+  --color-whiten: #f1f5f9;
+  --color-meta-4: #313d4a;
 
   /* TailAdmin Shadows */
   --drop-shadow-1: 0px 1px 3px rgba(0, 0, 0, 0.08);
@@ -49,11 +49,11 @@
   :root {
     --background: #2d3748;
     --foreground: #e2e8f0;
-    
+
     --neu-bg: #2d3748;
     --neu-shadow-light: #3a475c;
     --neu-shadow-dark: #202733;
-    
+
     --glass-bg: rgba(0, 0, 0, 0.25);
     --glass-border: rgba(255, 255, 255, 0.1);
   }
@@ -68,16 +68,18 @@ body {
 /* Neumorphic Utilities */
 .neu-flat {
   background: var(--neu-bg);
-  box-shadow: 9px 9px 16px var(--neu-shadow-dark), 
-              -9px -9px 16px var(--neu-shadow-light);
+  box-shadow:
+    9px 9px 16px var(--neu-shadow-dark),
+    -9px -9px 16px var(--neu-shadow-light);
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .neu-pressed {
   background: var(--neu-bg);
-  box-shadow: inset 6px 6px 10px var(--neu-shadow-dark), 
-              inset -6px -6px 10px var(--neu-shadow-light);
+  box-shadow:
+    inset 6px 6px 10px var(--neu-shadow-dark),
+    inset -6px -6px 10px var(--neu-shadow-light);
   border-radius: 15px;
 }
 
@@ -89,15 +91,18 @@ body {
   height: 50px;
   border-radius: 50%;
   background: var(--neu-bg);
-  box-shadow: 5px 5px 10px var(--neu-shadow-dark), 
-              -5px -5px 10px var(--neu-shadow-light);
+  box-shadow:
+    5px 5px 10px var(--neu-shadow-dark),
+    -5px -5px 10px var(--neu-shadow-light);
   transition: all 0.2s ease;
   color: var(--foreground);
 }
 
-.neu-icon-btn:active, .neu-icon-btn.active {
-  box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), 
-              inset -3px -3px 6px var(--neu-shadow-light);
+.neu-icon-btn:active,
+.neu-icon-btn.active {
+  box-shadow:
+    inset 3px 3px 6px var(--neu-shadow-dark),
+    inset -3px -3px 6px var(--neu-shadow-light);
 }
 
 /* Glassmorphism Utilities */
@@ -172,8 +177,8 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* ======================================
@@ -219,9 +224,15 @@ body {
 
 /* Dark mode headings */
 @media (prefers-color-scheme: dark) {
-  .ProseMirror h1 { color: #f9fafb; }
-  .ProseMirror h2 { color: #f3f4f6; }
-  .ProseMirror h3 { color: #e5e7eb; }
+  .ProseMirror h1 {
+    color: #f9fafb;
+  }
+  .ProseMirror h2 {
+    color: #f3f4f6;
+  }
+  .ProseMirror h3 {
+    color: #e5e7eb;
+  }
 }
 
 /* Paragraphs */
@@ -273,30 +284,30 @@ body {
 }
 
 /* Task Lists */
-.ProseMirror ul[data-type="taskList"] {
+.ProseMirror ul[data-type='taskList'] {
   list-style: none;
   padding-left: 0;
 }
 
-.ProseMirror ul[data-type="taskList"] li {
+.ProseMirror ul[data-type='taskList'] li {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
 }
 
-.ProseMirror ul[data-type="taskList"] li > label {
+.ProseMirror ul[data-type='taskList'] li > label {
   flex-shrink: 0;
   user-select: none;
 }
 
-.ProseMirror ul[data-type="taskList"] li > label input[type="checkbox"] {
+.ProseMirror ul[data-type='taskList'] li > label input[type='checkbox'] {
   width: 1rem;
   height: 1rem;
   accent-color: #3b82f6;
   cursor: pointer;
 }
 
-.ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div > p {
+.ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div > p {
   text-decoration: line-through;
   color: #9ca3af;
 }
@@ -324,7 +335,7 @@ body {
   padding: 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   font-size: 0.875rem;
   line-height: 1.6;
   margin: 1rem 0;
@@ -478,4 +489,3 @@ body {
     background: #1e3a5f;
   }
 }
-

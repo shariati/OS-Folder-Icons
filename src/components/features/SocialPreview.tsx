@@ -9,13 +9,16 @@ interface SocialPreviewProps {
   url?: string;
 }
 
-export function SocialPreview({ title, description, image, url = 'example.com' }: SocialPreviewProps) {
+export function SocialPreview({
+  title,
+  description,
+  image,
+  url = 'example.com',
+}: SocialPreviewProps) {
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">
-          Social Media Preview
-        </h3>
+    <div className="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm border bg-white">
+      <div className="border-stroke px-6.5 dark:border-strokedark border-b py-4">
+        <h3 className="font-medium text-black dark:text-white">Social Media Preview</h3>
       </div>
       <div className="p-6.5">
         <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -34,14 +37,14 @@ export function SocialPreview({ title, description, image, url = 'example.com' }
           </div>
 
           {/* Text Content */}
-          <div className="p-4 bg-gray-50 dark:bg-gray-900">
+          <div className="bg-gray-50 p-4 dark:bg-gray-900">
             <p className="mb-1 text-xs uppercase text-gray-500">
               {url.replace(/^https?:\/\//, '')}
             </p>
-            <h4 className="mb-2 text-base font-bold text-gray-900 dark:text-gray-100 line-clamp-2">
+            <h4 className="mb-2 line-clamp-2 text-base font-bold text-gray-900 dark:text-gray-100">
               {title || 'Page Title'}
             </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+            <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">
               {description || 'Page description will appear here...'}
             </p>
           </div>

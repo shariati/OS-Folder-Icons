@@ -16,7 +16,18 @@ import { SiteConfigManager } from '@/components/admin/SiteConfigManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
-  const [activeTab, setActiveTab] = useState<'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads' | 'settings'>('os');
+  const [activeTab, setActiveTab] = useState<
+    | 'os'
+    | 'bundles'
+    | 'categories'
+    | 'tags'
+    | 'hero'
+    | 'users'
+    | 'blog'
+    | 'pages'
+    | 'ads'
+    | 'settings'
+  >('os');
 
   return (
     <ToastProvider>
@@ -43,14 +54,13 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                   Dashboard /
                 </a>
               </li>
-              <li className="font-medium text-primary">
+              <li className="text-primary font-medium">
                 {activeTab === 'os' && 'Folder Icon / OS'}
                 {activeTab === 'bundles' && 'Folder Icon / Bundles'}
                 {activeTab === 'categories' && 'Site Manager / Categories'}
                 {activeTab === 'tags' && 'Site Manager / Tags'}
                 {activeTab === 'hero' && 'Site Manager / Hero'}
                 {activeTab === 'users' && 'Users'}
-
 
                 {activeTab === 'blog' && 'Site Manager / Blog'}
                 {activeTab === 'pages' && 'Site Manager / Pages'}
@@ -68,7 +78,6 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'tags' && <TagsManager initialData={initialData} />}
           {activeTab === 'hero' && <HeroManager initialData={initialData} />}
           {activeTab === 'users' && <UsersManager initialData={initialData} />}
-
 
           {activeTab === 'blog' && <BlogManager initialData={initialData} />}
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}

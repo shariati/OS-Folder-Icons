@@ -20,15 +20,21 @@ interface VersionFormProps {
   isSubmitting?: boolean;
 }
 
-export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmitting = false }: VersionFormProps) {
+export function VersionForm({
+  initialData,
+  osFormat,
+  onSubmit,
+  onCancel,
+  isSubmitting = false,
+}: VersionFormProps) {
   const { user } = useAuth();
   const { showToast } = useToast();
-  
+
   // Form State
   const [name, setName] = useState(initialData?.name || '');
   const [wallpaperUrl, setWallpaperUrl] = useState(initialData?.wallpaperUrl || '');
   const [wallpaperFile, setWallpaperFile] = useState<File | null>(null);
-  
+
   const [defaultFolderUrl, setDefaultFolderUrl] = useState(initialData?.defaultFolderUrl || '');
   const [defaultFolderFile, setDefaultFolderFile] = useState<File | null>(null);
   const [defaultOffsetX, setDefaultOffsetX] = useState(initialData?.defaultOffsetX || 0);
@@ -36,7 +42,7 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
 
   // Folder Icons State (existing + new pending uploads)
   const [folderIcons, setFolderIcons] = useState<FolderIcon[]>(initialData?.folderIcons || []);
-  const [pendingFolderFiles, setPendingFolderFiles] = useState<{ id: string, file: File }[]>([]);
+  const [pendingFolderFiles, setPendingFolderFiles] = useState<{ id: string; file: File }[]>([]);
 
   // Validation State
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -87,10 +93,10 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
 
     const tempId = uuidv4();
     const previewUrl = URL.createObjectURL(file);
-    
+
     // Add to pending files map
-    setPendingFolderFiles(prev => [...prev, { id: tempId, file }]);
-    
+    setPendingFolderFiles((prev) => [...prev, { id: tempId, file }]);
+
     // Add to UI list
     const newIcon: FolderIcon = {
       id: tempId,
@@ -98,26 +104,28 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
       imageUrl: previewUrl,
       offsetX: defaultOffsetX,
       offsetY: defaultOffsetY,
-      isDefault: folderIcons.length === 0 // Make default if it's the first one
+      isDefault: folderIcons.length === 0, // Make default if it's the first one
     };
-    
-    setFolderIcons(prev => [...prev, newIcon]);
+
+    setFolderIcons((prev) => [...prev, newIcon]);
   };
 
   const handleRemoveFolderIcon = (id: string) => {
-    setFolderIcons(prev => prev.filter(icon => icon.id !== id));
-    setPendingFolderFiles(prev => prev.filter(p => p.id !== id));
+    setFolderIcons((prev) => prev.filter((icon) => icon.id !== id));
+    setPendingFolderFiles((prev) => prev.filter((p) => p.id !== id));
   };
 
   const handleSetDefaultIcon = (id: string) => {
-    setFolderIcons(prev => prev.map(icon => ({
-      ...icon,
-      isDefault: icon.id === id
-    })));
+    setFolderIcons((prev) =>
+      prev.map((icon) => ({
+        ...icon,
+        isDefault: icon.id === id,
+      }))
+    );
   };
 
   const updateFolderIcon = (id: string, updates: Partial<FolderIcon>) => {
-    setFolderIcons(prev => prev.map(icon => icon.id === id ? { ...icon, ...updates } : icon));
+    setFolderIcons((prev) => prev.map((icon) => (icon.id === id ? { ...icon, ...updates } : icon)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -149,14 +157,16 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
       }
 
       // 2. Upload pending folder icons
-      const finalFolderIcons = await Promise.all(folderIcons.map(async (icon) => {
-        const pending = pendingFolderFiles.find(p => p.id === icon.id);
-        if (pending) {
-          const url = await uploadToFirebase(pending.file, user);
-          return { ...icon, imageUrl: url };
-        }
-        return icon;
-      }));
+      const finalFolderIcons = await Promise.all(
+        folderIcons.map(async (icon) => {
+          const pending = pendingFolderFiles.find((p) => p.id === icon.id);
+          if (pending) {
+            const url = await uploadToFirebase(pending.file, user);
+            return { ...icon, imageUrl: url };
+          }
+          return icon;
+        })
+      );
 
       // 3. Construct final object
       const versionData: OSVersion = {
@@ -167,11 +177,10 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
         defaultOffsetX,
         defaultOffsetY,
         folderIcons: finalFolderIcons,
-        defaultFolderIconId: finalFolderIcons.find(f => f.isDefault)?.id
+        defaultFolderIconId: finalFolderIcons.find((f) => f.isDefault)?.id,
       };
 
       await onSubmit(versionData);
-
     } catch (error) {
       console.error('Submission failed', error);
       showToast('Failed to save version. Please try again.', 'error');
@@ -179,253 +188,292 @@ export function VersionForm({ initialData, osFormat, onSubmit, onCancel, isSubmi
   };
 
   return (
-    <NeumorphBox variant="pressed" className="w-full flex flex-col p-0 overflow-hidden animate-fade-in-up">
-        {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-              {initialData?.id ? 'Edit Version' : 'Add New Version'}
-            </h2>
-            <p className="text-gray-500 text-sm">Configure version details and icon variants.</p>
-          </div>
-          <button 
-            onClick={onCancel}
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <X size={24} className="text-gray-500" />
-          </button>
+    <NeumorphBox
+      variant="pressed"
+      className="animate-fade-in-up flex w-full flex-col overflow-hidden p-0"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-gray-100 px-8 py-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {initialData?.id ? 'Edit Version' : 'Add New Version'}
+          </h2>
+          <p className="text-sm text-gray-500">Configure version details and icon variants.</p>
         </div>
+        <button
+          onClick={onCancel}
+          className="rounded-lg p-2 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
+        >
+          <X size={24} className="text-gray-500" />
+        </button>
+      </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-8">
-          
-          {/* Main Info Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              {/* Version Name */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  Version Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    if (errors.name) setErrors({ ...errors, name: '' });
-                  }}
-                  className={clsx(
-                    "w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-2 transition-all focus:outline-none",
-                    errors.name 
-                      ? "border-red-300 focus:border-red-500" 
-                      : "border-transparent focus:border-blue-500"
-                  )}
-                  placeholder='e.g. "11" or "Sequoia"'
-                />
-                {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name}</p>}
-              </div>
+      {/* Scrollable Content */}
+      <div className="flex-1 space-y-8 overflow-y-auto p-8">
+        {/* Main Info Section */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="space-y-6">
+            {/* Version Name */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">
+                Version Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (errors.name) setErrors({ ...errors, name: '' });
+                }}
+                className={clsx(
+                  'w-full rounded-xl border-2 bg-gray-50 px-4 py-3 transition-all focus:outline-none dark:bg-gray-800',
+                  errors.name
+                    ? 'border-red-300 focus:border-red-500'
+                    : 'border-transparent focus:border-blue-500'
+                )}
+                placeholder='e.g. "11" or "Sequoia"'
+              />
+              {errors.name && <p className="mt-1 text-xs font-bold text-red-500">{errors.name}</p>}
+            </div>
 
             {/* Default Template Section Removed as requested */}
-            </div>
-
-            {/* Wallpaper Section */}
-            <div>
-               <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  Preview Wallpaper
-               </label>
-               <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800 group border-2 border-dashed border-gray-300 dark:border-gray-600">
-                  {wallpaperUrl ? (
-                    <Image src={wallpaperUrl} alt="Wallpaper" fill className="object-cover" />
-                  ) : (
-                     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-                        <ImageIcon size={48} className="mb-2 opacity-50" />
-                        <span className="font-medium text-sm">Upload Desktop Wallpaper</span>
-                     </div>
-                  )}
-                  
-                  <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                      <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-white font-bold border border-white/30 hover:bg-white/30 transition-colors">
-                        {wallpaperUrl ? 'Change Wallpaper' : 'Upload Wallpaper'}
-                      </span>
-                      <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                          if (e.target.files?.[0]) handleWallpaperUpload(e.target.files[0]);
-                      }} />
-                  </label>
-               </div>
-               <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                 <Info size={12} />
-                 Used for live preview background only.
-               </p>
-            </div>
           </div>
 
-          <hr className="border-gray-100 dark:border-gray-800" />
-
-          {/* Folder Icons Section */}
+          {/* Wallpaper Section */}
           <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                 <h3 className="text-lg font-bold text-gray-800 dark:text-white">Folder Icons</h3>
-                 <p className="text-sm text-gray-500">Add variants for this version (e.g. Empty, Full, Open). Supported: 1024x1024 or 512x512.</p>
-              </div>
-              <label className="cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg shadow-blue-500/20">
-                 <Upload size={18} />
-                 Add Icon Variant
-                 <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                    if (e.target.files?.[0]) handleAddFolderIcon(e.target.files[0]);
-                 }} />
-              </label>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6">
-              {folderIcons.length === 0 && (
-                <div className="text-center py-12 text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl mb-4">
-                  No icons added yet. Upload your first variant.
+            <label className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">
+              Preview Wallpaper
+            </label>
+            <div className="group relative aspect-video overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-200 dark:border-gray-600 dark:bg-gray-800">
+              {wallpaperUrl ? (
+                <Image src={wallpaperUrl} alt="Wallpaper" fill className="object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                  <ImageIcon size={48} className="mb-2 opacity-50" />
+                  <span className="text-sm font-medium">Upload Desktop Wallpaper</span>
                 </div>
               )}
-              
-              {folderIcons.map((icon, idx) => (
-                <NeumorphBox key={icon.id} className="p-6 relative group overflow-hidden">
-                   {/* "Default" Badge */}
-                   {icon.isDefault && (
-                     <div className="absolute top-0 right-0 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-bl-xl shadow-sm z-10">
-                       Default Icon
-                     </div>
-                   )}
 
-                   <div className="flex flex-col lg:flex-row gap-8 items-start">
-                      {/* Icon Preview & Basic Info */}
-                      <div className="flex-shrink-0 w-32 flex flex-col gap-3">
-                         <div className="w-32 h-32 bg-gray-100 dark:bg-gray-800 rounded-xl p-2 relative border border-gray-200 dark:border-gray-700">
-                            <Image src={icon.imageUrl} alt={icon.name} fill className="object-contain p-2" />
-                         </div>
-                         <input 
-                           type="text" 
-                           value={icon.name}
-                           onChange={(e) => updateFolderIcon(icon.id, { name: e.target.value })}
-                           className="w-full text-center text-sm font-bold bg-transparent border-b border-transparent focus:border-blue-500 focus:outline-none py-1"
-                         />
-                      </div>
-
-                      {/* Controls */}
-                      <div className="flex-1 w-full space-y-6">
-                         {/* Sliders */}
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <div className="space-y-2">
-                               <div className="flex justify-between">
-                                  <label className="text-xs font-bold text-gray-500 uppercase">Offset X</label>
-                                  <span className="text-xs font-mono">{icon.offsetX || 0}px</span>
-                               </div>
-                               <input 
-                                 type="range" min="-200" max="200" 
-                                 value={icon.offsetX || 0}
-                                 onChange={(e) => updateFolderIcon(icon.id, { offsetX: Number(e.target.value) })}
-                                 className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                               />
-                            </div>
-                            <div className="space-y-2">
-                               <div className="flex justify-between">
-                                  <label className="text-xs font-bold text-gray-500 uppercase">Offset Y</label>
-                                  <span className="text-xs font-mono">{icon.offsetY || 0}px</span>
-                               </div>
-                               <input 
-                                 type="range" min="-200" max="200" 
-                                 value={icon.offsetY || 0}
-                                 onChange={(e) => updateFolderIcon(icon.id, { offsetY: Number(e.target.value) })}
-                                 className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                               />
-                            </div>
-                         </div>
-                         
-                         {/* Actions */}
-                         <div className="flex items-center gap-4">
-                            {!icon.isDefault && (
-                              <button 
-                                onClick={() => handleSetDefaultIcon(icon.id)}
-                                type="button"
-                                className="text-sm font-bold text-amber-600 hover:text-amber-700 hover:underline px-2"
-                              >
-                                Set as Default
-                              </button>
-                            )}
-                            <button 
-                              onClick={() => handleRemoveFolderIcon(icon.id)}
-                              type="button"
-                              className="text-sm font-bold text-red-500 hover:text-red-600 hover:underline px-2 ml-auto"
-                            >
-                              Remove Variant
-                            </button>
-                         </div>
-                      </div>
-
-                      {/* Live Canvas Preview (Enlarged) */}
-                      <div className="w-[300px] h-[300px] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-700 flex-shrink-0 hidden xl:block">
-                         <div className="absolute inset-0 opacity-50" style={{ backgroundImage: wallpaperUrl ? `url(${wallpaperUrl})` : undefined, backgroundSize: 'cover' }} />
-                         <div className="relative w-full h-full transform scale-[0.4] origin-top-left ml-[14%] mt-[14%]">
-                            <CanvasPreview
-                              folderImage={icon.imageUrl}
-                              iconName="Star"
-                              iconType="lucide"
-                              iconColor="#000000"
-                              iconSize="medium"
-                              offsetX={icon.offsetX || 0}
-                              offsetY={icon.offsetY || 0}
-                              format={osFormat}
-                              enableCors={false}
-                            />
-                         </div>
-                         <div className="absolute bottom-2 right-2 text-[10px] text-white/50 font-mono">Preview</div>
-                      </div>
-                   </div>
-                </NeumorphBox>
-              ))}
+              <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="rounded-lg border border-white/30 bg-white/20 px-4 py-2 font-bold text-white backdrop-blur-md transition-colors hover:bg-white/30">
+                  {wallpaperUrl ? 'Change Wallpaper' : 'Upload Wallpaper'}
+                </span>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) handleWallpaperUpload(e.target.files[0]);
+                  }}
+                />
+              </label>
             </div>
+            <p className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+              <Info size={12} />
+              Used for live preview background only.
+            </p>
+          </div>
+        </div>
+
+        <hr className="border-gray-100 dark:border-gray-800" />
+
+        {/* Folder Icons Section */}
+        <div>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white">Folder Icons</h3>
+              <p className="text-sm text-gray-500">
+                Add variants for this version (e.g. Empty, Full, Open). Supported: 1024x1024 or
+                512x512.
+              </p>
+            </div>
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-bold text-white shadow-lg shadow-blue-500/20 transition-colors hover:bg-blue-700">
+              <Upload size={18} />
+              Add Icon Variant
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) handleAddFolderIcon(e.target.files[0]);
+                }}
+              />
+            </label>
           </div>
 
-        </div>
-
-        {/* Footer Actions */}
-        <div className="p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex justify-end gap-4">
-          <button 
-            type="button" 
-            onClick={onCancel}
-            className="px-6 py-3 font-bold text-gray-500 hover:text-gray-700 transition-colors"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Check size={20} />
-                Save Version
-              </>
+          <div className="grid grid-cols-1 gap-6">
+            {folderIcons.length === 0 && (
+              <div className="mb-4 rounded-xl border-2 border-dashed border-gray-200 py-12 text-center text-gray-400 dark:border-gray-700">
+                No icons added yet. Upload your first variant.
+              </div>
             )}
-          </button>
+
+            {folderIcons.map((icon, idx) => (
+              <NeumorphBox key={icon.id} className="group relative overflow-hidden p-6">
+                {/* "Default" Badge */}
+                {icon.isDefault && (
+                  <div className="absolute right-0 top-0 z-10 rounded-bl-xl bg-amber-400 px-3 py-1 text-xs font-bold text-amber-900 shadow-sm">
+                    Default Icon
+                  </div>
+                )}
+
+                <div className="flex flex-col items-start gap-8 lg:flex-row">
+                  {/* Icon Preview & Basic Info */}
+                  <div className="flex w-32 flex-shrink-0 flex-col gap-3">
+                    <div className="relative h-32 w-32 rounded-xl border border-gray-200 bg-gray-100 p-2 dark:border-gray-700 dark:bg-gray-800">
+                      <Image
+                        src={icon.imageUrl}
+                        alt={icon.name}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      value={icon.name}
+                      onChange={(e) => updateFolderIcon(icon.id, { name: e.target.value })}
+                      className="w-full border-b border-transparent bg-transparent py-1 text-center text-sm font-bold focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Controls */}
+                  <div className="w-full flex-1 space-y-6">
+                    {/* Sliders */}
+                    <div className="grid grid-cols-1 gap-6 rounded-xl bg-gray-50 p-4 sm:grid-cols-2 dark:bg-gray-800/50">
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <label className="text-xs font-bold uppercase text-gray-500">
+                            Offset X
+                          </label>
+                          <span className="font-mono text-xs">{icon.offsetX || 0}px</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="-200"
+                          max="200"
+                          value={icon.offsetX || 0}
+                          onChange={(e) =>
+                            updateFolderIcon(icon.id, { offsetX: Number(e.target.value) })
+                          }
+                          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500 dark:bg-gray-700"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <label className="text-xs font-bold uppercase text-gray-500">
+                            Offset Y
+                          </label>
+                          <span className="font-mono text-xs">{icon.offsetY || 0}px</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="-200"
+                          max="200"
+                          value={icon.offsetY || 0}
+                          onChange={(e) =>
+                            updateFolderIcon(icon.id, { offsetY: Number(e.target.value) })
+                          }
+                          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500 dark:bg-gray-700"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-4">
+                      {!icon.isDefault && (
+                        <button
+                          onClick={() => handleSetDefaultIcon(icon.id)}
+                          type="button"
+                          className="px-2 text-sm font-bold text-amber-600 hover:text-amber-700 hover:underline"
+                        >
+                          Set as Default
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleRemoveFolderIcon(icon.id)}
+                        type="button"
+                        className="ml-auto px-2 text-sm font-bold text-red-500 hover:text-red-600 hover:underline"
+                      >
+                        Remove Variant
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Live Canvas Preview (Enlarged) */}
+                  <div className="relative hidden h-[300px] w-[300px] flex-shrink-0 overflow-hidden rounded-xl border border-gray-700 bg-gray-900 xl:block">
+                    <div
+                      className="absolute inset-0 opacity-50"
+                      style={{
+                        backgroundImage: wallpaperUrl ? `url(${wallpaperUrl})` : undefined,
+                        backgroundSize: 'cover',
+                      }}
+                    />
+                    <div className="relative ml-[14%] mt-[14%] h-full w-full origin-top-left scale-[0.4] transform">
+                      <CanvasPreview
+                        folderImage={icon.imageUrl}
+                        iconName="Star"
+                        iconType="lucide"
+                        iconColor="#000000"
+                        iconSize="medium"
+                        offsetX={icon.offsetX || 0}
+                        offsetY={icon.offsetY || 0}
+                        format={osFormat}
+                        enableCors={false}
+                      />
+                    </div>
+                    <div className="absolute bottom-2 right-2 font-mono text-[10px] text-white/50">
+                      Preview
+                    </div>
+                  </div>
+                </div>
+              </NeumorphBox>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* Footer Actions */}
+      <div className="flex justify-end gap-4 border-t border-gray-100 bg-gray-50/50 p-6 dark:border-gray-800 dark:bg-gray-900/50">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-6 py-3 font-bold text-gray-500 transition-colors hover:text-gray-700"
+          disabled={isSubmitting}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="flex transform items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSubmitting ? (
+            <>
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Check size={20} />
+              Save Version
+            </>
+          )}
+        </button>
+      </div>
     </NeumorphBox>
   );
 }
 
-function ImageIcon({ size, className }: { size: number, className?: string }) {
+function ImageIcon({ size, className }: { size: number; className?: string }) {
   return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >

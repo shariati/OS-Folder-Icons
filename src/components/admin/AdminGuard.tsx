@@ -15,7 +15,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   }, [userProfile, loading, router]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
   }
 
   if (!userProfile || userProfile.role !== 'admin') {

@@ -25,7 +25,12 @@ export function normalizeTagName(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export function TagAutocomplete({ selectedTags, availableTags, onChange, onCreateTag }: TagAutocompleteProps) {
+export function TagAutocomplete({
+  selectedTags,
+  availableTags,
+  onChange,
+  onCreateTag,
+}: TagAutocompleteProps) {
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -33,14 +38,14 @@ export function TagAutocomplete({ selectedTags, availableTags, onChange, onCreat
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Filter available tags based on input
-  const filteredTags = availableTags.filter(tag => 
-    tag.name.toLowerCase().includes(inputValue.toLowerCase()) &&
-    !selectedTags.includes(tag.id)
+  const filteredTags = availableTags.filter(
+    (tag) =>
+      tag.name.toLowerCase().includes(inputValue.toLowerCase()) && !selectedTags.includes(tag.id)
   );
 
   // Check if input matches an existing tag
   const normalizedInput = normalizeTagName(inputValue);
-  const exactMatch = availableTags.find(t => t.slug === normalizedInput);
+  const exactMatch = availableTags.find((t) => t.slug === normalizedInput);
   const canCreateNew = inputValue.trim().length > 0 && !exactMatch && onCreateTag;
 
   // Close dropdown on outside click
@@ -64,12 +69,12 @@ export function TagAutocomplete({ selectedTags, availableTags, onChange, onCreat
   };
 
   const handleRemoveTag = (tagId: string) => {
-    onChange(selectedTags.filter(id => id !== tagId));
+    onChange(selectedTags.filter((id) => id !== tagId));
   };
 
   const handleCreateTag = async () => {
     if (!onCreateTag || !inputValue.trim()) return;
-    
+
     setIsCreating(true);
     try {
       const newTag = await onCreateTag(inputValue.trim());
@@ -100,27 +105,30 @@ export function TagAutocomplete({ selectedTags, availableTags, onChange, onCreat
 
   // Get tag display info
   const getTagName = (tagId: string) => {
-    const tag = availableTags.find(t => t.id === tagId);
+    const tag = availableTags.find((t) => t.id === tagId);
     return tag?.name || tagId;
   };
 
   return (
     <div ref={containerRef} className="relative">
       {/* Selected Tags + Input */}
-      <div 
-        className="flex flex-wrap gap-2 p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 min-h-[48px]"
+      <div
+        className="flex min-h-[48px] flex-wrap gap-2 rounded-xl border border-gray-300 bg-white p-3 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 dark:border-gray-600 dark:bg-gray-800"
         onClick={() => inputRef.current?.focus()}
       >
-        {selectedTags.map(tagId => (
+        {selectedTags.map((tagId) => (
           <span
             key={tagId}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium"
+            className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
           >
             {getTagName(tagId)}
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); handleRemoveTag(tagId); }}
-              className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveTag(tagId);
+              }}
+              className="rounded-full p-0.5 hover:bg-blue-200 dark:hover:bg-blue-800"
             >
               <X size={14} />
             </button>
@@ -130,39 +138,44 @@ export function TagAutocomplete({ selectedTags, availableTags, onChange, onCreat
           ref={inputRef}
           type="text"
           value={inputValue}
-          onChange={(e) => { setInputValue(e.target.value); setIsOpen(true); }}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            setIsOpen(true);
+          }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={selectedTags.length === 0 ? "Type to search or create tags..." : ""}
-          className="flex-1 min-w-[120px] bg-transparent outline-none text-gray-900 dark:text-white placeholder-gray-400"
+          placeholder={selectedTags.length === 0 ? 'Type to search or create tags...' : ''}
+          className="min-w-[120px] flex-1 bg-transparent text-gray-900 placeholder-gray-400 outline-none dark:text-white"
         />
       </div>
 
       {/* Dropdown */}
       {isOpen && (filteredTags.length > 0 || canCreateNew) && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-auto">
-          {filteredTags.map(tag => (
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          {filteredTags.map((tag) => (
             <button
               key={tag.id}
               type="button"
               onClick={() => handleSelectTag(tag.id)}
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-between"
+              className="flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <span className="text-gray-900 dark:text-white">{tag.name}</span>
-              <span className="text-xs text-gray-500 font-mono">{tag.slug}</span>
+              <span className="font-mono text-xs text-gray-500">{tag.slug}</span>
             </button>
           ))}
-          
+
           {canCreateNew && (
             <>
-              {filteredTags.length > 0 && <div className="border-t border-gray-200 dark:border-gray-700" />}
+              {filteredTags.length > 0 && (
+                <div className="border-t border-gray-200 dark:border-gray-700" />
+              )}
               <button
                 type="button"
                 onClick={handleCreateTag}
                 disabled={isCreating}
                 className={clsx(
-                  "w-full px-4 py-2 text-left flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
-                  isCreating && "opacity-50 cursor-not-allowed"
+                  'flex w-full items-center gap-2 px-4 py-2 text-left text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20',
+                  isCreating && 'cursor-not-allowed opacity-50'
                 )}
               >
                 <Plus size={16} />

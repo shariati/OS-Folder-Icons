@@ -16,19 +16,23 @@ interface MentionListProps {
   command: (item: MentionItem) => void;
 }
 
-export const MentionList = forwardRef<any, MentionListProps>(
-  ({ items, command }, ref) => {
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const containerRef = useRef<HTMLDivElement>(null);
+export const MentionList = forwardRef<any, MentionListProps>(({ items, command }, ref) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    const selectItem = useCallback((index: number) => {
+  const selectItem = useCallback(
+    (index: number) => {
       const item = items[index];
       if (item) {
         command(item);
       }
-    }, [items, command]);
+    },
+    [items, command]
+  );
 
-    useImperativeHandle(ref, () => ({
+  useImperativeHandle(
+    ref,
+    () => ({
       onKeyDown: ({ event }: { event: KeyboardEvent }) => {
         if (event.key === 'ArrowUp') {
           setSelectedIndex((selectedIndex + items.length - 1) % items.length);
@@ -47,82 +51,83 @@ export const MentionList = forwardRef<any, MentionListProps>(
 
         return false;
       },
-    }), [selectedIndex, items.length, selectItem]);
+    }),
+    [selectedIndex, items.length, selectItem]
+  );
 
-    useEffect(() => setSelectedIndex(0), [items]);
+  useEffect(() => setSelectedIndex(0), [items]);
 
-    // Scroll selected item into view
-    useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
-      
-      const selectedElement = container.querySelector(`[data-index="${selectedIndex}"]`);
-      if (selectedElement) {
-        selectedElement.scrollIntoView({ block: 'nearest' });
-      }
-    }, [selectedIndex]);
+  // Scroll selected item into view
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    if (items.length === 0) {
-      return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3">
-          <p className="text-sm text-gray-500">No users found</p>
-        </div>
-      );
+    const selectedElement = container.querySelector(`[data-index="${selectedIndex}"]`);
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ block: 'nearest' });
     }
+  }, [selectedIndex]);
 
+  if (items.length === 0) {
     return (
-      <div
-        ref={containerRef}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden min-w-[240px] max-h-[300px] overflow-y-auto"
-      >
-        <div className="p-1">
-          {items.map((item, index) => (
-            <button
-              key={item.id}
-              data-index={index}
-              onClick={() => selectItem(index)}
-              className={clsx(
-                "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors",
-                selectedIndex === index
-                  ? "bg-blue-50 dark:bg-blue-900/30"
-                  : "hover:bg-gray-50 dark:hover:bg-gray-700"
-              )}
-            >
-              {item.avatar ? (
-                <img 
-                  src={item.avatar} 
-                  alt={item.name} 
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
-                  {item.name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {item.name}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {item.email}
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm text-gray-500">No users found</p>
       </div>
     );
   }
-);
+
+  return (
+    <div
+      ref={containerRef}
+      className="max-h-[300px] min-w-[240px] overflow-hidden overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+    >
+      <div className="p-1">
+        {items.map((item, index) => (
+          <button
+            key={item.id}
+            data-index={index}
+            onClick={() => selectItem(index)}
+            className={clsx(
+              'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
+              selectedIndex === index
+                ? 'bg-blue-50 dark:bg-blue-900/30'
+                : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+            )}
+          >
+            {item.avatar ? (
+              <img
+                src={item.avatar}
+                alt={item.name}
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-sm font-bold text-white">
+                {item.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                {item.name}
+              </p>
+              <p className="truncate text-xs text-gray-500 dark:text-gray-400">{item.email}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+});
 
 MentionList.displayName = 'MentionList';
 
 // Helper function to fetch admin users for mentions
 export async function fetchMentionableUsers(query: string): Promise<MentionItem[]> {
   try {
-    const response = await authenticatedFetch(`/api/admin/users?role=admin&search=${encodeURIComponent(query)}`);
+    const response = await authenticatedFetch(
+      `/api/admin/users?role=admin&search=${encodeURIComponent(query)}`
+    );
     if (!response.ok) return [];
-    
+
     const data = await response.json();
     return (data.users || []).map((user: any) => ({
       id: user.uid || user.id,

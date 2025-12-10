@@ -80,29 +80,28 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     if (loading || !isLoaded) return;
 
     const isFreeUser = !userProfile || userProfile.role === 'free';
-    
+
     // If user is free but advertising is disabled
     if (isFreeUser && !preferences.advertising) {
-       // Force enable
-       updatePreferences({ ...preferences, advertising: true }, true);
+      // Force enable
+      updatePreferences({ ...preferences, advertising: true }, true);
     }
   }, [userProfile, loading, isLoaded, preferences.advertising]);
 
-
   const updatePreferences = (newPrefs: CookiePreferences, force: boolean = false) => {
     const isFreeUser = !userProfile || userProfile.role === 'free';
-    
+
     // If user is free and trying to disable ads (and it's not a forced update)
     if (isFreeUser && !newPrefs.advertising && !force) {
-        showToast("Free users cannot disable advertising cookies. Please upgrade to Pro.", "error");
-        // Keep advertising true
-        newPrefs.advertising = true;
+      showToast('Free users cannot disable advertising cookies. Please upgrade to Pro.', 'error');
+      // Keep advertising true
+      newPrefs.advertising = true;
     }
 
     const updatedPrefs = { ...newPrefs, essential: true };
     setPreferences(updatedPrefs);
     localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(updatedPrefs));
-    
+
     // Also update individual flags for backwards compatibility
     if (!updatedPrefs.analytics) {
       localStorage.setItem('ga_disabled', 'true');
@@ -111,7 +110,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('ga_disabled');
       localStorage.removeItem('clarity_disabled');
     }
-    
+
     if (!updatedPrefs.advertising) {
       localStorage.setItem('adsense_personalization_disabled', 'true');
     } else {

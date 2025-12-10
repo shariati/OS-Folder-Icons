@@ -4,9 +4,15 @@ import { useState, useEffect } from 'react';
 import { Page } from '@/lib/types';
 import { RichTextEditor } from './RichTextEditor';
 import { SocialShareTab } from './SocialShareTab';
-import { 
-  Save, Globe, 
-  Image as ImageIcon, Eye, Search, Smartphone, Monitor, Share2
+import {
+  Save,
+  Globe,
+  Image as ImageIcon,
+  Eye,
+  Search,
+  Smartphone,
+  Monitor,
+  Share2,
 } from 'lucide-react';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { ImageUploader } from './ImageUploader';
@@ -54,37 +60,37 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900/50">
+    <div className="flex h-full flex-col bg-gray-50 dark:bg-gray-900/50">
       {/* Top Bar */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center gap-4">
-          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <div className="flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
             <button
               onClick={() => setActiveTab('write')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              className={`rounded-md px-4 py-1.5 text-sm font-medium transition-all ${
                 activeTab === 'write'
-                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
               }`}
             >
               Write
             </button>
             <button
               onClick={() => setActiveTab('seo')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              className={`rounded-md px-4 py-1.5 text-sm font-medium transition-all ${
                 activeTab === 'seo'
-                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
               }`}
             >
               SEO
             </button>
             <button
               onClick={() => setActiveTab('social')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`flex items-center gap-1.5 rounded-md px-4 py-1.5 text-sm font-medium transition-all ${
                 activeTab === 'social'
-                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
               }`}
             >
               <Share2 size={14} />
@@ -92,10 +98,10 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
             </button>
             <button
               onClick={() => setActiveTab('preview')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              className={`rounded-md px-4 py-1.5 text-sm font-medium transition-all ${
                 activeTab === 'preview'
-                  ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
               }`}
             >
               Preview
@@ -109,7 +115,7 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
         <button
           onClick={onSave}
           disabled={isLoading}
-          className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors font-medium shadow-sm hover:shadow"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 hover:shadow disabled:opacity-50"
         >
           <Save size={18} />
           {isLoading ? 'Saving...' : 'Save'}
@@ -117,20 +123,20 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col xl:flex-row">
+      <div className="flex flex-1 flex-col xl:flex-row">
         {/* Editor Area */}
         <div className="flex-1">
           {activeTab === 'write' && (
-            <div className="max-w-4xl mx-auto px-8 py-12">
+            <div className="mx-auto max-w-4xl px-8 py-12">
               <input
                 type="text"
                 placeholder="Page Title"
                 value={page.title || ''}
                 onChange={(e) => onChange({ ...page, title: e.target.value })}
-                className="w-full text-4xl md:text-5xl font-bold bg-transparent border-none outline-none placeholder-gray-300 dark:placeholder-gray-600 text-gray-900 dark:text-white mb-4"
+                className="mb-4 w-full border-none bg-transparent text-4xl font-bold text-gray-900 placeholder-gray-300 outline-none md:text-5xl dark:text-white dark:placeholder-gray-600"
               />
-              
-              <div className="flex items-center gap-2 text-gray-400 mb-8 font-mono text-sm bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800 w-fit">
+
+              <div className="mb-8 flex w-fit items-center gap-2 rounded-lg border border-gray-100 bg-gray-50 p-2 font-mono text-sm text-gray-400 dark:border-gray-800 dark:bg-gray-800/50">
                 <Globe size={14} />
                 <span>/</span>
                 <input
@@ -138,7 +144,7 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
                   value={page.slug || ''}
                   onChange={handleSlugChange}
                   placeholder="page-slug"
-                  className="bg-transparent border-none outline-none text-gray-500 dark:text-gray-400 focus:text-blue-500 min-w-[200px]"
+                  className="min-w-[200px] border-none bg-transparent text-gray-500 outline-none focus:text-blue-500 dark:text-gray-400"
                 />
               </div>
 
@@ -153,26 +159,28 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
           )}
 
           {activeTab === 'seo' && (
-            <div className="max-w-3xl mx-auto px-8 py-12 space-y-8">
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+            <div className="mx-auto max-w-3xl space-y-8 px-8 py-12">
+              <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-6 flex items-center gap-2 text-lg font-bold">
                   <Search className="text-blue-500" />
                   Search Engine Optimization
                 </h3>
-                
+
                 <div className="space-y-6">
                   <div>
-                    <div className="flex justify-between mb-1">
+                    <div className="mb-1 flex justify-between">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Meta Title
                       </label>
-                      <span className={`text-xs ${(page.seoTitle?.length || 0) > 60 ? 'text-red-500' : 'text-gray-400'}`}>
+                      <span
+                        className={`text-xs ${(page.seoTitle?.length || 0) > 60 ? 'text-red-500' : 'text-gray-400'}`}
+                      >
                         {page.seoTitle?.length || 0}/60
                       </span>
                     </div>
                     <input
                       type="text"
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 outline-none transition-all focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
                       placeholder="Title | Site Name"
                       value={page.seoTitle || ''}
                       onChange={(e) => onChange({ ...page, seoTitle: e.target.value })}
@@ -180,17 +188,19 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
                   </div>
 
                   <div>
-                    <div className="flex justify-between mb-1">
+                    <div className="mb-1 flex justify-between">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Meta Description
                       </label>
-                      <span className={`text-xs ${(page.seoDescription?.length || 0) > 160 ? 'text-red-500' : 'text-gray-400'}`}>
+                      <span
+                        className={`text-xs ${(page.seoDescription?.length || 0) > 160 ? 'text-red-500' : 'text-gray-400'}`}
+                      >
                         {page.seoDescription?.length || 0}/160
                       </span>
                     </div>
                     <textarea
                       rows={3}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                      className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 outline-none transition-all focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
                       placeholder="A short summary of your page..."
                       value={page.seoDescription || ''}
                       onChange={(e) => onChange({ ...page, seoDescription: e.target.value })}
@@ -200,20 +210,26 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
               </div>
 
               {/* SERP Preview */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-bold mb-4">Google Search Preview</h3>
-                <div className="font-sans max-w-[600px]">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs">Fav</div>
+              <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-4 text-lg font-bold">Google Search Preview</h3>
+                <div className="max-w-[600px] font-sans">
+                  <div className="mb-1 flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-xs">
+                      Fav
+                    </div>
                     <div className="flex flex-col">
-                      <span className="text-sm text-[#202124] dark:text-[#dadce0]">My Site Name</span>
-                      <span className="text-xs text-[#5f6368] dark:text-[#bdc1c6]">https://mysite.com › {page.slug || 'slug'}</span>
+                      <span className="text-sm text-[#202124] dark:text-[#dadce0]">
+                        My Site Name
+                      </span>
+                      <span className="text-xs text-[#5f6368] dark:text-[#bdc1c6]">
+                        https://mysite.com › {page.slug || 'slug'}
+                      </span>
                     </div>
                   </div>
-                  <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer mb-1 truncated">
+                  <h3 className="truncated mb-1 cursor-pointer text-xl text-[#1a0dab] hover:underline dark:text-[#8ab4f8]">
                     {page.seoTitle || page.title || 'Page Title'}
                   </h3>
-                  <p className="text-sm text-[#4d5156] dark:text-[#bdc1c6] line-clamp-2">
+                  <p className="line-clamp-2 text-sm text-[#4d5156] dark:text-[#bdc1c6]">
                     {page.seoDescription || 'Page description...'}
                   </p>
                 </div>
@@ -234,49 +250,53 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
           )}
 
           {activeTab === 'preview' && (
-            <div className="h-full flex flex-col bg-gray-100 dark:bg-gray-950">
-               <div className="flex justify-center p-4 gap-4">
-                  <button 
-                    onClick={() => setPreviewDevice('desktop')}
-                    className={`p-2 rounded ${previewDevice === 'desktop' ? 'bg-white shadow text-blue-600' : 'text-gray-500'}`}
-                  >
-                    <Monitor size={20} />
-                  </button>
-                  <button 
-                    onClick={() => setPreviewDevice('mobile')}
-                    className={`p-2 rounded ${previewDevice === 'mobile' ? 'bg-white shadow text-blue-600' : 'text-gray-500'}`}
-                  >
-                    <Smartphone size={20} />
-                  </button>
-               </div>
-               <div className="flex-1 overflow-auto p-4 flex justify-center">
-                  <div className={`bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 overflow-hidden ${
-                    previewDevice === 'mobile' ? 'w-[375px] h-[667px] rounded-3xl border-8 border-gray-800' : 'w-full max-w-5xl rounded-lg min-h-screen'
-                  }`}>
-                    <div className="h-full overflow-y-auto p-8 prose dark:prose-invert max-w-none">
-                      <h1>{page.title}</h1>
-                      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }} />
-                    </div>
+            <div className="flex h-full flex-col bg-gray-100 dark:bg-gray-950">
+              <div className="flex justify-center gap-4 p-4">
+                <button
+                  onClick={() => setPreviewDevice('desktop')}
+                  className={`rounded p-2 ${previewDevice === 'desktop' ? 'bg-white text-blue-600 shadow' : 'text-gray-500'}`}
+                >
+                  <Monitor size={20} />
+                </button>
+                <button
+                  onClick={() => setPreviewDevice('mobile')}
+                  className={`rounded p-2 ${previewDevice === 'mobile' ? 'bg-white text-blue-600 shadow' : 'text-gray-500'}`}
+                >
+                  <Smartphone size={20} />
+                </button>
+              </div>
+              <div className="flex flex-1 justify-center overflow-auto p-4">
+                <div
+                  className={`overflow-hidden bg-white shadow-2xl transition-all duration-300 dark:bg-gray-900 ${
+                    previewDevice === 'mobile'
+                      ? 'h-[667px] w-[375px] rounded-3xl border-8 border-gray-800'
+                      : 'min-h-screen w-full max-w-5xl rounded-lg'
+                  }`}
+                >
+                  <div className="prose dark:prose-invert h-full max-w-none overflow-y-auto p-8">
+                    <h1>{page.title}</h1>
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }} />
                   </div>
-               </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Sidebar Settings Panel */}
-        <div className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex-shrink-0 p-6 hidden xl:flex flex-col h-auto min-h-screen">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">
+        <div className="hidden h-auto min-h-screen w-80 flex-shrink-0 flex-col border-l border-gray-200 bg-white p-6 xl:flex dark:border-gray-700 dark:bg-gray-800">
+          <h3 className="mb-6 text-xs font-bold uppercase tracking-wider text-gray-400">
             Page Settings
           </h3>
 
-          <div className="space-y-6 flex-1 overflow-y-auto">
+          <div className="flex-1 space-y-6 overflow-y-auto">
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Status
               </label>
               <select
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
                 value={page.status || 'draft'}
                 onChange={(e) => onChange({ ...page, status: e.target.value as any })}
               >
@@ -285,9 +305,9 @@ export function PageEditor({ page, onChange, onSave, isLoading }: PageEditorProp
               </select>
             </div>
 
-             {/* Cover Image */}
-             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {/* Cover Image */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Cover Image
               </label>
               <ImageUploader

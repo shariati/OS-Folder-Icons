@@ -7,13 +7,13 @@ import { stripHtml } from './sanitize';
  * @returns Plain text extracted from HTML
  */
 export function extractTextFromHtml(html: string, maxLength?: number): string {
-    const text = stripHtml(html);
+  const text = stripHtml(html);
 
-    if (maxLength && text.length > maxLength) {
-        return text.substring(0, maxLength).trim() + '...';
-    }
+  if (maxLength && text.length > maxLength) {
+    return text.substring(0, maxLength).trim() + '...';
+  }
 
-    return text;
+  return text;
 }
 
 /**
@@ -23,11 +23,11 @@ export function extractTextFromHtml(html: string, maxLength?: number): string {
  * @returns Reading time in minutes
  */
 export function calculateReadingTime(html: string): number {
-    const text = stripHtml(html);
-    const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-    const readingTime = Math.ceil(wordCount / 200);
+  const text = stripHtml(html);
+  const wordCount = text.split(/\s+/).filter((word) => word.length > 0).length;
+  const readingTime = Math.ceil(wordCount / 200);
 
-    return Math.max(1, readingTime); // Minimum 1 minute
+  return Math.max(1, readingTime); // Minimum 1 minute
 }
 
 /**
@@ -37,24 +37,24 @@ export function calculateReadingTime(html: string): number {
  * @returns Truncated HTML
  */
 export function truncateHtml(html: string, maxLength: number): string {
-    const text = stripHtml(html);
+  const text = stripHtml(html);
 
-    if (text.length <= maxLength) {
-        return html;
-    }
+  if (text.length <= maxLength) {
+    return html;
+  }
 
-    // Simple truncation - just cut at character limit
-    // For production, consider using a library like 'truncate-html'
-    const truncated = html.substring(0, maxLength);
-    const lastTagStart = truncated.lastIndexOf('<');
-    const lastTagEnd = truncated.lastIndexOf('>');
+  // Simple truncation - just cut at character limit
+  // For production, consider using a library like 'truncate-html'
+  const truncated = html.substring(0, maxLength);
+  const lastTagStart = truncated.lastIndexOf('<');
+  const lastTagEnd = truncated.lastIndexOf('>');
 
-    // If we're in the middle of a tag, cut before it
-    if (lastTagStart > lastTagEnd) {
-        return truncated.substring(0, lastTagStart) + '...';
-    }
+  // If we're in the middle of a tag, cut before it
+  if (lastTagStart > lastTagEnd) {
+    return truncated.substring(0, lastTagStart) + '...';
+  }
 
-    return truncated + '...';
+  return truncated + '...';
 }
 
 /**
@@ -64,7 +64,7 @@ export function truncateHtml(html: string, maxLength: number): string {
  * @returns Plain text excerpt
  */
 export function generateExcerpt(html: string, maxLength: number = 160): string {
-    return extractTextFromHtml(html, maxLength);
+  return extractTextFromHtml(html, maxLength);
 }
 
 /**
@@ -73,8 +73,8 @@ export function generateExcerpt(html: string, maxLength: number = 160): string {
  * @returns Word count
  */
 export function countWords(html: string): number {
-    const text = stripHtml(html);
-    return text.split(/\s+/).filter(word => word.length > 0).length;
+  const text = stripHtml(html);
+  return text.split(/\s+/).filter((word) => word.length > 0).length;
 }
 
 /**
@@ -83,6 +83,6 @@ export function countWords(html: string): number {
  * @returns Character count
  */
 export function countCharacters(html: string): number {
-    const text = stripHtml(html);
-    return text.length;
+  const text = stripHtml(html);
+  return text.length;
 }

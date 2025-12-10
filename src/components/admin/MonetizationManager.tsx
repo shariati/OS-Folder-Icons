@@ -18,7 +18,7 @@ export function MonetizationManager() {
 
   const [syncing, setSyncing] = useState(false);
   const [lastSyncDate, setLastSyncDate] = useState<string | null>(null);
-  
+
   // Sync modal states
   const [showSyncModal, setShowSyncModal] = useState(false);
   const [newProducts, setNewProducts] = useState<any[]>([]);
@@ -77,9 +77,11 @@ export function MonetizationManager() {
       // Fetch new products from Stripe
       const newProductsRes = await authenticatedFetch('/api/admin/plans/stripe-products');
       const newProductsData = await newProductsRes.json();
-      
+
       // Fetch missing products
-      const missingRes = await authenticatedFetch('/api/admin/plans/sync-check', { method: 'POST' });
+      const missingRes = await authenticatedFetch('/api/admin/plans/sync-check', {
+        method: 'POST',
+      });
       const missingData = await missingRes.json();
 
       setSyncing(false);
@@ -99,7 +101,6 @@ export function MonetizationManager() {
       setSelectedNewProducts(new Set());
       setSelectedMissingProducts(new Set());
       setShowSyncModal(true);
-
     } catch (error) {
       console.error('Sync failed', error);
       setSyncing(false);
@@ -111,7 +112,7 @@ export function MonetizationManager() {
     try {
       // Import selected new products
       for (const productId of selectedNewProducts) {
-        const product = newProducts.find(p => p.id === productId);
+        const product = newProducts.find((p) => p.id === productId);
         if (product) {
           await authenticatedFetch('/api/admin/plans', {
             method: 'POST',
@@ -146,7 +147,7 @@ export function MonetizationManager() {
       // Refresh plans and close modal
       setShowSyncModal(false);
       fetchPlans();
-      
+
       const importedCount = selectedNewProducts.size;
       const deletedCount = selectedMissingProducts.size;
       showToast(`Sync complete! Imported: ${importedCount}, Deleted: ${deletedCount}`, 'success');
@@ -232,17 +233,17 @@ export function MonetizationManager() {
   };
 
   return (
-    <div className="space-y-6 relative">
-      <div className="flex space-x-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+    <div className="relative space-y-6">
+      <div className="flex space-x-4 border-b border-gray-200 pb-2 dark:border-gray-700">
         <button
           onClick={() => setActiveTab('plans')}
-          className={`pb-2 px-4 font-medium ${activeTab === 'plans' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+          className={`px-4 pb-2 font-medium ${activeTab === 'plans' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}
         >
           Subscription Plans
         </button>
         <button
           onClick={() => setActiveTab('ads')}
-          className={`pb-2 px-4 font-medium ${activeTab === 'ads' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+          className={`px-4 pb-2 font-medium ${activeTab === 'ads' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}
         >
           Ad Settings
         </button>
@@ -252,24 +253,25 @@ export function MonetizationManager() {
 
       {activeTab === 'plans' && (
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white">Manage Plans</h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="mt-1 text-sm text-gray-500">
                 Last synced: {formatSyncDate(lastSyncDate)}
               </p>
             </div>
             <div className="flex gap-2">
-                <button
-                    onClick={handleSyncWithStripe}
-                    disabled={syncing}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                >
-                    <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
-                    Sync with Stripe
-                </button>
-                <button
-                onClick={() => setEditingPlan({
+              <button
+                onClick={handleSyncWithStripe}
+                disabled={syncing}
+                className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
+              >
+                <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+                Sync with Stripe
+              </button>
+              <button
+                onClick={() =>
+                  setEditingPlan({
                     name: '',
                     description: '',
                     price: 0,
@@ -279,42 +281,47 @@ export function MonetizationManager() {
                     stripePriceId: '',
                     type: 'subscription',
                     active: true,
-                })}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
+                  })
+                }
+                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+              >
                 <Plus size={16} />
                 Add Plan
-                </button>
+              </button>
             </div>
           </div>
 
           {editingPlan && (
-            <NeumorphBox className="p-6 space-y-4 bg-gray-50 dark:bg-gray-800/50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <NeumorphBox className="space-y-4 bg-gray-50 p-6 dark:bg-gray-800/50">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <label className="mb-1 block text-sm font-medium">Name</label>
                   <input
                     type="text"
                     value={editingPlan.name}
                     onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Price</label>
+                  <label className="mb-1 block text-sm font-medium">Price</label>
                   <input
                     type="number"
                     value={editingPlan.price}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, price: parseFloat(e.target.value) })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({ ...editingPlan, price: parseFloat(e.target.value) })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Interval</label>
+                  <label className="mb-1 block text-sm font-medium">Interval</label>
                   <select
                     value={editingPlan.interval}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, interval: e.target.value as any })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({ ...editingPlan, interval: e.target.value as any })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                   >
                     <option value="month">Monthly</option>
                     <option value="year">Yearly</option>
@@ -322,55 +329,72 @@ export function MonetizationManager() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Type</label>
+                  <label className="mb-1 block text-sm font-medium">Type</label>
                   <select
                     value={editingPlan.type}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, type: e.target.value as any })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({ ...editingPlan, type: e.target.value as any })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                   >
                     <option value="subscription">Subscription</option>
                     <option value="payment">One-time Payment</option>
                   </select>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <label className="mb-1 block text-sm font-medium">Description</label>
                   <input
                     type="text"
                     value={editingPlan.description}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, description: e.target.value })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({ ...editingPlan, description: e.target.value })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-1">Stripe Price ID</label>
+                  <label className="mb-1 block text-sm font-medium">Stripe Price ID</label>
                   <input
                     type="text"
                     value={editingPlan.stripePriceId}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, stripePriceId: e.target.value })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({ ...editingPlan, stripePriceId: e.target.value })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                     placeholder="Leave empty to auto-create in Stripe"
                   />
-                  {!editingPlan.stripePriceId && <p className="text-xs text-gray-500 mt-1">If left empty, a new Product and Price will be created in Stripe upon saving.</p>}
+                  {!editingPlan.stripePriceId && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      If left empty, a new Product and Price will be created in Stripe upon saving.
+                    </p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-1">Features (comma separated)</label>
+                  <label className="mb-1 block text-sm font-medium">
+                    Features (comma separated)
+                  </label>
                   <textarea
                     value={editingPlan.features?.join(', ')}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, features: e.target.value.split(',').map(f => f.trim()) })}
-                    className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      setEditingPlan({
+                        ...editingPlan,
+                        features: e.target.value.split(',').map((f) => f.trim()),
+                      })
+                    }
+                    className="w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-700"
                     rows={3}
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                    <input 
-                        type="checkbox" 
-                        checked={editingPlan.active} 
-                        onChange={(e) => setEditingPlan({ ...editingPlan, active: e.target.checked })}
-                    />
-                    <label>Active</label>
+                  <input
+                    type="checkbox"
+                    checked={editingPlan.active}
+                    onChange={(e) => setEditingPlan({ ...editingPlan, active: e.target.checked })}
+                  />
+                  <label>Active</label>
                 </div>
               </div>
-              <div className="flex justify-end gap-2 mt-4">
+              <div className="mt-4 flex justify-end gap-2">
                 <button
                   onClick={() => setEditingPlan(null)}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800"
@@ -379,7 +403,7 @@ export function MonetizationManager() {
                 </button>
                 <button
                   onClick={handleSavePlan}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+                  className="flex items-center gap-2 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                 >
                   <Save size={16} />
                   Save Plan
@@ -388,46 +412,52 @@ export function MonetizationManager() {
             </NeumorphBox>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => (
-              <NeumorphBox key={plan.id} className="p-6 relative group">
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <NeumorphBox key={plan.id} className="group relative p-6">
+                <div className="absolute right-4 top-4 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                   <button
                     onClick={() => setEditingPlan(plan)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+                    className="rounded-full p-2 text-blue-600 hover:bg-blue-50"
                   >
                     <Edit size={16} />
                   </button>
                   <button
                     onClick={() => handleDeletePlan(plan.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                    className="rounded-full p-2 text-red-600 hover:bg-red-50"
                   >
                     <Trash size={16} />
                   </button>
                 </div>
                 <div className="mb-4">
-                    <span className={`text-xs font-bold px-2 py-1 rounded ${plan.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {plan.active ? 'Active' : 'Inactive'}
-                    </span>
-                    <span className="ml-2 text-xs font-bold px-2 py-1 bg-gray-100 text-gray-800 rounded uppercase">
-                        {plan.type === 'payment' ? 'ONE-TIME' : plan.interval}
-                    </span>
+                  <span
+                    className={`rounded px-2 py-1 text-xs font-bold ${plan.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                  >
+                    {plan.active ? 'Active' : 'Inactive'}
+                  </span>
+                  <span className="ml-2 rounded bg-gray-100 px-2 py-1 text-xs font-bold uppercase text-gray-800">
+                    {plan.type === 'payment' ? 'ONE-TIME' : plan.interval}
+                  </span>
                 </div>
-                <h4 className="text-xl font-bold mb-2">{plan.name}</h4>
-                <p className="text-2xl font-bold text-blue-600 mb-4">
-                  ${plan.price} <span className="text-sm text-gray-500 font-normal">/{plan.interval}</span>
+                <h4 className="mb-2 text-xl font-bold">{plan.name}</h4>
+                <p className="mb-4 text-2xl font-bold text-blue-600">
+                  ${plan.price}{' '}
+                  <span className="text-sm font-normal text-gray-500">/{plan.interval}</span>
                 </p>
-                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">{plan.description}</p>
+                <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{plan.description}</p>
                 <div className="space-y-2">
                   {plan.features.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
-                      <Check size={14} className="mt-1 text-green-500 shrink-0" />
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300"
+                    >
+                      <Check size={14} className="mt-1 shrink-0 text-green-500" />
                       <span>{feature}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-400 font-mono break-all">
-                    ID: {plan.stripePriceId}
+                <div className="mt-4 break-all border-t border-gray-100 pt-4 font-mono text-xs text-gray-400 dark:border-gray-700">
+                  ID: {plan.stripePriceId}
                 </div>
               </NeumorphBox>
             ))}
@@ -437,28 +467,31 @@ export function MonetizationManager() {
 
       {/* Sync Modal */}
       {showSyncModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="flex max-h-[80vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-800">
+            <div className="flex items-center justify-between border-b border-gray-200 p-6 dark:border-gray-700">
               <h3 className="text-xl font-bold">Sync with Stripe</h3>
               <button onClick={() => setShowSyncModal(false)}>
-                <X className="w-6 h-6" />
+                <X className="h-6 w-6" />
               </button>
             </div>
-            
-            <div className="p-6 overflow-y-auto flex-1">
+
+            <div className="flex-1 overflow-y-auto p-6">
               {/* New Products Section */}
               {newProducts.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-lg font-bold mb-3 text-green-700 dark:text-green-400">
+                  <h4 className="mb-3 text-lg font-bold text-green-700 dark:text-green-400">
                     New Products Found in Stripe ({newProducts.length})
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                     Select products to import into HDPick:
                   </p>
                   <div className="space-y-3">
                     {newProducts.map((prod) => (
-                      <div key={prod.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-start gap-3">
+                      <div
+                        key={prod.id}
+                        className="flex items-start gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedNewProducts.has(prod.id)}
@@ -467,12 +500,14 @@ export function MonetizationManager() {
                         />
                         <div className="flex-1">
                           <h5 className="font-bold">{prod.productName}</h5>
-                          <p className="text-sm text-gray-500">{prod.productDescription || 'No description'}</p>
-                          <div className="flex gap-2 mt-2 text-xs">
-                            <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                          <p className="text-sm text-gray-500">
+                            {prod.productDescription || 'No description'}
+                          </p>
+                          <div className="mt-2 flex gap-2 text-xs">
+                            <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-800">
                               {prod.currency.toUpperCase()} {prod.amount}
                             </span>
-                            <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded uppercase">
+                            <span className="rounded bg-purple-100 px-2 py-0.5 uppercase text-purple-800">
                               {prod.interval}
                             </span>
                           </div>
@@ -486,15 +521,19 @@ export function MonetizationManager() {
               {/* Missing Products Section */}
               {missingProducts.length > 0 && (
                 <div>
-                  <h4 className="text-lg font-bold mb-3 text-red-700 dark:text-red-400">
+                  <h4 className="mb-3 text-lg font-bold text-red-700 dark:text-red-400">
                     Products Missing from Stripe ({missingProducts.length})
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    These products exist in HDPick but are no longer active in Stripe. Select to delete:
+                  <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                    These products exist in HDPick but are no longer active in Stripe. Select to
+                    delete:
                   </p>
                   <div className="space-y-3">
                     {missingProducts.map((prod) => (
-                      <div key={prod.id} className="border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/20 rounded-lg p-4 flex items-start gap-3">
+                      <div
+                        key={prod.id}
+                        className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedMissingProducts.has(prod.id)}
@@ -503,12 +542,14 @@ export function MonetizationManager() {
                         />
                         <div className="flex-1">
                           <h5 className="font-bold">{prod.name}</h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{prod.description}</p>
-                          <div className="flex gap-2 mt-2 text-xs">
-                            <span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {prod.description}
+                          </p>
+                          <div className="mt-2 flex gap-2 text-xs">
+                            <span className="rounded bg-gray-200 px-2 py-0.5 text-gray-800">
                               {prod.currency?.toUpperCase() || 'USD'} {prod.price}
                             </span>
-                            <span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded uppercase">
+                            <span className="rounded bg-gray-200 px-2 py-0.5 uppercase text-gray-800">
                               {prod.interval}
                             </span>
                           </div>
@@ -520,13 +561,11 @@ export function MonetizationManager() {
               )}
 
               {newProducts.length === 0 && missingProducts.length === 0 && (
-                <div className="text-center py-12 text-gray-500">
-                  Everything is in sync!
-                </div>
+                <div className="py-12 text-center text-gray-500">Everything is in sync!</div>
               )}
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div className="flex items-center justify-between border-t border-gray-200 p-6 dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 {selectedNewProducts.size > 0 && (
                   <span className="mr-4">Import: {selectedNewProducts.size}</span>
@@ -545,7 +584,7 @@ export function MonetizationManager() {
                 <button
                   onClick={handleApplySync}
                   disabled={selectedNewProducts.size === 0 && selectedMissingProducts.size === 0}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Apply Changes
                 </button>

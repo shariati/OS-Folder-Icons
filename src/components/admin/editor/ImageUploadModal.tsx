@@ -87,11 +87,11 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
       // Generate unique filename with UUID
       const fileExtension = file.name.split('.').pop() || 'png';
       const filename = `${uuidv4()}.${fileExtension}`;
-      
+
       const storageRef = ref(storage, `content/${filename}`);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadUrl = await getDownloadURL(snapshot.ref);
-      
+
       setUploadedUrl(downloadUrl);
       // Use filename without extension as default alt text
       setAltText(file.name.split('.')[0].replace(/[-_]/g, ' '));
@@ -103,15 +103,18 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      handleUpload(file);
-    }
-  }, [handleUpload]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        handleUpload(file);
+      }
+    },
+    [handleUpload]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -123,20 +126,23 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
     setIsDragging(false);
   }, []);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleUpload(file);
-    }
-  }, [handleUpload]);
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        handleUpload(file);
+      }
+    },
+    [handleUpload]
+  );
 
   const handleInsert = () => {
     if (!uploadedUrl) return;
-    
-    const styleClass = IMAGE_STYLES.find(s => s.id === selectedStyle)?.class || '';
-    const sizeClass = IMAGE_SIZES.find(s => s.id === selectedSize)?.class || '';
+
+    const styleClass = IMAGE_STYLES.find((s) => s.id === selectedStyle)?.class || '';
+    const sizeClass = IMAGE_SIZES.find((s) => s.id === selectedSize)?.class || '';
     const combinedClass = [styleClass, sizeClass, 'my-4'].filter(Boolean).join(' ');
-    
+
     onImageInsert(uploadedUrl, altText, combinedClass);
     onClose();
   };
@@ -144,11 +150,11 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
   const handleUrlInsert = () => {
     const url = uploadedUrl || '';
     if (!url) return;
-    
-    const styleClass = IMAGE_STYLES.find(s => s.id === selectedStyle)?.class || '';
-    const sizeClass = IMAGE_SIZES.find(s => s.id === selectedSize)?.class || '';
+
+    const styleClass = IMAGE_STYLES.find((s) => s.id === selectedStyle)?.class || '';
+    const sizeClass = IMAGE_SIZES.find((s) => s.id === selectedSize)?.class || '';
     const combinedClass = [styleClass, sizeClass, 'my-4'].filter(Boolean).join(' ');
-    
+
     onImageInsert(url, altText, combinedClass);
     onClose();
   };
@@ -157,25 +163,23 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div 
+      <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+        className="mx-4 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-800"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Insert Image
-          </h3>
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Insert Image</h3>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <X size={20} className="text-gray-500" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
           {!uploadedUrl ? (
             <>
               {/* Upload Zone */}
@@ -186,50 +190,47 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                 onChange={handleFileSelect}
                 className="hidden"
               />
-              
+
               <div
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 className={clsx(
-                  "relative rounded-xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center gap-4 p-8",
-                  isDragging 
-                    ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20" 
-                    : "border-gray-300 dark:border-gray-600 hover:border-purple-400 hover:bg-gray-50 dark:hover:bg-gray-700/50",
-                  isUploading && "pointer-events-none opacity-60"
+                  'relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-all',
+                  isDragging
+                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                    : 'border-gray-300 hover:border-purple-400 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700/50',
+                  isUploading && 'pointer-events-none opacity-60'
                 )}
               >
                 {isUploading ? (
                   <>
-                    <Loader2 size={40} className="text-purple-500 animate-spin" />
+                    <Loader2 size={40} className="animate-spin text-purple-500" />
                     <span className="text-sm text-gray-500">Uploading...</span>
                   </>
                 ) : (
                   <>
                     <div className="relative">
-                      <div className="p-4 rounded-xl bg-gray-100 dark:bg-gray-700">
+                      <div className="rounded-xl bg-gray-100 p-4 dark:bg-gray-700">
                         <Upload size={32} className="text-gray-400" />
                       </div>
-                      <div className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-purple-500">
+                      <div className="absolute -bottom-1 -right-1 rounded-full bg-purple-500 p-1.5">
                         <Upload size={12} className="text-white" />
                       </div>
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        <span className="text-purple-500 underline">Click to upload</span> or drag and drop
+                        <span className="text-purple-500 underline">Click to upload</span> or drag
+                        and drop
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Maximum 3 files, 5MB each.
-                      </p>
+                      <p className="mt-1 text-xs text-gray-400">Maximum 3 files, 5MB each.</p>
                     </div>
                   </>
                 )}
               </div>
 
-              {error && (
-                <p className="text-sm text-red-500 text-center">{error}</p>
-              )}
+              {error && <p className="text-center text-sm text-red-500">{error}</p>}
 
               {/* URL Input Option */}
               <div className="relative">
@@ -237,7 +238,7 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                   <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white dark:bg-gray-800 px-2 text-gray-400">or paste URL</span>
+                  <span className="bg-white px-2 text-gray-400 dark:bg-gray-800">or paste URL</span>
                 </div>
               </div>
 
@@ -245,7 +246,7 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                 <input
                   type="url"
                   placeholder="https://example.com/image.jpg"
-                  className="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                  className="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       const input = e.target as HTMLInputElement;
@@ -257,19 +258,20 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                 />
                 <button
                   onClick={(e) => {
-                    const input = (e.target as HTMLButtonElement).previousElementSibling as HTMLInputElement;
+                    const input = (e.target as HTMLButtonElement)
+                      .previousElementSibling as HTMLInputElement;
                     if (input?.value) {
                       setUploadedUrl(input.value);
                     }
                   }}
-                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition-colors"
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
                   Use URL
                 </button>
-                <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-2 self-center" />
+                <div className="mx-2 h-8 w-px self-center bg-gray-200 dark:bg-gray-700" />
                 <button
                   onClick={() => setIsLibraryOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 text-sm font-medium transition-colors"
+                  className="flex items-center gap-2 rounded-lg bg-purple-50 px-4 py-2 text-sm font-medium text-purple-600 transition-colors hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40"
                 >
                   <ImageIcon size={16} />
                   Browse Library
@@ -280,15 +282,15 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
             <>
               {/* Preview */}
               <div className="space-y-4">
-                <div className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 aspect-video flex items-center justify-center">
-                  <img 
-                    src={uploadedUrl} 
+                <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-700">
+                  <img
+                    src={uploadedUrl}
                     alt={altText || 'Preview'}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-h-full max-w-full object-contain"
                   />
                   <button
                     onClick={() => setUploadedUrl(null)}
-                    className="absolute top-2 right-2 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
+                    className="absolute right-2 top-2 rounded-full bg-black/50 p-2 transition-colors hover:bg-black/70"
                   >
                     <X size={16} className="text-white" />
                   </button>
@@ -296,7 +298,7 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
 
                 {/* Alt Text */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Alt Text
                   </label>
                   <input
@@ -304,25 +306,25 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
                     value={altText}
                     onChange={(e) => setAltText(e.target.value)}
                     placeholder="Describe the image..."
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 {/* Style Options */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Style
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {IMAGE_STYLES.map(style => (
+                    {IMAGE_STYLES.map((style) => (
                       <button
                         key={style.id}
                         onClick={() => setSelectedStyle(style.id)}
                         className={clsx(
-                          "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                          'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
                           selectedStyle === style.id
-                            ? "bg-purple-500 text-white"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                         )}
                       >
                         {style.label}
@@ -333,19 +335,19 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
 
                 {/* Size Options */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Size
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {IMAGE_SIZES.map(size => (
+                    {IMAGE_SIZES.map((size) => (
                       <button
                         key={size.id}
                         onClick={() => setSelectedSize(size.id)}
                         className={clsx(
-                          "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                          'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
                           selectedSize === size.id
-                            ? "bg-purple-500 text-white"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                         )}
                       >
                         {size.label}
@@ -360,16 +362,16 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
 
         {/* Footer */}
         {uploadedUrl && (
-          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+          <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-700/50">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
             >
               Cancel
             </button>
             <button
               onClick={handleInsert}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm font-medium transition-colors"
+              className="flex items-center gap-2 rounded-lg bg-purple-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
             >
               <Check size={16} />
               Insert Image
@@ -388,11 +390,11 @@ export function ImageUploadModal({ isOpen, onClose, onImageInsert }: ImageUpload
             // decipher filename from url
             // decodeURIComponent to handle spaces and special chars
             const decodedUrl = decodeURIComponent(url);
-            const pathEnd = decodedUrl.split('?')[0]; 
+            const pathEnd = decodedUrl.split('?')[0];
             const filename = pathEnd.split('/').pop() || '';
             // Remove UUID if possible (this is tricky as UUID is random, but let's just use what we have)
             // Or just use the full filename but clean it up
-            setAltText(filename.replace(/[-_]/g, ' ').replace(/\.[^/.]+$/, ""));
+            setAltText(filename.replace(/[-_]/g, ' ').replace(/\.[^/.]+$/, ''));
           } catch (e) {
             setAltText('Image');
           }

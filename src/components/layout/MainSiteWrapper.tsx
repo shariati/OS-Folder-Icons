@@ -10,11 +10,17 @@ interface MainSiteWrapperProps {
   preHeader?: string | React.ReactNode;
 }
 
-export function MainSiteWrapper({ children, className, header, tagline, preHeader }: MainSiteWrapperProps) {
+export function MainSiteWrapper({
+  children,
+  className,
+  header,
+  tagline,
+  preHeader,
+}: MainSiteWrapperProps) {
   return (
-    <main 
+    <main
       className={twMerge(
-        "flex-grow pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full",
+        'mx-auto w-full max-w-7xl flex-grow px-4 pb-12 pt-32 sm:px-6 lg:px-8',
         className
       )}
     >
@@ -22,18 +28,20 @@ export function MainSiteWrapper({ children, className, header, tagline, preHeade
         <div className="mb-10 text-center">
           {preHeader && (
             <div className="mb-3">
-               {typeof preHeader === 'string' ? (
-                 <span className="text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase text-sm block">
-                   {preHeader}
-                 </span>
-               ) : preHeader}
+              {typeof preHeader === 'string' ? (
+                <span className="block text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+                  {preHeader}
+                </span>
+              ) : (
+                preHeader
+              )}
             </div>
           )}
           {header && (
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{header}</h1>
+            <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">{header}</h1>
           )}
           {tagline && (
-            <div className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+            <div className="mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400">
               {tagline}
             </div>
           )}

@@ -20,33 +20,35 @@ export default function LoginPage() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const completeMagicLinkSignIn = async (emailForSignIn: string) => {
-      setLoading(true);
-      try {
-          await signInWithMagicLink(emailForSignIn, window.location.href);
-          router.push('/');
-      } catch (err: any) {
-          setError(err.message || 'Failed to sign in with magic link.');
-      } finally {
-          setLoading(false);
-      }
+    setLoading(true);
+    try {
+      await signInWithMagicLink(emailForSignIn, window.location.href);
+      router.push('/');
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign in with magic link.');
+    } finally {
+      setLoading(false);
+    }
   };
-  
+
   // Handle Magic Link Sign-In on Check
   React.useEffect(() => {
     const checkMagicLink = async () => {
-        const { isSignInWithEmailLink } = await import('firebase/auth');
-        const { getFirebaseAuth } = await import('@/lib/firebase/client');
-        const auth = getFirebaseAuth();
-        
-        if (auth && isSignInWithEmailLink(auth, window.location.href)) {
-             // Try sessionStorage first (new approach), fallback to localStorage for existing users
-             const emailForSignIn = window.sessionStorage.getItem('emailForSignIn') || window.localStorage.getItem('emailForSignIn');
-             if (!emailForSignIn) {
-                 setIsEmailModalOpen(true);
-             } else {
-                 completeMagicLinkSignIn(emailForSignIn);
-             }
+      const { isSignInWithEmailLink } = await import('firebase/auth');
+      const { getFirebaseAuth } = await import('@/lib/firebase/client');
+      const auth = getFirebaseAuth();
+
+      if (auth && isSignInWithEmailLink(auth, window.location.href)) {
+        // Try sessionStorage first (new approach), fallback to localStorage for existing users
+        const emailForSignIn =
+          window.sessionStorage.getItem('emailForSignIn') ||
+          window.localStorage.getItem('emailForSignIn');
+        if (!emailForSignIn) {
+          setIsEmailModalOpen(true);
+        } else {
+          completeMagicLinkSignIn(emailForSignIn);
         }
+      }
     };
     checkMagicLink();
   }, [signInWithMagicLink, router]);
@@ -74,50 +76,47 @@ export default function LoginPage() {
     setLoading(true);
 
     if (loginMode === 'magic_link') {
-        try {
-            setSuccess('');
-            await sendMagicLink(email);
-            setSuccess('Magic link sent! Check your email (including spam/junk) to sign in instantly.');
-        } catch (err: any) {
-            console.error(err);
-            if (err.code === 'auth/quota-exceeded') {
-                setError('Too many login attempts. Please try again later or use a password to sign in.');
-            } else {
-                setError(err.message || 'Failed to send magic link.');
-            }
-        } finally {
-            setLoading(false);
+      try {
+        setSuccess('');
+        await sendMagicLink(email);
+        setSuccess('Magic link sent! Check your email (including spam/junk) to sign in instantly.');
+      } catch (err: any) {
+        console.error(err);
+        if (err.code === 'auth/quota-exceeded') {
+          setError('Too many login attempts. Please try again later or use a password to sign in.');
+        } else {
+          setError(err.message || 'Failed to send magic link.');
         }
+      } finally {
+        setLoading(false);
+      }
     } else {
-         try {
-            await signInWithEmail(email, password);
-            router.push('/');
-         } catch (err: any) {
-            console.error(err);
-            if (err.code === 'auth/invalid-credential') {
-                setError('Invalid email or password.');
-            } else {
-                setError('Failed to sign in. Please try again.');
-            }
-         } finally {
-            setLoading(false);
-         }
+      try {
+        await signInWithEmail(email, password);
+        router.push('/');
+      } catch (err: any) {
+        console.error(err);
+        if (err.code === 'auth/invalid-credential') {
+          setError('Invalid email or password.');
+        } else {
+          setError('Failed to sign in. Please try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
       {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <div className="absolute inset-0 bg-white/60 z-10" /> {/* Overlay */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
+      <div className="absolute inset-0 z-0 h-full w-full">
+        <div className="absolute inset-0 z-10 bg-white/60" /> {/* Overlay */}
+        <video autoPlay loop muted playsInline className="h-full w-full object-cover">
+          <source
+            src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)}
+            type="video/webm"
+          />
         </video>
       </div>
 
@@ -132,32 +131,34 @@ export default function LoginPage() {
         confirmLabel="Sign In"
       />
 
-      <div className="relative z-20 w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative z-20 w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-800">
         <div className="p-8 sm:p-10">
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center justify-center mb-6">
+          <div className="mb-8 text-center">
+            <Link href="/" className="mb-6 inline-flex items-center justify-center">
               <Image
                 src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
                 alt="HDPick Logo"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="h-16 w-16"
                 priority
               />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h1>
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">Personalize every pixel</p>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Sign in to access your icons</p>
+            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
+            <p className="mb-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+              Personalize every pixel
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to access your icons</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium text-center">
+            <div className="mb-6 rounded-xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-900/20 dark:text-red-400">
               {error}
             </div>
           )}
-          
+
           {success && (
-            <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium text-center">
+            <div className="mb-6 rounded-xl bg-green-50 p-4 text-center text-sm font-medium text-green-600 dark:bg-green-900/20 dark:text-green-400">
               {success}
             </div>
           )}
@@ -167,9 +168,9 @@ export default function LoginPage() {
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-4 px-4 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-semibold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-3 shadow-sm"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-4 font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-500 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:border-blue-500 dark:hover:bg-gray-600"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -198,7 +199,9 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500">Or continue with email</span>
+                <span className="bg-white px-4 text-gray-500 dark:bg-gray-800">
+                  Or continue with email
+                </span>
               </div>
             </div>
           </div>
@@ -206,9 +209,11 @@ export default function LoginPage() {
           {/* Secondary: Email/Password Form */}
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Email Address
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -216,7 +221,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="block w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                   placeholder="you@example.com"
                   required
                 />
@@ -224,57 +229,66 @@ export default function LoginPage() {
             </div>
 
             {loginMode === 'password' && (
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                     <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                        Forgot password?
-                     </Link>
-                  </div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      autoComplete="current-password"
-                      className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="••••••••"
-                      required
-                    />
-                  </div>
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Password
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    className="block w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+              </div>
             )}
-            
+
             {loginMode === 'magic_link' && (
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm text-blue-800 dark:text-blue-300">
-                    <p className="font-semibold mb-1">What is a Magic Link?</p>
-                    <p>We'll send a secure link to your email. Click it to log in instantly without a password. It's safe and convenient!</p>
-                </div>
+              <div className="rounded-xl bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                <p className="mb-1 font-semibold">What is a Magic Link?</p>
+                <p>
+                  We'll send a secure link to your email. Click it to log in instantly without a
+                  password. It's safe and convenient!
+                </p>
+              </div>
             )}
 
             <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center border border-gray-200 dark:border-gray-600"
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 py-3 font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             >
-                {loginMode === 'magic_link' ? 'Send Magic Link' : 'Sign In with Email'} <ArrowRight className="ml-2 w-4 h-4" />
+              {loginMode === 'magic_link' ? 'Send Magic Link' : 'Sign In with Email'}{' '}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </button>
-            
+
             <div className="text-center">
-                <button
-                    type="button"
-                    onClick={() => setLoginMode(loginMode === 'magic_link' ? 'password' : 'magic_link')}
-                    className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors underline decoration-dotted underline-offset-4"
-                >
-                    {loginMode === 'magic_link' ? 'Use password instead' : 'Use magic link instead'}
-                </button>
+              <button
+                type="button"
+                onClick={() => setLoginMode(loginMode === 'magic_link' ? 'password' : 'magic_link')}
+                className="text-sm font-medium text-gray-500 underline decoration-dotted underline-offset-4 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+              >
+                {loginMode === 'magic_link' ? 'Use password instead' : 'Use magic link instead'}
+              </button>
             </div>
           </form>
         </div>
-        <div className="px-8 py-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 text-center">
+        <div className="border-t border-gray-100 bg-gray-50 px-8 py-6 text-center dark:border-gray-700 dark:bg-gray-900/50">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?{' '}
             <Link href="/signup" className="font-bold text-blue-600 hover:text-blue-700">

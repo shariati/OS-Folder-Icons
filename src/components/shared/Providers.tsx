@@ -8,9 +8,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <ToastProvider>
-        <CookieConsentProvider>
-            {children}
-        </CookieConsentProvider>
+        <CookieConsentProvider>{children}</CookieConsentProvider>
       </ToastProvider>
     </AuthProvider>
   );

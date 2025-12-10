@@ -15,7 +15,7 @@ export function Navbar() {
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const productsDropdownRef = useRef<HTMLDivElement>(null);
-  
+
   // Prevent hydration mismatch by waiting for mount
   const [mounted, setMounted] = useState(false);
 
@@ -28,13 +28,16 @@ export function Navbar() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setDropdownOpen(false);
       }
-      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target as Node)) {
+      if (
+        productsDropdownRef.current &&
+        !productsDropdownRef.current.contains(event.target as Node)
+      ) {
         setProductsDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -46,31 +49,29 @@ export function Navbar() {
   const renderUserSection = () => {
     // Before mounting, show nothing to prevent hydration mismatch
     if (!mounted) {
-      return (
-        <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
-      );
+      return <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700" />;
     }
 
     if (user) {
       return (
         <div className="relative" ref={dropdownRef}>
-          <button 
+          <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center space-x-3 focus:outline-none"
           >
-            <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <span className="hidden text-sm font-medium text-gray-700 md:block dark:text-gray-200">
               {userProfile?.displayName || user.email?.split('@')[0] || 'User'}
               {(userProfile?.role === 'paid' || userProfile?.role === 'lifetime') && (
-                  <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
-                      {userProfile.role === 'lifetime' ? 'LIFETIME' : 'PRO'}
-                  </span>
+                <span className="ml-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-0.5 text-xs font-bold text-white shadow-sm">
+                  {userProfile.role === 'lifetime' ? 'LIFETIME' : 'PRO'}
+                </span>
               )}
             </span>
-            <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 shadow-sm">
+            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-white shadow-sm dark:border-gray-700">
               {user.photoURL ? (
                 <img src={user.photoURL} alt="User" className="h-full w-full object-cover" />
               ) : (
-                <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white">
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                   <User size={20} />
                 </div>
               )}
@@ -78,16 +79,18 @@ export function Navbar() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 py-1 focus:outline-none transform opacity-100 scale-100 transition-all duration-200">
-              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+            <div className="absolute right-0 mt-2 w-48 scale-100 transform rounded-xl bg-white py-1 opacity-100 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-200 focus:outline-none dark:bg-gray-800">
+              <div className="border-b border-gray-100 px-4 py-3 dark:border-gray-700">
                 <p className="text-sm text-gray-500 dark:text-gray-400">Signed in as</p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.email}</p>
+                <p className="truncate text-sm font-bold text-gray-900 dark:text-white">
+                  {user.email}
+                </p>
               </div>
-              
+
               {userProfile?.role === 'admin' && (
-                <Link 
-                  href="/admin" 
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                <Link
+                  href="/admin"
+                  className="block flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
                   onClick={() => setDropdownOpen(false)}
                 >
                   <Settings size={16} />
@@ -95,21 +98,21 @@ export function Navbar() {
                 </Link>
               )}
 
-              <Link 
-                  href="/profile" 
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <User size={16} />
-                  My Profile
+              <Link
+                href="/profile"
+                className="block flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                onClick={() => setDropdownOpen(false)}
+              >
+                <User size={16} />
+                My Profile
               </Link>
-              
+
               <button
                 onClick={() => {
                   signOut();
                   setDropdownOpen(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                className="block flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
                 <LogOut size={16} />
                 Sign out
@@ -122,10 +125,16 @@ export function Navbar() {
 
     return (
       <>
-        <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <Link
+          href="/login"
+          className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
           Log in
         </Link>
-        <Link href="/signup" className="inline-flex items-center justify-center px-6 py-2 text-sm font-medium rounded-xl text-white bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
+        <Link
+          href="/signup"
+          className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-6 py-2 text-sm font-medium text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-blue-500/50"
+        >
           Get Started
         </Link>
       </>
@@ -133,45 +142,54 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-4 left-4 right-4 z-50 rounded-2xl border border-white/20 bg-white/70 dark:bg-black/70 backdrop-blur-3xl shadow-xl transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed left-4 right-4 top-4 z-50 rounded-2xl border border-white/20 bg-white/70 shadow-xl backdrop-blur-3xl transition-all duration-300 dark:bg-black/70">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo - Left */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center text-xl font-bold text-gray-700 dark:text-white hover:opacity-80 transition-opacity">
+            <Link
+              href="/"
+              className="flex items-center text-xl font-bold text-gray-700 transition-opacity hover:opacity-80 dark:text-white"
+            >
               <Image
                 src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
                 alt="HDPick Logo"
                 width={50}
                 height={50}
-                className="w-20 h-20"
+                className="h-20 w-20"
                 priority
               />
             </Link>
           </div>
-          
-          {/* Menu - Center */}
-          <div className="hidden sm:flex sm:space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
-              <Link href="/custom-folders" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Custom Folders
-              </Link>
 
-              <Link href="/photo-frame" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Photo Frame
-              </Link>
-              
-              <Link href="/blog" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
-                Blog
-              </Link>
-            </div>
-          
-          {/* User Section - Right */}
-          <div className="flex items-center space-x-4">
-            {renderUserSection()}
+          {/* Menu - Center */}
+          <div className="absolute left-1/2 hidden -translate-x-1/2 transform items-center sm:flex sm:space-x-8">
+            <Link
+              href="/custom-folders"
+              className="inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100/50 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            >
+              Custom Folders
+            </Link>
+
+            <Link
+              href="/photo-frame"
+              className="inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100/50 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            >
+              Photo Frame
+            </Link>
+
+            <Link
+              href="/blog"
+              className="inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100/50 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            >
+              Blog
+            </Link>
           </div>
+
+          {/* User Section - Right */}
+          <div className="flex items-center space-x-4">{renderUserSection()}</div>
         </div>
       </div>
     </nav>
   );
 }
-

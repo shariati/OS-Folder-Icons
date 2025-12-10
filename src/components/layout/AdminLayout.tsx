@@ -7,7 +7,19 @@ import Header from './Header';
 interface AdminLayoutProps {
   children: ReactNode;
   activeTab: string;
-  setActiveTab: (tab: 'os' | 'bundles' | 'categories' | 'tags' | 'hero' | 'users' | 'blog' | 'pages' | 'ads' | 'settings') => void;
+  setActiveTab: (
+    tab:
+      | 'os'
+      | 'bundles'
+      | 'categories'
+      | 'tags'
+      | 'hero'
+      | 'users'
+      | 'blog'
+      | 'pages'
+      | 'ads'
+      | 'settings'
+  ) => void;
 }
 
 const AdminLayout = ({ children, activeTab, setActiveTab }: AdminLayoutProps) => {
@@ -18,7 +30,12 @@ const AdminLayout = ({ children, activeTab, setActiveTab }: AdminLayoutProps) =>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Sidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
@@ -29,9 +46,7 @@ const AdminLayout = ({ children, activeTab, setActiveTab }: AdminLayoutProps) =>
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-              {children}
-            </div>
+            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">{children}</div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
         </div>

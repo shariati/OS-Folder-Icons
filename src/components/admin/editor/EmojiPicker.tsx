@@ -57,19 +57,23 @@ interface EmojiPickerProps {
   command: (item: EmojiItem) => void;
 }
 
-export const EmojiPicker = forwardRef<any, EmojiPickerProps>(
-  ({ items, command }, ref) => {
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const containerRef = useRef<HTMLDivElement>(null);
+export const EmojiPicker = forwardRef<any, EmojiPickerProps>(({ items, command }, ref) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    const selectItem = useCallback((index: number) => {
+  const selectItem = useCallback(
+    (index: number) => {
       const item = items[index];
       if (item) {
         command(item);
       }
-    }, [items, command]);
+    },
+    [items, command]
+  );
 
-    useImperativeHandle(ref, () => ({
+  useImperativeHandle(
+    ref,
+    () => ({
       onKeyDown: ({ event }: { event: KeyboardEvent }) => {
         if (event.key === 'ArrowUp') {
           setSelectedIndex((selectedIndex + items.length - 1) % items.length);
@@ -98,45 +102,46 @@ export const EmojiPicker = forwardRef<any, EmojiPickerProps>(
 
         return false;
       },
-    }), [selectedIndex, items.length, selectItem]);
+    }),
+    [selectedIndex, items.length, selectItem]
+  );
 
-    useEffect(() => setSelectedIndex(0), [items]);
+  useEffect(() => setSelectedIndex(0), [items]);
 
-    if (items.length === 0) {
-      return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3">
-          <p className="text-sm text-gray-500">No emojis found</p>
-        </div>
-      );
-    }
-
+  if (items.length === 0) {
     return (
-      <div
-        ref={containerRef}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden p-2 max-w-[300px]"
-      >
-        <div className="grid grid-cols-8 gap-1">
-          {items.map((item, index) => (
-            <button
-              key={`${item.emoji}-${index}`}
-              data-index={index}
-              onClick={() => selectItem(index)}
-              title={item.name}
-              className={clsx(
-                "w-8 h-8 flex items-center justify-center text-xl rounded-lg transition-colors",
-                selectedIndex === index
-                  ? "bg-blue-100 dark:bg-blue-900/30"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
-              )}
-            >
-              {item.emoji}
-            </button>
-          ))}
-        </div>
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm text-gray-500">No emojis found</p>
       </div>
     );
   }
-);
+
+  return (
+    <div
+      ref={containerRef}
+      className="max-w-[300px] overflow-hidden rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+    >
+      <div className="grid grid-cols-8 gap-1">
+        {items.map((item, index) => (
+          <button
+            key={`${item.emoji}-${index}`}
+            data-index={index}
+            onClick={() => selectItem(index)}
+            title={item.name}
+            className={clsx(
+              'flex h-8 w-8 items-center justify-center rounded-lg text-xl transition-colors',
+              selectedIndex === index
+                ? 'bg-blue-100 dark:bg-blue-900/30'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+            )}
+          >
+            {item.emoji}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+});
 
 EmojiPicker.displayName = 'EmojiPicker';
 
@@ -145,11 +150,9 @@ export function filterEmojis(query: string): EmojiItem[] {
   if (!query) {
     return COMMON_EMOJIS.slice(0, 40);
   }
-  
+
   const lowerQuery = query.toLowerCase();
-  return COMMON_EMOJIS.filter(e => 
-    e.name.toLowerCase().includes(lowerQuery)
-  ).slice(0, 40);
+  return COMMON_EMOJIS.filter((e) => e.name.toLowerCase().includes(lowerQuery)).slice(0, 40);
 }
 
 export { COMMON_EMOJIS };

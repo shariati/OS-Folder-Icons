@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import { NeumorphBox } from "./NeumorphBox";
-import { NeumorphButton } from "./NeumorphButton";
-import { clsx } from "clsx";
+import { ReactNode } from 'react';
+import { NeumorphBox } from './NeumorphBox';
+import { NeumorphButton } from './NeumorphButton';
+import { clsx } from 'clsx';
 
 export interface ToggleGroupItem {
   value: string;
@@ -14,22 +14,22 @@ interface ToggleGroupProps {
    * List of items to toggle between.
    */
   items: ToggleGroupItem[];
-  
+
   /**
    * The currently selected value.
    */
   value: string;
-  
+
   /**
    * Callback when an item is selected.
    */
   onChange: (value: string) => void;
-  
+
   /**
    * Optional custom className.
    */
   className?: string;
-  
+
   /**
    * Size of the buttons.
    * @default 'md'
@@ -59,10 +59,17 @@ export function ToggleGroup({
   size = 'md',
   title,
   variant = 'flat',
-  padding = 'p-2'
+  padding = 'p-2',
 }: ToggleGroupProps) {
   const box = (
-    <NeumorphBox variant={variant} className={clsx(padding, "space-y-0 flex items-center justify-between gap-2", !title && className)}>
+    <NeumorphBox
+      variant={variant}
+      className={clsx(
+        padding,
+        'flex items-center justify-between gap-2 space-y-0',
+        !title && className
+      )}
+    >
       {items.map((item) => {
         const isActive = value === item.value;
         return (
@@ -84,7 +91,9 @@ export function ToggleGroup({
   if (title) {
     return (
       <div className={className}>
-        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">{title}</label>
+        <label className="mb-3 block text-sm font-bold text-gray-700 dark:text-gray-300">
+          {title}
+        </label>
         {box}
       </div>
     );

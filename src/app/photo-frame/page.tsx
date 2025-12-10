@@ -4,13 +4,14 @@ import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Photo Frame - HDPick",
-  description: "Create beautiful photo frames with your custom images. Choose from various styles and export for your desktop.",
+  title: 'Photo Frame - HDPick',
+  description:
+    'Create beautiful photo frames with your custom images. Choose from various styles and export for your desktop.',
 };
 
 export default function PhotoFramePage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <MainSiteWrapper
         header="Photo Frame"
         tagline="Turn your memories into beautiful desktop widgets. Upload a photo, customize the frame, and download."

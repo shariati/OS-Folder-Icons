@@ -16,12 +16,12 @@ interface ImageUploaderProps {
   aspectRatio?: 'square' | 'video' | 'banner';
 }
 
-export function ImageUploader({ 
-  value, 
-  onChange, 
+export function ImageUploader({
+  value,
+  onChange,
   folder = 'uploads',
   className,
-  aspectRatio = 'video'
+  aspectRatio = 'video',
 }: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -35,54 +35,60 @@ export function ImageUploader({
     banner: 'aspect-[3/1]',
   };
 
-  const handleUpload = useCallback(async (file: File) => {
-    if (!storage) {
-      setError('Storage not initialized');
-      return;
-    }
+  const handleUpload = useCallback(
+    async (file: File) => {
+      if (!storage) {
+        setError('Storage not initialized');
+        return;
+      }
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file');
-      return;
-    }
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file');
+        return;
+      }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image must be less than 5MB');
-      return;
-    }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image must be less than 5MB');
+        return;
+      }
 
-    setError(null);
-    setIsUploading(true);
+      setError(null);
+      setIsUploading(true);
 
-    try {
-      // Generate unique filename with UUID
-      const fileExtension = file.name.split('.').pop() || 'png';
-      const filename = `${uuidv4()}.${fileExtension}`;
-      
-      const storageRef = ref(storage, `${folder}/${filename}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(snapshot.ref);
-      
-      onChange(downloadUrl);
-    } catch (err) {
-      console.error('Upload error:', err);
-      setError('Failed to upload image');
-    } finally {
-      setIsUploading(false);
-    }
-  }, [folder, onChange]);
+      try {
+        // Generate unique filename with UUID
+        const fileExtension = file.name.split('.').pop() || 'png';
+        const filename = `${uuidv4()}.${fileExtension}`;
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      handleUpload(file);
-    }
-  }, [handleUpload]);
+        const storageRef = ref(storage, `${folder}/${filename}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        onChange(downloadUrl);
+      } catch (err) {
+        console.error('Upload error:', err);
+        setError('Failed to upload image');
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [folder, onChange]
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        handleUpload(file);
+      }
+    },
+    [handleUpload]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -94,12 +100,15 @@ export function ImageUploader({
     setIsDragging(false);
   }, []);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleUpload(file);
-    }
-  }, [handleUpload]);
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        handleUpload(file);
+      }
+    },
+    [handleUpload]
+  );
 
   const handleRemove = useCallback(() => {
     onChange('');
@@ -109,7 +118,7 @@ export function ImageUploader({
   }, [onChange]);
 
   return (
-    <div className={clsx("relative", className)}>
+    <div className={clsx('relative', className)}>
       <input
         ref={fileInputRef}
         type="file"
@@ -120,28 +129,26 @@ export function ImageUploader({
 
       {value ? (
         // Image Preview
-        <div className={clsx(
-          "relative rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 group",
-          aspectClasses[aspectRatio]
-        )}>
-          <img 
-            src={value} 
-            alt="Uploaded" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+        <div
+          className={clsx(
+            'group relative overflow-hidden rounded-xl border-2 border-gray-200 dark:border-gray-700',
+            aspectClasses[aspectRatio]
+          )}
+        >
+          <img src={value} alt="Uploaded" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 flex items-center justify-center gap-4 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
             <div className="flex flex-col gap-2">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm"
+                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
               >
                 Upload New
               </button>
               <button
                 type="button"
                 onClick={() => setIsLibraryOpen(true)}
-                className="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm"
+                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
               >
                 Browse Library
               </button>
@@ -149,7 +156,7 @@ export function ImageUploader({
             <button
               type="button"
               onClick={handleRemove}
-              className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              className="rounded-lg bg-red-500 p-2 text-white transition-colors hover:bg-red-600"
             >
               <X size={20} />
             </button>
@@ -163,39 +170,38 @@ export function ImageUploader({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           className={clsx(
-            "rounded-xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center gap-3",
+            'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed transition-all',
             aspectClasses[aspectRatio],
-            isDragging 
-              ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
-              : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50",
-            isUploading && "pointer-events-none opacity-60"
+            isDragging
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+              : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800/50',
+            isUploading && 'pointer-events-none opacity-60'
           )}
         >
           {isUploading ? (
             <>
-              <Loader2 size={32} className="text-blue-500 animate-spin" />
+              <Loader2 size={32} className="animate-spin text-blue-500" />
               <span className="text-sm text-gray-500">Uploading...</span>
             </>
           ) : (
             <>
-              <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800">
+              <div className="rounded-full bg-gray-100 p-3 dark:bg-gray-800">
                 <Upload size={24} className="text-gray-400" />
               </div>
               <div className="text-center">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Drop an image here, or <span className="text-blue-500 hover:text-blue-600">upload</span>
+                  Drop an image here, or{' '}
+                  <span className="text-blue-500 hover:text-blue-600">upload</span>
                 </p>
-                <div className="mt-2 flex flex-col gap-1 items-center">
-                  <p className="text-xs text-gray-400">
-                    PNG, JPG, WebP up to 5MB
-                  </p>
+                <div className="mt-2 flex flex-col items-center gap-1">
+                  <p className="text-xs text-gray-400">PNG, JPG, WebP up to 5MB</p>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsLibraryOpen(true);
                     }}
-                    className="text-xs text-blue-500 hover:text-blue-600 hover:underline font-medium flex items-center gap-1 mt-1"
+                    className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-500 hover:text-blue-600 hover:underline"
                   >
                     <ImageIcon size={12} />
                     Browse Media Library
@@ -207,9 +213,7 @@ export function ImageUploader({
         </div>
       )}
 
-      {error && (
-        <p className="mt-2 text-sm text-red-500">{error}</p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
 
       <MediaLibraryModal
         isOpen={isLibraryOpen}

@@ -36,16 +36,16 @@ const siteStructure = [
 
 export default function SitemapPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900">
-      <div className="flex-grow pt-32 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <NeumorphBox className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-xl">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Site Map</h1>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="flex min-h-screen flex-col bg-[#e0e5ec] dark:bg-gray-900">
+      <div className="flex-grow px-4 pb-24 pt-32 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <NeumorphBox className="rounded-3xl bg-white p-8 shadow-xl md:p-12 dark:bg-gray-800">
+            <h1 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">Site Map</h1>
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {siteStructure.map((section) => (
                 <div key={section.category}>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
                     {section.category}
                   </h2>
                   <ul className="space-y-3">
@@ -53,7 +53,7 @@ export default function SitemapPage() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          className="text-gray-600 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
                         >
                           {link.name}
                         </Link>

@@ -15,7 +15,7 @@ import {
   Smile,
   Table,
   Minus,
-  Image as ImageIcon
+  Image as ImageIcon,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -37,33 +37,40 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const selectItem = useCallback((index: number) => {
-      const item = items[index];
-      if (item) {
-        command(item);
-      }
-    }, [items, command]);
-
-    useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-        if (event.key === 'ArrowUp') {
-          setSelectedIndex((selectedIndex + items.length - 1) % items.length);
-          return true;
+    const selectItem = useCallback(
+      (index: number) => {
+        const item = items[index];
+        if (item) {
+          command(item);
         }
-
-        if (event.key === 'ArrowDown') {
-          setSelectedIndex((selectedIndex + 1) % items.length);
-          return true;
-        }
-
-        if (event.key === 'Enter') {
-          selectItem(selectedIndex);
-          return true;
-        }
-
-        return false;
       },
-    }), [selectedIndex, items.length, selectItem]);
+      [items, command]
+    );
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+          if (event.key === 'ArrowUp') {
+            setSelectedIndex((selectedIndex + items.length - 1) % items.length);
+            return true;
+          }
+
+          if (event.key === 'ArrowDown') {
+            setSelectedIndex((selectedIndex + 1) % items.length);
+            return true;
+          }
+
+          if (event.key === 'Enter') {
+            selectItem(selectedIndex);
+            return true;
+          }
+
+          return false;
+        },
+      }),
+      [selectedIndex, items.length, selectItem]
+    );
 
     useEffect(() => setSelectedIndex(0), [items]);
 
@@ -71,7 +78,7 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
     useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
-      
+
       const selectedElement = container.querySelector(`[data-index="${selectedIndex}"]`);
       if (selectedElement) {
         selectedElement.scrollIntoView({ block: 'nearest' });
@@ -84,9 +91,9 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
 
     // Group items by section
     const sections = {
-      style: items.filter(item => item.section === 'style'),
-      insert: items.filter(item => item.section === 'insert'),
-      upload: items.filter(item => item.section === 'upload'),
+      style: items.filter((item) => item.section === 'style'),
+      insert: items.filter((item) => item.section === 'insert'),
+      upload: items.filter((item) => item.section === 'upload'),
     };
 
     let globalIndex = -1;
@@ -94,11 +101,11 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
     return (
       <div
         ref={containerRef}
-        className="bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden min-w-[220px] max-h-[400px] overflow-y-auto"
+        className="max-h-[400px] min-w-[220px] overflow-hidden overflow-y-auto rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
       >
         {sections.style.length > 0 && (
           <div className="p-2">
-            <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
               Style
             </div>
             {sections.style.map((item) => {
@@ -110,14 +117,14 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
                   data-index={index}
                   onClick={() => selectItem(index)}
                   className={clsx(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors",
+                    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
                     selectedIndex === index
-                      ? "bg-gray-700 text-white"
-                      : "text-gray-300 hover:bg-gray-800"
+                      ? 'bg-gray-700 text-white'
+                      : 'text-gray-300 hover:bg-gray-800'
                   )}
                 >
                   <span className="text-gray-400">{item.icon}</span>
-                  <span className="font-medium text-sm">{item.title}</span>
+                  <span className="text-sm font-medium">{item.title}</span>
                 </button>
               );
             })}
@@ -125,8 +132,8 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
         )}
 
         {sections.insert.length > 0 && (
-          <div className="p-2 border-t border-gray-700">
-            <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          <div className="border-t border-gray-700 p-2">
+            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
               Insert
             </div>
             {sections.insert.map((item) => {
@@ -138,14 +145,14 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
                   data-index={index}
                   onClick={() => selectItem(index)}
                   className={clsx(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors",
+                    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
                     selectedIndex === index
-                      ? "bg-gray-700 text-white"
-                      : "text-gray-300 hover:bg-gray-800"
+                      ? 'bg-gray-700 text-white'
+                      : 'text-gray-300 hover:bg-gray-800'
                   )}
                 >
                   <span className="text-gray-400">{item.icon}</span>
-                  <span className="font-medium text-sm">{item.title}</span>
+                  <span className="text-sm font-medium">{item.title}</span>
                 </button>
               );
             })}
@@ -153,8 +160,8 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
         )}
 
         {sections.upload.length > 0 && (
-          <div className="p-2 border-t border-gray-700">
-            <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          <div className="border-t border-gray-700 p-2">
+            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
               Upload
             </div>
             {sections.upload.map((item) => {
@@ -166,14 +173,14 @@ export const SlashCommandMenu = forwardRef<any, SlashCommandMenuProps>(
                   data-index={index}
                   onClick={() => selectItem(index)}
                   className={clsx(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors",
+                    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
                     selectedIndex === index
-                      ? "bg-gray-700 text-white"
-                      : "text-gray-300 hover:bg-gray-800"
+                      ? 'bg-gray-700 text-white'
+                      : 'text-gray-300 hover:bg-gray-800'
                   )}
                 >
                   <span className="text-gray-400">{item.icon}</span>
-                  <span className="font-medium text-sm">{item.title}</span>
+                  <span className="text-sm font-medium">{item.title}</span>
                 </button>
               );
             })}
@@ -270,7 +277,8 @@ export function getDefaultSlashCommands(
       title: 'Table',
       icon: <Table size={18} />,
       section: 'insert',
-      command: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+      command: () =>
+        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
     },
     {
       title: 'Separator',

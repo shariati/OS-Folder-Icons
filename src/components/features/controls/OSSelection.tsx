@@ -11,12 +11,9 @@ interface OSSelectionProps {
 
 export function OSSelection({ operatingSystems, selectedOSId, onSelectOS }: OSSelectionProps) {
   return (
-    <NeumorphBox 
-      title="Operating System"
-      subtitle="Select your platform"
-    >
+    <NeumorphBox title="Operating System" subtitle="Select your platform">
       <div className="grid grid-cols-2 gap-4">
-        {operatingSystems.map(os => (
+        {operatingSystems.map((os) => (
           <NeumorphButton
             key={os.id}
             onClick={() => onSelectOS(os.id)}
@@ -25,17 +22,18 @@ export function OSSelection({ operatingSystems, selectedOSId, onSelectOS }: OSSe
             orientation="vertical"
             className="p-8"
             label={os.name}
-            icon={os.brandIcon ? (
-              <i className={clsx(os.brandIcon, "text-4xl mb-2")} />
-            ) : (
-              <div className="w-8 h-8 mb-2 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
-                {os.name.charAt(0)}
-              </div>
-            )}
+            icon={
+              os.brandIcon ? (
+                <i className={clsx(os.brandIcon, 'mb-2 text-4xl')} />
+              ) : (
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white">
+                  {os.name.charAt(0)}
+                </div>
+              )
+            }
           />
         ))}
       </div>
     </NeumorphBox>
   );
 }
-

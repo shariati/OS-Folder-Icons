@@ -16,37 +16,38 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Recursive } from "next/font/google";
-import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Providers } from "@/components/shared/Providers";
-import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
-import { ActivationBanner } from "@/components/ui/ActivationBanner";
-import { getSettings } from "@/lib/db";
-import Clarity from "@/components/shared/Clarity";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono, Recursive } from 'next/font/google';
+import './globals.css';
+import { Navbar } from '@/components/layout/Navbar';
+import { Providers } from '@/components/shared/Providers';
+import GoogleAnalytics from '@/components/shared/GoogleAnalytics';
+import { ActivationBanner } from '@/components/ui/ActivationBanner';
+import { getSettings } from '@/lib/db';
+import Clarity from '@/components/shared/Clarity';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap", // Faster text rendering
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+  display: 'swap', // Faster text rendering
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 const recursive = Recursive({
-  subsets: ["latin"],
-  variable: "--font-recursive",
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-recursive',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "HDPick - Custom Folder Icons & Photo Frames",
-  description: "Generate custom folder icons, browse premium bundles, or create photo frames for your desktop. Personalize your digital workspace with HDPick.",
+  title: 'HDPick - Custom Folder Icons & Photo Frames',
+  description:
+    'Generate custom folder icons, browse premium bundles, or create photo frames for your desktop. Personalize your digital workspace with HDPick.',
   icons: {
     icon: '/favicon.ico',
   },
@@ -72,19 +73,16 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} min-h-screen bg-gray-50 antialiased dark:bg-gray-900`}
       >
         <Providers>
           <GoogleAnalytics id={settings.tracking?.googleAnalyticsCode} />
           <Clarity projectId={settings.tracking?.clarityCode} />
           <Navbar />
           <ActivationBanner />
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>
   );
 }
-

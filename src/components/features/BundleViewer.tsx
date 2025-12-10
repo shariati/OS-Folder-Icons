@@ -12,12 +12,12 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
 import * as LucideIcons from 'lucide-react';
 
-export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
+export function BundleViewer({ bundle, db }: { bundle: Bundle; db: DB }) {
   const [selectedOS, setSelectedOS] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const { showToast } = useToast();
-  
+
   // Hidden container for generation
   const generatorRef = useRef<HTMLDivElement>(null);
   const [genState, setGenState] = useState<{
@@ -30,7 +30,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
   const toggleOS = (osId: string) => {
     if (selectedOS.includes(osId)) {
-      setSelectedOS(selectedOS.filter(id => id !== osId));
+      setSelectedOS(selectedOS.filter((id) => id !== osId));
     } else {
       setSelectedOS([...selectedOS, osId]);
     }
@@ -47,57 +47,57 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
     try {
       for (const osId of selectedOS) {
-        const os = db.operatingSystems.find(o => o.id === osId);
+        const os = db.operatingSystems.find((o) => o.id === osId);
         if (!os) continue;
 
         const osFolder = zip.folder(os.name);
-        
+
         // For each version in the OS (usually just one, but let's handle all)
         for (const version of os.versions) {
           // For each folder style in the version (usually just one)
           for (const folder of version.folderIcons) {
-             // For each icon in the bundle
-             for (const icon of bundle.icons) {
-               // Update state to render the specific combination
-               // We need to wait for React to render
-               await new Promise<void>(resolve => {
-                 setGenState({
-                   folderImage: folder.imageUrl,
-                   iconName: icon.name,
-                   offsetX: folder.offsetX || 0,
-                   offsetY: folder.offsetY || 0,
-                   format: os.format || 'png'
-                 });
-                 // Give React a tick to render
-                 setTimeout(resolve, 50); 
-               });
+            // For each icon in the bundle
+            for (const icon of bundle.icons) {
+              // Update state to render the specific combination
+              // We need to wait for React to render
+              await new Promise<void>((resolve) => {
+                setGenState({
+                  folderImage: folder.imageUrl,
+                  iconName: icon.name,
+                  offsetX: folder.offsetX || 0,
+                  offsetY: folder.offsetY || 0,
+                  format: os.format || 'png',
+                });
+                // Give React a tick to render
+                setTimeout(resolve, 50);
+              });
 
-               if (generatorRef.current) {
-                 const dataUrl = await toPng(generatorRef.current, { cacheBust: true });
-                 
-                 // Convert to blob
-                 const res = await fetch(dataUrl);
-                 const blob = await res.blob();
-                 
-                 // Handle format conversion if needed (basic logic)
-                 let fileBlob = blob;
-                 let ext = os.format || 'png';
-                 
-                 if (ext === 'ico') {
-                   // Simple conversion wrapper
-                   fileBlob = new File([blob], 'icon.ico', { type: 'image/x-icon' });
-                 }
+              if (generatorRef.current) {
+                const dataUrl = await toPng(generatorRef.current, { cacheBust: true });
 
-                 // Add to zip
-                 // Structure: OS/Version/FolderStyle/IconName.ext
-                 // Simplified: OS/IconName.ext (if single version/style)
-                 const fileName = `${icon.name}.${ext}`;
-                 osFolder?.file(fileName, fileBlob);
-               }
-               
-               completed++;
-               setProgress(Math.round((completed / totalOperations) * 100));
-             }
+                // Convert to blob
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+
+                // Handle format conversion if needed (basic logic)
+                let fileBlob = blob;
+                let ext = os.format || 'png';
+
+                if (ext === 'ico') {
+                  // Simple conversion wrapper
+                  fileBlob = new File([blob], 'icon.ico', { type: 'image/x-icon' });
+                }
+
+                // Add to zip
+                // Structure: OS/Version/FolderStyle/IconName.ext
+                // Simplified: OS/IconName.ext (if single version/style)
+                const fileName = `${icon.name}.${ext}`;
+                osFolder?.file(fileName, fileBlob);
+              }
+
+              completed++;
+              setProgress(Math.round((completed / totalOperations) * 100));
+            }
           }
         }
       }
@@ -110,7 +110,6 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
       link.href = url;
       link.click();
       URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error('Generation failed', error);
       showToast('Failed to generate bundle', 'error');
@@ -126,43 +125,58 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Left: Details */}
       {/* Left: Details */}
-      <div className="lg:col-span-2 space-y-8">
+      <div className="space-y-8 lg:col-span-2">
         <NeumorphBox>
-          <div className="flex justify-between items-start mb-6">
+          <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-3">{bundle.name}</h1>
+              <h1 className="mb-3 text-3xl font-bold text-gray-800 dark:text-white">
+                {bundle.name}
+              </h1>
               <div className="flex gap-2">
-                {bundle.tags.map(tag => (
-                  <span key={tag} className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold rounded-full flex items-center gap-1">
+                {bundle.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                  >
                     <Tag size={12} />
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
-            <NeumorphBox 
-              as="button" 
-              onClick={handleShare} 
-              className="p-3 text-gray-500 hover:text-blue-600 hover:neu-pressed rounded-full transition-all"
+            <NeumorphBox
+              as="button"
+              onClick={handleShare}
+              className="hover:neu-pressed rounded-full p-3 text-gray-500 transition-all hover:text-blue-600"
             >
               <Share2 size={20} />
             </NeumorphBox>
           </div>
-          
-          <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">{bundle.description}</p>
 
-          <h3 className="font-bold text-lg mb-4 text-gray-800 dark:text-white">Included Icons ({bundle.icons.length})</h3>
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4">
-            {bundle.icons.map(icon => {
+          <p className="mb-8 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+            {bundle.description}
+          </p>
+
+          <h3 className="mb-4 text-lg font-bold text-gray-800 dark:text-white">
+            Included Icons ({bundle.icons.length})
+          </h3>
+          <div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8">
+            {bundle.icons.map((icon) => {
               const Icon = (LucideIcons as any)[icon.name];
               if (!Icon) return null;
               return (
-                <NeumorphBox key={icon.name} variant="pressed" className="flex flex-col items-center gap-3 p-4 rounded-2xl transition-all hover:-translate-y-1">
+                <NeumorphBox
+                  key={icon.name}
+                  variant="pressed"
+                  className="flex flex-col items-center gap-3 rounded-2xl p-4 transition-all hover:-translate-y-1"
+                >
                   <Icon size={24} className="text-gray-700 dark:text-gray-300" />
-                  <span className="text-[10px] font-medium text-gray-500 truncate w-full text-center">{icon.name}</span>
+                  <span className="w-full truncate text-center text-[10px] font-medium text-gray-500">
+                    {icon.name}
+                  </span>
                 </NeumorphBox>
               );
             })}
@@ -172,13 +186,13 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
       {/* Right: Download */}
       <div className="space-y-6">
-        <div className="glass-panel p-6 sticky top-24">
-          <h3 className="font-bold text-xl mb-6 text-gray-800 dark:text-white">Download Bundle</h3>
-          
-          <div className="space-y-4 mb-8">
+        <div className="glass-panel sticky top-24 p-6">
+          <h3 className="mb-6 text-xl font-bold text-gray-800 dark:text-white">Download Bundle</h3>
+
+          <div className="mb-8 space-y-4">
             <p className="text-sm font-medium text-gray-500">Select Operating Systems:</p>
-            {bundle.targetOS.map(osId => {
-              const os = db.operatingSystems.find(o => o.id === osId);
+            {bundle.targetOS.map((osId) => {
+              const os = db.operatingSystems.find((o) => o.id === osId);
               if (!os) return null;
               return (
                 <NeumorphBox
@@ -187,23 +201,27 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
                   onClick={() => toggleOS(osId)}
                   variant={selectedOS.includes(osId) ? 'pressed' : 'flat'}
                   className={clsx(
-                    "w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200",
+                    'flex w-full items-center justify-between rounded-xl p-3 transition-all duration-200',
                     selectedOS.includes(osId)
-                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 border border-blue-200 dark:border-blue-800"
-                      : "hover:translate-x-1"
+                      ? 'border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/20'
+                      : 'hover:translate-x-1'
                   )}
                 >
                   <div className="flex items-center gap-3">
                     {os.brandIcon ? (
-                      <i className={clsx(os.brandIcon, "text-lg")} />
+                      <i className={clsx(os.brandIcon, 'text-lg')} />
                     ) : (
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
                         {os.name.charAt(0)}
                       </div>
                     )}
-                    <span className="font-semibold text-sm">{os.name}</span>
+                    <span className="text-sm font-semibold">{os.name}</span>
                   </div>
-                  {selectedOS.includes(osId) && <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center"><Check size={12} className="text-white" /></div>}
+                  {selectedOS.includes(osId) && (
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500">
+                      <Check size={12} className="text-white" />
+                    </div>
+                  )}
                 </NeumorphBox>
               );
             })}
@@ -212,12 +230,14 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
           <button
             onClick={handleDownload}
             disabled={selectedOS.length === 0 || isGenerating}
-            className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="flex w-full transform items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4 font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1 hover:from-blue-500 hover:to-blue-400 active:scale-[0.98] disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isGenerating ? (
               <>Generating {progress}%...</>
             ) : (
-              <><Download size={20} /> Download ZIP</>
+              <>
+                <Download size={20} /> Download ZIP
+              </>
             )}
           </button>
         </div>
@@ -225,18 +245,18 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle, db: DB }) {
 
       {/* Hidden Generator */}
       {genState && (
-        <div className="fixed top-0 left-0 opacity-0 pointer-events-none">
+        <div className="pointer-events-none fixed left-0 top-0 opacity-0">
           <div ref={generatorRef}>
-             <CanvasPreview
-               folderImage={genState.folderImage}
-               iconName={genState.iconName}
-               iconType="lucide"
-               iconColor="#000000" // Default color for bundles? Or allow user to pick? Assuming default black for now.
-               iconSize="medium" // Default size
-               offsetX={genState.offsetX}
-               offsetY={genState.offsetY}
-               format={genState.format}
-             />
+            <CanvasPreview
+              folderImage={genState.folderImage}
+              iconName={genState.iconName}
+              iconType="lucide"
+              iconColor="#000000" // Default color for bundles? Or allow user to pick? Assuming default black for now.
+              iconSize="medium" // Default size
+              offsetX={genState.offsetX}
+              offsetY={genState.offsetY}
+              format={genState.format}
+            />
           </div>
         </div>
       )}

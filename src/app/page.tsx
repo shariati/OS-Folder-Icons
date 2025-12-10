@@ -34,40 +34,44 @@ export default async function Home() {
   const latestBundles = db.bundles.slice(0, 8); // Taking first 8 as latest
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#e0e5ec] dark:bg-gray-900" suppressHydrationWarning>
+    <div
+      className="flex min-h-screen flex-col bg-[#e0e5ec] dark:bg-gray-900"
+      suppressHydrationWarning
+    >
       {/* Main Hero Section */}
-      <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex h-screen w-full items-center justify-center overflow-hidden">
         {/* Video Background */}
         <VideoBackground />
 
-        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
-           <div className="animate-fade-in-up animation-delay-100">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase text-sm mb-4 block">
-                Personalize every pixel
-              </span>
-           </div>
-           <div className="animate-fade-in-up animation-delay-200">
-              <span className="inline-block py-1 px-3 rounded-full bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 text-sm font-medium mb-6">
-                v3.0 is now live
-              </span>
-           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 drop-shadow-sm animate-fade-in-up animation-delay-400">
+        <div className="relative z-20 mx-auto max-w-4xl px-4 text-center">
+          <div className="animate-fade-in-up animation-delay-100">
+            <span className="mb-4 block text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+              Personalize every pixel
+            </span>
+          </div>
+          <div className="animate-fade-in-up animation-delay-200">
+            <span className="mb-6 inline-block rounded-full border border-black/10 bg-black/5 px-3 py-1 text-sm font-medium text-gray-900 backdrop-blur-md">
+              v3.0 is now live
+            </span>
+          </div>
+          <h1 className="animate-fade-in-up animation-delay-400 mb-6 text-5xl font-bold tracking-tight text-gray-900 drop-shadow-sm md:text-7xl">
             Custom OS Folder Icons
           </h1>
-          <p className="mt-6 text-xl text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up animation-delay-600">
-            Customize your folder icons for macOS, Windows, and Linux. Choose from our premium bundles or generate your own.
+          <p className="animate-fade-in-up animation-delay-600 mx-auto mb-10 mt-6 max-w-2xl text-xl leading-relaxed text-gray-700">
+            Customize your folder icons for macOS, Windows, and Linux. Choose from our premium
+            bundles or generate your own.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
+          <div className="animate-fade-in-up animation-delay-600 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/custom-folders"
-              className="px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition-all hover:scale-105 shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
+              className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-blue-600/30 transition-all hover:scale-105 hover:bg-blue-700"
             >
               <Palette size={20} />
               Create Icons
             </Link>
             <Link
               href="/bundles"
-              className="px-8 py-4 rounded-xl bg-black/5 backdrop-blur-md border border-black/10 text-gray-900 font-bold text-lg hover:bg-black/10 transition-all hover:scale-105 flex items-center justify-center gap-2"
+              className="flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-black/5 px-8 py-4 text-lg font-bold text-gray-900 backdrop-blur-md transition-all hover:scale-105 hover:bg-black/10"
             >
               <Layers size={20} />
               Browse Bundles
@@ -76,7 +80,7 @@ export default async function Home() {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#e0e5ec] dark:from-gray-900 to-transparent z-20" />
+        <div className="absolute bottom-0 left-0 z-20 h-32 w-full bg-gradient-to-t from-[#e0e5ec] to-transparent dark:from-gray-900" />
       </section>
 
       {/* Stats Section */}
@@ -84,19 +88,30 @@ export default async function Home() {
         <StatsSection />
       </section>
       {/* CTA Section - Photo Frame */}
-      <section id="photo-frame-cta" className="py-24 relative overflow-hidden">
+      <section id="photo-frame-cta" className="relative overflow-hidden py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-500">
-           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+              backgroundSize: '40px 40px',
+            }}
+          ></div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="mb-6 text-3xl font-bold text-white md:text-5xl">
             Turn Your Memories Into Art
           </h2>
-          <p className="text-xl text-pink-100 mb-12 max-w-2xl mx-auto">
-            Create stunning photo frames and desktop widgets from your favorite photos. Perfect for personalizing your workspace.
+          <p className="mx-auto mb-12 max-w-2xl text-xl text-pink-100">
+            Create stunning photo frames and desktop widgets from your favorite photos. Perfect for
+            personalizing your workspace.
           </p>
-          <Link href="/photo-frame" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-pink-600 bg-white hover:bg-pink-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-            <ImageIcon className="w-6 h-6 mr-3" />
+          <Link
+            href="/photo-frame"
+            className="inline-flex items-center rounded-2xl bg-white px-10 py-5 text-xl font-bold text-pink-600 shadow-xl transition-all hover:-translate-y-1 hover:bg-pink-50 hover:shadow-2xl"
+          >
+            <ImageIcon className="mr-3 h-6 w-6" />
             Create Photo Frame
           </Link>
         </div>
@@ -108,32 +123,50 @@ export default async function Home() {
 
       {/* Categories Section */}
       <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Browse by Category</h2>
-            <p className="text-lg text-gray-500 dark:text-gray-400">Find the perfect style for your specific needs.</p>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-24 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl dark:text-white">
+              Browse by Category
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400">
+              Find the perfect style for your specific needs.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 gap-y-20">
+          <div className="grid grid-cols-1 gap-8 gap-y-20 md:grid-cols-3">
             {db.categories.map((cat) => (
-              <Link href={`/bundles?category=${cat.name.toLowerCase()}`} key={cat.id} className="group relative block">
-                <div className={`h-64 rounded-[2.5rem] ${cat.color} shadow-xl transition-transform duration-300 group-hover:-translate-y-2 relative overflow-visible`}>
-                   {/* 3D Pop-out Image */}
-                   <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-4 z-10 drop-shadow-2xl">
-                      {cat.imageUrl ? (
-                        <Image src={cat.imageUrl} alt={cat.name} fill className="object-contain" sizes="(max-width: 768px) 192px, 192px" />
-                      ) : (
-                        // Fallback if no image
-                        <div className="w-full h-full flex items-center justify-center">
-                           <span className="text-6xl">📁</span>
-                        </div>
-                      )}
-                   </div>
+              <Link
+                href={`/bundles?category=${cat.name.toLowerCase()}`}
+                key={cat.id}
+                className="group relative block"
+              >
+                <div
+                  className={`h-64 rounded-[2.5rem] ${cat.color} relative overflow-visible shadow-xl transition-transform duration-300 group-hover:-translate-y-2`}
+                >
+                  {/* 3D Pop-out Image */}
+                  <div className="absolute -top-16 left-1/2 z-10 h-48 w-48 -translate-x-1/2 drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-4 group-hover:scale-110">
+                    {cat.imageUrl ? (
+                      <Image
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 192px, 192px"
+                      />
+                    ) : (
+                      // Fallback if no image
+                      <div className="flex h-full w-full items-center justify-center">
+                        <span className="text-6xl">📁</span>
+                      </div>
+                    )}
+                  </div>
 
-                   {/* Content */}
-                   <div className="absolute bottom-0 left-0 w-full p-8 text-white">
-                      <h3 className="text-2xl font-bold mb-2">{cat.name}</h3>
-                      <p className="text-white/90 font-medium text-sm line-clamp-2">{cat.description}</p>
-                   </div>
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 w-full p-8 text-white">
+                    <h3 className="mb-2 text-2xl font-bold">{cat.name}</h3>
+                    <p className="line-clamp-2 text-sm font-medium text-white/90">
+                      {cat.description}
+                    </p>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -143,32 +176,54 @@ export default async function Home() {
 
       {/* Latest Bundles Section */}
       <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 flex items-end justify-between">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Latest Arrivals</h2>
-              <p className="text-lg text-gray-500 dark:text-gray-400">Freshly baked icons for your desktop.</p>
+              <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl dark:text-white">
+                Latest Arrivals
+              </h2>
+              <p className="text-lg text-gray-500 dark:text-gray-400">
+                Freshly baked icons for your desktop.
+              </p>
             </div>
-            <Link href="/bundles" className="hidden md:flex items-center text-blue-600 font-bold hover:text-blue-700 transition-colors">
-              View All Bundles <ArrowRight className="w-5 h-5 ml-2" />
+            <Link
+              href="/bundles"
+              className="hidden items-center font-bold text-blue-600 transition-colors hover:text-blue-700 md:flex"
+            >
+              View All Bundles <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {latestBundles.map((bundle) => (
-              <NeumorphBox as={Link} key={bundle.id} href={`/bundles/${bundle.id}`} className="group hover:-translate-y-1 transition-all duration-300">
-                <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
-                   {bundle.previewImage ? (
-                    <Image src={bundle.previewImage} alt={bundle.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+              <NeumorphBox
+                as={Link}
+                key={bundle.id}
+                href={`/bundles/${bundle.id}`}
+                className="group transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="relative mb-4 aspect-video overflow-hidden rounded-2xl shadow-inner">
+                  {bundle.previewImage ? (
+                    <Image
+                      src={bundle.previewImage}
+                      alt={bundle.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
                   ) : (
-                    <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400">No Preview</div>
+                    <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400 dark:bg-gray-700">
+                      No Preview
+                    </div>
                   )}
                 </div>
                 <div className="px-3 pb-3">
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-2 line-clamp-1">{bundle.name}</h3>
+                  <h3 className="mb-2 line-clamp-1 text-lg font-bold text-gray-800 dark:text-white">
+                    {bundle.name}
+                  </h3>
                   <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                     <span className="font-medium">{bundle.icons.length} Icons</span>
-                    <span className="flex items-center gap-1 text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full text-xs font-bold">
+                    <span className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-600 dark:bg-blue-900/30">
                       Free
                     </span>
                   </div>
@@ -176,9 +231,13 @@ export default async function Home() {
               </NeumorphBox>
             ))}
           </div>
-          
+
           <div className="mt-12 text-center md:hidden">
-            <NeumorphBox as={Link} href="/bundles" className="inline-flex items-center px-8 py-4 hover:neu-pressed rounded-2xl text-base font-bold text-gray-700 dark:text-gray-200 transition-all">
+            <NeumorphBox
+              as={Link}
+              href="/bundles"
+              className="hover:neu-pressed inline-flex items-center rounded-2xl px-8 py-4 text-base font-bold text-gray-700 transition-all dark:text-gray-200"
+            >
               View All Bundles
             </NeumorphBox>
           </div>
@@ -186,19 +245,30 @@ export default async function Home() {
       </section>
 
       {/* CTA Section - Create Your Own */}
-      <section id="create" className="py-24 relative overflow-hidden">
+      <section id="create" className="relative overflow-hidden py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-700">
-           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+              backgroundSize: '40px 40px',
+            }}
+          ></div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="mb-6 text-3xl font-bold text-white md:text-5xl">
             Can't find what you're looking for?
           </h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
-            Use our powerful icon generator to create custom folder icons that match your exact style and preferences.
+          <p className="mx-auto mb-12 max-w-2xl text-xl text-blue-100">
+            Use our powerful icon generator to create custom folder icons that match your exact
+            style and preferences.
           </p>
-          <Link href="/custom-folders" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-blue-600 bg-white hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-            <Palette className="w-6 h-6 mr-3" />
+          <Link
+            href="/custom-folders"
+            className="inline-flex items-center rounded-2xl bg-white px-10 py-5 text-xl font-bold text-blue-600 shadow-xl transition-all hover:-translate-y-1 hover:bg-blue-50 hover:shadow-2xl"
+          >
+            <Palette className="mr-3 h-6 w-6" />
             Open Icon Generator
           </Link>
         </div>
@@ -208,7 +278,7 @@ export default async function Home() {
       <FeaturedBlogs count={3} />
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-gray-50 dark:bg-gray-900/50">
+      <section id="pricing" className="bg-gray-50 py-24 dark:bg-gray-900/50">
         <PricingSection />
       </section>
 

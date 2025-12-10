@@ -8,19 +8,16 @@ interface FolderColorPickerProps {
 
 export function FolderColorPicker({ folderHue, onSelectHue }: FolderColorPickerProps) {
   return (
-    <NeumorphBox 
-      title="Folder Color"
-      subtitle="Colorize your folder"
-    >
-        <ColorSelector
-          mode="hue"
-          colors={[0, 140, 180, 240, 300]}
-          value={folderHue}
-          onChange={onSelectHue}
-          shape="rounded"
-          animation="grow"
-          baseColor="#3b82f6"
-        />
+    <NeumorphBox title="Folder Color" subtitle="Colorize your folder">
+      <ColorSelector
+        mode="hue"
+        colors={[0, 140, 180, 240, 300]}
+        value={folderHue}
+        onChange={onSelectHue}
+        shape="rounded"
+        animation="grow"
+        baseColor="#3b82f6"
+      />
     </NeumorphBox>
   );
 }

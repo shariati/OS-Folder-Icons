@@ -2,7 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { DB, Tag } from '@/lib/types';
-import { Plus, Search, Tags as TagsIcon, Edit2, Trash2, ChevronLeft, ChevronRight, Save, X } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Tags as TagsIcon,
+  Edit2,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  X,
+} from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { v4 as uuidv4 } from 'uuid';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
@@ -28,9 +38,10 @@ export function TagsManager({ initialData }: TagsManagerProps) {
   // Filter and sort tags
   const filteredTags = useMemo(() => {
     return tags
-      .filter(tag => 
-        tag.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tag.slug.toLowerCase().includes(searchTerm.toLowerCase())
+      .filter(
+        (tag) =>
+          tag.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          tag.slug.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [tags, searchTerm]);
@@ -45,7 +56,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
   const handleSave = async (tag: Tag) => {
     // Ensure slug is normalized
     tag.slug = normalizeTagName(tag.name);
-    
+
     try {
       const response = await authenticatedFetch('/api/admin/tags', {
         method: isCreating ? 'POST' : 'PUT',
@@ -60,7 +71,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
       if (isCreating) {
         setTags([...tags, savedTag]);
       } else {
-        setTags(tags.map(t => t.id === savedTag.id ? savedTag : t));
+        setTags(tags.map((t) => (t.id === savedTag.id ? savedTag : t)));
       }
 
       setEditingTag(null);
@@ -82,7 +93,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
 
       if (!response.ok) throw new Error('Failed to delete tag');
 
-      setTags(tags.filter(t => t.id !== id));
+      setTags(tags.filter((t) => t.id !== id));
       showToast('Tag deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting tag:', error);
@@ -102,14 +113,14 @@ export function TagsManager({ initialData }: TagsManagerProps) {
   return (
     <NeumorphBox className="p-6">
       {/* Header */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <h3 className="font-bold text-xl text-black dark:text-white flex items-center gap-2">
+      <div className="mb-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <h3 className="flex items-center gap-2 text-xl font-bold text-black dark:text-white">
           <TagsIcon size={24} className="text-primary" />
           Tags Management
         </h3>
         <button
           onClick={startCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
         >
           <Plus size={18} />
           New Tag
@@ -123,8 +134,11 @@ export function TagsManager({ initialData }: TagsManagerProps) {
             type="text"
             placeholder="Search tags..."
             value={searchTerm}
-            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPageNum(1); }}
-            className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition focus:border-primary dark:border-gray-700 dark:bg-gray-800"
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPageNum(1);
+            }}
+            className="focus:border-primary w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition dark:border-gray-700 dark:bg-gray-800"
           />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
         </div>
@@ -132,54 +146,69 @@ export function TagsManager({ initialData }: TagsManagerProps) {
 
       {/* Edit Modal */}
       {editingTag && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl dark:bg-gray-800">
+            <div className="mb-6 flex items-center justify-between">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {isCreating ? 'New Tag' : 'Edit Tag'}
               </h3>
-              <button onClick={() => { setEditingTag(null); setIsCreating(false); }} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <button
+                onClick={() => {
+                  setEditingTag(null);
+                  setIsCreating(false);
+                }}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
                 <X size={24} />
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Name
+                </label>
                 <input
                   type="text"
                   value={editingTag.name}
-                  onChange={e => {
+                  onChange={(e) => {
                     const name = e.target.value;
                     const slug = normalizeTagName(name);
                     setEditingTag({ ...editingTag, name, slug });
                   }}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="e.g., Web Development"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug (auto-generated)</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Slug (auto-generated)
+                </label>
                 <input
                   type="text"
                   value={editingTag.slug}
                   readOnly
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed font-mono text-sm"
+                  className="w-full cursor-not-allowed rounded-xl border border-gray-300 bg-gray-100 px-4 py-2 font-mono text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400"
                 />
-                <p className="text-xs text-gray-500 mt-1">Slug is automatically generated as lowercase kebab-case</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Slug is automatically generated as lowercase kebab-case
+                </p>
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
                 <button
-                  onClick={() => { setEditingTag(null); setIsCreating(false); }}
-                  className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-colors"
+                  onClick={() => {
+                    setEditingTag(null);
+                    setIsCreating(false);
+                  }}
+                  className="rounded-xl px-6 py-2 font-bold text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleSave(editingTag)}
                   disabled={!editingTag.name.trim()}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2 font-bold text-white shadow-lg shadow-blue-500/30 transition-colors hover:bg-blue-700 disabled:opacity-50"
                 >
                   <Save size={18} />
                   Save Tag
@@ -194,8 +223,10 @@ export function TagsManager({ initialData }: TagsManagerProps) {
       {filteredTags.length === 0 ? (
         <EmptyState
           title="No tags found"
-          description={searchTerm ? "Try adjusting your search." : "Create tags to categorize your content."}
-          actionLabel={!searchTerm ? "Create Tag" : undefined}
+          description={
+            searchTerm ? 'Try adjusting your search.' : 'Create tags to categorize your content.'
+          }
+          actionLabel={!searchTerm ? 'Create Tag' : undefined}
           onAction={!searchTerm ? startCreate : undefined}
         />
       ) : (
@@ -203,35 +234,44 @@ export function TagsManager({ initialData }: TagsManagerProps) {
           <div className="max-w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
             <table className="w-full table-auto">
               <thead>
-                <tr className="bg-gray-100 dark:bg-gray-800 text-left">
-                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Name</th>
-                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Slug</th>
-                  <th className="py-4 px-6 font-bold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider text-right">Actions</th>
+                <tr className="bg-gray-100 text-left dark:bg-gray-800">
+                  <th className="px-6 py-4 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                    Slug
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+              <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
                 {paginatedTags.map((tag) => (
-                  <tr key={tag.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="py-4 px-6">
+                  <tr
+                    key={tag.id}
+                    className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  >
+                    <td className="px-6 py-4">
                       <p className="font-medium text-black dark:text-white">{tag.name}</p>
                     </td>
-                    <td className="py-4 px-6">
-                      <code className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                    <td className="px-6 py-4">
+                      <code className="rounded bg-gray-100 px-2 py-1 text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-400">
                         {tag.slug}
                       </code>
                     </td>
-                    <td className="py-4 px-6 text-right">
+                    <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setEditingTag(tag)}
-                          className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600"
                           title="Edit"
                         >
                           <Edit2 size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(tag.id)}
-                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
                           title="Delete"
                         >
                           <Trash2 size={18} />
@@ -248,25 +288,27 @@ export function TagsManager({ initialData }: TagsManagerProps) {
           {totalPages > 1 && (
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm text-gray-500">
-                Showing {((currentPageNum - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPageNum * ITEMS_PER_PAGE, filteredTags.length)} of {filteredTags.length} tags
+                Showing {(currentPageNum - 1) * ITEMS_PER_PAGE + 1} to{' '}
+                {Math.min(currentPageNum * ITEMS_PER_PAGE, filteredTags.length)} of{' '}
+                {filteredTags.length} tags
               </p>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCurrentPageNum(Math.max(1, currentPageNum - 1))}
                   disabled={currentPageNum === 1}
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="rounded-lg border border-gray-200 p-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
                 >
                   <ChevronLeft size={20} />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                   <button
                     key={pageNum}
                     onClick={() => setCurrentPageNum(pageNum)}
                     className={clsx(
-                      "w-10 h-10 rounded-lg font-medium transition-colors",
+                      'h-10 w-10 rounded-lg font-medium transition-colors',
                       pageNum === currentPageNum
-                        ? "bg-blue-600 text-white"
-                        : "border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
                     )}
                   >
                     {pageNum}
@@ -275,7 +317,7 @@ export function TagsManager({ initialData }: TagsManagerProps) {
                 <button
                   onClick={() => setCurrentPageNum(Math.min(totalPages, currentPageNum + 1))}
                   disabled={currentPageNum === totalPages}
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="rounded-lg border border-gray-200 p-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
                 >
                   <ChevronRight size={20} />
                 </button>

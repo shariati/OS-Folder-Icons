@@ -40,7 +40,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   ...props
 }: NeumorphBoxProps<T> & React.ComponentPropsWithoutRef<T>) {
   const Component = as || 'div';
-  
+
   const hasHeader = !!(icon || title || subtitle || badge);
   const hasFooter = !!(helperText || error);
   const hasActions = !!(showActions || customActions);
@@ -49,12 +49,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   if (isVoid) {
     return (
       <Component
-        className={twMerge(
-          clsx(
-            variant === 'flat' ? 'neu-flat' : 'neu-pressed',
-            className
-          )
-        )}
+        className={twMerge(clsx(variant === 'flat' ? 'neu-flat' : 'neu-pressed', className))}
         {...props}
       />
     );
@@ -66,49 +61,55 @@ export function NeumorphBox<T extends ElementType = 'div'>({
         clsx(
           variant === 'flat' ? 'neu-flat' : 'neu-pressed',
           'relative',
-          'rounded-xl bg-white p-8 space-y-6',
+          'space-y-6 rounded-xl bg-white p-8',
           className
         )
       )}
       {...props}
     >
       {hasHeader && (
-        <div className="flex items-start justify-between mb-4 gap-4">
-           <div className="flex items-center gap-3 overflow-hidden">
-              {icon && <div className="flex-shrink-0 text-gray-500 dark:text-gray-400">{icon}</div>}
-              <div className="flex flex-col min-w-0">
-                 {title && <h3 className="text-lg font-bold mb-1 text-gray-700 dark:text-white">{title}</h3>}
-                 {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{subtitle}</p>}
-              </div>
-           </div>
-           {badge && (
-             <div className="flex-shrink-0">
-               {badge}
-             </div>
-           )}
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3 overflow-hidden">
+            {icon && <div className="flex-shrink-0 text-gray-500 dark:text-gray-400">{icon}</div>}
+            <div className="flex min-w-0 flex-col">
+              {title && (
+                <h3 className="mb-1 text-lg font-bold text-gray-700 dark:text-white">{title}</h3>
+              )}
+              {subtitle && (
+                <p className="truncate text-sm text-gray-500 dark:text-gray-400">{subtitle}</p>
+              )}
+            </div>
+          </div>
+          {badge && <div className="flex-shrink-0">{badge}</div>}
         </div>
       )}
-      
+
       {children}
 
       {hasActions && (
-        <div className={twMerge("flex justify-end items-center gap-3 mt-4", actionsClassName)}>
+        <div className={twMerge('mt-4 flex items-center justify-end gap-3', actionsClassName)}>
           {customActions}
           {showActions && (
             <>
               {onEdit && (
-                <button 
-                  onClick={(e) => { e.stopPropagation(); onEdit(); }}
-                  className="text-blue-500 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-lg"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                  }}
+                  className="rounded-lg p-1.5 text-blue-500 transition-colors hover:bg-blue-50 hover:text-blue-600"
                   title="Edit"
                 >
                   <Edit2 size={18} />
                 </button>
               )}
               {onDelete && (
-                <button 
-                  onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                  className="text-red-500 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-lg"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                  className="rounded-lg p-1.5 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600"
                   title="Delete"
                 >
                   <Trash2 size={18} />
@@ -121,11 +122,11 @@ export function NeumorphBox<T extends ElementType = 'div'>({
 
       {hasFooter && (
         <div className="mt-2 text-sm">
-           {error ? (
-             <p className="text-red-500 font-medium">{error}</p>
-           ) : (
-             <p className="text-gray-500 dark:text-gray-400">{helperText}</p>
-           )}
+          {error ? (
+            <p className="font-medium text-red-500">{error}</p>
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400">{helperText}</p>
+          )}
         </div>
       )}
     </Component>

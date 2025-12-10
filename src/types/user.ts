@@ -1,45 +1,45 @@
 export type UserRole = 'admin' | 'free' | 'paid' | 'lifetime';
 
 export interface UserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  providers?: Array<{
+    providerId: string;
     uid: string;
-    email: string | null;
     displayName: string | null;
-    photoURL: string | null;
-    providers?: Array<{
-        providerId: string;
-        uid: string;
-        displayName: string | null;
-        email: string | null;
-    }>;
-    role: UserRole;
-    createdAt: string;
-    subscriptionId?: string; // Stripe or other subscription ID
-    lifetimeAccess?: boolean;
-    favouriteLists?: string[]; // IDs of favourite lists
-    generatedFoldersCount?: number;
-    stripeCustomerId?: string;
-    subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing' | null;
-    currentPeriodEnd?: string; // ISO date
-    planId?: string; // To track monthly vs annual vs lifetime
-    cancellationReason?: string;
-    cancellationFeedback?: string;
-    cancelledAt?: string; // ISO date
-    cancelAtPeriodEnd?: boolean;
-    cancellationFeedbackHistory?: Array<{
-        reason: string;
-        feedback: string;
-        date: string;
-    }>;
-    lastLoginAt?: string; // ISO date
-    emailVerified?: boolean; // Whether the user's email has been verified
-    activationEmailSentAt?: string; // ISO date when activation email was last sent
-    activatedAt?: string; // ISO date when user activated their account
+    email: string | null;
+  }>;
+  role: UserRole;
+  createdAt: string;
+  subscriptionId?: string; // Stripe or other subscription ID
+  lifetimeAccess?: boolean;
+  favouriteLists?: string[]; // IDs of favourite lists
+  generatedFoldersCount?: number;
+  stripeCustomerId?: string;
+  subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing' | null;
+  currentPeriodEnd?: string; // ISO date
+  planId?: string; // To track monthly vs annual vs lifetime
+  cancellationReason?: string;
+  cancellationFeedback?: string;
+  cancelledAt?: string; // ISO date
+  cancelAtPeriodEnd?: boolean;
+  cancellationFeedbackHistory?: Array<{
+    reason: string;
+    feedback: string;
+    date: string;
+  }>;
+  lastLoginAt?: string; // ISO date
+  emailVerified?: boolean; // Whether the user's email has been verified
+  activationEmailSentAt?: string; // ISO date when activation email was last sent
+  activatedAt?: string; // ISO date when user activated their account
 }
 
 export interface FavouriteList {
-    id: string;
-    userId: string;
-    name: string;
-    folderIds: string[]; // IDs of generated folders
-    createdAt: string;
+  id: string;
+  userId: string;
+  name: string;
+  folderIds: string[]; // IDs of generated folders
+  createdAt: string;
 }

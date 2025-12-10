@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 /**
  * OptimizedImage Component
- * 
+ *
  * A wrapper around Next.js Image component that provides:
  * - Responsive image sizes for mobile/tablet/desktop
  * - Retina display support (2x, 3x)
@@ -58,7 +58,8 @@ const SIZE_PRESETS = {
  * Minimal blur placeholder data URL (tiny gray square)
  * This displays immediately while the full image loads
  */
-const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==';
+const BLUR_DATA_URL =
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==';
 
 export function OptimizedImage({
   sizePreset = 'card',
@@ -71,15 +72,15 @@ export function OptimizedImage({
   ...props
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Use custom sizes if provided, otherwise use preset
   const finalSizes = sizes || SIZE_PRESETS[sizePreset];
-  
+
   const handleLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
     setIsLoading(false);
     onLoad?.(event);
   };
-  
+
   return (
     <Image
       {...props}
@@ -102,7 +103,7 @@ export function useResponsiveSizes(baseWidth: number) {
   return {
     // Mobile: 1x and 2x
     mobile: `${baseWidth}w, ${baseWidth * 2}w`,
-    // Tablet: 1x and 2x  
+    // Tablet: 1x and 2x
     tablet: `${Math.round(baseWidth * 1.5)}w, ${baseWidth * 3}w`,
     // Desktop: 1x and 2x
     desktop: `${baseWidth * 2}w, ${baseWidth * 4}w`,

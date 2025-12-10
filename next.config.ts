@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 import bundleAnalyzer from '@next/bundle-analyzer';
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -40,10 +40,7 @@ const TRUSTED_AD_DOMAINS = [
 ];
 
 // Trusted domains for fonts
-const TRUSTED_FONT_DOMAINS = [
-  'fonts.googleapis.com',
-  'fonts.gstatic.com',
-];
+const TRUSTED_FONT_DOMAINS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
 // Firebase domains (and Google Auth)
 const TRUSTED_FIREBASE_DOMAINS = [
@@ -66,11 +63,7 @@ const TRUSTED_STRIPE_DOMAINS = [
 ];
 
 // Vercel domains (for preview deployments)
-const TRUSTED_VERCEL_DOMAINS = [
-  '*.vercel.live',
-  'vercel.live',
-  '*.vercel.app',
-];
+const TRUSTED_VERCEL_DOMAINS = ['*.vercel.live', 'vercel.live', '*.vercel.app'];
 
 // Build CSP header inline
 function buildCSPHeader(): string {
@@ -87,11 +80,7 @@ function buildCSPHeader(): string {
       ...TRUSTED_STRIPE_DOMAINS,
       ...TRUSTED_VERCEL_DOMAINS,
     ],
-    'style-src': [
-      "'self'",
-      "'unsafe-inline'",
-      ...TRUSTED_FONT_DOMAINS,
-    ],
+    'style-src': ["'self'", "'unsafe-inline'", ...TRUSTED_FONT_DOMAINS],
     'img-src': [
       "'self'",
       'data:',
@@ -104,11 +93,7 @@ function buildCSPHeader(): string {
       'i.ytimg.com',
       '*.youtube.com',
     ],
-    'font-src': [
-      "'self'",
-      'data:',
-      ...TRUSTED_FONT_DOMAINS,
-    ],
+    'font-src': ["'self'", 'data:', ...TRUSTED_FONT_DOMAINS],
     'frame-src': [
       "'self'",
       ...TRUSTED_EMBED_DOMAINS,
@@ -128,18 +113,10 @@ function buildCSPHeader(): string {
       'wss://*.firebaseio.com',
       ...(isDevelopment ? ['ws://localhost:*', 'http://localhost:*'] : []),
     ],
-    'media-src': [
-      "'self'",
-      'blob:',
-      ...TRUSTED_FIREBASE_DOMAINS,
-    ],
+    'media-src': ["'self'", 'blob:', ...TRUSTED_FIREBASE_DOMAINS],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],
-    'form-action': [
-      "'self'",
-      'accounts.google.com',
-      '*.firebaseapp.com',
-    ],
+    'form-action': ["'self'", 'accounts.google.com', '*.firebaseapp.com'],
     'frame-ancestors': ["'self'"],
     'upgrade-insecure-requests': [],
   };

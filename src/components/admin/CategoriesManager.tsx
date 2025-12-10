@@ -34,7 +34,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
       if (isCreating) {
         setCategories([...categories, savedCategory]);
       } else {
-        setCategories(categories.map(c => c.id === savedCategory.id ? savedCategory : c));
+        setCategories(categories.map((c) => (c.id === savedCategory.id ? savedCategory : c)));
       }
 
       setEditingCategory(null);
@@ -56,7 +56,7 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
       if (!response.ok) throw new Error('Failed to delete category');
 
-      setCategories(categories.filter(c => c.id !== id));
+      setCategories(categories.filter((c) => c.id !== id));
       showToast('Category deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting category:', error);
@@ -83,11 +83,11 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
   return (
     <div className="space-y-6">
       {hasItems && (
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Categories</h2>
           <button
             onClick={startCreate}
-            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/30"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-bold text-white shadow-lg shadow-blue-500/30 transition-colors hover:bg-blue-700"
           >
             <Plus size={18} />
             Add Category
@@ -96,55 +96,85 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
       )}
 
       {!hasItems && !isCreating && (
-        <EmptyState 
-            title="No Categories Found"
-            description="Create categories to organize your icons efficiently."
-            actionLabel="Add Category"
-            onAction={startCreate}
+        <EmptyState
+          title="No Categories Found"
+          description="Create categories to organize your icons efficiently."
+          actionLabel="Add Category"
+          onAction={startCreate}
         />
       )}
 
       {editingCategory && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-8 shadow-2xl dark:bg-gray-800">
+            <div className="mb-6 flex items-center justify-between">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {isCreating ? 'New Category' : 'Edit Category'}
               </h3>
-              <button onClick={() => { setEditingCategory(null); setIsCreating(false); }} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <button
+                onClick={() => {
+                  setEditingCategory(null);
+                  setIsCreating(false);
+                }}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
                 <X size={24} />
               </button>
             </div>
 
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Name
+                  </label>
                   <input
                     type="text"
                     value={editingCategory.name}
-                    onChange={e => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    onChange={(e) =>
+                      setEditingCategory({ ...editingCategory, name: e.target.value })
+                    }
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Color
+                  </label>
                   <div className="grid grid-cols-5 gap-3">
                     {[
-                      'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-yellow-500', 'bg-lime-500',
-                      'bg-green-500', 'bg-emerald-500', 'bg-teal-500', 'bg-cyan-500', 'bg-sky-500',
-                      'bg-blue-500', 'bg-indigo-500', 'bg-violet-500', 'bg-purple-500', 'bg-fuchsia-500',
-                      'bg-pink-500', 'bg-rose-500', 'bg-slate-500', 'bg-gray-500', 'bg-zinc-500'
-                    ].map(colorClass => (
+                      'bg-red-500',
+                      'bg-orange-500',
+                      'bg-amber-500',
+                      'bg-yellow-500',
+                      'bg-lime-500',
+                      'bg-green-500',
+                      'bg-emerald-500',
+                      'bg-teal-500',
+                      'bg-cyan-500',
+                      'bg-sky-500',
+                      'bg-blue-500',
+                      'bg-indigo-500',
+                      'bg-violet-500',
+                      'bg-purple-500',
+                      'bg-fuchsia-500',
+                      'bg-pink-500',
+                      'bg-rose-500',
+                      'bg-slate-500',
+                      'bg-gray-500',
+                      'bg-zinc-500',
+                    ].map((colorClass) => (
                       <button
                         key={colorClass}
-                        onClick={() => setEditingCategory({ ...editingCategory, color: colorClass })}
+                        onClick={() =>
+                          setEditingCategory({ ...editingCategory, color: colorClass })
+                        }
                         className={clsx(
-                          "w-full aspect-square rounded-xl transition-all shadow-sm",
+                          'aspect-square w-full rounded-xl shadow-sm transition-all',
                           colorClass,
-                          editingCategory.color === colorClass 
-                            ? "ring-4 ring-blue-500/50 scale-110 z-10" 
-                            : "hover:scale-105 hover:shadow-md"
+                          editingCategory.color === colorClass
+                            ? 'z-10 scale-110 ring-4 ring-blue-500/50'
+                            : 'hover:scale-105 hover:shadow-md'
                         )}
                         title={colorClass}
                       />
@@ -154,16 +184,22 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Description
+                </label>
                 <textarea
                   value={editingCategory.description}
-                  onChange={e => setEditingCategory({ ...editingCategory, description: e.target.value })}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none h-24"
+                  onChange={(e) =>
+                    setEditingCategory({ ...editingCategory, description: e.target.value })
+                  }
+                  className="h-24 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category Image</label>
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Category Image
+                </label>
                 <ImageUploader
                   value={editingCategory.imageUrl}
                   onChange={(url) => setEditingCategory({ ...editingCategory, imageUrl: url })}
@@ -172,33 +208,50 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
                 />
               </div>
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">SEO Settings</h4>
+              <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
+                <h4 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
+                  SEO Settings
+                </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">SEO Title</label>
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      SEO Title
+                    </label>
                     <input
                       type="text"
                       value={editingCategory.seoTitle || ''}
-                      onChange={e => setEditingCategory({ ...editingCategory, seoTitle: e.target.value })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                      onChange={(e) =>
+                        setEditingCategory({ ...editingCategory, seoTitle: e.target.value })
+                      }
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">SEO Description</label>
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      SEO Description
+                    </label>
                     <textarea
                       value={editingCategory.seoDescription || ''}
-                      onChange={e => setEditingCategory({ ...editingCategory, seoDescription: e.target.value })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none h-20"
+                      onChange={(e) =>
+                        setEditingCategory({ ...editingCategory, seoDescription: e.target.value })
+                      }
+                      className="h-20 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">SEO Keywords (comma separated)</label>
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      SEO Keywords (comma separated)
+                    </label>
                     <input
                       type="text"
                       value={editingCategory.seoKeywords?.join(', ') || ''}
-                      onChange={e => setEditingCategory({ ...editingCategory, seoKeywords: e.target.value.split(',').map(k => k.trim()) })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                      onChange={(e) =>
+                        setEditingCategory({
+                          ...editingCategory,
+                          seoKeywords: e.target.value.split(',').map((k) => k.trim()),
+                        })
+                      }
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                 </div>
@@ -206,14 +259,17 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
 
               <div className="flex justify-end gap-3 pt-4">
                 <button
-                  onClick={() => { setEditingCategory(null); setIsCreating(false); }}
-                  className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-colors"
+                  onClick={() => {
+                    setEditingCategory(null);
+                    setIsCreating(false);
+                  }}
+                  className="rounded-xl px-6 py-2 font-bold text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleSave(editingCategory)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/30 transition-colors flex items-center gap-2"
+                  className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2 font-bold text-white shadow-lg shadow-blue-500/30 transition-colors hover:bg-blue-700"
                 >
                   <Save size={18} />
                   Save Category
@@ -225,25 +281,37 @@ export function CategoriesManager({ initialData }: { initialData: DB }) {
       )}
 
       {hasItems && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map(category => (
-            <NeumorphBox 
-              key={category.id} 
-              className="p-6 rounded-3xl relative group"
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category) => (
+            <NeumorphBox
+              key={category.id}
+              className="group relative rounded-3xl p-6"
               showActions
               onEdit={() => setEditingCategory(category)}
               onDelete={() => handleDelete(category.id)}
             >
-              <div className={`absolute -top-6 right-6 w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}>
-                  {category.imageUrl ? (
-                      <Image src={category.imageUrl} alt={category.name} width={40} height={40} className="object-contain" />
-                  ) : (
-                      <span className="text-white font-bold text-xl">{category.name[0]}</span>
-                  )}
+              <div
+                className={`absolute -top-6 right-6 h-16 w-16 rounded-2xl ${category.color} flex items-center justify-center shadow-lg`}
+              >
+                {category.imageUrl ? (
+                  <Image
+                    src={category.imageUrl}
+                    alt={category.name}
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                ) : (
+                  <span className="text-xl font-bold text-white">{category.name[0]}</span>
+                )}
               </div>
-              
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-4 mb-2">{category.name}</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{category.description}</p>
+
+              <h3 className="mb-2 mt-4 text-xl font-bold text-gray-800 dark:text-white">
+                {category.name}
+              </h3>
+              <p className="mb-4 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+                {category.description}
+              </p>
             </NeumorphBox>
           ))}
         </div>

@@ -10,23 +10,23 @@ import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 function SignupContent() {
   const router = useRouter();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const { signInWithGoogle, signUpWithEmail } = useAuth();
-  
+
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
 
   const handleRedirect = () => {
-      if (redirect) {
-          router.push(redirect);
-      } else {
-          router.push('/');
-      }
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      router.push('/');
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -74,41 +74,44 @@ function SignupContent() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 py-12 overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-4 py-12">
       {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <div className="absolute inset-0 bg-white/60 z-10" /> {/* Overlay */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)} type="video/webm" />
+      <div className="absolute inset-0 z-0 h-full w-full">
+        <div className="absolute inset-0 z-10 bg-white/60" /> {/* Overlay */}
+        <video autoPlay loop muted playsInline className="h-full w-full object-cover">
+          <source
+            src={getFirebaseStorageUrl(FIREBASE_STORAGE.VIDEO_BACKGROUND)}
+            type="video/webm"
+          />
         </video>
       </div>
 
-      <div className="relative z-20 w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative z-20 mx-auto w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-800">
         <div className="p-8 sm:p-10">
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center justify-center mb-6">
+          <div className="mb-8 text-center">
+            <Link href="/" className="mb-6 inline-flex items-center justify-center">
               <Image
                 src={getFirebaseStorageUrl(FIREBASE_STORAGE.LOGO)}
                 alt="HDPick Logo"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="h-16 w-16"
                 priority
               />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">Personalize every pixel</p>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Join thousands of users customizing their desktops</p>
+            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
+              Create Account
+            </h1>
+            <p className="mb-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+              Personalize every pixel
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Join thousands of users customizing their desktops
+            </p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium text-center">
+            <div className="mb-6 rounded-xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-900/20 dark:text-red-400">
               {error}
             </div>
           )}
@@ -118,9 +121,9 @@ function SignupContent() {
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-4 px-4 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-semibold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-3 shadow-sm"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-4 font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-500 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:border-blue-500 dark:hover:bg-gray-600"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -149,7 +152,9 @@ function SignupContent() {
                 <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500">Or sign up with email</span>
+                <span className="bg-white px-4 text-gray-500 dark:bg-gray-800">
+                  Or sign up with email
+                </span>
               </div>
             </div>
           </div>
@@ -157,16 +162,18 @@ function SignupContent() {
           {/* Secondary: Email/Password Form */}
           <form onSubmit={handleEmailSignup} className="mt-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Email Address
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="block w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                   placeholder="you@example.com"
                   required
                 />
@@ -174,16 +181,18 @@ function SignupContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Password
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="block w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                   placeholder="Create a password"
                   required
                 />
@@ -197,26 +206,34 @@ function SignupContent() {
                 id="ageConfirmation"
                 checked={ageConfirmed}
                 onChange={(e) => setAgeConfirmed(e.target.checked)}
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <label htmlFor="ageConfirmation" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+              <label
+                htmlFor="ageConfirmation"
+                className="cursor-pointer text-sm text-gray-600 dark:text-gray-400"
+              >
                 I confirm that I am at least <strong>16 years old</strong> and agree to the{' '}
-                <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>{' '}
+                <Link href="/terms" className="text-blue-600 hover:underline">
+                  Terms of Service
+                </Link>{' '}
                 and{' '}
-                <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
+                <Link href="/privacy" className="text-blue-600 hover:underline">
+                  Privacy Policy
+                </Link>
+                .
               </label>
             </div>
 
             <button
               type="submit"
               disabled={loading || !ageConfirmed}
-              className="w-full py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center border border-gray-200 dark:border-gray-600"
+              className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 py-3 font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             >
-              Create Account with Email <ArrowRight className="ml-2 w-4 h-4" />
+              Create Account with Email <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </form>
         </div>
-        <div className="px-8 py-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 text-center">
+        <div className="border-t border-gray-100 bg-gray-50 px-8 py-6 text-center dark:border-gray-700 dark:bg-gray-900/50">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
             <Link href="/login" className="font-bold text-blue-600 hover:text-blue-700">
@@ -231,7 +248,13 @@ function SignupContent() {
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        </div>
+      }
+    >
       <SignupContent />
     </Suspense>
   );

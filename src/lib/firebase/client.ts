@@ -13,16 +13,16 @@ let db: Firestore = undefined as unknown as Firestore;
 let storage: FirebaseStorage = undefined as unknown as FirebaseStorage;
 
 try {
-    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
-        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-        auth = getAuth(app);
-        db = getFirestore(app);
-        storage = getStorage(app);
-    } else {
-        console.warn('Firebase config missing. Skipping initialization.');
-    }
+  if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+  } else {
+    console.warn('Firebase config missing. Skipping initialization.');
+  }
 } catch (error) {
-    console.warn('Firebase initialization failed:', error);
+  console.warn('Firebase initialization failed:', error);
 }
 
 export { app, auth, db, storage };

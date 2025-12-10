@@ -17,45 +17,41 @@ export function PreviewPanel({
   controls,
   actions,
   footerText,
-  minHeight = "min-h-[400px]",
-  title = "Preview",
-  cover = false
+  minHeight = 'min-h-[400px]',
+  title = 'Preview',
+  cover = false,
 }: PreviewPanelProps) {
   return (
-    <div className="glass-panel p-8 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-      
-      <div className="flex items-center justify-between mb-8">
+    <div className="glass-panel relative overflow-hidden p-8">
+      <div className="absolute left-0 top-0 h-2 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
         <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-400"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-          <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          <div className="h-3 w-3 rounded-full bg-red-400"></div>
+          <div className="h-3 w-3 rounded-full bg-yellow-400"></div>
+          <div className="h-3 w-3 rounded-full bg-green-400"></div>
         </div>
       </div>
 
-      <NeumorphBox 
+      <NeumorphBox
         variant="pressed"
         className={clsx(
-          "flex justify-center mb-6 bg-gray-100/50 dark:bg-gray-900/50 rounded-2xl checkerboard flex items-center overflow-auto",
-          cover ? "p-0" : "p-4",
+          'checkerboard mb-6 flex items-center justify-center overflow-auto rounded-2xl bg-gray-100/50 dark:bg-gray-900/50',
+          cover ? 'p-0' : 'p-4',
           minHeight
         )}
       >
         {children}
       </NeumorphBox>
-      
-      {controls && (
-        <div className="mb-6">
-          {controls}
-        </div>
-      )}
+
+      {controls && <div className="mb-6">{controls}</div>}
 
       {(actions || footerText) && (
-        <div className="space-y-4 max-w-md mx-auto">
+        <div className="mx-auto max-w-md space-y-4">
           {actions}
           {footerText && (
-            <div className="text-center text-sm text-gray-500 dark:text-gray-400 font-medium">
+            <div className="text-center text-sm font-medium text-gray-500 dark:text-gray-400">
               {footerText}
             </div>
           )}

@@ -4,33 +4,33 @@
  * @returns True if URL is external
  */
 export function isExternalUrl(url: string): boolean {
-    if (!url) return false;
+  if (!url) return false;
 
-    // Check if it's a relative URL
-    if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
-        return false;
-    }
-
-    // Check if it's an absolute URL
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-        // Check if it's the same domain
-        if (typeof window !== 'undefined') {
-            try {
-                const urlObj = new URL(url);
-                return urlObj.hostname !== window.location.hostname;
-            } catch {
-                return true;
-            }
-        }
-        return true;
-    }
-
-    // mailto:, tel:, etc. are considered external
-    if (url.includes(':')) {
-        return true;
-    }
-
+  // Check if it's a relative URL
+  if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
     return false;
+  }
+
+  // Check if it's an absolute URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    // Check if it's the same domain
+    if (typeof window !== 'undefined') {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.hostname !== window.location.hostname;
+      } catch {
+        return true;
+      }
+    }
+    return true;
+  }
+
+  // mailto:, tel:, etc. are considered external
+  if (url.includes(':')) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -38,12 +38,12 @@ export function isExternalUrl(url: string): boolean {
  * @returns Site URL
  */
 export function getSiteUrl(): string {
-    if (typeof window !== 'undefined') {
-        return window.location.origin;
-    }
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
 
-    // Server-side: use environment variable or default
-    return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  // Server-side: use environment variable or default
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 }
 
 /**
@@ -53,13 +53,13 @@ export function getSiteUrl(): string {
  * @returns Full URL
  */
 export function getFullUrl(slug: string, type: 'page' | 'blog' = 'page'): string {
-    const siteUrl = getSiteUrl();
+  const siteUrl = getSiteUrl();
 
-    if (type === 'blog') {
-        return `${siteUrl}/blog/${slug}`;
-    }
+  if (type === 'blog') {
+    return `${siteUrl}/blog/${slug}`;
+  }
 
-    return `${siteUrl}/${slug}`;
+  return `${siteUrl}/${slug}`;
 }
 
 /**
@@ -68,35 +68,35 @@ export function getFullUrl(slug: string, type: 'page' | 'blog' = 'page'): string
  * @returns Promise that resolves when copy is complete
  */
 export async function copyToClipboard(text: string): Promise<boolean> {
-    if (typeof window === 'undefined') {
-        return false;
-    }
+  if (typeof window === 'undefined') {
+    return false;
+  }
 
-    try {
-        if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-            return true;
-        } else {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
 
-            try {
-                document.execCommand('copy');
-                textArea.remove();
-                return true;
-            } catch (error) {
-                textArea.remove();
-                return false;
-            }
-        }
-    } catch (error) {
-        console.error('Failed to copy to clipboard:', error);
+      try {
+        document.execCommand('copy');
+        textArea.remove();
+        return true;
+      } catch (error) {
+        textArea.remove();
         return false;
+      }
     }
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error);
+    return false;
+  }
 }

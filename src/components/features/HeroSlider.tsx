@@ -10,7 +10,7 @@ import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  
+
   // Prevent hydration mismatch by waiting for mount
   const [mounted, setMounted] = useState(false);
 
@@ -43,13 +43,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
   // Always render the container to prevent hydration mismatch
   if (!slides || slides.length === 0) {
-    return <div className="relative w-full h-screen overflow-hidden bg-black" />;
+    return <div className="relative h-screen w-full overflow-hidden bg-black" />;
   }
 
   const currentSlide = slides[currentIndex];
 
   // Calculate next slides for the preview list
-  const nextSlides = [1, 2, 3].map(offset => {
+  const nextSlides = [1, 2, 3].map((offset) => {
     const index = (currentIndex + offset) % slides.length;
     return { ...slides[index], index };
   });
@@ -57,9 +57,9 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   // Before mount, render a static version without animations
   if (!mounted) {
     return (
-      <div className="relative w-full h-screen overflow-hidden bg-black">
-        <div className="absolute inset-0 w-full h-full">
-          <div className="absolute inset-0 bg-black/40 z-10" />
+      <div className="relative h-screen w-full overflow-hidden bg-black">
+        <div className="absolute inset-0 h-full w-full">
+          <div className="absolute inset-0 z-10 bg-black/40" />
           {currentSlide.imageUrl && (
             <Image
               src={currentSlide.imageUrl}
@@ -76,7 +76,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative h-screen w-full overflow-hidden bg-black">
       {/* Background Image Transition */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
@@ -85,11 +85,11 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute inset-0 w-full h-full"
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
+          className="absolute inset-0 h-full w-full"
         >
-           {/* Dark Overlay */}
-          <div className="absolute inset-0 bg-black/40 z-10" />
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 z-10 bg-black/40" />
           {currentSlide.imageUrl && (
             <Image
               src={currentSlide.imageUrl}
@@ -104,54 +104,56 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       </AnimatePresence>
 
       {/* Content Container */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-16 lg:px-24 max-w-[1920px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-end lg:items-center h-full pb-24 lg:pb-0">
-          
+      <div className="absolute inset-0 z-20 mx-auto flex max-w-[1920px] flex-col justify-center px-8 md:px-16 lg:px-24">
+        <div className="grid h-full w-full grid-cols-1 items-end gap-8 pb-24 lg:grid-cols-12 lg:items-center lg:pb-0">
           {/* Left Content */}
-          <div className="lg:col-span-5 text-white space-y-6 pt-24 lg:pt-0">
+          <div className="space-y-6 pt-24 text-white lg:col-span-5 lg:pt-0">
             <motion.div
               key={`text-${currentIndex}`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              <div className="flex items-center gap-4 mb-4">
+              <div className="mb-4 flex items-center gap-4">
                 <div className="h-[2px] w-12 bg-yellow-400" />
-                <span className="uppercase tracking-widest text-sm font-medium text-yellow-400">
+                <span className="text-sm font-medium uppercase tracking-widest text-yellow-400">
                   {currentSlide.subtitle || 'Featured'}
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 uppercase">
+              <h1 className="mb-6 text-5xl font-bold uppercase leading-tight md:text-7xl">
                 {currentSlide.title}
               </h1>
-              <p className="text-lg text-gray-200 max-w-md mb-8 leading-relaxed">
+              <p className="mb-8 max-w-md text-lg leading-relaxed text-gray-200">
                 {currentSlide.description}
               </p>
-              
+
               {currentSlide.link && (
-                <Link 
+                <Link
                   href={currentSlide.link}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-yellow-400 text-black font-bold rounded-full hover:bg-white transition-colors group"
+                  className="group inline-flex items-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-bold text-black transition-colors hover:bg-white"
                 >
                   Explore Collection
-                  <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight
+                    size={20}
+                    className="transition-transform group-hover:translate-x-1"
+                  />
                 </Link>
               )}
             </motion.div>
           </div>
 
           {/* Right Preview Carousel */}
-          <div className="lg:col-span-7 hidden lg:flex gap-6 justify-end items-end h-[50vh]">
+          <div className="hidden h-[50vh] items-end justify-end gap-6 lg:col-span-7 lg:flex">
             {nextSlides.map((slide, i) => (
               <motion.div
                 key={slide.id}
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + (i * 0.1), duration: 0.5 }}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.5 }}
                 onClick={() => goToSlide(slide.index)}
-                className="relative w-48 h-72 rounded-2xl overflow-hidden cursor-pointer group shadow-2xl border border-white/10 hover:border-yellow-400/50 transition-colors"
+                className="group relative h-72 w-48 cursor-pointer overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-colors hover:border-yellow-400/50"
               >
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors z-10" />
+                <div className="absolute inset-0 z-10 bg-black/30 transition-colors group-hover:bg-black/10" />
                 {slide.imageUrl && (
                   <Image
                     src={slide.imageUrl}
@@ -161,9 +163,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                     sizes="192px"
                   />
                 )}
-                <div className="absolute bottom-0 left-0 w-full p-4 z-20 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-xs text-yellow-400 uppercase tracking-wider mb-1">{slide.subtitle}</p>
-                  <h3 className="text-white font-bold text-sm uppercase leading-tight">{slide.title}</h3>
+                <div className="absolute bottom-0 left-0 z-20 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
+                  <p className="mb-1 text-xs uppercase tracking-wider text-yellow-400">
+                    {slide.subtitle}
+                  </p>
+                  <h3 className="text-sm font-bold uppercase leading-tight text-white">
+                    {slide.title}
+                  </h3>
                 </div>
               </motion.div>
             ))}
@@ -171,32 +177,37 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
         </div>
 
         {/* Navigation & Progress */}
-        <div className="absolute bottom-12 left-8 md:left-16 lg:left-24 right-8 md:right-16 lg:right-24 flex items-center justify-between">
-            <div className="flex gap-4">
-                <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
-                    <ArrowLeft size={20} />
-                </button>
-                <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
-                    <ArrowRight size={20} />
-                </button>
-            </div>
+        <div className="absolute bottom-12 left-8 right-8 flex items-center justify-between md:left-16 md:right-16 lg:left-24 lg:right-24">
+          <div className="flex gap-4">
+            <button
+              onClick={prevSlide}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 text-white transition-all hover:bg-white hover:text-black"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 text-white transition-all hover:bg-white hover:text-black"
+            >
+              <ArrowRight size={20} />
+            </button>
+          </div>
 
-            <div className="flex items-center gap-4 text-white font-mono text-xl">
-                <span>0{currentIndex + 1}</span>
-                <div className="w-32 h-[2px] bg-white/20 relative overflow-hidden">
-                    <motion.div 
-                        key={currentIndex}
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 6, ease: "linear" }}
-                        className="absolute top-0 left-0 h-full bg-yellow-400"
-                    />
-                </div>
-                <span>0{slides.length}</span>
+          <div className="flex items-center gap-4 font-mono text-xl text-white">
+            <span>0{currentIndex + 1}</span>
+            <div className="relative h-[2px] w-32 overflow-hidden bg-white/20">
+              <motion.div
+                key={currentIndex}
+                initial={{ width: '0%' }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 6, ease: 'linear' }}
+                className="absolute left-0 top-0 h-full bg-yellow-400"
+              />
             </div>
+            <span>0{slides.length}</span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
