@@ -1,4 +1,5 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { NeumorphDropdownList } from '@/components/ui/NeumorphDropdownList';
 import { OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
 import { clsx } from 'clsx';
 import Image from 'next/image';
@@ -28,34 +29,17 @@ export function Configuration({
     <NeumorphBox title="Configuration" subtitle="Choose your style">
       <div className="space-y-6">
         <div>
-          <label className="mb-2 ml-1 block text-sm font-bold text-gray-700 dark:text-gray-300">
-            Version
-          </label>
-          <div className="relative">
-            <NeumorphBox
-              as="select"
-              variant="pressed"
-              value={selectedVersionId}
-              onChange={(e: any) => onSelectVersion(e.target.value)}
-              className="w-full appearance-none rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white"
-            >
-              {selectedOS.versions.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.name}
-                </option>
-              ))}
-            </NeumorphBox>
-            <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </div>
-          </div>
+          <NeumorphDropdownList
+            label="Version"
+            placeholder="Select Version"
+            value={selectedVersionId}
+            onChange={onSelectVersion}
+            items={selectedOS.versions.map((v) => ({
+              label: v.name,
+              value: v.id,
+            }))}
+            className="w-full"
+          />
         </div>
 
         <div>
