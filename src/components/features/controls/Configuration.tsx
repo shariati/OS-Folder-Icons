@@ -47,7 +47,7 @@ export function Configuration({
           <ToggleGroup
             title="Folder Style"
             variant="none"
-            gridSize={3}
+            gridSize={2}
             className="gap-3"
             items={
               selectedVersion?.folderIcons.map((folder) => ({
@@ -56,9 +56,9 @@ export function Configuration({
                 imageSrc: folder.imageUrl,
                 imageAlt: folder.name,
                 imageStyle: {
-                  filter:
-                    folderHue !== 0 ? `hue-rotate(${folderHue}deg) sepia(0.5) saturate(2)` : 'none',
+                  filter: 'none',
                 },
+                imageSize: 'full',
               })) || []
             } // Handle undefined selectedVersion
             value={selectedFolderId}

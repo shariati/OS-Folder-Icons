@@ -13,6 +13,7 @@ export interface NeumorphButtonProps extends ButtonHTMLAttributes<HTMLButtonElem
   imageSrc?: string | StaticImageData;
   imageAlt?: string;
   imageStyle?: React.CSSProperties;
+  imageSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'; // Extended sizes
   isActive?: boolean;
   label?: string;
 }
@@ -29,6 +30,7 @@ export function NeumorphButton({
   imageSrc,
   imageAlt,
   imageStyle,
+  imageSize,
   isActive,
   label,
   ...props
@@ -72,12 +74,17 @@ export function NeumorphButton({
     lg: 'w-6 h-6',
   };
 
-  // Image sizing to match icon sizing intent approximately, or fixed logic
-  const imageSizePx = {
-    sm: 16,
-    md: 20,
-    lg: 24,
+  // Image size classes
+  const imageSizeClasses = {
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16',
+    '2xl': 'w-20 h-20',
+    full: 'w-full h-full aspect-square',
   };
+
+  const effectiveImageSize = imageSize || size;
 
   const renderIconOrImage = () => {
     if (imageSrc) {
@@ -85,7 +92,12 @@ export function NeumorphButton({
         console.warn('NeumorphButton: imageAlt is required when imageSrc is provided.');
       }
       return (
-        <div className={clsx('relative shrink-0', iconSizeClasses[effectiveIconSize])}>
+        <div
+          className={clsx(
+            'relative shrink-0',
+            imageSize ? imageSizeClasses[imageSize] : iconSizeClasses[effectiveIconSize]
+          )}
+        >
           <Image
             src={imageSrc}
             alt={imageAlt || 'button icon'}

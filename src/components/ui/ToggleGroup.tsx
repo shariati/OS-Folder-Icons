@@ -12,6 +12,7 @@ export interface ToggleGroupItem {
   imageSrc?: string | StaticImageData;
   imageAlt?: string;
   imageStyle?: React.CSSProperties;
+  imageSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 }
 
 interface ToggleGroupProps {
@@ -104,6 +105,7 @@ export function ToggleGroup({
         imageSrc={item.imageSrc}
         imageAlt={item.imageAlt}
         imageStyle={item.imageStyle}
+        imageSize={item.imageSize}
       />
     );
   });
