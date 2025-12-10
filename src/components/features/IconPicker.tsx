@@ -6,7 +6,7 @@ import * as HeroIcons from '@heroicons/react/24/solid';
 import * as Unicons from '@iconscout/react-unicons';
 import * as GrommetIcons from 'grommet-icons';
 import { HexColorPicker } from 'react-colorful';
-import { Search, Grid, Type, Shield } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ColorSelector } from '@/components/ui/ColorSelector';
