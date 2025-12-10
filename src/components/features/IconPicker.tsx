@@ -10,6 +10,7 @@ import { Search, Grid, Type, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ColorSelector } from '@/components/ui/ColorSelector';
+import { ToggleGroup } from '@/components/ui/ToggleGroup';
 
 interface IconPickerProps {
   selectedIcon: string | null;
@@ -98,88 +99,7 @@ export function IconPicker({
     >
 
       {/* Icon Source & Search - Only in Advanced Mode */}
-      {mode === 'advanced' && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-full">
-            <button
-              onClick={() => onTypeChange('lucide')}
-              className={clsx(
-                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
-                iconType === 'lucide' 
-                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              <Grid size={14} />
-              Lucide
-            </button>
-            <button
-              onClick={() => onTypeChange('fontawesome')}
-              className={clsx(
-                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
-                iconType === 'fontawesome' 
-                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              <Type size={14} />
-              FontAwesome
-            </button>
-            <button
-              onClick={() => onTypeChange('heroicons')}
-              className={clsx(
-                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
-                iconType === 'heroicons' 
-                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              <Shield size={14} />
-              Heroicons
-            </button>
-            <button
-              onClick={() => onTypeChange('unicons')}
-              className={clsx(
-                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
-                iconType === 'unicons' 
-                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              <span className="text-xs">Unicons</span>
-            </button>
-            <button
-              onClick={() => onTypeChange('grommet-icons')}
-              className={clsx(
-                "flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 min-w-[100px]",
-                iconType === 'grommet-icons' 
-                  ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600" 
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-              )}
-            >
-              <span className="text-xs">Grommet</span>
-            </button>
-          </div>
-
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <NeumorphBox
-              as="input"
-              variant="pressed"
-              type="text"
-              placeholder="Search icons..."
-              value={search}
-              onChange={(e: any) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Simple Mode Search (Just the input) */}
-      {mode === 'simple' && (
-         <div className="space-y-4">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                {/* Simple mode tabs for libraries */}
                {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(type => (
                  <button
@@ -196,21 +116,21 @@ export function IconPicker({
                  </button>
                ))}
             </div>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <NeumorphBox
-                as="input"
-                variant="pressed"
-                type="text"
-                placeholder="Search icons..."
-                value={search}
-                onChange={(e: any) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
-              />
-            </div>
-          </div>
-      )}
 
+<div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <NeumorphBox
+              as="input"
+              variant="pressed"
+              type="text"
+              placeholder="Search icons..."
+              value={search}
+              onChange={(e: any) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 bg-transparent"
+            />
+          </div>
+        </div>
       {/* Icon Grid */}
       <NeumorphBox variant="pressed" className="h-64 overflow-y-auto grid grid-cols-6 sm:grid-cols-6 gap-2 p-2 rounded-xl bg-gray-50/50 dark:bg-gray-900/30 custom-scrollbar">
         {filteredIcons.map((name) => {
@@ -346,25 +266,18 @@ export function IconPicker({
         </div>
 
         {/* Size Control */}
-        <div className="space-y-3">
-          <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Icon Size</label>
-          <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
-            {(['small', 'medium', 'large'] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => onSizeChange(s)}
-                className={clsx(
-                  "flex-1 py-2 px-3 rounded-lg text-xs font-bold capitalize transition-all",
-                  size === s
-                    ? "bg-white dark:bg-gray-700 text-blue-600 shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-                )}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
+        <ToggleGroup
+          title="Icon Size"
+          variant="pressed"
+          padding="p-4"
+          items={[
+            { value: 'small', label: 'Small' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'large', label: 'Large' }
+          ]}
+          value={size}
+          onChange={(val) => onSizeChange(val as 'small' | 'medium' | 'large')}
+        />
       </div>
     </NeumorphBox>
   );

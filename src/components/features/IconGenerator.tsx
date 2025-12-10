@@ -11,6 +11,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphButton } from '@/components/ui/NeumorphButton';
 import { IconPicker } from './IconPicker';
 import { OSSelection } from './controls/OSSelection';
+import { ToggleGroup } from '@/components/ui/ToggleGroup';
 
 import { Configuration } from './controls/Configuration';
 import { IconStylePresets } from './controls/IconStylePresets';
@@ -175,24 +176,14 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <div className="lg:col-span-4 space-y-8">
         
         {/* Mode Toggle */}
-        <NeumorphBox className="p-2 space-y-0 flex items-center justify-between gap-2">
-          <NeumorphButton
-            onClick={() => handleModeChange('simple')}
-            variant={mode === 'simple' ? 'pressed' : 'neumorph'}
-            isActive={mode === 'simple'}
-            className="flex-1 py-3 text-sm"
-            icon={<Layout size={16} />}
-            label="Simple"
-          />
-          <NeumorphButton
-            onClick={() => handleModeChange('advanced')}
-            variant={mode === 'advanced' ? 'pressed' : 'neumorph'}
-            isActive={mode === 'advanced'}
-            className="flex-1 py-3 text-sm"
-            icon={<Sliders size={16} />}
-            label="Advanced"
-          />
-        </NeumorphBox>
+        <ToggleGroup
+          items={[
+            { value: 'simple', label: 'Simple', icon: <Layout size={16} /> },
+            { value: 'advanced', label: 'Advanced', icon: <Sliders size={16} /> }
+          ]}
+          value={mode}
+          onChange={(val) => handleModeChange(val as 'simple' | 'advanced')}
+        />
 
         {/* OS Selection */}
         <OSSelection 
