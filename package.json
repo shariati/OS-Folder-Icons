@@ -16,7 +16,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write \"**/*.{ts,tsx,css}\""
+    "format": "prettier --write \"**/*.{ts,tsx,css}\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,css}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.12",
@@ -80,6 +86,8 @@
     "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "husky": "^9.1.7",
+    "lint-staged": "12.1.0",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "0.6.5",
     "tailwindcss": "^4",
