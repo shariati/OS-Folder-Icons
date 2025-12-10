@@ -53,7 +53,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/create" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
+                <Link href="/custom-folders" className="text-base text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
                   Custom Folders
                 </Link>
               </li>

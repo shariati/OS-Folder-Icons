@@ -59,7 +59,7 @@ export default async function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
             <Link
-              href="/create"
+              href="/custom-folders"
               className="px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition-all hover:scale-105 shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
             >
               <Palette size={20} />
@@ -197,7 +197,7 @@ export default async function Home() {
           <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
             Use our powerful icon generator to create custom folder icons that match your exact style and preferences.
           </p>
-          <Link href="/create" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-blue-600 bg-white hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+          <Link href="/custom-folders" className="inline-flex items-center px-10 py-5 text-xl font-bold rounded-2xl text-blue-600 bg-white hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
             <Palette className="w-6 h-6 mr-3" />
             Open Icon Generator
           </Link>

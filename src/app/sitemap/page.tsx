@@ -10,7 +10,7 @@ const siteStructure = [
     links: [
       { name: 'Home', href: '/' },
       { name: 'Bundles', href: '/bundles' },
-      { name: 'Custom Folders', href: '/create' },
+      { name: 'Custom Folders', href: '/custom-folders' },
       { name: 'Photo Frame', href: '/photo-frame' },
       { name: 'Blog', href: '/blog' },
     ],

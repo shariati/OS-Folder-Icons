@@ -152,7 +152,7 @@ export function Navbar() {
           
           {/* Menu - Center */}
           <div className="hidden sm:flex sm:space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
-              <Link href="/create" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
+              <Link href="/custom-folders" className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all">
                 Custom Folders
               </Link>
 
