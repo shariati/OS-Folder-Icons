@@ -33,7 +33,7 @@ export function NeuomorphSlider({
   onChange,
   onChangeEnd,
   className,
-  fillClassName,
+  fillClassName = 'bg-gradient-to-r from-orange-400 to-pink-500',
   trackClassName,
   label,
   showTooltip = false,
@@ -181,7 +181,7 @@ export function NeuomorphSlider({
             className={twMerge(
               clsx(
                 'absolute left-0 right-0 top-1/2 -mt-1.5 h-3 rounded-full',
-                'neu-pressed',
+                !trackClassName && 'neu-pressed',
                 'border-none',
                 disabled && 'cursor-not-allowed opacity-50'
               ),
@@ -193,7 +193,7 @@ export function NeuomorphSlider({
           <motion.div
             className={twMerge(
               clsx(
-                'pointer-events-none absolute left-0 top-1/2 -mt-1.5 h-3 rounded-full bg-gradient-to-r from-orange-400 to-pink-500',
+                'pointer-events-none absolute left-0 top-1/2 -mt-1.5 h-3 rounded-full',
                 disabled && 'opacity-50 grayscale'
               ),
               fillClassName
