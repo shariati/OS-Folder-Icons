@@ -135,7 +135,7 @@ export function Desktop({
       )}
     >
       {/* Loader Overlay */}
-      {isLoading && <Loading text={loadingText} className="z-50" />}
+      {isLoading && <Loading text={loadingText} className="z-50" variant="child" />}
 
       {/* Wallpaper Layer */}
       <div

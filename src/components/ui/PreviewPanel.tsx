@@ -35,7 +35,6 @@ export function PreviewPanel({
   hint,
   actionButton,
   controls,
-  minHeight = 'min-h-[400px]',
   className,
   ...props
 }: PreviewPanelProps) {
@@ -58,9 +57,10 @@ export function PreviewPanel({
       <NeumorphBox
         variant="pressed"
         className={clsx(
-          'checkerboard mb-6 flex items-center justify-center overflow-hidden rounded-2xl bg-gray-100/50 dark:bg-gray-900/50',
-          props.variant === 'custom' || !props.variant ? 'p-4' : 'p-0',
-          minHeight
+          'mb-6 overflow-hidden rounded-2xl bg-gray-100/50 dark:bg-gray-900/50',
+          props.variant === 'custom' || !props.variant
+            ? 'flex items-center justify-center p-4'
+            : 'flex flex-col p-0'
         )}
       >
         {props.variant === 'desktop' ? (
