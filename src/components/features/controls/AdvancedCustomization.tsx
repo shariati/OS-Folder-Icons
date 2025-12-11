@@ -81,8 +81,6 @@ export function AdvancedCustomization({
             onChange={(val) => onIconTransparencyChange((val as number) / 100)}
             trackClassName="bg-gradient-to-r from-transparent to-gray-500 dark:to-gray-200"
             fillClassName="hidden"
-            trackClassName="bg-gradient-to-r from-transparent to-gray-500 dark:to-gray-200"
-            fillClassName="hidden"
           />
         </div>
       </div>

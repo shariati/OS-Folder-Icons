@@ -318,7 +318,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           />
 
           {/* Hidden CanvasPreview for Download generation */}
-          <div className="hidden">
+          <div className="pointer-events-none fixed left-[-9999px] top-[-9999px]">
             <CanvasPreview
               folderImage={selectedFolder?.imageUrl}
               iconName={selectedIcon}
