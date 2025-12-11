@@ -19,6 +19,7 @@ interface NeumorphBoxProps<T extends ElementType> {
   onDelete?: () => void;
   customActions?: ReactNode;
   actionsClassName?: string;
+  hasBar?: boolean;
 }
 
 export function NeumorphBox<T extends ElementType = 'div'>({
@@ -37,6 +38,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   onDelete,
   customActions,
   actionsClassName,
+  hasBar = false,
   ...props
 }: NeumorphBoxProps<T> & React.ComponentPropsWithoutRef<T>) {
   const Component = as || 'div';
@@ -62,11 +64,15 @@ export function NeumorphBox<T extends ElementType = 'div'>({
           variant === 'flat' ? 'neu-flat' : 'neu-pressed',
           'relative',
           'space-y-6 rounded-xl bg-white p-8',
+          hasBar && 'overflow-hidden',
           className
         )
       )}
       {...props}
     >
+      {hasBar && (
+        <div className="absolute left-0 top-0 h-2 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+      )}
       {hasHeader && (
         <div className="mb-4 flex items-start justify-between gap-4">
           <div className="flex items-center gap-3 overflow-hidden">

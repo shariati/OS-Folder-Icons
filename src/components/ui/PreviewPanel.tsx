@@ -40,26 +40,21 @@ export function PreviewPanel({
   ...props
 }: PreviewPanelProps) {
   return (
-    <div className={clsx('glass-panel relative overflow-hidden p-8', className)}>
-      <div className="absolute left-0 top-0 h-2 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
-          {subtitle && (
-            <p className="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">{subtitle}</p>
-          )}
-        </div>
-
-        {theme === 'macOS' && (
+    <NeumorphBox
+      title={title}
+      subtitle={subtitle}
+      hasBar={true}
+      badge={
+        theme === 'macOS' && (
           <div className="flex gap-2">
             <div className="h-3 w-3 rounded-full bg-red-400"></div>
             <div className="h-3 w-3 rounded-full bg-yellow-400"></div>
             <div className="h-3 w-3 rounded-full bg-green-400"></div>
           </div>
-        )}
-      </div>
-
+        )
+      }
+      className={clsx('relative overflow-hidden p-8', className)}
+    >
       <NeumorphBox
         variant="pressed"
         className={clsx(
@@ -84,6 +79,6 @@ export function PreviewPanel({
           {hint}
         </div>
       )}
-    </div>
+    </NeumorphBox>
   );
 }
