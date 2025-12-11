@@ -239,7 +239,9 @@ export const Folder = ({
           <div
             className="absolute inset-0 z-10 flex items-center justify-center"
             style={{
-              transform: `translate(${finalOffsetX}px, ${finalOffsetY}px)`,
+              transform: `translate(${finalOffsetX * (folderSize / 512)}px, ${
+                finalOffsetY * (folderSize / 512)
+              }px)`,
             }}
           >
             {renderIcon()}
