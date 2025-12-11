@@ -176,9 +176,6 @@ export function Desktop({
             {folderSizes.map((size) => (
               <div key={size} className="flex flex-col items-center gap-2">
                 <Folder {...folderProps} folderSize={size} loading="lazy" />
-                <span className="text-xs font-medium text-white shadow-black drop-shadow-md">
-                  {size}px
-                </span>
               </div>
             ))}
           </div>

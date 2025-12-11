@@ -275,6 +275,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
               },
               mode: 'single',
               variant: 'desktop',
+              singleSize: 512,
             }}
           />
 
@@ -312,7 +313,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
               },
               mode: 'multiple',
               variant: 'desktop',
-              folderSizes: [16, 32, 48, 96, 256],
+              folderSizes: [20, 32, 48, 96, 128],
             }}
           />
 
