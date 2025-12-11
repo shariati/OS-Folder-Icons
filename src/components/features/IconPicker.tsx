@@ -117,24 +117,23 @@ export function IconPicker({
         </span>
       }
     >
-      <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-2">
-        {(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(
-          (type) => (
-            <button
-              key={type}
-              onClick={() => onTypeChange(type)}
-              className={clsx(
-                'whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold transition-all',
-                iconType === type
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400'
-              )}
-            >
-              {type === 'grommet-icons' ? 'Grommet' : type.charAt(0).toUpperCase() + type.slice(1)}
-            </button>
-          )
+      <NeumorphToggleGroup
+        items={(['lucide', 'fontawesome', 'heroicons', 'unicons', 'grommet-icons'] as const).map(
+          (type) => ({
+            value: type,
+            label:
+              type === 'grommet-icons' ? 'Grommet' : type.charAt(0).toUpperCase() + type.slice(1),
+          })
         )}
-      </div>
+        value={iconType}
+        onChange={(val) =>
+          onTypeChange(val as 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons')
+        }
+        variant="none"
+        size="sm"
+        padding="p-6"
+        className="scrollbar-hide overflow-x-auto"
+      />
 
       <div className="space-y-4">
         <NeumorphInput
@@ -147,7 +146,6 @@ export function IconPicker({
           className="w-full bg-transparent focus:ring-2 focus:ring-blue-500/50"
         />
       </div>
-      {/* Icon Grid */}
       {/* Icon Grid */}
       <NeumorphIconGrid
         variant="pressed"

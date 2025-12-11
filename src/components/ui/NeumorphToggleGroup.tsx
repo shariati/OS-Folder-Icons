@@ -63,6 +63,16 @@ interface NeumorphToggleGroupProps {
   gridSize?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
   gridSizeSm?: number;
   gridSizeMd?: number;
+  /**
+   * Vertical alignment of items.
+   * @default 'center'
+   */
+  valign?: 'top' | 'center' | 'bottom';
+  /**
+   * Horizontal alignment of items.
+   * @default 'left'
+   */
+  halign?: 'left' | 'center' | 'right';
 }
 
 export function NeumorphToggleGroup({
@@ -77,6 +87,8 @@ export function NeumorphToggleGroup({
   gridSize,
   gridSizeSm,
   gridSizeMd,
+  valign = 'center',
+  halign = 'left',
 }: NeumorphToggleGroupProps) {
   const gridClasses = {
     2: 'grid-cols-2',
@@ -112,7 +124,15 @@ export function NeumorphToggleGroup({
 
   const containerClasses = clsx(
     padding,
-    !isGrid && 'flex items-center justify-between gap-2 space-y-0',
+    !isGrid && [
+      'flex gap-2 space-y-0',
+      valign === 'top' && 'items-start',
+      valign === 'center' && 'items-center',
+      valign === 'bottom' && 'items-end',
+      halign === 'left' && 'justify-start',
+      halign === 'center' && 'justify-center',
+      halign === 'right' && 'justify-end',
+    ],
     isGrid && [
       'grid gap-2',
       gridSizeSm ? gridClasses[gridSizeSm as keyof typeof gridClasses] : 'grid-cols-2',
