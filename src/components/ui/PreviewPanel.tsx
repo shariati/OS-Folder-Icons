@@ -12,6 +12,7 @@ interface BasePreviewPanelProps {
   controls?: ReactNode;
   minHeight?: string;
   className?: string;
+  hasBar?: boolean;
 }
 
 interface DesktopPreviewPanelProps extends BasePreviewPanelProps {
@@ -35,6 +36,7 @@ export function PreviewPanel({
   hint,
   actionButton,
   controls,
+  hasBar = true,
   className,
   ...props
 }: PreviewPanelProps) {
@@ -42,7 +44,7 @@ export function PreviewPanel({
     <NeumorphBox
       title={title}
       subtitle={subtitle}
-      hasBar={true}
+      hasBar={hasBar}
       badge={
         theme === 'macOS' && (
           <div className="flex gap-2">

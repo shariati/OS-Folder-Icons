@@ -167,9 +167,9 @@ export function Desktop({
         ) : (
           <div
             className={clsx(
-              'grid w-full gap-8',
+              'w-full gap-8',
               variant === 'mobile'
-                ? 'grid-cols-2 place-items-center'
+                ? 'grid grid-cols-2 place-items-center'
                 : 'flex flex-wrap items-end justify-center'
             )}
           >

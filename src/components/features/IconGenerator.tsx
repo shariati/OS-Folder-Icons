@@ -279,10 +279,15 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           />
 
           {/* Icon Sizes Section */}
-          <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
-            <Desktop
-              wallpaperUrl={selectedVersion?.wallpaperUrl || ''}
-              folderProps={{
+          <PreviewPanel
+            title="Icon Sizes"
+            subtitle="Preview in different dimensions"
+            theme="none"
+            hasBar={false}
+            variant="desktop"
+            desktopProps={{
+              wallpaperUrl: selectedVersion?.wallpaperUrl || '',
+              folderProps: {
                 folder: selectedFolder
                   ? {
                       ...selectedFolder,
@@ -304,13 +309,12 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 icon: selectedIcon
                   ? renderIcon(iconType, selectedIcon, 'w-full h-full')
                   : undefined,
-              }}
-              mode="multiple"
-              variant="desktop"
-              folderSizes={[16, 32, 48, 96, 256]}
-              className="min-h-[200px] rounded-2xl"
-            />
-          </NeumorphBox>
+              },
+              mode: 'multiple',
+              variant: 'desktop',
+              folderSizes: [16, 32, 48, 96, 256],
+            }}
+          />
 
           {/* Hidden CanvasPreview for Download generation */}
           <div className="hidden">
