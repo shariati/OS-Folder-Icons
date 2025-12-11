@@ -11,7 +11,7 @@ import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphIconGrid } from '@/components/ui/NeumorphIconGrid';
 import { ColorSelector } from '@/components/ui/ColorSelector';
-import { ToggleGroup } from '@/components/ui/ToggleGroup';
+import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { NeumorphInput } from '@/components/ui/NeumorphInput';
 
 interface IconPickerProps {
@@ -221,7 +221,7 @@ export function IconPicker({
         </div>
 
         {/* Size Control */}
-        <ToggleGroup
+        <NeumorphToggleGroup
           title="Icon Size"
           variant="none"
           items={[

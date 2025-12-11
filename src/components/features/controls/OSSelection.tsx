@@ -1,5 +1,5 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ToggleGroup } from '@/components/ui/ToggleGroup';
+import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { OperatingSystem } from '@/lib/types';
 import { clsx } from 'clsx';
 
@@ -12,7 +12,7 @@ interface OSSelectionProps {
 export function OSSelection({ operatingSystems, selectedOSId, onSelectOS }: OSSelectionProps) {
   return (
     <NeumorphBox title="Operating System" subtitle="Select your platform">
-      <ToggleGroup
+      <NeumorphToggleGroup
         items={operatingSystems.map((os) => ({
           value: os.id,
           label: os.name,

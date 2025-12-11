@@ -11,7 +11,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphButton } from '@/components/ui/NeumorphButton';
 import { IconPicker } from './IconPicker';
 import { OSSelection } from './controls/OSSelection';
-import { ToggleGroup } from '@/components/ui/ToggleGroup';
+import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 
 import { Configuration } from './controls/Configuration';
 import { IconStylePresets } from './controls/IconStylePresets';
@@ -183,7 +183,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       {/* Left Column: Controls */}
       <div className="space-y-8 lg:col-span-4">
         {/* Mode Toggle */}
-        <ToggleGroup
+        <NeumorphToggleGroup
           items={[
             { value: 'simple', label: 'Simple', icon: <Layout size={16} /> },
             { value: 'advanced', label: 'Advanced', icon: <Sliders size={16} /> },

@@ -1,5 +1,5 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ToggleGroup } from '@/components/ui/ToggleGroup';
+import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { toCapitalCase } from '@/lib/format';
 import { clsx } from 'clsx';
 
@@ -11,7 +11,7 @@ interface IconStylePresetsProps {
 export function IconStylePresets({ iconEffect, onSelectEffect }: IconStylePresetsProps) {
   return (
     <NeumorphBox title="Icon Style" subtitle="Choose a preset style">
-      <ToggleGroup
+      <NeumorphToggleGroup
         items={(['sunken', 'raised', 'glass', 'flat'] as const).map((effect) => ({
           value: effect,
           label: toCapitalCase(effect),

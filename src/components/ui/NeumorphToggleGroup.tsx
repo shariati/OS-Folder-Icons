@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 
 import { StaticImageData } from 'next/image';
 
-export interface ToggleGroupItem {
+export interface NeumorphToggleGroupItem {
   value: string;
   label: string;
   icon?: ReactNode;
@@ -15,11 +15,11 @@ export interface ToggleGroupItem {
   imageSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 }
 
-interface ToggleGroupProps {
+interface NeumorphToggleGroupProps {
   /**
    * List of items to toggle between.
    */
-  items: ToggleGroupItem[];
+  items: NeumorphToggleGroupItem[];
 
   /**
    * The currently selected value.
@@ -65,7 +65,7 @@ interface ToggleGroupProps {
   gridSizeMd?: number;
 }
 
-export function ToggleGroup({
+export function NeumorphToggleGroup({
   items,
   value,
   onChange,
@@ -77,7 +77,7 @@ export function ToggleGroup({
   gridSize,
   gridSizeSm,
   gridSizeMd,
-}: ToggleGroupProps) {
+}: NeumorphToggleGroupProps) {
   const gridClasses = {
     2: 'grid-cols-2',
     3: 'grid-cols-3',
