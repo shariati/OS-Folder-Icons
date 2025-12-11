@@ -12,7 +12,7 @@ export default function TermsPage() {
             <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">
               Terms of Service
             </h1>
-            <p className="mb-8 text-gray-500 dark:text-gray-400">Last Updated: December 8, 2025</p>
+            <p className="mb-8 text-gray-500 dark:text-gray-400">Last Updated: December 11, 2025</p>
 
             <div className="space-y-8 leading-relaxed text-gray-700 dark:text-gray-300">
               <p>
@@ -403,7 +403,100 @@ export default function TermsPage() {
 
               <section>
                 <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
-                  15. Contact Us
+                  15. Legal Notice & Third-Party Assets
+                </h2>
+                <h3 className="mb-2 mt-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+                  Trademark Disclaimer
+                </h3>
+                <p className="mb-2">
+                  HD Pick is an independent project and is not affiliated, associated, authorized,
+                  endorsed by, or in any way officially connected with Apple Inc., Microsoft
+                  Corporation, or any of their subsidiaries or affiliates. The names macOS, Windows,
+                  and other brand names, as well as related names, marks, emblems, and images are
+                  registered trademarks of their respective owners. Use of these names and logos is
+                  for descriptive and identification purposes only.
+                </p>
+
+                <h3 className="mb-2 mt-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+                  Third-Party Icons & Assets
+                </h3>
+                <p className="mb-2">
+                  We utilize open-source icon libraries to provide a wide range of customization
+                  options:
+                </p>
+                <ul className="list-disc space-y-2 pl-6">
+                  <li>
+                    <a
+                      href="https://fontawesome.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Font Awesome
+                    </a>{' '}
+                    (License: CC BY 4.0 / SIL OFL 1.1)
+                  </li>
+                  <li>
+                    <a
+                      href="https://lucide.dev"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Lucide Icons
+                    </a>{' '}
+                    (License: ISC)
+                  </li>
+                  <li>
+                    <a
+                      href="https://iconscout.com/unicons"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Unicons
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://icons.grommet.io"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Grommet Icons
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://heroicons.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Heroicons
+                    </a>
+                  </li>
+                </ul>
+
+                <h3 className="mb-2 mt-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+                  Copyright & Content Takedown
+                </h3>
+                <p>
+                  HD Pick respects the intellectual property rights of others. If you believe that
+                  any material available on or through our website infringes upon any copyright you
+                  own or control, or if you find any content that is inappropriate, please notify us
+                  immediately at{' '}
+                  <a href="mailto:hello@hdpick.com" className="text-blue-600 hover:underline">
+                    hello@hdpick.com
+                  </a>
+                  . We will investigate and remove inappropriate or infringing content where valid.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+                  16. Contact Us
                 </h2>
                 <p>
                   If you have any questions about these Terms, please contact us at{' '}
