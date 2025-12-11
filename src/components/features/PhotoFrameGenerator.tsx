@@ -411,7 +411,7 @@ export function PhotoFrameGenerator() {
                 </NeumorphBox>
               )
             }
-            actions={
+            actionButton={
               <div className="flex gap-4">
                 <button
                   onClick={() => handleDownloadClick('png')}

@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { Folder, FolderProps } from '@/components/ui/Folder';
 import { Loading } from '@/components/ui/Loading';
 
-interface DesktopProps {
+export interface DesktopProps {
   /**
    * background image URL
    */

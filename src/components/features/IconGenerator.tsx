@@ -229,7 +229,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
       <div className="lg:col-span-8">
         <div className="sticky top-24 space-y-8">
           <PreviewPanel
-            actions={
+            variant="desktop"
+            actionButton={
               <NeumorphButton
                 id="download-btn"
                 onClick={handleDownloadClick}
@@ -240,51 +241,42 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 Download Icon
               </NeumorphButton>
             }
-            footerText={
+            hint={
               <p>
                 Downloaded as {selectedOS?.format?.toUpperCase() || 'PNG'} for {selectedOS?.name}
               </p>
             }
-            cover={true}
-          >
-            {/* Main Preview with Desktop Component */}
-            <div className="w-full">
-              {isMounted ? (
-                <Desktop
-                  wallpaperUrl={selectedVersion?.wallpaperUrl || ''}
-                  folderProps={{
-                    // Explicitly pass folder props or compatible object
-                    folder: selectedFolder
-                      ? {
-                          ...selectedFolder,
-                          hue: 0,
-                          format: selectedOS?.format || 'png',
-                          osName: selectedOS?.name || 'Unknown',
-                          offsetX: selectedFolder.offsetX || 0,
-                          offsetY: selectedFolder.offsetY || 0,
-                        }
-                      : undefined,
-                    loading: 'eager',
-                    hideLabel: true,
-                    folderHue,
-                    offsetX: customOffsetX,
-                    offsetY: customOffsetY,
-                    iconSize,
-                    iconStyle: iconEffect,
-                    iconTransparency,
-                    icon: selectedIcon
-                      ? renderIcon(iconType, selectedIcon, 'w-full h-full')
-                      : undefined,
-                  }}
-                  mode="single"
-                  variant="desktop"
-                  className="min-h-[400px] rounded-2xl"
-                />
-              ) : (
-                <div className="min-h-[400px] w-full animate-pulse bg-gray-100 dark:bg-gray-800" />
-              )}
-            </div>
-          </PreviewPanel>
+            theme="macOS"
+            desktopProps={{
+              wallpaperUrl: selectedVersion?.wallpaperUrl || '',
+              folderProps: {
+                // Explicitly pass folder props or compatible object
+                folder: selectedFolder
+                  ? {
+                      ...selectedFolder,
+                      hue: 0,
+                      format: selectedOS?.format || 'png',
+                      osName: selectedOS?.name || 'Unknown',
+                      offsetX: selectedFolder.offsetX || 0,
+                      offsetY: selectedFolder.offsetY || 0,
+                    }
+                  : undefined,
+                loading: 'eager',
+                hideLabel: true,
+                folderHue,
+                offsetX: customOffsetX,
+                offsetY: customOffsetY,
+                iconSize,
+                iconStyle: iconEffect,
+                iconTransparency,
+                icon: selectedIcon
+                  ? renderIcon(iconType, selectedIcon, 'w-full h-full')
+                  : undefined,
+              },
+              mode: 'single',
+              variant: 'desktop',
+            }}
+          />
 
           {/* Icon Sizes Section */}
           <NeumorphBox title="Icon Sizes" subtitle="Preview in different dimensions">
