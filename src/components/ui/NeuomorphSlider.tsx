@@ -71,14 +71,18 @@ export function NeuomorphSlider({
 
   const isDragging = useRef(false);
 
+  const THUMB_SIZE = 14;
+  const AVAILABLE_WIDTH = trackWidth - THUMB_SIZE * 2;
+
   // Sync x with value when value changes (external update or initial)
   useEffect(() => {
     if (trackWidth === 0 || isDragging.current) return;
     const progress = (currentValue - min) / (max - min);
-    const targetX = progress * trackWidth;
 
-    // Use animation to smoothly transition the thumb and fill to the new value
-    // This handles clicks and external updates
+    // Constrain the travel range
+    // Start at THUMB_SIZE, end at trackWidth - THUMB_SIZE
+    const targetX = progress * AVAILABLE_WIDTH;
+
     animate(x, targetX, { type: 'spring', stiffness: 300, damping: 30 });
   }, [currentValue, min, max, trackWidth, x]);
 
@@ -86,7 +90,9 @@ export function NeuomorphSlider({
     if (disabled || trackWidth === 0) return;
 
     const currentX = x.get();
-    let newProgress = currentX / trackWidth;
+
+    // Calculate progress based on the constrained range
+    let newProgress = currentX / AVAILABLE_WIDTH;
     newProgress = Math.min(Math.max(newProgress, 0), 1);
 
     let newValue = min + newProgress * (max - min);
@@ -114,9 +120,9 @@ export function NeuomorphSlider({
   const handleDragEnd = () => {
     isDragging.current = false;
     if (!disabled) {
-      // Snap visual x to the exact stepped value
       const progress = (currentValue - min) / (max - min);
-      const targetX = progress * trackWidth;
+      const targetX = progress * AVAILABLE_WIDTH;
+
       animate(x, targetX, { type: 'spring', stiffness: 300, damping: 30 });
 
       onChangeEnd?.(currentValue);
@@ -129,7 +135,8 @@ export function NeuomorphSlider({
     const trackRect = trackRef.current.getBoundingClientRect();
     const relativeX = e.clientX - trackRect.left;
 
-    let newProgress = relativeX / trackWidth;
+    let newProgress = relativeX / AVAILABLE_WIDTH;
+
     newProgress = Math.min(Math.max(newProgress, 0), 1);
 
     let newValue = min + newProgress * (max - min);
@@ -197,14 +204,14 @@ export function NeuomorphSlider({
           {/* Thumb - neu-flat */}
           <motion.div
             className={clsx(
-              'absolute left-0 mt-1 flex h-7 w-7 items-center justify-center rounded-full',
+              'absolute flex h-7 w-7 items-center justify-center rounded-full',
               'neu-flat',
               'border-none',
               disabled ? 'cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'
             )}
             style={{ x }}
             drag="x"
-            dragConstraints={{ left: 0, right: trackWidth }}
+            dragConstraints={{ left: 0, right: AVAILABLE_WIDTH }}
             dragElastic={0}
             dragMomentum={false}
             onDragStart={handleDragStart}
