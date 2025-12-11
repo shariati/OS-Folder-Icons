@@ -19,6 +19,7 @@ export interface NeuomorphSliderProps {
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
   fillClassName?: string;
+  trackClassName?: string;
   formatTooltip?: (value: number) => string;
 }
 
@@ -33,6 +34,7 @@ export function NeuomorphSlider({
   onChangeEnd,
   className,
   fillClassName,
+  trackClassName,
   label,
   showTooltip = false,
   marks = [],
@@ -169,11 +171,14 @@ export function NeuomorphSlider({
 
           {/* Track Background - neu-pressed */}
           <div
-            className={clsx(
-              'absolute left-0 right-0 top-1/2 -mt-1.5 h-3 rounded-full',
-              'neu-pressed',
-              'border-none',
-              disabled && 'cursor-not-allowed opacity-50'
+            className={twMerge(
+              clsx(
+                'absolute left-0 right-0 top-1/2 -mt-1.5 h-3 rounded-full',
+                'neu-pressed',
+                'border-none',
+                disabled && 'cursor-not-allowed opacity-50'
+              ),
+              trackClassName
             )}
           ></div>
 
