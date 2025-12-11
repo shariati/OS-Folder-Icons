@@ -270,7 +270,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 iconStyle: iconEffect,
                 iconTransparency,
                 icon: selectedIcon
-                  ? renderIcon(iconType, selectedIcon, 'w-full h-full')
+                  ? renderIcon(iconType, selectedIcon, 'w-full h-full', iconColor)
                   : undefined,
               },
               mode: 'single',
@@ -308,7 +308,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 iconStyle: iconEffect,
                 iconTransparency,
                 icon: selectedIcon
-                  ? renderIcon(iconType, selectedIcon, 'w-full h-full')
+                  ? renderIcon(iconType, selectedIcon, 'w-full h-full', iconColor)
                   : undefined,
               },
               mode: 'multiple',

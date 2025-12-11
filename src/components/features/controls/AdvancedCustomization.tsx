@@ -69,9 +69,9 @@ export function AdvancedCustomization({
         </div>
       </div>
 
-      {/* Transparency */}
+      {/* Opacity */}
       <div>
-        <h3 className="mb-1 text-lg font-bold text-gray-700 dark:text-white">Icon Transparency</h3>
+        <h3 className="mb-1 text-lg font-bold text-gray-700 dark:text-white">Icon Opacity</h3>
         <div className="mt-4 flex items-center gap-4">
           <input
             type="range"
