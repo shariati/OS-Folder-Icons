@@ -23,8 +23,8 @@ interface IconPickerProps {
   ) => void;
   color: string;
   onColorChange: (color: string) => void;
-  size: 'small' | 'medium' | 'large';
-  onSizeChange: (size: 'small' | 'medium' | 'large') => void;
+  size: 'sm' | 'md' | 'lg';
+  onSizeChange: (size: 'sm' | 'md' | 'lg') => void;
   mode?: 'simple' | 'advanced';
 }
 
@@ -223,12 +223,12 @@ export function IconPicker({
           title="Icon Size"
           variant="none"
           items={[
-            { value: 'small', label: 'Small' },
-            { value: 'medium', label: 'Medium' },
-            { value: 'large', label: 'Large' },
+            { value: 'sm', label: 'Small' },
+            { value: 'md', label: 'Medium' },
+            { value: 'lg', label: 'Large' },
           ]}
           value={size}
-          onChange={(val) => onSizeChange(val as 'small' | 'medium' | 'large')}
+          onChange={(val) => onSizeChange(val as 'sm' | 'md' | 'lg')}
         />
       </div>
     </NeumorphBox>

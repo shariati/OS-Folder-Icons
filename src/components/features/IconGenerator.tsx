@@ -43,7 +43,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons'
   >('lucide');
   const [iconColor, setIconColor] = useState('#000000');
-  const [iconSize, setIconSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const [iconSize, setIconSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [iconEffect, setIconEffect] = useState<'raised' | 'sunken' | 'glass' | 'flat'>('sunken');
   const [iconTransparency, setIconTransparency] = useState(0.75); // 0 to 1
   const [folderHue, setFolderHue] = useState(0); // 0 to 360
@@ -268,8 +268,9 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                     folderHue,
                     offsetX: customOffsetX,
                     offsetY: customOffsetY,
+                    iconSize,
                     icon: selectedIcon
-                      ? renderIcon(iconType, selectedIcon, 'w-1/2 h-1/2')
+                      ? renderIcon(iconType, selectedIcon, 'w-full h-full')
                       : undefined,
                   }}
                   mode="single"
@@ -301,7 +302,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                 folderHue,
                 offsetX: customOffsetX,
                 offsetY: customOffsetY,
-                icon: selectedIcon ? renderIcon(iconType, selectedIcon, 'w-1/2 h-1/2') : undefined,
+                iconSize,
+                icon: selectedIcon
+                  ? renderIcon(iconType, selectedIcon, 'w-full h-full')
+                  : undefined,
               }}
               mode="multiple"
               variant="desktop"

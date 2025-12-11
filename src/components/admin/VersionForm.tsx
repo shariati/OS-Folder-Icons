@@ -414,7 +414,7 @@ export function VersionForm({
                         iconName="Star"
                         iconType="lucide"
                         iconColor="#000000"
-                        iconSize="medium"
+                        iconSize="md"
                         offsetX={icon.offsetX || 0}
                         offsetY={icon.offsetY || 0}
                         format={osFormat}

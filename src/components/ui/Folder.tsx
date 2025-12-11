@@ -32,6 +32,11 @@ export interface FolderProps {
   iconType?: 'component' | 'image';
 
   /**
+   * Size of the icon. Default: 'medium'.
+   */
+  iconSize?: 'sm' | 'md' | 'lg';
+
+  /**
    * Enables a simple hover animation (e.g. scale up).
    */
   hoverAnimation?: boolean;
@@ -75,6 +80,7 @@ export const Folder = ({
   folderSize = 128,
   icon,
   iconType = 'component',
+  iconSize = 'md',
   hoverAnimation = false,
   folderHue = 0,
   offsetX = 0,
@@ -96,18 +102,40 @@ export const Folder = ({
   const renderIcon = () => {
     if (!icon) return null;
 
+    const sizeClasses = {
+      sm: 'w-1/3 h-1/3',
+      md: 'w-1/2 h-1/2',
+      lg: 'w-2/3 h-2/3',
+    }[iconSize];
+
     if (iconType === 'image' && typeof icon === 'string') {
       return (
         <img
           src={icon}
           alt="Folder Icon"
-          className="pointer-events-none h-1/2 w-1/2 select-none object-contain"
+          className={clsx('pointer-events-none select-none object-contain', sizeClasses)}
         />
       );
     }
 
+    // Calculate font size for font-based icons (like FontAwesome)
+    // Ratios based on 512px canvas: small=170(~33%), medium=256(50%), large=340(~66%)
+    const fontSizeRatio = {
+      sm: 0.33,
+      md: 0.5,
+      lg: 0.66,
+    }[iconSize];
+
+    const derivedFontSize = Math.floor(folderSize * fontSizeRatio);
+
+    // For font icons or components, we wrap them ensuring they center and scale if possible
     return (
-      <div className="pointer-events-none flex h-1/2 w-1/2 items-center justify-center">{icon}</div>
+      <div
+        className={clsx('pointer-events-none flex items-center justify-center', sizeClasses)}
+        style={{ fontSize: `${derivedFontSize}px` }}
+      >
+        {icon}
+      </div>
     );
   };
 

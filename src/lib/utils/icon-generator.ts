@@ -50,7 +50,7 @@ class BinaryWriter {
   }
 
   getBlob(type: string) {
-    return new Blob(this.parts, { type });
+    return new Blob(this.parts as BlobPart[], { type });
   }
 
   getSize() {

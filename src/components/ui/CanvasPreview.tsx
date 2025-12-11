@@ -14,7 +14,7 @@ export interface CanvasPreviewProps {
   iconName?: string | null;
   iconType: 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
   iconColor: string;
-  iconSize: 'small' | 'medium' | 'large';
+  iconSize: 'sm' | 'md' | 'lg';
   offsetX?: number;
   offsetY?: number;
   format?: 'png' | 'ico' | 'icns';
@@ -284,15 +284,15 @@ export const CanvasPreview = memo(
       const IconComponent = getIconComponent();
 
       const sizeClass = {
-        small: 'w-1/3 h-1/3',
-        medium: 'w-1/2 h-1/2',
-        large: 'w-2/3 h-2/3',
+        sm: 'w-1/3 h-1/3',
+        md: 'w-1/2 h-1/2',
+        lg: 'w-2/3 h-2/3',
       }[iconSize];
 
       const fontSize = {
-        small: '170px',
-        medium: '256px',
-        large: '340px',
+        sm: '170px',
+        md: '256px',
+        lg: '340px',
       }[iconSize];
 
       const getEffectStyle = () => {

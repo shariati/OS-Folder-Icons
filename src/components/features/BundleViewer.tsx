@@ -252,7 +252,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle; db: DB }) {
               iconName={genState.iconName}
               iconType="lucide"
               iconColor="#000000" // Default color for bundles? Or allow user to pick? Assuming default black for now.
-              iconSize="medium" // Default size
+              iconSize="md" // Default size
               offsetX={genState.offsetX}
               offsetY={genState.offsetY}
               format={genState.format}
