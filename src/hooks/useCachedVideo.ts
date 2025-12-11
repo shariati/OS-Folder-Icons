@@ -29,7 +29,7 @@ export function useCachedVideo(src: string | undefined) {
         videoCache.set(src, objectUrl);
         setCachedSrc(objectUrl);
       } catch (error) {
-        console.error('Error caching video:', error);
+        console.warn('Warning: Failed to cache video, falling back to direct URL:', error);
         // Fallback to original source if caching fails
         if (active) setCachedSrc(src);
       }

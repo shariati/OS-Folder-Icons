@@ -34,6 +34,25 @@ interface DesktopProps {
    * Size for the single folder mode. Default: 256.
    */
   singleSize?: number;
+  /**
+   * Alignment of the folder in 'single' mode.
+   * @default 'center center'
+   */
+  folderalign?:
+    | 'top left'
+    | 'top center'
+    | 'top right'
+    | 'center left'
+    | 'center center'
+    | 'center right'
+    | 'bottom left'
+    | 'bottom center'
+    | 'bottom right';
+  /**
+   * Tailwind border radius class.
+   * @default 'rounded-2xl'
+   */
+  radius?: string;
   className?: string;
 }
 
@@ -45,6 +64,8 @@ export function Desktop({
   variant,
   folderSizes = [16, 24, 32, 48, 96, 128, 256, 512],
   singleSize = 256,
+  folderalign = 'center center',
+  radius = 'rounded-2xl',
   className,
 }: DesktopProps) {
   const [isWallpaperLoaded, setIsWallpaperLoaded] = useState(false);
@@ -87,10 +108,28 @@ export function Desktop({
   const isLoading = !isWallpaperLoaded || !isFolderLoaded;
   const showGradient = loadError || !wallpaperUrl;
 
+  // Alignment classes mapping
+  const alignmentClasses =
+    {
+      'top left': 'items-start justify-start',
+      'top center': 'items-start justify-center',
+      'top right': 'items-start justify-end',
+      'center left': 'items-center justify-start',
+      'center center': 'items-center justify-center',
+      'center right': 'items-center justify-end',
+      'bottom left': 'items-end justify-start',
+      'bottom center': 'items-end justify-center',
+      'bottom right': 'items-end justify-end',
+    }[folderalign] || 'items-center justify-center';
+
+  // Apply alignment only in single mode, otherwise force center/start logic for multiple
+  const containerAlignment = mode === 'single' ? alignmentClasses : '';
+
   return (
     <div
       className={clsx(
-        'relative overflow-hidden bg-gray-900',
+        'relative flex flex-col overflow-hidden bg-gray-900',
+        radius,
         variant === 'mobile' ? 'h-full w-full' : 'h-full w-full',
         className
       )}
@@ -115,9 +154,10 @@ export function Desktop({
       {/* Content Layer */}
       <div
         className={clsx(
-          'relative z-10 flex h-full w-full items-center justify-center p-8 transition-opacity duration-500',
+          'relative z-10 flex w-full flex-grow p-8 transition-opacity duration-500',
+          containerAlignment,
           isLoading ? 'opacity-0' : 'opacity-100',
-          mode === 'multiple' && 'content-start items-start overflow-y-auto'
+          mode === 'multiple' && 'content-start items-start justify-center overflow-y-auto'
         )}
       >
         {mode === 'single' ? (

@@ -37,6 +37,18 @@ export interface FolderProps {
   iconSize?: 'sm' | 'md' | 'lg';
 
   /**
+   * Visual style effect for the icon.
+   * @default 'none'
+   */
+  iconStyle?: 'raised' | 'sunken' | 'glass' | 'flat' | 'none';
+
+  /**
+   * Font/Icon Transparency (0-1).
+   * @default 1
+   */
+  iconTransparency?: number;
+
+  /**
    * Enables a simple hover animation (e.g. scale up).
    */
   hoverAnimation?: boolean;
@@ -62,6 +74,11 @@ export interface FolderProps {
   label?: string;
 
   /**
+   * If true, suppresses the folder label.
+   */
+  hideLabel?: boolean;
+
+  /**
    * Image loading strategy. Default: 'lazy'.
    */
   loading?: 'lazy' | 'eager';
@@ -81,11 +98,14 @@ export const Folder = ({
   icon,
   iconType = 'component',
   iconSize = 'md',
+  iconStyle = 'none',
+  iconTransparency = 1,
   hoverAnimation = false,
   folderHue = 0,
   offsetX = 0,
   offsetY = 0,
   label,
+  hideLabel = false,
   loading = 'lazy',
   osName,
   className,
@@ -108,12 +128,53 @@ export const Folder = ({
       lg: 'w-2/3 h-2/3',
     }[iconSize];
 
+    // Helper calculate styles
+    const getEffectStyle = () => {
+      const baseStyle = {
+        opacity: iconTransparency,
+        mixBlendMode: 'normal' as const,
+        filter: 'none',
+      };
+
+      if (iconStyle === 'sunken') {
+        return {
+          ...baseStyle,
+          filter:
+            'drop-shadow(0px 2px 0px rgba(255, 255, 255, 0.3)) drop-shadow(0px -1px 0px rgba(0, 0, 0, 0.2))',
+          mixBlendMode: 'overlay' as const,
+          opacity: iconTransparency * 0.9,
+        };
+      }
+
+      if (iconStyle === 'raised') {
+        return {
+          ...baseStyle,
+          filter:
+            'drop-shadow(-1px -1px 0px rgba(255, 255, 255, 0.5)) drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3))',
+        };
+      }
+
+      if (iconStyle === 'glass') {
+        return {
+          ...baseStyle,
+          filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1)) drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
+          mixBlendMode: 'overlay' as const,
+          opacity: iconTransparency * 0.7,
+        };
+      }
+
+      return baseStyle;
+    };
+
+    const effectStyle = getEffectStyle();
+
     if (iconType === 'image' && typeof icon === 'string') {
       return (
         <img
           src={icon}
           alt="Folder Icon"
           className={clsx('pointer-events-none select-none object-contain', sizeClasses)}
+          style={effectStyle}
         />
       );
     }
@@ -132,7 +193,7 @@ export const Folder = ({
     return (
       <div
         className={clsx('pointer-events-none flex items-center justify-center', sizeClasses)}
-        style={{ fontSize: `${derivedFontSize}px` }}
+        style={{ fontSize: `${derivedFontSize}px`, ...effectStyle }}
       >
         {icon}
       </div>
@@ -187,7 +248,7 @@ export const Folder = ({
       </div>
 
       {/* Label */}
-      {finalName && (
+      {!hideLabel && finalName && (
         <span className="pointer-events-none max-w-full truncate px-1 text-center text-xs font-medium text-gray-700 dark:text-gray-300">
           {finalName}
         </span>

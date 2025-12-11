@@ -102,6 +102,7 @@ export function NeumorphButton({
             src={imageSrc}
             alt={imageAlt || 'button icon'}
             fill
+            sizes="100px"
             className="object-contain"
             style={imageStyle}
           />

@@ -265,10 +265,13 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                         }
                       : undefined,
                     loading: 'eager',
+                    hideLabel: true,
                     folderHue,
                     offsetX: customOffsetX,
                     offsetY: customOffsetY,
                     iconSize,
+                    iconStyle: iconEffect,
+                    iconTransparency,
                     icon: selectedIcon
                       ? renderIcon(iconType, selectedIcon, 'w-full h-full')
                       : undefined,
@@ -299,10 +302,13 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
                     }
                   : undefined,
                 loading: 'lazy',
+                hideLabel: true,
                 folderHue,
                 offsetX: customOffsetX,
                 offsetY: customOffsetY,
                 iconSize,
+                iconStyle: iconEffect,
+                iconTransparency,
                 icon: selectedIcon
                   ? renderIcon(iconType, selectedIcon, 'w-full h-full')
                   : undefined,
