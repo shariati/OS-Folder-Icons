@@ -52,9 +52,14 @@ export function NeumorphDropdownList({
   // Filter items based on query
   const filteredItems = useMemo(() => {
     if (query === '') return items;
+    const selectedItem = items.find((item) => item.value === value);
+    if (selectedItem && query === selectedItem.label) {
+      return items;
+    }
+
     const lowerQuery = query.toLowerCase();
     return items.filter((item) => item.label.toLowerCase().includes(lowerQuery));
-  }, [items, query]);
+  }, [items, query, value]);
 
   // Handle outside click
   useEffect(() => {
