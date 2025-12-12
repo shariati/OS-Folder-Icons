@@ -5,14 +5,13 @@ import * as LucideIcons from 'lucide-react';
 import * as HeroIcons from '@heroicons/react/24/solid';
 import * as Unicons from '@iconscout/react-unicons';
 import * as GrommetIcons from 'grommet-icons';
-import { HexColorPicker } from 'react-colorful';
 import { Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphIconGrid } from '@/components/ui/NeumorphIconGrid';
-import { ColorSelector } from '@/components/ui/ColorSelector';
 import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { NeumorphInput } from '@/components/ui/NeumorphInput';
+import { NeumorphColorPicker } from './NeumorphColorPicker';
 
 interface IconPickerProps {
   selectedIcon: string | null;
@@ -25,7 +24,7 @@ interface IconPickerProps {
   onColorChange: (color: string) => void;
   size: 'sm' | 'md' | 'lg';
   onSizeChange: (size: 'sm' | 'md' | 'lg') => void;
-  mode?: 'simple' | 'advanced';
+  mode?: 'simple' | 'advance';
 }
 
 import { fontAwesomeIcons } from '@/data/fontAwesomeIcons';
@@ -178,44 +177,13 @@ export function IconPicker({
       <div className="grid grid-cols-1 gap-6">
         {/* Color Picker */}
         <div className="space-y-3">
-          {mode === 'simple' ? (
-            <ColorSelector
-              title="Icon Color"
-              mode="palette"
-              colors={PRESET_COLORS}
-              value={color}
-              onChange={onColorChange}
-              shape="circle"
-              animation="grow"
-            />
-          ) : (
-            <div className="flex flex-col gap-4">
-              <div className="rounded-xl border border-gray-100 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                <HexColorPicker
-                  color={color}
-                  onChange={onColorChange}
-                  style={{ width: '100%', height: '150px' }}
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <div
-                  className="h-10 w-10 rounded-xl border border-gray-200 shadow-sm"
-                  style={{ backgroundColor: color }}
-                />
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
-                    HEX
-                  </span>
-                  <input
-                    type="text"
-                    value={color}
-                    onChange={(e) => onColorChange(e.target.value)}
-                    className="w-full rounded-lg border bg-gray-50 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          <NeumorphColorPicker
+            variant={mode}
+            color={color}
+            onChange={onColorChange}
+            colors={PRESET_COLORS}
+            title="Icon Color"
+          />
         </div>
 
         {/* Size Control */}

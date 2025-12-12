@@ -31,7 +31,7 @@ interface IconGeneratorProps {
 }
 
 export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorProps) {
-  const [mode, setMode] = useState<'simple' | 'advanced'>('simple');
+  const [mode, setMode] = useState<'simple' | 'advance'>('simple');
   const [customOffsetX, setCustomOffsetX] = useState(0);
   const [customOffsetY, setCustomOffsetY] = useState(0);
 
@@ -79,7 +79,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
   }, [initialData.operatingSystems, selectedOSId]);
 
   // Handle Mode Switching
-  const handleModeChange = (newMode: 'simple' | 'advanced') => {
+  const handleModeChange = (newMode: 'simple' | 'advance') => {
     setMode(newMode);
     if (newMode === 'simple') {
       // Reset to Simple Mode defaults
@@ -99,10 +99,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
     // Check if user is free or not logged in
     const isFreeUser = !isAdmin && (!userProfile || userProfile.role === 'free');
 
-    // Feature Gating: Advanced Mode is for Pro/Lifetime/Admin only
-    if (mode === 'advanced' && isFreeUser) {
+    // Feature Gating: Advance Mode is for Pro/Lifetime/Admin only
+    if (mode === 'advance' && isFreeUser) {
       showToast(
-        'Advanced mode is available for Pro and Lifetime users only. Please upgrade to use this feature.',
+        'Advance mode is available for Pro and Lifetime users only. Please upgrade to use this feature.',
         'info'
       );
       return;
@@ -138,10 +138,10 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
         <NeumorphToggleGroup
           items={[
             { value: 'simple', label: 'Simple', icon: <Layout size={16} /> },
-            { value: 'advanced', label: 'Advanced', icon: <Sliders size={16} /> },
+            { value: 'advance', label: 'Advance', icon: <Sliders size={16} /> },
           ]}
           value={mode}
-          onChange={(val) => handleModeChange(val as 'simple' | 'advanced')}
+          onChange={(val) => handleModeChange(val as 'simple' | 'advance')}
         />
 
         {/* OS Selection */}
@@ -208,8 +208,8 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           mode={mode}
         />
 
-        {/* Advanced Controls */}
-        {mode === 'advanced' && (
+        {/* Advance Controls */}
+        {mode === 'advance' && (
           <AdvancedCustomization
             folderHue={folderHue}
             onFolderHueChange={setFolderHue}
