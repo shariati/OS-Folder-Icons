@@ -67,7 +67,7 @@ export function NeumorphBox<T extends ElementType = 'div'>({
           variant === 'pressed' && 'neu-pressed',
           'relative',
           'space-y-6 rounded-xl',
-          variant === 'none' ? 'bg-neu-bg p-0' : 'bg-transparent',
+          variant === 'none' ? 'bg-neu-bg p-0' : 'bg-transparent p-8',
           hasBar && 'overflow-hidden',
           className
         )
