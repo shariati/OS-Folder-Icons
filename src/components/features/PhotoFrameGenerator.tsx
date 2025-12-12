@@ -14,6 +14,7 @@ import { AdModal } from '@/components/ui/AdModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 import { UploadPhoto } from './UploadPhoto';
+import { PhotoDetails } from './PhotoDetails';
 
 const MONTHS = [
   'January',
@@ -41,10 +42,6 @@ export function PhotoFrameGenerator() {
   const [selectedMonth, setSelectedMonth] = useState('August');
   const [selectedYear, setSelectedYear] = useState('2023');
 
-  // Country Search State
-  const [countryQuery, setCountryQuery] = useState('');
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-
   // Image manipulation state
   const [zoom, setZoom] = useState(1);
   const [baseScale, setBaseScale] = useState(1);
@@ -63,27 +60,6 @@ export function PhotoFrameGenerator() {
 
   const frameRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  const countryDropdownRef = useRef<HTMLDivElement>(null);
-
-  const filteredCountries = COUNTRIES.filter((country) =>
-    country.name.toLowerCase().includes(countryQuery.toLowerCase())
-  );
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        countryDropdownRef.current &&
-        !countryDropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowCountryDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const { showToast } = useToast();
 
@@ -213,125 +189,17 @@ export function PhotoFrameGenerator() {
         <UploadPhoto onUpload={handleImageUpload} inputId="photo-upload-trigger" />
 
         {/* Text Inputs */}
-        <NeumorphBox title="Details" subtitle="Add context to your frame">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">
-              Title
-            </label>
-            <NeumorphBox
-              as="input"
-              variant="pressed"
-              type="text"
-              value={title}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-              className="w-full rounded-xl bg-transparent px-4 py-3 text-gray-700 outline-none dark:text-white"
-              placeholder="e.g. Tumpak Sewu Waterfall"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">
-              Date
-            </label>
-            <div className="flex gap-2">
-              <NeumorphBox
-                as="select"
-                variant="pressed"
-                value={selectedMonth}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setSelectedMonth(e.target.value)
-                }
-                className="flex-1 appearance-none rounded-xl bg-transparent px-4 py-3 text-gray-700 outline-none dark:text-white"
-              >
-                {[
-                  'January',
-                  'February',
-                  'March',
-                  'April',
-                  'May',
-                  'June',
-                  'July',
-                  'August',
-                  'September',
-                  'October',
-                  'November',
-                  'December',
-                ].map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </NeumorphBox>
-              <NeumorphBox
-                as="select"
-                variant="pressed"
-                value={selectedYear}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setSelectedYear(e.target.value)
-                }
-                className="flex-1 appearance-none rounded-xl bg-transparent px-4 py-3 text-gray-700 outline-none dark:text-white"
-              >
-                {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </NeumorphBox>
-            </div>
-          </div>
-
-          <div className="relative" ref={countryDropdownRef}>
-            <label className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">
-              Country Flag
-            </label>
-            <NeumorphBox
-              variant="pressed"
-              className="flex w-full cursor-pointer items-center justify-between space-y-0 rounded-xl bg-transparent px-4 py-3 text-gray-700 dark:text-white"
-              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{selectedCountry.flag}</span>
-                <span>{selectedCountry.name}</span>
-              </div>
-              <span className="text-xs">▼</span>
-            </NeumorphBox>
-
-            {showCountryDropdown && (
-              <div className="absolute z-10 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">
-                <div className="sticky top-0 border-b border-gray-100 bg-white p-2 dark:border-gray-700 dark:bg-gray-800">
-                  <input
-                    type="text"
-                    placeholder="Search country..."
-                    className="w-full rounded-lg bg-gray-100 px-3 py-2 text-sm outline-none dark:bg-gray-700"
-                    value={countryQuery}
-                    onChange={(e) => setCountryQuery(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    autoFocus
-                  />
-                </div>
-                {filteredCountries.map((country) => (
-                  <div
-                    key={country.code}
-                    className="flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      setSelectedCountry(country);
-                      setShowCountryDropdown(false);
-                      setCountryQuery('');
-                    }}
-                  >
-                    <span className="text-xl">{country.flag}</span>
-                    <span>{country.name}</span>
-                  </div>
-                ))}
-                {filteredCountries.length === 0 && (
-                  <div className="px-4 py-3 text-center text-sm text-gray-500">
-                    No countries found
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </NeumorphBox>
+        <PhotoDetails
+          title={title}
+          onTitleChange={setTitle}
+          month={selectedMonth}
+          onMonthChange={setSelectedMonth}
+          year={selectedYear}
+          onYearChange={setSelectedYear}
+          selectedCountry={selectedCountry}
+          onCountryChange={setSelectedCountry}
+          years={YEARS}
+        />
 
         {/* Frame Color Selector */}
         <NeumorphBox title="Frame Color" subtitle="Match your aesthetic">
