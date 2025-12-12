@@ -213,11 +213,11 @@ export function ColorSelector({
             onChange(val);
           }
         }}
-        variant="pressed"
+        variant="none"
         itemOrientation="vertical"
         iconSize="3xl"
         className="w-full"
-        gridSize={5} // Ensure grid layout for colors
+        gridSize={3} // Ensure grid layout for colors
       />
     );
   };
