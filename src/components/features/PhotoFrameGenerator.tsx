@@ -13,6 +13,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { UploadPhoto } from './UploadPhoto';
 
 const MONTHS = [
   'January',
@@ -209,17 +210,7 @@ export function PhotoFrameGenerator() {
       {/* Left Column: Controls */}
       <div className="space-y-6 lg:col-span-4">
         {/* Image Upload */}
-        <NeumorphBox title="Upload Photo" subtitle="Choose your memory">
-          <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800/50">
-            <div className="flex flex-col items-center justify-center pb-6 pt-5">
-              <Upload className="mb-3 h-8 w-8 text-gray-400" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-bold">Click to upload</span> or drag and drop
-              </p>
-            </div>
-            <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
-          </label>
-        </NeumorphBox>
+        <UploadPhoto onUpload={handleImageUpload} inputId="photo-upload-trigger" />
 
         {/* Text Inputs */}
         <NeumorphBox title="Details" subtitle="Add context to your frame">
@@ -486,9 +477,12 @@ export function PhotoFrameGenerator() {
                     draggable={false}
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-gray-400">
+                  <label
+                    htmlFor="photo-upload-trigger"
+                    className="flex h-full w-full cursor-pointer items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  >
                     <p className="text-sm font-medium">Upload an image</p>
-                  </div>
+                  </label>
                 )}
               </div>
 
