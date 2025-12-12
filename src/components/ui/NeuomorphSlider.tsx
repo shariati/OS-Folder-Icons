@@ -52,8 +52,10 @@ export function NeuomorphSlider({
   const [trackWidth, setTrackWidth] = useState(0);
 
   // Motion value for the thumb position in pixels
+  const THUMB_SIZE = 14;
+  const AVAILABLE_WIDTH = trackWidth - THUMB_SIZE * 2;
   const x = useMotionValue(0);
-  const fillWidth = useTransform(x, (v) => v);
+  const fillWidth = useTransform(x, (v) => v + THUMB_SIZE);
 
   // Update track width on mount/resize
   useEffect(() => {
@@ -70,9 +72,6 @@ export function NeuomorphSlider({
   }, []);
 
   const isDragging = useRef(false);
-
-  const THUMB_SIZE = 14;
-  const AVAILABLE_WIDTH = trackWidth - THUMB_SIZE * 2;
 
   // Sync x with value when value changes (external update or initial)
   useEffect(() => {
