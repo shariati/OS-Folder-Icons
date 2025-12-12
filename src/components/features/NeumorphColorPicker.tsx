@@ -2,6 +2,7 @@ import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { ColorSelector } from '@/components/ui/ColorSelector';
 import { NeumorphInput } from '@/components/ui/NeumorphInput';
+import { Hash } from 'lucide-react';
 
 interface NeumorphColorPickerProps {
   variant: 'simple' | 'advance';
@@ -51,12 +52,15 @@ export function NeumorphColorPicker({
         />
         <div className="relative flex-1">
           <NeumorphInput
-            label="Hex Color"
-            value={color}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+            iconPosition="left"
+            value={color.replace(/^#/, '')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const val = e.target.value;
+              onChange(val.startsWith('#') ? val : `#${val}`);
+            }}
             containerClassName="w-full"
             className="neu-pressed"
-            icon={<span className="text-xs font-bold text-gray-400">#</span>}
+            icon={<Hash className="h-4 w-4" />}
           />
         </div>
       </div>
