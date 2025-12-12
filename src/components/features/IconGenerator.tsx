@@ -17,7 +17,7 @@ import { Desktop } from '@/components/ui/Desktop';
 import { Configuration } from './controls/Configuration';
 import { IconStylePresets } from './controls/IconStylePresets';
 import { FolderColorPicker } from './controls/FolderColorPicker';
-import { AdvancedCustomization } from './controls/AdvancedCustomization';
+import { AdvanceCustomization } from './controls/AdvanceCustomization';
 import { Download, Sliders, Layout } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AdModal } from '@/components/ui/AdModal';
@@ -210,7 +210,7 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
 
         {/* Advance Controls */}
         {mode === 'advance' && (
-          <AdvancedCustomization
+          <AdvanceCustomization
             folderHue={folderHue}
             onFolderHueChange={setFolderHue}
             iconEffect={iconEffect}

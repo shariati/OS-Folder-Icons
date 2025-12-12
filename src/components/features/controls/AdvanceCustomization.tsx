@@ -2,7 +2,7 @@ import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeuomorphSlider } from '@/components/ui/NeuomorphSlider';
 import { IconStylePresets } from './IconStylePresets';
 
-interface AdvancedCustomizationProps {
+interface AdvanceCustomizationProps {
   folderHue: number;
   onFolderHueChange: (hue: number) => void;
   iconEffect: 'raised' | 'sunken' | 'glass' | 'flat';
@@ -15,7 +15,7 @@ interface AdvancedCustomizationProps {
   onCustomOffsetYChange: (offset: number) => void;
 }
 
-export function AdvancedCustomization({
+export function AdvanceCustomization({
   folderHue,
   onFolderHueChange,
   iconEffect,
@@ -26,11 +26,11 @@ export function AdvancedCustomization({
   onCustomOffsetXChange,
   customOffsetY,
   onCustomOffsetYChange,
-}: AdvancedCustomizationProps) {
+}: AdvanceCustomizationProps) {
   return (
     <NeumorphBox
       className="space-y-6 rounded-3xl p-6"
-      title="Advanced Customization"
+      title="Advance Customization"
       subtitle="Fine-tune your icon"
     >
       {/* Folder Color */}
