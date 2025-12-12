@@ -1,6 +1,6 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeuomorphSlider } from '@/components/ui/NeuomorphSlider';
-import { clsx } from 'clsx';
+import { IconStylePresets } from './IconStylePresets';
 
 interface AdvancedCustomizationProps {
   folderHue: number;
@@ -49,26 +49,12 @@ export function AdvancedCustomization({
         </div>
       </div>
 
-      {/* Icon Effect */}
-      <div>
-        <h3 className="mb-3 text-lg font-bold text-gray-700 dark:text-white">Icon Effect</h3>
-        <div className="flex gap-2 rounded-xl bg-gray-100 p-1 dark:bg-gray-800">
-          {(['sunken', 'raised', 'glass', 'flat'] as const).map((effect) => (
-            <button
-              key={effect}
-              onClick={() => onIconEffectChange(effect)}
-              className={clsx(
-                'flex-1 rounded-lg px-2 py-2 text-xs font-bold capitalize transition-all',
-                iconEffect === effect
-                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-700'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
-              )}
-            >
-              {effect}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Icon Style */}
+      <IconStylePresets
+        iconEffect={iconEffect}
+        onSelectEffect={onIconEffectChange}
+        variant="none"
+      />
 
       {/* Opacity */}
       <div>

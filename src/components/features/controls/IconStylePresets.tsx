@@ -6,11 +6,16 @@ import { clsx } from 'clsx';
 interface IconStylePresetsProps {
   iconEffect: 'raised' | 'sunken' | 'glass' | 'flat';
   onSelectEffect: (effect: 'raised' | 'sunken' | 'glass' | 'flat') => void;
+  variant?: 'flat' | 'pressed' | 'none';
 }
 
-export function IconStylePresets({ iconEffect, onSelectEffect }: IconStylePresetsProps) {
+export function IconStylePresets({
+  iconEffect,
+  onSelectEffect,
+  variant = 'flat',
+}: IconStylePresetsProps) {
   return (
-    <NeumorphBox title="Icon Style" subtitle="Choose a preset style">
+    <NeumorphBox title="Icon Style" subtitle="Choose a preset style" variant={variant}>
       <NeumorphToggleGroup
         items={(['sunken', 'raised', 'glass', 'flat'] as const).map((effect) => ({
           value: effect,

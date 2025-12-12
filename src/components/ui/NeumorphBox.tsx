@@ -5,7 +5,7 @@ import { Edit2, Trash2 } from 'lucide-react';
 
 interface NeumorphBoxProps<T extends ElementType> {
   children?: ReactNode;
-  variant?: 'flat' | 'pressed';
+  variant?: 'flat' | 'pressed' | 'none';
   as?: T;
   className?: string;
   icon?: ReactNode;
@@ -51,7 +51,9 @@ export function NeumorphBox<T extends ElementType = 'div'>({
   if (isVoid) {
     return (
       <Component
-        className={twMerge(clsx(variant === 'flat' ? 'neu-flat' : 'neu-pressed', className))}
+        className={twMerge(
+          clsx(variant === 'flat' && 'neu-flat', variant === 'pressed' && 'neu-pressed', className)
+        )}
         {...props}
       />
     );
@@ -61,9 +63,11 @@ export function NeumorphBox<T extends ElementType = 'div'>({
     <Component
       className={twMerge(
         clsx(
-          variant === 'flat' ? 'neu-flat' : 'neu-pressed',
+          variant === 'flat' && 'neu-flat',
+          variant === 'pressed' && 'neu-pressed',
           'relative',
-          'space-y-6 rounded-xl bg-white p-8',
+          'space-y-6 rounded-xl',
+          variant === 'none' ? 'bg-neu-bg p-0' : 'bg-transparent',
           hasBar && 'overflow-hidden',
           className
         )
