@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 import { UploadPhoto } from './UploadPhoto';
 import { PhotoDetails } from './PhotoDetails';
+import { FrameColorSelector } from './FrameColorSelector';
 
 const MONTHS = [
   'January',
@@ -202,30 +203,11 @@ export function PhotoFrameGenerator() {
         />
 
         {/* Frame Color Selector */}
-        <NeumorphBox title="Frame Color" subtitle="Match your aesthetic">
-          <div className="flex gap-3">
-            {FRAME_COLORS.map((color) => (
-              <button
-                key={color.name}
-                onClick={() => setFrameColor(color)}
-                className={clsx(
-                  'flex flex-1 flex-col items-center gap-2 rounded-xl border-2 py-3 transition-all',
-                  frameColor.name === color.name
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-transparent bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700'
-                )}
-              >
-                <div
-                  className="h-8 w-8 rounded-full border border-gray-200 shadow-sm"
-                  style={{ backgroundColor: color.value }}
-                />
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                  {color.name}
-                </span>
-              </button>
-            ))}
-          </div>
-        </NeumorphBox>
+        <FrameColorSelector
+          colors={FRAME_COLORS}
+          selectedColor={frameColor}
+          onColorChange={setFrameColor}
+        />
       </div>
 
       {/* Right Column: Preview */}

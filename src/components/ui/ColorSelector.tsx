@@ -5,6 +5,12 @@ export type ColorSelectorMode = 'palette' | 'hue';
 export type ColorSelectorShape = 'circle' | 'rounded';
 export type ColorSelectorAnimation = 'grow' | 'shrink' | 'slide-up' | 'slide-down';
 
+export interface ColorItem {
+  value: string | number;
+  label?: string;
+  color?: string; // Optional hex for display if distinct from value
+}
+
 interface ColorSelectorProps {
   /**
    * The mode of the color selector.
@@ -15,10 +21,10 @@ interface ColorSelectorProps {
 
   /**
    * Array of colors to display.
-   * If mode is 'palette', expects hex strings.
-   * If mode is 'hue', expects numbers (degrees).
+   * If mode is 'palette', expects hex strings or ColorItems.
+   * If mode is 'hue', expects numbers (degrees) or ColorItems.
    */
-  colors: (string | number)[];
+  colors: (string | number | ColorItem)[];
 
   /**
    * The currently selected value.
@@ -106,33 +112,41 @@ export function ColorSelector({
     }
   };
 
+  const getNormalizedItems = (): ColorItem[] => {
+    return colors.map((c) => {
+      if (typeof c === 'object' && c !== null) return c as ColorItem;
+      return { value: c, label: String(c) };
+    });
+  };
+
+  const normalizedColors = getNormalizedItems();
+
   const renderCompact = () => (
     <div className="flex flex-wrap gap-3">
-      {colors.map((colorItem) => {
-        const isSelected = value === colorItem;
+      {normalizedColors.map((colorItem) => {
+        const isSelected = value === colorItem.value;
 
         let style: React.CSSProperties = {};
-        let title = '';
+        let title = colorItem.label || String(colorItem.value);
 
         if (mode === 'palette') {
-          // Expecting hex string
-          const colorHex = String(colorItem);
+          // Expecting hex string in value or color
+          const colorHex = colorItem.color || String(colorItem.value);
           style = { backgroundColor: colorHex };
-          title = colorHex;
         } else {
           // Expecting hue number
-          const hue = Number(colorItem);
+          const hue = Number(colorItem.value);
           style = {
             backgroundColor: baseColor,
             filter: `hue-rotate(${hue}deg)`,
           };
-          title = `Hue: ${hue}°`;
+          if (!colorItem.label) title = `Hue: ${hue}°`;
         }
 
         return (
           <button
-            key={String(colorItem)}
-            onClick={() => onChange(colorItem)}
+            key={String(colorItem.value)}
+            onClick={() => onChange(colorItem.value)}
             className={clsx(
               'h-12 w-12 border-2 shadow-sm transition-all duration-200',
               getShapeClass(shape),
@@ -155,16 +169,17 @@ export function ColorSelector({
 
   const renderFull = () => {
     // Transform colors into NeumorphToggleGroupItems
-    const items: NeumorphToggleGroupItem[] = colors.map((colorItem) => {
-      let label = '';
+    const items: NeumorphToggleGroupItem[] = normalizedColors.map((colorItem) => {
+      let label = colorItem.label || '';
       let style: React.CSSProperties = {};
 
       if (mode === 'palette') {
-        label = String(colorItem);
-        style = { backgroundColor: label };
+        const colorHex = colorItem.color || String(colorItem.value);
+        if (!label) label = colorHex;
+        style = { backgroundColor: colorHex };
       } else {
-        const hue = Number(colorItem);
-        label = `Hue: ${hue}°`;
+        const hue = Number(colorItem.value);
+        if (!label) label = `Hue: ${hue}°`;
         style = {
           backgroundColor: baseColor,
           filter: `hue-rotate(${hue}deg)`,
@@ -172,7 +187,7 @@ export function ColorSelector({
       }
 
       return {
-        value: String(colorItem),
+        value: String(colorItem.value),
         label: label,
         icon: (
           <div
