@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
-import { Upload, Download, Move, ZoomIn, Type, Calendar, Flag, RotateCcw } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Move, RotateCcw, Download } from 'lucide-react';
 import { toPng, toJpeg } from 'html-to-image';
-import { clsx } from 'clsx';
 import { useToast } from '@/components/ui/Toast';
 
 import { COUNTRIES } from '@/data/countries';
@@ -16,21 +14,7 @@ import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
 import { UploadPhoto } from './UploadPhoto';
 import { PhotoDetails } from './PhotoDetails';
 import { FrameColorSelector } from './FrameColorSelector';
-
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+import { PolaroidPhotoFrame } from './PolaroidPhotoFrame';
 
 const YEARS = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - 25 + i).toString());
 
@@ -60,7 +44,6 @@ export function PhotoFrameGenerator() {
   const [frameColor, setFrameColor] = useState(FRAME_COLORS[0]);
 
   const frameRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
 
   const { showToast } = useToast();
 
@@ -68,37 +51,6 @@ export function PhotoFrameGenerator() {
     if (e.target.files && e.target.files[0]) {
       const url = URL.createObjectURL(e.target.files[0]);
       setImage(url);
-    }
-  };
-
-  const handleDownload = async (format: 'png' | 'jpg') => {
-    if (!frameRef.current) return;
-
-    try {
-      // Small delay to ensure rendering is complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const options = {
-        pixelRatio: 2,
-        quality: format === 'jpg' ? 0.95 : undefined,
-        backgroundColor: frameColor.value, // Explicitly set background color for export
-      };
-
-      const dataUrl =
-        format === 'png'
-          ? await toPng(frameRef.current, options)
-          : await toJpeg(frameRef.current, options);
-
-      const link = document.createElement('a');
-      link.download = `photo-frame-${Date.now()}.${format}`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error('Failed to download image', err);
-      showToast(
-        `Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        'error'
-      );
     }
   };
 
@@ -154,7 +106,7 @@ export function PhotoFrameGenerator() {
     }
   };
 
-  const { user, userProfile, loading } = useAuth();
+  const { userProfile, loading } = useAuth();
 
   // We are removing saveStateAndRedirect, so just empty or remove. To be safe with chunks, I'll remove the block.
 
@@ -272,100 +224,28 @@ export function PhotoFrameGenerator() {
             }
           >
             {/* Polaroid Frame */}
-            <div
+            <PolaroidPhotoFrame
               ref={frameRef}
-              className="relative flex flex-shrink-0 flex-col items-center shadow-2xl"
-              style={{
-                width: '420px', // 14 units * 30px scale
-                height: '510px', // 17 units * 30px scale
-                padding: '30px 30px 120px 30px', // 1 unit top/sides, 4 units bottom
-                boxSizing: 'border-box',
-                backgroundColor: frameColor.value,
+              image={image}
+              title={title}
+              date={`${selectedMonth} ${selectedYear}`}
+              countryFlag={selectedCountry.flag}
+              backgroundColor={frameColor.value}
+              textColor={frameColor.text}
+              baseScale={baseScale}
+              zoom={zoom}
+              position={position}
+              onAutoFit={(scale, pos) => {
+                setBaseScale(scale);
+                setZoom(1);
+                setPosition(pos);
+                setInitialPosition(pos);
               }}
-            >
-              {/* Image Area */}
-              <div
-                className="relative h-full w-full cursor-move overflow-hidden bg-gray-100"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-              >
-                {image ? (
-                  <img
-                    ref={imageRef}
-                    src={image}
-                    alt="Uploaded"
-                    className="absolute max-w-none"
-                    onLoad={(e) => {
-                      const { naturalWidth, naturalHeight } = e.currentTarget;
-                      const CONTAINER_SIZE = 360;
-
-                      // Calculate scale to cover the container
-                      const scaleX = CONTAINER_SIZE / naturalWidth;
-                      const scaleY = CONTAINER_SIZE / naturalHeight;
-                      const scale = Math.max(scaleX, scaleY);
-
-                      setBaseScale(scale);
-                      setZoom(1);
-
-                      // Center the image
-                      const x = (CONTAINER_SIZE - naturalWidth) / 2;
-                      const y = (CONTAINER_SIZE - naturalHeight) / 2;
-
-                      setPosition({ x, y });
-                      setInitialPosition({ x, y });
-                    }}
-                    style={{
-                      transform: `translate(${position.x}px, ${position.y}px) scale(${baseScale * zoom})`,
-                      transformOrigin: 'center',
-                      pointerEvents: 'none', // Let the container handle events
-                      userSelect: 'none',
-                      left: 0,
-                      top: 0,
-                    }}
-                    draggable={false}
-                  />
-                ) : (
-                  <label
-                    htmlFor="photo-upload-trigger"
-                    className="flex h-full w-full cursor-pointer items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                  >
-                    <p className="text-sm font-medium">Upload an image</p>
-                  </label>
-                )}
-              </div>
-
-              {/* Text Area (Absolute positioned relative to frame) */}
-              <div className="absolute bottom-0 left-0 flex h-[120px] w-full flex-col justify-center px-[30px] py-4">
-                <div className="flex items-end justify-between">
-                  <div className="flex flex-col gap-1">
-                    <h2
-                      className="text-2xl leading-tight"
-                      style={{
-                        fontFamily: 'var(--font-recursive), sans-serif',
-                        fontWeight: 600,
-                        color: frameColor.text,
-                      }}
-                    >
-                      {title}
-                    </h2>
-                    <p
-                      className="text-lg"
-                      style={{
-                        fontFamily: 'var(--font-recursive), sans-serif',
-                        fontWeight: 400,
-                        color: frameColor.text,
-                        opacity: 0.8,
-                      }}
-                    >
-                      {selectedMonth} {selectedYear}
-                    </p>
-                  </div>
-                  <div className="text-4xl drop-shadow-sm filter">{selectedCountry.flag}</div>
-                </div>
-              </div>
-            </div>
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            />
           </PreviewPanel>
         </div>
       </div>
