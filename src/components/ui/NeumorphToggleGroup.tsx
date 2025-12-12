@@ -73,6 +73,15 @@ interface NeumorphToggleGroupProps {
    * @default 'left'
    */
   halign?: 'left' | 'center' | 'right';
+  /**
+   * Orientation of the individual items (buttons).
+   * @default 'horizontal'
+   */
+  itemOrientation?: 'horizontal' | 'vertical';
+  /**
+   * Size of the icons in the buttons.
+   */
+  iconSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 }
 
 export function NeumorphToggleGroup({
@@ -89,6 +98,8 @@ export function NeumorphToggleGroup({
   gridSizeMd,
   valign = 'center',
   halign = 'left',
+  itemOrientation,
+  iconSize,
 }: NeumorphToggleGroupProps) {
   const gridClasses = {
     2: 'grid-cols-2',
@@ -118,6 +129,8 @@ export function NeumorphToggleGroup({
         imageAlt={item.imageAlt}
         imageStyle={item.imageStyle}
         imageSize={item.imageSize}
+        orientation={itemOrientation}
+        iconSize={iconSize}
       />
     );
   });

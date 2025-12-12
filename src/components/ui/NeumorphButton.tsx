@@ -9,7 +9,7 @@ export interface NeumorphButtonProps extends ButtonHTMLAttributes<HTMLButtonElem
   orientation?: 'horizontal' | 'vertical';
   icon?: ReactNode;
   iconPosition?: 'left' | 'right' | 'top' | 'bottom';
-  iconSize?: 'sm' | 'md' | 'lg';
+  iconSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   imageSrc?: string | StaticImageData;
   imageAlt?: string;
   imageStyle?: React.CSSProperties;
@@ -72,6 +72,9 @@ export function NeumorphButton({
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
     lg: 'w-6 h-6',
+    xl: 'w-8 h-8',
+    '2xl': 'w-10 h-10',
+    '3xl': 'w-12 h-12',
   };
 
   // Image size classes
