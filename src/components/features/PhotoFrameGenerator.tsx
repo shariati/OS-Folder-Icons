@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Move, RotateCcw, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { toPng, toJpeg } from 'html-to-image';
 import { useToast } from '@/components/ui/Toast';
 
 import { COUNTRIES } from '@/data/countries';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { AdModal } from '@/components/ui/AdModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
@@ -15,6 +14,7 @@ import { UploadPhoto } from './UploadPhoto';
 import { PhotoDetails } from './PhotoDetails';
 import { FrameColorSelector } from './FrameColorSelector';
 import { PolaroidPhotoFrame } from './PolaroidPhotoFrame';
+import { AdjustImageControl } from './controls/AdjustImageControl';
 
 const YEARS = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - 25 + i).toString());
 
@@ -169,39 +169,14 @@ export function PhotoFrameGenerator() {
             minHeight="min-h-[600px]"
             controls={
               image && (
-                <NeumorphBox
-                  title="Adjust Image"
-                  variant="pressed"
-                  subtitle="Perfect your composition"
-                  icon={<Move size={20} />}
-                  badge={
-                    <button
-                      onClick={() => {
-                        setZoom(1);
-                        setPosition(initialPosition);
-                      }}
-                      className="flex items-center gap-1 text-xs font-bold text-blue-500 hover:text-blue-600"
-                    >
-                      <RotateCcw size={12} /> Reset
-                    </button>
-                  }
-                >
-                  <div>
-                    <label className="mb-2 block flex items-center justify-between text-sm font-bold text-gray-700 dark:text-gray-300">
-                      <span>Zoom</span>
-                      <span className="text-xs text-gray-500">{Math.round(zoom * 100)}%</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="3"
-                      step="0.1"
-                      value={zoom}
-                      onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500 dark:bg-gray-700"
-                    />
-                  </div>
-                </NeumorphBox>
+                <AdjustImageControl
+                  zoom={zoom}
+                  onZoomChange={setZoom}
+                  onReset={() => {
+                    setZoom(1);
+                    setPosition(initialPosition);
+                  }}
+                />
               )
             }
             actionButton={
