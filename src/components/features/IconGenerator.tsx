@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { FolderFrame } from '@/components/features/FolderFrame';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphButton } from '@/components/ui/NeumorphButton';
@@ -320,24 +321,27 @@ export function IconGenerator({ initialData, isAdmin = false }: IconGeneratorPro
           {/* Hidden CanvasPreview for Download generation */}
           <div className="pointer-events-none fixed left-[-9999px] top-[-9999px]">
             <CanvasPreview
-              folderImage={selectedFolder?.imageUrl}
-              iconName={selectedIcon}
-              iconType={iconType}
-              iconColor={iconColor}
-              iconSize={iconSize}
-              offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
-              offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
-              format={selectedOS?.format}
-              iconEffect={iconEffect}
-              iconTransparency={iconTransparency}
-              folderHue={folderHue}
-              enableCors={true}
               enableDownload={true}
-              osName={selectedOS?.name}
-              folderName={selectedFolder?.name}
+              triggerEventName="trigger-download"
               onDownloadComplete={() => showToast('Download started!', 'success')}
               onDownloadError={(err) => showToast('Failed to generate icon package', 'error')}
-            />
+              filename={`${selectedOS?.name || 'Icon'} - ${selectedFolder?.name || 'Folder'}`}
+              format={selectedOS?.format || 'png'}
+            >
+              <FolderFrame
+                folderImage={selectedFolder?.imageUrl}
+                iconName={selectedIcon}
+                iconType={iconType}
+                iconColor={iconColor}
+                iconSize={iconSize}
+                offsetX={(selectedFolder?.offsetX || 0) + customOffsetX}
+                offsetY={(selectedFolder?.offsetY || 0) + customOffsetY}
+                iconEffect={iconEffect}
+                iconTransparency={iconTransparency}
+                folderHue={folderHue}
+                enableCors={true}
+              />
+            </CanvasPreview>
           </div>
         </div>
       </div>

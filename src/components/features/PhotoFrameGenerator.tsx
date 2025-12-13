@@ -10,6 +10,8 @@ import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { AdModal } from '@/components/ui/AdModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { NeumorphButton } from '@/components/ui/NeumorphButton';
 import { UploadPhoto } from './UploadPhoto';
 import { PhotoDetails } from './PhotoDetails';
 import { FrameColorSelector } from './FrameColorSelector';
@@ -49,8 +51,14 @@ export function PhotoFrameGenerator() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const url = URL.createObjectURL(e.target.files[0]);
-      setImage(url);
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setImage(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -75,51 +83,19 @@ export function PhotoFrameGenerator() {
     setIsDragging(false);
   };
 
-  const triggerDownload = async (format: 'png' | 'jpg') => {
-    if (!frameRef.current) return;
-
-    try {
-      // Small delay to ensure rendering is complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const options = {
-        pixelRatio: 2,
-        quality: format === 'jpg' ? 0.95 : undefined,
-        backgroundColor: frameColor.value, // Explicitly set background color for export
-      };
-
-      const dataUrl =
-        format === 'png'
-          ? await toPng(frameRef.current, options)
-          : await toJpeg(frameRef.current, options);
-
-      const link = document.createElement('a');
-      link.download = `photo-frame-${Date.now()}.${format}`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error('Failed to download image', err);
-      showToast(
-        `Failed to generate image: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        'error'
-      );
-    }
-  };
-
   const { userProfile, loading } = useAuth();
 
   // We are removing saveStateAndRedirect, so just empty or remove. To be safe with chunks, I'll remove the block.
 
   const { preferences } = useCookieConsent();
 
-  const handleDownloadClick = (format: 'png' | 'jpg') => {
+  const handleDownloadClick = () => {
     if (loading) return;
 
     // Check if user is free tier
     const isFreeUser = !userProfile || userProfile.role === 'free';
 
     if (isFreeUser) {
-      // Extra check: If they somehow disabled ads (e.g. via browser or hack), block them.
       if (!preferences.advertising) {
         showToast(
           'Please enable Advertising cookies to use this free tool, or upgrade to Pro to remove ads.',
@@ -127,11 +103,17 @@ export function PhotoFrameGenerator() {
         );
         return;
       }
-      setPendingDownload(format);
       setIsAdOpen(true);
+      setPendingDownload('png'); // Just use a truthy value to indicate pending
     } else {
-      triggerDownload(format);
+      triggerDownload();
     }
+  };
+
+  const triggerDownload = () => {
+    showToast('Generating high-res photo...', 'info');
+    const event = new CustomEvent('trigger-photo-download');
+    window.dispatchEvent(event);
   };
 
   return (
@@ -180,22 +162,14 @@ export function PhotoFrameGenerator() {
               )
             }
             actionButton={
-              <div className="flex gap-4">
-                <button
-                  onClick={() => handleDownloadClick('png')}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-blue-600 py-4 font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700"
-                >
-                  <Download size={20} />
-                  Download PNG
-                </button>
-                <button
-                  onClick={() => handleDownloadClick('jpg')}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-white py-4 font-bold text-gray-800 shadow-lg transition-all hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <Download size={20} />
-                  Download JPG
-                </button>
-              </div>
+              <NeumorphButton
+                onClick={() => handleDownloadClick()}
+                variant="flat"
+                className="w-full gap-3 bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4 text-lg text-white shadow-lg shadow-blue-500/30 hover:-translate-y-0 hover:from-blue-500 hover:to-blue-400 active:scale-[0.98]"
+                icon={<Download size={24} />}
+              >
+                Download Photo
+              </NeumorphButton>
             }
           >
             {/* Polaroid Frame */}
@@ -225,6 +199,42 @@ export function PhotoFrameGenerator() {
         </div>
       </div>
 
+      {/* Hidden CanvasPreview for High-Res Download - Placed outside grid to prevent layout issues */}
+      <div
+        style={{ position: 'absolute', left: -9999, top: -9999, opacity: 0, pointerEvents: 'none' }}
+      >
+        <CanvasPreview
+          enableDownload={true}
+          triggerEventName="trigger-photo-download"
+          format="png"
+          filename={`Polaroid - ${title}`}
+          exactSize={true}
+          pixelRatio={2}
+          onDownloadComplete={() => showToast('Download started!', 'success')}
+          onDownloadError={(err) => showToast('Failed to generate image', 'error')}
+          containerClassName="w-[1260px] h-[1530px]" // 3x scale of 420x510
+        >
+          <div className="origin-top-left scale-[3] transform">
+            <PolaroidPhotoFrame
+              image={image}
+              title={title}
+              date={`${selectedMonth} ${selectedYear}`}
+              countryFlag={selectedCountry.flag}
+              backgroundColor={frameColor.value}
+              textColor={frameColor.text}
+              baseScale={baseScale}
+              zoom={zoom}
+              position={position}
+              onAutoFit={() => {}} // No-op for render
+              onMouseDown={() => {}}
+              onMouseMove={() => {}}
+              onMouseUp={() => {}}
+              onMouseLeave={() => {}}
+            />
+          </div>
+        </CanvasPreview>
+      </div>
+
       <AdModal
         isOpen={isAdOpen}
         onClose={() => {
@@ -234,7 +244,7 @@ export function PhotoFrameGenerator() {
         onComplete={() => {
           setIsAdOpen(false);
           if (pendingDownload) {
-            triggerDownload(pendingDownload);
+            triggerDownload();
             setPendingDownload(null);
           }
         }}
