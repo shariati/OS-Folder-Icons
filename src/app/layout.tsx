@@ -25,6 +25,7 @@ import GoogleAnalytics from '@/components/shared/GoogleAnalytics';
 import { ActivationBanner } from '@/components/ui/ActivationBanner';
 import { getSettings } from '@/lib/db';
 import Clarity from '@/components/shared/Clarity';
+import { ScrollToTop } from '@/components/utils/ScrollToTop';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -76,6 +77,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.variable} min-h-screen bg-gray-50 antialiased dark:bg-gray-900`}
       >
         <Providers>
+          <ScrollToTop />
           <GoogleAnalytics id={settings.tracking?.googleAnalyticsCode} />
           <Clarity projectId={settings.tracking?.clarityCode} />
           <Navbar />
