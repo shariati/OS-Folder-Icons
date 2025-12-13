@@ -1,19 +1,17 @@
 'use client';
 
+import clsx from 'clsx';
 import {
   Copy,
-  Trash2,
-  RotateCcw,
-  MoveUp,
-  MoveDown,
-  Type,
   Heading1,
   Heading2,
   List,
   ListOrdered,
   Quote,
+  RotateCcw,
+  Trash2,
+  Type,
 } from 'lucide-react';
-import clsx from 'clsx';
 
 interface BlockContextMenuProps {
   editor: any;

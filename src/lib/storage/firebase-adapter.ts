@@ -1,4 +1,5 @@
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
 import { storage } from '../firebase/client';
 import { StorageAdapter } from './types';
 

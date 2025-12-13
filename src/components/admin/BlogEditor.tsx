@@ -1,29 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import {
+  Calendar,
+  Globe,
+  Monitor,
+  Save,
+  Search,
+  Share2,
+  Smartphone,
+  User as UserIcon,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { sanitizeHtml } from '@/lib/sanitize';
 import { BlogPost, Tag } from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 import { RichTextEditor } from './RichTextEditor';
 import { SocialShareTab } from './SocialShareTab';
-import {
-  Save,
-  Globe,
-  Calendar,
-  User as UserIcon,
-  Image as ImageIcon,
-  Tag as TagIcon,
-  Eye,
-  Settings,
-  Layout,
-  Search,
-  CheckCircle,
-  Smartphone,
-  Monitor,
-  Share2,
-} from 'lucide-react';
-import { sanitizeHtml } from '@/lib/sanitize';
-import { getFullUrl } from '@/lib/url';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ImageUploader } from './ImageUploader';
 import { TagAutocomplete } from './TagAutocomplete';
 
 interface BlogEditorProps {

@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Check } from 'lucide-react';
-import clsx from 'clsx';
+import { Check, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface InputModalProps {
   isOpen: boolean;

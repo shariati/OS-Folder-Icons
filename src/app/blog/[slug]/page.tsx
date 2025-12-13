@@ -1,15 +1,16 @@
-import { getBlogPosts } from '@/lib/db';
-import { notFound } from 'next/navigation';
+import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
-import { SOCIAL_SHARE_URLS } from '@/constants/links';
-import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
+import { notFound } from 'next/navigation';
+
 import { BlogPostCard } from '@/components/features/BlogPostCard';
-import { Footer } from '@/components/layout/Footer';
 import { ViewCounter } from '@/components/features/ViewCounter';
+import { Footer } from '@/components/layout/Footer';
+import { SOCIAL_SHARE_URLS } from '@/constants/links';
+import { getBlogPosts } from '@/lib/db';
 import { formatDate } from '@/lib/format';
+import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 
 interface BlogPostPageProps {
   params: Promise<{

@@ -1,8 +1,9 @@
 'use client';
 
-import { forwardRef, useEffect, useImperativeHandle, useState, useCallback, useRef } from 'react';
-import { authenticatedFetch } from '@/lib/fetch-auth';
 import clsx from 'clsx';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+
+import { authenticatedFetch } from '@/lib/fetch-auth';
 
 interface MentionItem {
   id: string;

@@ -1,32 +1,30 @@
 'use client';
 
-import { authenticatedFetch } from '@/lib/fetch-auth';
-import { useAuth } from '@/contexts/AuthContext';
-
-import { useState, useEffect, useRef } from 'react';
-import { DB } from '@/lib/types';
-import { UserProfile } from '@/types/user';
+import clsx from 'clsx';
 import {
-  Trash2,
-  Shield,
-  User,
-  Check,
-  X,
-  Eye,
-  AlertTriangle,
-  Network,
-  Search,
-  Key,
-  Users as UsersIcon,
   Activity,
-  Mail,
+  AlertTriangle,
+  Check,
   Clock,
+  Eye,
+  Key,
+  Search,
+  Shield,
+  Trash2,
+  User,
+  Users as UsersIcon,
+  X,
 } from 'lucide-react';
-import { useToast } from '@/components/ui/Toast';
+import { useEffect, useRef, useState } from 'react';
+
 import { CopyModal } from '@/components/ui/CopyModal';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { authenticatedFetch } from '@/lib/fetch-auth';
 import { formatDate } from '@/lib/format';
-import clsx from 'clsx';
+import { DB } from '@/lib/types';
+import { UserProfile } from '@/types/user';
 
 interface UsersManagerProps {
   initialData: DB;

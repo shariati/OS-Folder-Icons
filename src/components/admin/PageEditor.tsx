@@ -1,21 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Globe, Monitor, Save, Search, Share2, Smartphone } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { sanitizeHtml } from '@/lib/sanitize';
 import { Page } from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 import { RichTextEditor } from './RichTextEditor';
 import { SocialShareTab } from './SocialShareTab';
-import {
-  Save,
-  Globe,
-  Image as ImageIcon,
-  Eye,
-  Search,
-  Smartphone,
-  Monitor,
-  Share2,
-} from 'lucide-react';
-import { sanitizeHtml } from '@/lib/sanitize';
-import { ImageUploader } from './ImageUploader';
 
 interface PageEditorProps {
   page: Partial<Page>;

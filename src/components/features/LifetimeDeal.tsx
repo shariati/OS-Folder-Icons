@@ -1,6 +1,7 @@
 // import db from '@/lib/db';
-import { getLifetimeUserCount } from '@/lib/db';
 import { Check } from 'lucide-react';
+
+import { getLifetimeUserCount } from '@/lib/db';
 
 export async function LifetimeDeal() {
   const count = await getLifetimeUserCount();

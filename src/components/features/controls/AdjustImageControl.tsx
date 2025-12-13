@@ -1,5 +1,6 @@
+import { RotateCcw } from 'lucide-react';
 import React from 'react';
-import { Move, RotateCcw } from 'lucide-react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeuomorphSlider } from '@/components/ui/NeuomorphSlider';
 

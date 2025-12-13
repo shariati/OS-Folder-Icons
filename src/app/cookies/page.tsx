@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Footer } from '@/components/layout/Footer';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
 import { Check, RefreshCw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Footer } from '@/components/layout/Footer';
+import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
 import {
-  useCookieConsent,
   CookiePreferences,
   getDefaultPreferences,
+  useCookieConsent,
 } from '@/components/shared/CookieConsentProvider';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function CookiesPage() {

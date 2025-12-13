@@ -1,5 +1,6 @@
-import { getFirebaseAuth } from './firebase/client';
 import { createLogger } from '@/lib/logger';
+
+import { getFirebaseAuth } from './firebase/client';
 
 const logger = createLogger('fetch-auth');
 

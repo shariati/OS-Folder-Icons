@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+import { unauthorizedResponse, verifyAdmin } from '@/lib/admin-auth';
 import { getSettings, saveSettings } from '@/lib/db';
-import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
   try {

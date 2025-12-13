@@ -1,11 +1,12 @@
-import Link from 'next/link';
+import { BookOpen, Github, Linkedin, Palette } from 'lucide-react';
 import Image from 'next/image';
-import { Twitter, Github, Linkedin, Palette, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+
 import {
-  SOCIAL_LINKS,
-  RESOURCE_LINKS,
-  getFirebaseStorageUrl,
   FIREBASE_STORAGE,
+  getFirebaseStorageUrl,
+  RESOURCE_LINKS,
+  SOCIAL_LINKS,
 } from '@/constants/links';
 
 export function Footer() {

@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Settings } from '@/lib/types';
-import { useToast } from '@/components/ui/Toast';
+import { Image as ImageIcon, Loader2, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ImageUploader } from './ImageUploader';
+import { useToast } from '@/components/ui/Toast';
 import { authenticatedFetch } from '@/lib/fetch-auth';
-import { Save, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Settings } from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 
 export function PhotoFrameManager() {
   const [settings, setSettings] = useState<Settings>({});

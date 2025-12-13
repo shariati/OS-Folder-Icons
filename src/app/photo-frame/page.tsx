@@ -1,7 +1,8 @@
+import { Metadata } from 'next';
+
 import { PhotoFrameGenerator } from '@/components/features/PhotoFrameGenerator';
 import { Footer } from '@/components/layout/Footer';
 import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
-import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Photo Frame - HDPick',

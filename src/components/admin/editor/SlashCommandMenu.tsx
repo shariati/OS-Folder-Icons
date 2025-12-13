@@ -1,23 +1,23 @@
 'use client';
 
-import { forwardRef, useEffect, useImperativeHandle, useState, useCallback, useRef } from 'react';
+import clsx from 'clsx';
 import {
-  Type,
+  AtSign,
+  CheckSquare,
+  Code,
   Heading1,
   Heading2,
   Heading3,
+  Image as ImageIcon,
   List,
   ListOrdered,
-  CheckSquare,
+  Minus,
   Quote,
-  Code,
-  AtSign,
   Smile,
   Table,
-  Minus,
-  Image as ImageIcon,
+  Type,
 } from 'lucide-react';
-import clsx from 'clsx';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 export interface SlashCommandItem {
   title: string;

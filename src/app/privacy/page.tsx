@@ -1,7 +1,7 @@
 import { Footer } from '@/components/layout/Footer';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { PROJECT_LINKS, EXTERNAL_LINKS } from '@/constants/links';
 import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { EXTERNAL_LINKS, PROJECT_LINKS } from '@/constants/links';
 
 export default function PrivacyPage() {
   return (

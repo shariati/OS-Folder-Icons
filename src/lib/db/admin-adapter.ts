@@ -1,17 +1,17 @@
-import { adminDb as db } from '../firebase/admin';
-import { DatabaseAdapter } from './types';
 import { UserProfile } from '../../types/user';
+import { adminDb as db } from '../firebase/admin';
 import {
-  DB,
-  OperatingSystem,
+  BlogPost,
   Bundle,
   Category,
-  Tag,
+  DB,
   HeroSlide,
-  BlogPost,
+  OperatingSystem,
   Page,
   Settings,
+  Tag,
 } from '../types';
+import { DatabaseAdapter } from './types';
 
 export const adminAdapter: DatabaseAdapter = {
   async getOperatingSystems(): Promise<OperatingSystem[]> {
@@ -193,7 +193,7 @@ export const adminAdapter: DatabaseAdapter = {
     if (!db) return;
 
     const batch = db.batch();
-    let operationCount = 0;
+    const operationCount = 0;
     const BATCH_LIMIT = 500;
 
     // Refactoring to handle batching correctly

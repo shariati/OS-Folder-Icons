@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Copy, Check } from 'lucide-react';
+import { Check, Copy, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface CopyModalProps {
   isOpen: boolean;

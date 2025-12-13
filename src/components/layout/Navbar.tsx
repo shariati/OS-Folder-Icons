@@ -1,12 +1,13 @@
 'use client';
 
-import Link from 'next/link';
+import { LogOut, Settings, User } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+import { FIREBASE_STORAGE, getFirebaseStorageUrl } from '@/constants/links';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState, useRef, useEffect } from 'react';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 export function Navbar() {
   const pathname = usePathname();

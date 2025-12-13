@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { X, Plus } from 'lucide-react';
-import { Tag } from '@/lib/types';
 import clsx from 'clsx';
+import { Plus, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+import { Tag } from '@/lib/types';
 
 interface TagAutocompleteProps {
   selectedTags: string[];

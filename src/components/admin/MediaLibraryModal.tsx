@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { X, Image as ImageIcon, Loader2, Check, ExternalLink } from 'lucide-react';
-import { ref, listAll, getMetadata, getDownloadURL, StorageReference } from 'firebase/storage';
-import { storage } from '@/lib/firebase/client';
-import { formatDateTime, formatTimeAgo, formatSize } from '@/lib/format';
 import clsx from 'clsx';
+import { getDownloadURL, getMetadata, listAll, ref, StorageReference } from 'firebase/storage';
+import { Check, ExternalLink, Image as ImageIcon, Loader2, X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+
+import { storage } from '@/lib/firebase/client';
+import { formatDateTime, formatSize, formatTimeAgo } from '@/lib/format';
 
 interface MediaLibraryModalProps {
   isOpen: boolean;

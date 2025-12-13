@@ -1,8 +1,9 @@
+import { Hash } from 'lucide-react';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
+
 import { ColorSelector } from '@/components/ui/ColorSelector';
 import { NeumorphInput } from '@/components/ui/NeumorphInput';
-import { Hash } from 'lucide-react';
 
 interface NeumorphColorPickerProps {
   variant: 'simple' | 'advance';

@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import { ArrowRight, Lock, Mail } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import React, { Suspense, useState } from 'react';
+
+import { FIREBASE_STORAGE, getFirebaseStorageUrl } from '@/constants/links';
 import { useAuth } from '@/contexts/AuthContext';
-import { Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
-import Image from 'next/image';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
 
 function SignupContent() {
   const router = useRouter();

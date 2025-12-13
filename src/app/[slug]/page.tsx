@@ -1,9 +1,10 @@
-import { getPages } from '@/lib/db';
-import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
+import { notFound } from 'next/navigation';
+
 import { Footer } from '@/components/layout/Footer';
+import { getPages } from '@/lib/db';
+import { sanitizeHtmlWithLinks } from '@/lib/sanitize';
 
 // Reserved slugs that should not be matched by this dynamic route
 const RESERVED_SLUGS = [

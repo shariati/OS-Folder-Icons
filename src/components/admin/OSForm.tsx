@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { OperatingSystem } from '@/lib/types';
-import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { clsx } from 'clsx';
 import { ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { BRAND_ICONS, OS_FORMATS, OS_KEYWORD_MATCHERS } from '@/constants/os';
+import { OperatingSystem } from '@/lib/types';
 
 interface OSFormProps {
   initialData?: Partial<OperatingSystem>;

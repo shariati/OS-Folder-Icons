@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { Menu, User } from 'lucide-react';
-import clsx from 'clsx';
+import Link from 'next/link';
+
 import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderProps {

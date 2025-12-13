@@ -1,7 +1,7 @@
 'use client';
 
+import { Download, FolderHeart, Star, Users } from 'lucide-react';
 import React from 'react';
-import { Download, Users, FolderHeart, Star } from 'lucide-react';
 
 export function StatsSection() {
   const stats = [

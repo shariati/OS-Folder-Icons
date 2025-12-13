@@ -1,8 +1,9 @@
 'use client';
 
-import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+
+import { useAuth } from '@/contexts/AuthContext';
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { userProfile, loading } = useAuth();

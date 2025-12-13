@@ -1,22 +1,22 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import { Download } from 'lucide-react';
-import { toPng, toJpeg } from 'html-to-image';
-import { useToast } from '@/components/ui/Toast';
+import { useEffect, useRef, useState } from 'react';
 
-import { COUNTRIES } from '@/data/countries';
-import { PreviewPanel } from '@/components/ui/PreviewPanel';
-import { AdModal } from '@/components/ui/AdModal';
-import { useAuth } from '@/contexts/AuthContext';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { AdModal } from '@/components/ui/AdModal';
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { NeumorphButton } from '@/components/ui/NeumorphButton';
-import { UploadPhoto } from './UploadPhoto';
-import { PhotoDetails } from './PhotoDetails';
-import { FrameColorSelector } from './FrameColorSelector';
-import { PolaroidPhotoFrame } from './PolaroidPhotoFrame';
+import { PreviewPanel } from '@/components/ui/PreviewPanel';
+import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { COUNTRIES } from '@/data/countries';
+
 import { AdjustImageControl } from './controls/AdjustImageControl';
+import { FrameColorSelector } from './FrameColorSelector';
+import { PhotoDetails } from './PhotoDetails';
+import { PolaroidPhotoFrame } from './PolaroidPhotoFrame';
+import { UploadPhoto } from './UploadPhoto';
 
 const YEARS = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - 25 + i).toString());
 

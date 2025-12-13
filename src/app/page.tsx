@@ -16,18 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getDB } from '@/lib/db';
-import Link from 'next/link';
+import { ArrowRight, ImageIcon, Layers, Palette } from 'lucide-react';
 import Image from 'next/image';
-import { ArrowRight, Palette, Layers, ImageIcon } from 'lucide-react';
-import { Footer } from '@/components/layout/Footer';
+import Link from 'next/link';
+
+import { FeaturedBlogs } from '@/components/features/FeaturedBlogs';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { StatsSection } from '@/components/features/StatsSection';
 import { VideoBackground } from '@/components/features/VideoBackground';
+import { Footer } from '@/components/layout/Footer';
 import PricingSection from '@/components/subscription/PricingSection';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { FeaturedBlogs } from '@/components/features/FeaturedBlogs';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
+import { getDB } from '@/lib/db';
 
 export default async function Home() {
   const db = await getDB();

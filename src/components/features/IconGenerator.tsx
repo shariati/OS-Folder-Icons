@@ -1,30 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import Image from 'next/image';
-import { CanvasPreview } from '@/components/ui/CanvasPreview';
-import { FolderFrame } from '@/components/features/FolderFrame';
-import { PreviewPanel } from '@/components/ui/PreviewPanel';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { NeumorphButton } from '@/components/ui/NeumorphButton';
-import { IconPicker } from './IconPicker';
-import { OSSelection } from './controls/OSSelection';
-import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
-import { Desktop } from '@/components/ui/Desktop';
+import { Download, Layout, Sliders } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { Configuration } from './controls/Configuration';
-import { IconStylePresets } from './controls/IconStylePresets';
-import { FolderColorPicker } from './controls/FolderColorPicker';
-import { AdvanceCustomization } from './controls/AdvanceCustomization';
-import { Download, Sliders, Layout } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { AdModal } from '@/components/ui/AdModal';
-import { useToast } from '@/components/ui/Toast';
+import { FolderFrame } from '@/components/features/FolderFrame';
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { AdModal } from '@/components/ui/AdModal';
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { NeumorphButton } from '@/components/ui/NeumorphButton';
+import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
+import { PreviewPanel } from '@/components/ui/PreviewPanel';
+import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { DB } from '@/lib/types';
 import { renderIcon } from '@/lib/utils/renderIcon';
+
+import { AdvanceCustomization } from './controls/AdvanceCustomization';
+import { Configuration } from './controls/Configuration';
+import { FolderColorPicker } from './controls/FolderColorPicker';
+import { IconStylePresets } from './controls/IconStylePresets';
+import { OSSelection } from './controls/OSSelection';
+import { IconPicker } from './IconPicker';
 
 interface IconGeneratorProps {
   initialData: DB;

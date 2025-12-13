@@ -1,7 +1,8 @@
-import { getBlogPosts } from '@/lib/db';
+import { Metadata } from 'next';
+
 import { BlogPostCard } from '@/components/features/BlogPostCard';
 import { Footer } from '@/components/layout/Footer';
-import { Metadata } from 'next';
+import { getBlogPosts } from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Blog | HDPick - Custom OS Folder Icons',

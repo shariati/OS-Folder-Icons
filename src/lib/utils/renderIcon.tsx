@@ -1,8 +1,8 @@
-import * as LucideIcons from 'lucide-react';
 import * as HeroIcons from '@heroicons/react/24/solid';
 import * as Unicons from '@iconscout/react-unicons';
-import * as GrommetIcons from 'grommet-icons';
 import { clsx } from 'clsx';
+import * as GrommetIcons from 'grommet-icons';
+import * as LucideIcons from 'lucide-react';
 
 export type IconType = 'lucide' | 'fontawesome' | 'heroicons' | 'unicons' | 'grommet-icons';
 

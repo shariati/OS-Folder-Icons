@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { uploadFile } from '@/lib/storage';
 import { v4 as uuidv4 } from 'uuid';
 
 import { verifyAuth } from '@/lib/auth-server';
 import { getUser } from '@/lib/db';
+import { uploadFile } from '@/lib/storage';
 
 export async function POST(request: Request) {
   try {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     // Validate folder to prevent arbitrary path traversal or unwanted folders
     const allowedFolders = ['blogs', 'pages', 'uploads'];
-    let targetFolder = allowedFolders.includes(folder) ? folder : 'uploads';
+    const targetFolder = allowedFolders.includes(folder) ? folder : 'uploads';
 
     // Additional Security: Only admins can upload to 'blogs' or 'pages'
     if (targetFolder === 'blogs' || targetFolder === 'pages') {

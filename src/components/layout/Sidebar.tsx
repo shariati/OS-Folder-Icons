@@ -1,31 +1,21 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Package,
-  Grid,
-  Tags,
-  Image as ImageIcon,
-  ArrowLeft,
-  FolderOpen,
-  Users,
-  BarChart2,
-  Activity,
-  FileText,
-  Layout,
-  ChevronDown,
-  Globe,
-  Layers,
-  PenTool,
-  Banknote,
-  Settings,
-} from 'lucide-react';
 import clsx from 'clsx';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
+import {
+  ArrowLeft,
+  Banknote,
+  ChevronDown,
+  FolderOpen,
+  Globe,
+  Image as ImageIcon,
+  Users,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { FIREBASE_STORAGE, getFirebaseStorageUrl } from '@/constants/links';
 
 interface SidebarProps {
   sidebarOpen: boolean;

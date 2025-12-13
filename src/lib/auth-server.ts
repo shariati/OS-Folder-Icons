@@ -1,5 +1,6 @@
-import { adminAuth as auth } from '@/lib/firebase/admin';
 import { DecodedIdToken } from 'firebase-admin/auth';
+
+import { adminAuth as auth } from '@/lib/firebase/admin';
 
 /**
  * Verifies the Firebase ID token from the Authorization header.

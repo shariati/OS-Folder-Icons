@@ -1,6 +1,7 @@
 'use client';
 
 import Script from 'next/script';
+
 import { useCookieConsent } from './CookieConsentProvider';
 
 export default function Clarity({ projectId }: { projectId?: string }) {

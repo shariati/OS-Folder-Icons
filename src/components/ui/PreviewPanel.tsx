@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react';
 import { clsx } from 'clsx';
-import { NeumorphBox } from './NeumorphBox';
+import React, { ReactNode } from 'react';
+
 import { Desktop, DesktopProps } from './Desktop';
+import { NeumorphBox } from './NeumorphBox';
 
 interface BasePreviewPanelProps {
   theme?: 'macOS' | 'none';

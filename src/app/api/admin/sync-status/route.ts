@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+
+import { unauthorizedResponse, verifyAdmin } from '@/lib/admin-auth';
 import { adminDb as db } from '@/lib/firebase/admin';
-import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
   const admin = await verifyAdmin(request);

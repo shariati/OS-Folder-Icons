@@ -1,5 +1,5 @@
-import React, { forwardRef, InputHTMLAttributes, ReactNode, useId } from 'react';
 import { clsx } from 'clsx';
+import React, { forwardRef, InputHTMLAttributes, ReactNode, useId } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export interface NeumorphInputProps extends InputHTMLAttributes<HTMLInputElement> {

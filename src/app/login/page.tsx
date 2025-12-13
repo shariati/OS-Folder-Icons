@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import { ArrowRight, Lock, Mail } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
+import React, { useState } from 'react';
+
 import { InputModal } from '@/components/ui/InputModal';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
+import { FIREBASE_STORAGE, getFirebaseStorageUrl } from '@/constants/links';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

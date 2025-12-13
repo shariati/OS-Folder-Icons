@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { OSVersion, FolderIcon } from '@/lib/types';
-import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
-import { Upload, X, Trash2, Check, Info } from 'lucide-react';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { clsx } from 'clsx';
+import { Check, Info, Upload, X } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadToFirebase } from '@/lib/client-upload';
-import { useToast } from '@/components/ui/Toast';
-import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { FolderIcon, OSVersion } from '@/lib/types';
 
 interface VersionFormProps {
   initialData?: Partial<OSVersion>;

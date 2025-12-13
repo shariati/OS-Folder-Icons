@@ -1,24 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { DB, OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
-import { useRouter } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
-import { Trash2, Plus, Upload, ChevronDown, ChevronRight, Edit2, X, Check } from 'lucide-react';
-import { CanvasPreview } from '@/components/ui/CanvasPreview';
-import { useToast } from '@/components/ui/Toast';
-import { InputModal } from '@/components/ui/InputModal';
 import { clsx } from 'clsx';
-import { OS_FORMATS, BRAND_ICONS, OS_KEYWORD_MATCHERS } from '@/constants/os';
-import { useAuth } from '@/contexts/AuthContext';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { NeumorphButton } from '@/components/ui/NeumorphButton';
-import { OSForm } from './OSForm';
-import { VersionForm } from '@/components/admin/VersionForm';
-import { uploadToFirebase } from '@/lib/client-upload';
+import { ChevronRight, Edit2, Plus, Trash2 } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { EmptyState } from '@/components/admin/EmptyState';
+import { VersionForm } from '@/components/admin/VersionForm';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { NeumorphButton } from '@/components/ui/NeumorphButton';
+import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { DB, OperatingSystem, OSVersion } from '@/lib/types';
+
+import { OSForm } from './OSForm';
 
 export function OSManager({ initialData }: { initialData: DB }) {
   const router = useRouter();

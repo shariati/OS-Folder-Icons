@@ -1,9 +1,9 @@
-import { getDB } from '@/lib/db';
+import { Metadata } from 'next';
+
 import { IconGenerator } from '@/components/features/IconGenerator';
 import { Footer } from '@/components/layout/Footer';
 import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
-
-import { Metadata } from 'next';
+import { getDB } from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Custom Folders - HDPick',

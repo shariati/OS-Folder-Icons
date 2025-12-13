@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { DB, HeroSlide } from '@/lib/types';
-import { Plus, Trash2, Edit2, Save, X, Upload, ArrowUp, ArrowDown } from 'lucide-react';
-import { useToast } from '@/components/ui/Toast';
+import { Plus, Save, X } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+
 import { EmptyState } from '@/components/admin/EmptyState';
-import { ImageUploader } from './ImageUploader';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { DB, HeroSlide } from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 
 export function HeroManager({ initialData }: { initialData: DB }) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialData.heroSlides || []);

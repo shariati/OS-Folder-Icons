@@ -1,7 +1,7 @@
 'use client';
 
-import { forwardRef, useEffect, useImperativeHandle, useState, useCallback, useRef } from 'react';
 import clsx from 'clsx';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 // Common emoji list for quick access
 const COMMON_EMOJIS = [

@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
-import { adminDb as db } from '@/lib/firebase/admin';
 import fs from 'fs/promises';
+import { NextResponse } from 'next/server';
 import path from 'path';
+
 import { DatabaseSchema } from '@/lib/db/types';
+import { adminDb as db } from '@/lib/firebase/admin';
 
 export async function POST(request: Request) {
   try {

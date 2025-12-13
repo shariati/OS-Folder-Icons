@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { DB, Bundle, OperatingSystem } from '@/lib/types';
-import Image from 'next/image';
-import { Download, Share2, Check, Tag } from 'lucide-react';
 import { clsx } from 'clsx';
-import JSZip from 'jszip';
 import { toPng } from 'html-to-image';
+import JSZip from 'jszip';
+import { Check, Download, Share2, Tag } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { useRef, useState } from 'react';
+
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
-import * as LucideIcons from 'lucide-react';
+import { Bundle, DB } from '@/lib/types';
 
 export function BundleViewer({ bundle, db }: { bundle: Bundle; db: DB }) {
   const [selectedOS, setSelectedOS] = useState<string[]>([]);
@@ -81,7 +81,7 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle; db: DB }) {
 
                 // Handle format conversion if needed (basic logic)
                 let fileBlob = blob;
-                let ext = os.format || 'png';
+                const ext = os.format || 'png';
 
                 if (ext === 'ico') {
                   // Simple conversion wrapper

@@ -1,5 +1,6 @@
-import React from 'react';
 import { Upload } from 'lucide-react';
+import React from 'react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface UploadPhotoProps {

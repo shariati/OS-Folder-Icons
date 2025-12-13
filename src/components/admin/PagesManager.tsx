@@ -1,27 +1,28 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { DB, Page } from '@/lib/types';
-import { savePageAction, deletePageAction } from '@/app/admin/actions';
-import { useToast } from '@/components/ui/Toast';
+import clsx from 'clsx';
 import {
-  Plus,
-  ExternalLink,
-  Search,
-  FileText,
-  Edit2,
-  Trash2,
-  Eye,
   ChevronLeft,
   ChevronRight,
+  Edit2,
+  ExternalLink,
+  FileText,
+  Plus,
+  Search,
+  Trash2,
 } from 'lucide-react';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useMemo, useState } from 'react';
+
+import { deletePageAction, savePageAction } from '@/app/admin/actions';
 import { EmptyState } from '@/components/admin/EmptyState';
-import { PageEditor } from './PageEditor';
-import { getFullUrl } from '@/lib/url';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import { socialStyleLargeNumbers } from '@/lib/format';
 import { formatDate } from '@/lib/format';
-import clsx from 'clsx';
+import { DB, Page } from '@/lib/types';
+import { getFullUrl } from '@/lib/url';
+
+import { PageEditor } from './PageEditor';
 
 interface PagesManagerProps {
   initialData: DB;

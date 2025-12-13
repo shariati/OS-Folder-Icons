@@ -1,10 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { BlogPost } from '@/lib/types';
 import { Calendar, Clock } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+
 import { formatDate } from '@/lib/format';
+import { BlogPost } from '@/lib/types';
 
 interface BlogPostCardProps {
   post: BlogPost;

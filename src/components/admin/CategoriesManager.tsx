@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { DB, Category } from '@/lib/types';
-import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 import { clsx } from 'clsx';
-import { useToast } from '@/components/ui/Toast';
+import { Plus, Save, X } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+
 import { EmptyState } from '@/components/admin/EmptyState';
-import { ImageUploader } from './ImageUploader';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { Category, DB } from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 
 export function CategoriesManager({ initialData }: { initialData: DB }) {
   const [categories, setCategories] = useState<Category[]>(initialData.categories || []);

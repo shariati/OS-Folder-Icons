@@ -1,9 +1,10 @@
 'use client';
 
-import { forwardRef, useEffect, useRef, useImperativeHandle, memo } from 'react';
-import { twMerge } from 'tailwind-merge';
 import { toPng } from 'html-to-image';
-import { generateICO, generateICNS } from '@/lib/utils/icon-generator';
+import { forwardRef, memo, useEffect, useImperativeHandle, useRef } from 'react';
+import { twMerge } from 'tailwind-merge';
+
+import { generateICNS, generateICO } from '@/lib/utils/icon-generator';
 
 export interface CanvasPreviewProps {
   enableDownload?: boolean;

@@ -1,57 +1,56 @@
 'use client';
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
-import StarterKit from '@tiptap/starter-kit';
+import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Image from '@tiptap/extension-image';
-import Youtube from '@tiptap/extension-youtube';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
-import { TaskList } from '@tiptap/extension-task-list';
+import { TableRow } from '@tiptap/extension-table-row';
 import { TaskItem } from '@tiptap/extension-task-item';
-import HorizontalRule from '@tiptap/extension-horizontal-rule';
-
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { TaskList } from '@tiptap/extension-task-list';
+import Youtube from '@tiptap/extension-youtube';
+import { EditorContent, useEditor } from '@tiptap/react';
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
+import StarterKit from '@tiptap/starter-kit';
+import clsx from 'clsx';
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
-  Italic,
-  Strikethrough,
+  CheckSquare,
   Code,
-  List,
-  ListOrdered,
-  Quote,
-  Image as ImageIcon,
-  Youtube as YoutubeIcon,
-  Link as LinkIcon,
+  Code2,
+  ExternalLink,
   Heading1,
   Heading2,
   Heading3,
-  Table as TableIcon,
-  Code2,
-  CheckSquare,
-  Undo,
-  Redo,
+  Image as ImageIcon,
+  Italic,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
   Minus,
-  X,
-  ExternalLink,
   Play,
+  Quote,
+  Redo,
+  Strikethrough,
+  Table as TableIcon,
+  Type,
+  Undo,
   Volume2,
   VolumeX,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Type,
+  X,
+  Youtube as YoutubeIcon,
 } from 'lucide-react';
-import clsx from 'clsx';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import { InputModal } from '../ui/InputModal';
 // Import editor components
 import { ImageUploadModal } from './editor/ImageUploadModal';
-import { InputModal } from '../ui/InputModal';
 
 interface RichTextEditorProps {
   value: string;

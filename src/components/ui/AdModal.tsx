@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { X, ExternalLink, AlertTriangle, Settings } from 'lucide-react';
-import { AdConfig } from '@/lib/types';
+import { AlertTriangle, ExternalLink, Settings, X } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+
 import { useCookieConsent } from '@/components/shared/CookieConsentProvider';
+import { AdConfig } from '@/lib/types';
 
 interface AdModalProps {
   isOpen: boolean;

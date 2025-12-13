@@ -1,7 +1,8 @@
+import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+
 import { adminAuth as auth, adminDb as db } from '@/lib/firebase/admin';
-import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   // apiVersion: '2024-11-20.acacia',

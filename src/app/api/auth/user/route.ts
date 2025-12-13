@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser, createUser, updateUser, deleteUser } from '@/lib/db';
-import { UserProfile } from '@/types/user';
-import { verifyAuth } from '@/lib/auth-server';
-import { adminAuth as auth } from '@/lib/firebase/admin';
-import { checkRateLimit } from '@/lib/rate-limit';
+
 import { handleApiError } from '@/lib/api-error';
+import { verifyAuth } from '@/lib/auth-server';
+import { createUser, deleteUser, getUser, updateUser } from '@/lib/db';
+import { adminAuth as auth } from '@/lib/firebase/admin';
 import { createLogger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { UserProfile } from '@/types/user';
 
 const logger = createLogger('api-auth-user');
 

@@ -1,9 +1,7 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphDropdownList } from '@/components/ui/NeumorphDropdownList';
 import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
-import { OperatingSystem, OSVersion, FolderIcon } from '@/lib/types';
-import { clsx } from 'clsx';
-import Image from 'next/image';
+import { OperatingSystem, OSVersion } from '@/lib/types';
 
 interface ConfigurationProps {
   selectedOS: OperatingSystem | undefined;

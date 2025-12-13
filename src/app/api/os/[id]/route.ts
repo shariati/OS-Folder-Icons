@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getOperatingSystem, saveOperatingSystem, deleteOperatingSystem } from '@/lib/db';
+
+import { deleteOperatingSystem, getOperatingSystem, saveOperatingSystem } from '@/lib/db';
 import { OperatingSystem } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';

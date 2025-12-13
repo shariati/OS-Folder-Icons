@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { ChevronDown, Check } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronDown } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+
 import { NeumorphInput } from './NeumorphInput';
 
 export interface DropdownItem {

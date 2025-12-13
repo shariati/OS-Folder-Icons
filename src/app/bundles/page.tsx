@@ -1,11 +1,11 @@
-import { getDB } from '@/lib/db';
-import Link from 'next/link';
+import { Filter, Search } from 'lucide-react';
+import { Metadata } from 'next';
 import Image from 'next/image';
-import { Download, Search, Filter } from 'lucide-react';
+import Link from 'next/link';
+
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-
-import { Metadata } from 'next';
+import { getDB } from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Icon Bundles - HDPick',

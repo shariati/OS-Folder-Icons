@@ -1,9 +1,10 @@
 'use client';
 
-import { useAuth } from '@/contexts/AuthContext';
-import { Mail, X, RefreshCw } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Mail, RefreshCw, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function ActivationBanner() {
   const { user, userProfile, resendActivationEmail } = useAuth();

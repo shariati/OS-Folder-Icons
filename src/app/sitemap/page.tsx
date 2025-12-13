@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+
 import { Footer } from '@/components/layout/Footer';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 

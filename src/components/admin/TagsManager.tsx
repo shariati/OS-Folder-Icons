@@ -1,25 +1,27 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { DB, Tag } from '@/lib/types';
+import clsx from 'clsx';
 import {
-  Plus,
-  Search,
-  Tags as TagsIcon,
-  Edit2,
-  Trash2,
   ChevronLeft,
   ChevronRight,
+  Edit2,
+  Plus,
   Save,
+  Search,
+  Tags as TagsIcon,
+  Trash2,
   X,
 } from 'lucide-react';
-import { useToast } from '@/components/ui/Toast';
+import { useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+
 import { EmptyState } from '@/components/admin/EmptyState';
-import { normalizeTagName } from './TagAutocomplete';
-import clsx from 'clsx';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { DB, Tag } from '@/lib/types';
+
+import { normalizeTagName } from './TagAutocomplete';
 
 interface TagsManagerProps {
   initialData: DB;

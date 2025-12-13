@@ -1,5 +1,5 @@
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { ColorSelector } from '@/components/ui/ColorSelector';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 
 interface FolderColorPickerProps {
   folderHue: number;

@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { Upload, X, Loader2, Check, Image as ImageIcon } from 'lucide-react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase/client';
-import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { Check, Image as ImageIcon, Loader2, Upload, X } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { storage } from '@/lib/firebase/client';
+
 import { MediaLibraryModal } from '../MediaLibraryModal';
 
 interface ImageUploadModalProps {

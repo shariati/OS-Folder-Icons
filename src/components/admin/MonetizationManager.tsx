@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { Check, Edit, Plus, RefreshCw, Save, Trash, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { Plan } from '@/types/plan';
-import { Plus, Edit, Trash, Save, X, Check, RefreshCw } from 'lucide-react';
-import { AdSettings } from './AdSettings';
+import { useToast } from '@/components/ui/Toast';
 import { authenticatedFetch } from '@/lib/fetch-auth';
 import { formatDate } from '@/lib/format';
-import { useToast } from '@/components/ui/Toast';
+import { Plan } from '@/types/plan';
+
+import { AdSettings } from './AdSettings';
 
 export function MonetizationManager() {
   const [activeTab, setActiveTab] = useState<'plans' | 'ads'>('plans');

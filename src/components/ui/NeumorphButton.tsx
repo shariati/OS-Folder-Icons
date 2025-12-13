@@ -1,7 +1,7 @@
-import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import Image, { StaticImageData } from 'next/image';
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export interface NeumorphButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'neumorph' | 'pressed' | 'flat';

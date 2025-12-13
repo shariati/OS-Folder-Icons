@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
 import { incrementViewCountAction } from '@/app/blog/actions';
 
 interface ViewCounterProps {

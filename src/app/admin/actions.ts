@@ -1,17 +1,18 @@
 'use server';
 
-import {
-  saveSettings as dbSaveSettings,
-  saveBlogPost as dbSaveBlogPost,
-  deleteBlogPost as dbDeleteBlogPost,
-  savePage as dbSavePage,
-  deletePage as dbDeletePage,
-  updateUser as dbUpdateUser,
-  deleteUser as dbDeleteUser,
-} from '@/lib/db';
-import { Settings, BlogPost, Page, UserProfile } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
+
+import {
+  deleteBlogPost as dbDeleteBlogPost,
+  deletePage as dbDeletePage,
+  deleteUser as dbDeleteUser,
+  saveBlogPost as dbSaveBlogPost,
+  savePage as dbSavePage,
+  saveSettings as dbSaveSettings,
+  updateUser as dbUpdateUser,
+} from '@/lib/db';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { BlogPost, Page, Settings } from '@/lib/types';
 
 export async function saveSettingsAction(settings: Settings) {
   await dbSaveSettings(settings);

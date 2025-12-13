@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
 import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface CookiePreferences {
   essential: boolean;

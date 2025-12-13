@@ -16,16 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import './globals.css';
+
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Recursive } from 'next/font/google';
-import './globals.css';
+
 import { Navbar } from '@/components/layout/Navbar';
-import { Providers } from '@/components/shared/Providers';
-import GoogleAnalytics from '@/components/shared/GoogleAnalytics';
-import { ActivationBanner } from '@/components/ui/ActivationBanner';
-import { getSettings } from '@/lib/db';
 import Clarity from '@/components/shared/Clarity';
+import GoogleAnalytics from '@/components/shared/GoogleAnalytics';
+import { Providers } from '@/components/shared/Providers';
+import { ActivationBanner } from '@/components/ui/ActivationBanner';
 import { ScrollToTop } from '@/components/utils/ScrollToTop';
+import { getSettings } from '@/lib/db';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

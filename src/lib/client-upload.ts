@@ -1,6 +1,7 @@
-import { storage } from '@/lib/firebase/client';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+
+import { storage } from '@/lib/firebase/client';
 
 /**
  * Uploads a file to Firebase Storage using the Client SDK.

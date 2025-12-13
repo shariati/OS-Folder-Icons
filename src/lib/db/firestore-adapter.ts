@@ -1,30 +1,31 @@
-import { db } from '../firebase/client';
 import {
   collection,
-  getDocs,
+  deleteDoc,
   doc,
+  getCountFromServer,
   getDoc,
+  getDocs,
+  query,
   setDoc,
   updateDoc,
-  deleteDoc,
-  query,
   where,
-  getCountFromServer,
   writeBatch,
 } from 'firebase/firestore';
-import { DatabaseAdapter } from './types';
+
 import { UserProfile } from '../../types/user';
+import { db } from '../firebase/client';
 import {
-  DB,
-  OperatingSystem,
+  BlogPost,
   Bundle,
   Category,
-  Tag,
+  DB,
   HeroSlide,
-  BlogPost,
+  OperatingSystem,
   Page,
   Settings,
+  Tag,
 } from '../types';
+import { DatabaseAdapter } from './types';
 
 export const firestoreAdapter: DatabaseAdapter = {
   async getOperatingSystems(): Promise<OperatingSystem[]> {

@@ -1,7 +1,6 @@
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { toCapitalCase } from '@/lib/format';
-import { clsx } from 'clsx';
 
 interface IconStylePresetsProps {
   iconEffect: 'raised' | 'sunken' | 'glass' | 'flat';

@@ -1,7 +1,6 @@
 'use server';
 
 import { getBlogPosts, updateBlogPost } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
 
 export async function incrementViewCountAction(slug: string) {
   try {

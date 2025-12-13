@@ -1,7 +1,8 @@
+import { clsx } from 'clsx';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { NeumorphToggleGroup } from '@/components/ui/NeumorphToggleGroup';
 import { OperatingSystem } from '@/lib/types';
-import { clsx } from 'clsx';
 
 interface OSSelectionProps {
   operatingSystems: OperatingSystem[];

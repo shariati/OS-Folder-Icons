@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { getFirebaseStorageUrl, FIREBASE_STORAGE } from '@/constants/links';
+import React, { useEffect, useState } from 'react';
+
+import { FIREBASE_STORAGE, getFirebaseStorageUrl } from '@/constants/links';
 
 export function VideoBackground() {
   const [mounted, setMounted] = useState(false);

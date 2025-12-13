@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+
 import { getDB, saveDB } from '@/lib/db';
 import { Bundle } from '@/lib/types';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function GET() {
   const db = await getDB();

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { clsx } from 'clsx';
+import React, { useEffect, useState } from 'react';
+
 import { Folder, FolderProps } from '@/components/ui/Folder';
 import { Loading } from '@/components/ui/Loading';
 

@@ -1,7 +1,7 @@
 import 'server-only';
-import config from '../config';
-import { DatabaseAdapter } from './types';
+
 import { firestoreAdapter } from './firestore-adapter';
+import { DatabaseAdapter } from './types';
 
 // Helper to get the correct adapter dynamically to avoid bundling fs on client
 const getAdapter = async (): Promise<DatabaseAdapter> => {

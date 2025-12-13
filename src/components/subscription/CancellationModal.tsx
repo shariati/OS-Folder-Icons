@@ -1,8 +1,8 @@
+import { AlertTriangle, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { X, AlertTriangle } from 'lucide-react';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+
 import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface CancellationModalProps {
   isOpen: boolean;

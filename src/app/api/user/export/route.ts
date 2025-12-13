@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+import { adminAuth, adminDb } from '@/lib/firebase/admin';
 
 export async function GET() {
   try {

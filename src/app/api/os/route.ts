@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+
 import { getDB, saveOperatingSystem } from '@/lib/db';
 import { OperatingSystem } from '@/lib/types';
-import { v4 as uuidv4 } from 'uuid';
 
 export const dynamic = 'force-dynamic';
 

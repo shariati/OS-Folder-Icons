@@ -1,18 +1,18 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { DB, Bundle, OperatingSystem } from '@/lib/types';
-import { useRouter } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
-import { Trash2, Plus, Upload, Search, X, Edit2 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
-import { useToast } from '@/components/ui/Toast';
 import { clsx } from 'clsx';
-import { useAuth } from '@/contexts/AuthContext';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { Plus, Search, X } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+
 import { EmptyState } from '@/components/admin/EmptyState';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { uploadToFirebase } from '@/lib/client-upload';
+import { Bundle, DB } from '@/lib/types';
 
 export function BundlesManager({ initialData }: { initialData: DB }) {
   const router = useRouter();

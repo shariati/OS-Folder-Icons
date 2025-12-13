@@ -1,6 +1,6 @@
 import config from '../config';
-import { StorageAdapter } from './types';
 import { firebaseStorageAdapter } from './firebase-adapter';
+import { StorageAdapter } from './types';
 
 // Helper to get the correct adapter dynamically
 const getAdapter = async (): Promise<StorageAdapter> => {

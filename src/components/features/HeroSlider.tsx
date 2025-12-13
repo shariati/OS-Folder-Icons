@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { HeroSlide } from '@/lib/types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { HeroSlide } from '@/lib/types';
 
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);

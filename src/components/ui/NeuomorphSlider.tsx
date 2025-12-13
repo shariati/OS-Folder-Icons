@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
 import { clsx } from 'clsx';
+import { animate, motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export interface NeuomorphSliderProps {
@@ -62,7 +62,7 @@ export function NeuomorphSlider({
     if (!trackRef.current) return;
 
     const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         setTrackWidth(entry.contentRect.width);
       }
     });

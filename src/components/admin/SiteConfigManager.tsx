@@ -1,32 +1,34 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import clsx from 'clsx';
 import {
-  Settings,
-  FaviconConfig,
-  TrackingConfig,
-  DefaultSeoConfig,
-  SiteIdentity,
-  SocialMetadata,
-} from '@/lib/types';
-import { useToast } from '@/components/ui/Toast';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { ImageUploader } from './ImageUploader';
-import { authenticatedFetch } from '@/lib/fetch-auth';
-import {
+  Check,
+  Code,
+  Edit2,
   Globe,
   Image as ImageIcon,
-  Code,
+  Loader2,
+  Save,
   Search,
   Share2,
-  Save,
-  Loader2,
-  Edit2,
-  X,
-  Check,
   Upload,
+  X,
 } from 'lucide-react';
-import clsx from 'clsx';
+import { useEffect, useRef, useState } from 'react';
+
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
+import { useToast } from '@/components/ui/Toast';
+import { authenticatedFetch } from '@/lib/fetch-auth';
+import {
+  DefaultSeoConfig,
+  FaviconConfig,
+  Settings,
+  SiteIdentity,
+  SocialMetadata,
+  TrackingConfig,
+} from '@/lib/types';
+
+import { ImageUploader } from './ImageUploader';
 
 type TabType = 'identity' | 'favicon' | 'tracking' | 'seo' | 'social';
 

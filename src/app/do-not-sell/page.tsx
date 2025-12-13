@@ -1,10 +1,11 @@
 'use client';
 
+import { Check, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
+
 import { Footer } from '@/components/layout/Footer';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { MainSiteWrapper } from '@/components/layout/MainSiteWrapper';
-import { ShieldCheck, Check } from 'lucide-react';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { PROJECT_LINKS } from '@/constants/links';
 import { useAuth } from '@/contexts/AuthContext';
 

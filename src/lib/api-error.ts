@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger('api-error');

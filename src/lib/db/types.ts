@@ -1,15 +1,15 @@
+import { UserProfile } from '../../types/user';
 import {
-  DB,
-  OperatingSystem,
+  BlogPost,
   Bundle,
   Category,
-  Tag,
+  DB,
   HeroSlide,
-  BlogPost,
+  OperatingSystem,
   Page,
   Settings,
+  Tag,
 } from '../types';
-import { UserProfile } from '../../types/user';
 
 export interface DatabaseSchema {
   operatingSystems: OperatingSystem[];

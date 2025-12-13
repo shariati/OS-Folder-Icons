@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { clsx } from 'clsx';
+import { AlertCircle, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
-import { Save, AlertCircle } from 'lucide-react';
-import { AdConfig } from '@/lib/types';
-import { clsx } from 'clsx';
 import { authenticatedFetch } from '@/lib/fetch-auth';
+import { AdConfig } from '@/lib/types';
 
 export function AdSettings() {
   const [config, setConfig] = useState<AdConfig>({

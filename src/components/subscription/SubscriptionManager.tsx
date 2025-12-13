@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+
 import { useAuth } from '@/contexts/AuthContext';
+
 import { CancellationModal } from './CancellationModal';
 
 const SubscriptionManager = () => {
@@ -78,7 +80,8 @@ const RenewalProgress = ({ end }: { end: string }) => {
   );
 };
 
-import { FileText, Download, CreditCard, RefreshCw } from 'lucide-react';
+import { CreditCard, Download, FileText, RefreshCw } from 'lucide-react';
+
 import { useToast } from '@/components/ui/Toast';
 import { formatDate } from '@/lib/format';
 

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { getDownloadURL, ref } from 'firebase/storage';
 import Image, { StaticImageData } from 'next/image';
-import { clsx } from 'clsx';
+import React, { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+
 import { useCachedVideo } from '@/hooks/useCachedVideo';
-import { ref, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase/client';
 
 export interface LoadingProps {

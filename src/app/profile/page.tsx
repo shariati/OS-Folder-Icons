@@ -1,24 +1,22 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import SubscriptionManager from '@/components/subscription/SubscriptionManager';
-import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import {
-  User,
-  Mail,
+  AlertTriangle,
   Calendar,
+  Download,
+  Loader2,
   Lock,
+  Mail,
   Shield,
   Trash2,
-  Camera,
-  Loader2,
-  AlertTriangle,
-  Check,
-  X,
-  Download,
+  User,
 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
+import SubscriptionManager from '@/components/subscription/SubscriptionManager';
+import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { formatDate } from '@/lib/format';
 
 export default function ProfilePage() {

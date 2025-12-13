@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+
 import { StorageAdapter } from './types';
 
 export const localStorageAdapter: StorageAdapter = {

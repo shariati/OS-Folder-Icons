@@ -1,20 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { DB } from '@/lib/types';
-import { OSManager } from '@/components/admin/OSManager';
-import { BundlesManager } from '@/components/admin/BundlesManager';
-import { ToastProvider } from '@/components/ui/Toast';
-import { CategoriesManager } from '@/components/admin/CategoriesManager';
-import { TagsManager } from '@/components/admin/TagsManager';
-import { HeroManager } from '@/components/admin/HeroManager';
-import { UsersManager } from '@/components/admin/UsersManager';
+
 import { BlogManager } from '@/components/admin/BlogManager';
-import { PagesManager } from '@/components/admin/PagesManager';
+import { BundlesManager } from '@/components/admin/BundlesManager';
+import { CategoriesManager } from '@/components/admin/CategoriesManager';
+import { HeroManager } from '@/components/admin/HeroManager';
 import { MonetizationManager } from '@/components/admin/MonetizationManager';
-import { SiteConfigManager } from '@/components/admin/SiteConfigManager';
+import { OSManager } from '@/components/admin/OSManager';
+import { PagesManager } from '@/components/admin/PagesManager';
 import { PhotoFrameManager } from '@/components/admin/PhotoFrameManager';
+import { SiteConfigManager } from '@/components/admin/SiteConfigManager';
+import { TagsManager } from '@/components/admin/TagsManager';
+import { UsersManager } from '@/components/admin/UsersManager';
 import AdminLayout from '@/components/layout/AdminLayout';
+import { ToastProvider } from '@/components/ui/Toast';
+import { DB } from '@/lib/types';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
   const [activeTab, setActiveTab] = useState<

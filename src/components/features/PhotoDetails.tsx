@@ -1,8 +1,9 @@
+import { Calendar, Globe, Type } from 'lucide-react';
 import React, { useMemo } from 'react';
-import { Type, Calendar, Globe } from 'lucide-react';
+
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
-import { NeumorphInput } from '@/components/ui/NeumorphInput';
 import { NeumorphDropdownList } from '@/components/ui/NeumorphDropdownList';
+import { NeumorphInput } from '@/components/ui/NeumorphInput';
 import { COUNTRIES, Country } from '@/data/countries';
 
 export interface PhotoDetailsProps {

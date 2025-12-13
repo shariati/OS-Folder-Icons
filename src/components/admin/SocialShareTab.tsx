@@ -1,8 +1,10 @@
 'use client';
 
+import { Facebook, Share2, Twitter } from 'lucide-react';
+
 import { SocialMetadata } from '@/lib/types';
+
 import { ImageUploader } from './ImageUploader';
-import { Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 
 interface SocialShareTabProps {
   social?: SocialMetadata;

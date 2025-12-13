@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+
+import { unauthorizedResponse, verifyAdmin } from '@/lib/admin-auth';
 import { getDB, saveDB } from '@/lib/db';
-import { AdConfig } from '@/lib/types';
-import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
   try {

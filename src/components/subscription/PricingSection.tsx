@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { Check } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { useToast } from '@/components/ui/Toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PricingSection = () => {
   const { user, userProfile } = useAuth();

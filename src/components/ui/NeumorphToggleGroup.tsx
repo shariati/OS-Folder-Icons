@@ -1,9 +1,9 @@
+import { clsx } from 'clsx';
+import { StaticImageData } from 'next/image';
 import { ReactNode } from 'react';
+
 import { NeumorphBox } from './NeumorphBox';
 import { NeumorphButton } from './NeumorphButton';
-import { clsx } from 'clsx';
-
-import { StaticImageData } from 'next/image';
 
 export interface NeumorphToggleGroupItem {
   value: string;

@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp, App, cert } from 'firebase-admin/app';
-import { getFirestore, Firestore } from 'firebase-admin/firestore';
-import { getAuth, Auth } from 'firebase-admin/auth';
+import { App, cert, getApp, getApps, initializeApp } from 'firebase-admin/app';
+import { Auth, getAuth } from 'firebase-admin/auth';
+import { Firestore, getFirestore } from 'firebase-admin/firestore';
 
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
   ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
@@ -27,4 +27,4 @@ try {
   console.warn('Firebase Admin initialization failed:', error);
 }
 
-export { app as adminApp, db as adminDb, auth as adminAuth };
+export { app as adminApp, auth as adminAuth, db as adminDb };
