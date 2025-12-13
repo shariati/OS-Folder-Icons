@@ -19,6 +19,7 @@ interface AdminLayoutProps {
       | 'pages'
       | 'ads'
       | 'settings'
+      | 'photo-frame'
   ) => void;
 }
 

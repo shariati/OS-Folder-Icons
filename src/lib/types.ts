@@ -154,6 +154,9 @@ export interface Settings {
   defaultSeo?: DefaultSeoConfig;
   defaultSocial?: SocialMetadata;
   siteIdentity?: SiteIdentity;
+  photoFrame?: {
+    previewBackgroundUrl?: string;
+  };
 }
 
 // Social Metadata for Open Graph and Twitter Cards

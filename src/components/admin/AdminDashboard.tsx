@@ -13,6 +13,7 @@ import { BlogManager } from '@/components/admin/BlogManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { MonetizationManager } from '@/components/admin/MonetizationManager';
 import { SiteConfigManager } from '@/components/admin/SiteConfigManager';
+import { PhotoFrameManager } from '@/components/admin/PhotoFrameManager';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function AdminDashboard({ initialData }: { initialData: DB }) {
@@ -27,6 +28,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
     | 'pages'
     | 'ads'
     | 'settings'
+    | 'photo-frame'
   >('os');
 
   return (
@@ -45,6 +47,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
             {activeTab === 'pages' && 'Site Manager / Pages'}
             {activeTab === 'ads' && 'Monetization'}
             {activeTab === 'settings' && 'Site Manager / Site Configuration'}
+            {activeTab === 'photo-frame' && 'Photo Frame / Settings'}
           </h2>
 
           <nav>
@@ -66,6 +69,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
                 {activeTab === 'pages' && 'Site Manager / Pages'}
                 {activeTab === 'ads' && 'Ads'}
                 {activeTab === 'settings' && 'Site Manager / Settings'}
+                {activeTab === 'photo-frame' && 'Photo Frame'}
               </li>
             </ol>
           </nav>
@@ -83,6 +87,7 @@ export default function AdminDashboard({ initialData }: { initialData: DB }) {
           {activeTab === 'pages' && <PagesManager initialData={initialData} />}
           {activeTab === 'ads' && <MonetizationManager />}
           {activeTab === 'settings' && <SiteConfigManager />}
+          {activeTab === 'photo-frame' && <PhotoFrameManager />}
         </div>
       </AdminLayout>
     </ToastProvider>

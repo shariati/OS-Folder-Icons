@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { toPng, toJpeg } from 'html-to-image';
 import { useToast } from '@/components/ui/Toast';
@@ -116,6 +116,26 @@ export function PhotoFrameGenerator() {
     window.dispatchEvent(event);
   };
 
+  // Fetch background settings
+  const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/admin/settings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.photoFrame?.previewBackgroundUrl) {
+            setBackgroundUrl(data.photoFrame.previewBackgroundUrl);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch photo frame settings', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
       {/* Left Column: Controls */}
@@ -172,29 +192,39 @@ export function PhotoFrameGenerator() {
               </NeumorphButton>
             }
           >
-            {/* Polaroid Frame */}
-            <PolaroidPhotoFrame
-              ref={frameRef}
-              image={image}
-              title={title}
-              date={`${selectedMonth} ${selectedYear}`}
-              countryFlag={selectedCountry.flag}
-              backgroundColor={frameColor.value}
-              textColor={frameColor.text}
-              baseScale={baseScale}
-              zoom={zoom}
-              position={position}
-              onAutoFit={(scale, pos) => {
-                setBaseScale(scale);
-                setZoom(1);
-                setPosition(pos);
-                setInitialPosition(pos);
-              }}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            />
+            {/* Visual Background (only for preview) */}
+            {backgroundUrl && (
+              <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50"
+                style={{ backgroundImage: `url(${backgroundUrl})` }}
+              />
+            )}
+
+            {/* Polaroid Frame - Relative to stack above background */}
+            <div className="relative z-10">
+              <PolaroidPhotoFrame
+                ref={frameRef}
+                image={image}
+                title={title}
+                date={`${selectedMonth} ${selectedYear}`}
+                countryFlag={selectedCountry.flag}
+                backgroundColor={frameColor.value}
+                textColor={frameColor.text}
+                baseScale={baseScale}
+                zoom={zoom}
+                position={position}
+                onAutoFit={(scale, pos) => {
+                  setBaseScale(scale);
+                  setZoom(1);
+                  setPosition(pos);
+                  setInitialPosition(pos);
+                }}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              />
+            </div>
           </PreviewPanel>
         </div>
       </div>

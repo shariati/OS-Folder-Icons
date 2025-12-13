@@ -43,6 +43,7 @@ interface SidebarProps {
       | 'pages'
       | 'ads'
       | 'settings'
+      | 'photo-frame'
   ) => void;
 }
 
@@ -52,6 +53,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
   const sidebar = useRef<any>(null);
 
   const [isFolderIconOpen, setIsFolderIconOpen] = useState(true);
+  const [isPhotoFrameOpen, setIsPhotoFrameOpen] = useState(true);
   const [isSiteManagerOpen, setIsSiteManagerOpen] = useState(true);
 
   // close on click outside
@@ -171,6 +173,49 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }: Sideb
                         )}
                       >
                         Bundle Management
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              {/* Photo Frame Group */}
+              <li>
+                <button
+                  onClick={() => setIsPhotoFrameOpen(!isPhotoFrameOpen)}
+                  className="text-bodydark1 hover:bg-graydark dark:hover:bg-meta-4 group relative flex w-full items-center justify-between gap-2.5 rounded-sm px-4 py-2 text-left font-medium duration-300 ease-in-out"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <ImageIcon className="h-5 w-5" />
+                    Photo Frame
+                  </div>
+                  <ChevronDown
+                    className={clsx(
+                      'h-4 w-4 transition-transform',
+                      !isPhotoFrameOpen && '-rotate-90'
+                    )}
+                  />
+                </button>
+                {/* Sub Menu */}
+                <div
+                  className={clsx(
+                    'overflow-hidden transition-all duration-300',
+                    isPhotoFrameOpen ? 'mt-2 max-h-40' : 'max-h-0'
+                  )}
+                >
+                  <ul className="flex flex-col gap-1.5 pl-9">
+                    <li>
+                      <button
+                        onClick={() => {
+                          setActiveTab('photo-frame');
+                          setSidebarOpen(false);
+                        }}
+                        className={clsx(
+                          'text-bodydark1 hover:bg-graydark dark:hover:bg-meta-4 group relative flex w-full items-center gap-2.5 rounded-sm px-4 py-2 text-left text-sm font-medium duration-300 ease-in-out',
+                          activeTab === 'photo-frame' && 'text-white'
+                        )}
+                      >
+                        Wallpaper
                       </button>
                     </li>
                   </ul>
