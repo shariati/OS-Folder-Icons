@@ -60,7 +60,7 @@ export function PreviewPanel({
       <NeumorphBox
         variant="pressed"
         className={clsx(
-          'mb-6 overflow-hidden rounded-2xl bg-gray-100/50 dark:bg-gray-900/50',
+          'mb-6 space-y-0 overflow-hidden rounded-2xl bg-gray-100/50 dark:bg-gray-900/50',
           props.variant === 'custom' || !props.variant
             ? 'flex items-center justify-center p-4'
             : 'flex flex-col p-0'

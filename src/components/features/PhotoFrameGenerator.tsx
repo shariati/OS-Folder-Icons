@@ -195,7 +195,7 @@ export function PhotoFrameGenerator() {
             {/* Visual Background (only for preview) */}
             {backgroundUrl && (
               <div
-                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50"
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-65"
                 style={{ backgroundImage: `url(${backgroundUrl})` }}
               />
             )}
