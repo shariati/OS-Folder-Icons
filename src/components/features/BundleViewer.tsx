@@ -8,6 +8,7 @@ import * as LucideIcons from 'lucide-react';
 import { useRef, useState } from 'react';
 
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { FolderFrame } from '@/components/features/FolderFrame';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
 import { Bundle, DB } from '@/lib/types';
@@ -247,16 +248,17 @@ export function BundleViewer({ bundle, db }: { bundle: Bundle; db: DB }) {
       {genState && (
         <div className="pointer-events-none fixed left-0 top-0 opacity-0">
           <div ref={generatorRef}>
-            <CanvasPreview
-              folderImage={genState.folderImage}
-              iconName={genState.iconName}
-              iconType="lucide"
-              iconColor="#000000" // Default color for bundles? Or allow user to pick? Assuming default black for now.
-              iconSize="md" // Default size
-              offsetX={genState.offsetX}
-              offsetY={genState.offsetY}
-              format={genState.format}
-            />
+            <CanvasPreview format={genState.format} filename="preview">
+              <FolderFrame
+                folderImage={genState.folderImage}
+                iconName={genState.iconName}
+                iconType="lucide"
+                iconColor="#000000"
+                iconSize="md"
+                offsetX={genState.offsetX}
+                offsetY={genState.offsetY}
+              />
+            </CanvasPreview>
           </div>
         </div>
       )}

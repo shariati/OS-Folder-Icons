@@ -411,7 +411,7 @@ export function VersionForm({
                       }}
                     />
                     <div className="relative ml-[14%] mt-[14%] h-full w-full origin-top-left scale-[0.4] transform">
-                      <CanvasPreview format={osFormat} enableCors={false} filename="preview">
+                      <CanvasPreview format={osFormat} filename="preview">
                         <FolderFrame
                           folderImage={icon.imageUrl}
                           iconName="Star"
