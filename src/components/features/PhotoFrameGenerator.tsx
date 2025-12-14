@@ -244,24 +244,23 @@ export function PhotoFrameGenerator() {
           onDownloadError={(err) => showToast('Failed to generate image', 'error')}
           containerClassName="w-[1260px] h-[1530px]" // 3x scale of 420x510
         >
-          <div className="origin-top-left scale-[3] transform">
-            <PolaroidPhotoFrame
-              image={image}
-              title={title}
-              date={`${selectedMonth} ${selectedYear}`}
-              countryFlag={selectedCountry.flag}
-              backgroundColor={frameColor.value}
-              textColor={frameColor.text}
-              baseScale={baseScale}
-              zoom={zoom}
-              position={position}
-              onAutoFit={() => {}} // No-op for render
-              onMouseDown={() => {}}
-              onMouseMove={() => {}}
-              onMouseUp={() => {}}
-              onMouseLeave={() => {}}
-            />
-          </div>
+          <PolaroidPhotoFrame
+            image={image}
+            title={title}
+            date={`${selectedMonth} ${selectedYear}`}
+            countryFlag={selectedCountry.flag}
+            backgroundColor={frameColor.value}
+            textColor={frameColor.text}
+            baseScale={baseScale}
+            zoom={zoom}
+            position={position}
+            onAutoFit={() => {}} // No-op for render
+            onMouseDown={() => {}}
+            onMouseMove={() => {}}
+            onMouseUp={() => {}}
+            onMouseLeave={() => {}}
+            exportScale={3}
+          />
         </CanvasPreview>
       </div>
 

@@ -15,6 +15,7 @@ interface PolaroidPhotoFrameProps {
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseUp: () => void;
   onMouseLeave: () => void;
+  exportScale?: number;
 }
 
 export const PolaroidPhotoFrame = forwardRef<HTMLDivElement, PolaroidPhotoFrameProps>(
@@ -34,6 +35,7 @@ export const PolaroidPhotoFrame = forwardRef<HTMLDivElement, PolaroidPhotoFrameP
       onMouseMove,
       onMouseUp,
       onMouseLeave,
+      exportScale = 1,
     },
     ref
   ) => {
@@ -58,9 +60,11 @@ export const PolaroidPhotoFrame = forwardRef<HTMLDivElement, PolaroidPhotoFrameP
         ref={ref}
         className="relative flex flex-shrink-0 flex-col items-center shadow-2xl"
         style={{
-          width: '420px', // 14 units * 30px scale
-          height: '510px', // 17 units * 30px scale
-          padding: '30px 30px 120px 30px', // 1 unit top/sides, 4 units bottom
+          width: `${420 * exportScale}px`,
+          height: `${510 * exportScale}px`,
+          padding: `${30 * exportScale}px ${30 * exportScale}px ${
+            120 * exportScale
+          }px ${30 * exportScale}px`,
           boxSizing: 'border-box',
           backgroundColor: backgroundColor,
         }}
@@ -73,59 +77,78 @@ export const PolaroidPhotoFrame = forwardRef<HTMLDivElement, PolaroidPhotoFrameP
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseLeave}
         >
-          {image ? (
-            <img
-              src={image}
-              alt="Uploaded"
-              className="absolute max-w-none"
-              onLoad={handleImageLoad}
-              style={{
-                transform: `translate(${position.x}px, ${position.y}px) scale(${baseScale * zoom})`,
-                transformOrigin: 'center',
-                pointerEvents: 'none', // Let the container handle events
-                userSelect: 'none',
-                left: 0,
-                top: 0,
-              }}
-              draggable={false}
-            />
-          ) : (
-            <label
-              htmlFor="photo-upload-trigger"
-              className="flex h-full w-full cursor-pointer items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-            >
-              <p className="text-sm font-medium">Upload an image</p>
-            </label>
-          )}
+          {/* Scale Wrapper for internal content to maintain coordinate system */}
+          <div
+            style={{
+              width: '360px',
+              height: '360px',
+              transform: `scale(${exportScale})`,
+              transformOrigin: 'top left',
+            }}
+          >
+            {image ? (
+              <img
+                src={image}
+                alt="Uploaded"
+                className="absolute max-w-none"
+                onLoad={handleImageLoad}
+                style={{
+                  transform: `translate(${position.x}px, ${position.y}px) scale(${baseScale * zoom})`,
+                  transformOrigin: 'center',
+                  pointerEvents: 'none', // Let the container handle events
+                  userSelect: 'none',
+                  left: 0,
+                  top: 0,
+                }}
+                draggable={false}
+              />
+            ) : (
+              <label
+                htmlFor="photo-upload-trigger"
+                className="flex h-full w-full cursor-pointer items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              >
+                <p className="text-sm font-medium">Upload an image</p>
+              </label>
+            )}
+          </div>
         </div>
 
         {/* Text Area (Absolute positioned relative to frame) */}
-        <div className="absolute bottom-0 left-0 flex h-[120px] w-full flex-col justify-center px-[30px] py-4">
+        <div
+          className="absolute bottom-0 left-0 flex w-full flex-col justify-center"
+          style={{
+            height: `${120 * exportScale}px`,
+            padding: `${16 * exportScale}px ${30 * exportScale}px`,
+          }}
+        >
           <div className="flex items-end justify-between">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col" style={{ gap: `${4 * exportScale}px` }}>
               <h2
-                className="text-2xl leading-tight"
+                className="leading-tight"
                 style={{
                   fontFamily: 'var(--font-recursive), sans-serif',
                   fontWeight: 600,
                   color: textColor,
+                  fontSize: `${24 * exportScale}px`,
                 }}
               >
                 {title}
               </h2>
               <p
-                className="text-lg"
                 style={{
                   fontFamily: 'var(--font-recursive), sans-serif',
                   fontWeight: 400,
                   color: textColor,
                   opacity: 0.8,
+                  fontSize: `${18 * exportScale}px`,
                 }}
               >
                 {date}
               </p>
             </div>
-            <div className="text-4xl drop-shadow-sm filter">{countryFlag}</div>
+            <div className="drop-shadow-sm filter" style={{ fontSize: `${36 * exportScale}px` }}>
+              {countryFlag}
+            </div>
           </div>
         </div>
       </div>
