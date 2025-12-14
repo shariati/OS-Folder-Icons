@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasPreview } from '@/components/ui/CanvasPreview';
+import { FolderFrame } from '@/components/features/FolderFrame';
 import { NeumorphBox } from '@/components/ui/NeumorphBox';
 import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -410,17 +411,18 @@ export function VersionForm({
                       }}
                     />
                     <div className="relative ml-[14%] mt-[14%] h-full w-full origin-top-left scale-[0.4] transform">
-                      <CanvasPreview
-                        folderImage={icon.imageUrl}
-                        iconName="Star"
-                        iconType="lucide"
-                        iconColor="#000000"
-                        iconSize="md"
-                        offsetX={icon.offsetX || 0}
-                        offsetY={icon.offsetY || 0}
-                        format={osFormat}
-                        enableCors={false}
-                      />
+                      <CanvasPreview format={osFormat} enableCors={false} filename="preview">
+                        <FolderFrame
+                          folderImage={icon.imageUrl}
+                          iconName="Star"
+                          iconType="lucide"
+                          iconColor="#000000"
+                          iconSize="md"
+                          offsetX={icon.offsetX || 0}
+                          offsetY={icon.offsetY || 0}
+                          enableCors={false}
+                        />
+                      </CanvasPreview>
                     </div>
                     <div className="absolute bottom-2 right-2 font-mono text-[10px] text-white/50">
                       Preview
